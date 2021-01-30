@@ -1,0 +1,10 @@
+ztd.text
+Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+Contact: opensource@soasis.org
+
+This product includes software developed at
+Shepherd's Oasis, LLC (http://soasis.org/).
+
+Large portions of a standard span implementation come from Martin Moene's
+Boost 1.0 licensed work (https://github.com/martinmoene/span-lite).
+We thank Martin for this helpful polyfill.
