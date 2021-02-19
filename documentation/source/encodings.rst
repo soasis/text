@@ -106,11 +106,11 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - Yes
 	  - No ❌
 	* - UTF-7
-	  - No
+	  - Yes
 	  - Yes
 	  - No ❌
 	* - UTF-7-IMAP
-	  - No
+	  - Yes
 	  - Yes
 	  - No ❌
 	* - ISO-8859-1
