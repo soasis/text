@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -38,8 +38,8 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-#include <ztd/text/is_code_point_replaceable.hpp>
-#include <ztd/text/is_code_unit_replaceable.hpp>
+#include <ztd/text/is_code_points_replaceable.hpp>
+#include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_bidirectional_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
@@ -47,11 +47,13 @@
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/encoding_scheme.hpp>
+#include <ztd/text/endian.hpp>
 
 #include <ztd/text/detail/word_iterator.hpp>
 #include <ztd/text/detail/ebco.hpp>
-#include <ztd/text/endian.hpp>
+#include <ztd/text/detail/span.hpp>
 
+#include <optional>
 #include <cstddef>
 
 namespace ztd { namespace text {
@@ -87,7 +89,150 @@ namespace ztd { namespace text {
 				}
 			}
 		};
+
+		template <typename _Super, bool = is_code_units_replaceable_v<typename _Super::encoding_type>>
+		class __replacement_code_units { };
+
+		template <typename _Super>
+		class __replacement_code_units<_Super, true> {
+		private:
+			const _Super& _M_super() const noexcept {
+				return static_cast<const _Super&>(*this);
+			}
+
+		public:
+			constexpr auto replacement_code_units() const noexcept {
+				using _OriginalCodeUnit   = code_unit_of_t<typename _Super::encoding_type>;
+				using _CodeUnit           = typename _Super::code_unit;
+				decltype(auto) __original = this->_M_super().base().replacement_code_units();
+				if constexpr (std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
+					return __original;
+				}
+				else {
+					using _OriginalSpan    = ::std::span<const _OriginalCodeUnit>;
+					using _TransformedSpan = ::std::span<const _CodeUnit>;
+					_OriginalSpan __guaranteed_code_unit_view(__original);
+					// transform into proper type...
+					auto __transformed_ptr
+						= reinterpret_cast<const _CodeUnit*>(__guaranteed_code_unit_view.data());
+					auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
+						/ sizeof(const _CodeUnit);
+					return _TransformedSpan(__transformed_ptr, __transformed_size);
+				}
+			}
+		};
+
+		template <typename _Super, bool = is_code_points_replaceable_v<typename _Super::encoding_type>>
+		class __replacement_code_points { };
+
+		template <typename _Super>
+		class __replacement_code_points<_Super, true> {
+		private:
+			const _Super& _M_super() const noexcept {
+				return static_cast<const _Super&>(*this);
+			}
+
+		public:
+			constexpr auto replacement_code_points() const noexcept {
+				using _OriginalCodePoint  = code_point_of_t<typename _Super::encoding_type>;
+				using _CodePoint          = typename _Super::code_point;
+				decltype(auto) __original = this->_M_super().base().replacement_code_points();
+				if constexpr (std::is_same_v<_OriginalCodePoint, _CodePoint>) {
+					return __original;
+				}
+				else {
+					using _OriginalSpan    = ::std::span<const _OriginalCodePoint>;
+					using _TransformedSpan = ::std::span<const _CodePoint>;
+					_OriginalSpan __guaranteed_code_point_view(__original);
+					// transform into proper type...
+					auto __transformed_ptr
+						= reinterpret_cast<const _CodePoint*>(__guaranteed_code_point_view.data());
+					auto __transformed_size = (__guaranteed_code_point_view.size() * sizeof(_OriginalCodePoint))
+						/ sizeof(const _CodePoint);
+					return _TransformedSpan(__transformed_ptr, __transformed_size);
+				}
+			}
+		};
+
+		template <typename _Super, bool = is_code_units_maybe_replaceable_v<typename _Super::encoding_type>>
+		class __maybe_replacement_code_units { };
+
+		template <typename _Super>
+		class __maybe_replacement_code_units<_Super, true> {
+		private:
+			const _Super& _M_super() const noexcept {
+				return static_cast<const _Super&>(*this);
+			}
+
+		public:
+			constexpr auto maybe_replacement_code_units() const noexcept {
+				using _OriginalCodeUnit         = code_unit_of_t<typename _Super::encoding_type>;
+				using _CodeUnit                 = typename _Super::code_unit;
+				decltype(auto) __maybe_original = this->_M_super().base().maybe_replacement_code_units();
+				if constexpr (std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
+					return __maybe_original;
+				}
+				else {
+					using _OriginalSpan         = ::std::span<const _OriginalCodeUnit>;
+					using _TransformedSpan      = ::std::span<const _CodeUnit>;
+					using _MaybeTransformedSpan = ::std::optional<_TransformedSpan>;
+					if (!__maybe_original) {
+						return _MaybeTransformedSpan(::std::nullopt);
+					}
+					decltype(auto) __original = *::std::forward<decltype(__maybe_original)>(__maybe_original);
+					_OriginalSpan __guaranteed_code_unit_view(__original);
+					// transform into proper type...
+					auto __transformed_ptr
+						= reinterpret_cast<const _CodeUnit*>(__guaranteed_code_unit_view.data());
+					auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
+						/ sizeof(const _CodeUnit);
+					return _MaybeTransformedSpan(std::in_place, __transformed_ptr, __transformed_size);
+				}
+			}
+		};
+
+		template <typename _Super, bool = is_code_points_maybe_replaceable_v<typename _Super::encoding_type>>
+		class __maybe_replacement_code_points { };
+
+		template <typename _Super>
+		class __maybe_replacement_code_points<_Super, true> {
+		private:
+			const _Super& _M_super() const noexcept {
+				return static_cast<const _Super&>(*this);
+			}
+
+		public:
+			constexpr auto maybe_replacement_code_points() const noexcept {
+				using _OriginalCodePoint        = code_point_of_t<typename _Super::encoding_type>;
+				using _CodePoint                = typename _Super::code_point;
+				decltype(auto) __maybe_original = this->_M_super().base().maybe_replacement_code_points();
+				if constexpr (std::is_same_v<_OriginalCodePoint, _CodePoint>) {
+					return __maybe_original;
+				}
+				else {
+					using _OriginalSpan         = ::std::span<const _OriginalCodePoint>;
+					using _TransformedSpan      = ::std::span<const _CodePoint>;
+					using _MaybeTransformedSpan = ::std::optional<_TransformedSpan>;
+					if (!__maybe_original) {
+						return _MaybeTransformedSpan(::std::nullopt);
+					}
+					decltype(auto) __original = *::std::forward<decltype(__maybe_original)>(__maybe_original);
+					_OriginalSpan __guaranteed_code_point_view(__original);
+					// transform into proper type...
+					auto __transformed_ptr
+						= reinterpret_cast<const _CodePoint*>(__guaranteed_code_point_view.data());
+					auto __transformed_size = (__guaranteed_code_point_view.size() * sizeof(_OriginalCodePoint))
+						/ sizeof(const _CodePoint);
+					return _MaybeTransformedSpan(std::in_place, __transformed_ptr, __transformed_size);
+				}
+			}
+		};
 	} // namespace __detail
+
+	//////
+	/// @addtogroup ztd_text_encodings Encodings
+	/// @{
+	//////
 
 	//////
 	/// @brief Decomposes the provided Encoding type into a specific endianness (big, little, or native) to allow for a
@@ -103,11 +248,20 @@ namespace ztd { namespace text {
 	/// ztd::text::endian::native, unsigned char>``.
 	//////
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
-	class encoding_scheme : private __detail::__ebco<_Encoding> {
+	class encoding_scheme
+	: private __detail::__ebco<_Encoding>,
+	  private __detail::__replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_points_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
+	  public __detail::__replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_units_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
+	  public __detail::__maybe_replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_points_maybe_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
+	  public __detail::__maybe_replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_units_maybe_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>> {
 	private:
 		using __base_t       = __detail::__ebco<_Encoding>;
 		using _UBaseEncoding = __detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>;
-		using _BaseCodeUnit  = encoding_code_unit_t<_UBaseEncoding>;
+		using _BaseCodeUnit  = code_unit_of_t<_UBaseEncoding>;
 
 	public:
 		///////
@@ -119,7 +273,7 @@ namespace ztd { namespace text {
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 		//////
-		using code_point = encoding_code_point_t<_UBaseEncoding>;
+		using code_point = code_point_of_t<_UBaseEncoding>;
 		///////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
@@ -135,7 +289,7 @@ namespace ztd { namespace text {
 		/// in order to generically handle all encodings. Therefore, the encoding_scheme will always have both
 		/// @c encode_state and @c decode_state.
 		//////
-		using decode_state = encoding_decode_state_t<_UBaseEncoding>;
+		using decode_state = decode_state_of_t<_UBaseEncoding>;
 		//////
 		/// @brief The state that can be used between calls to the encode function.
 		///
@@ -143,7 +297,7 @@ namespace ztd { namespace text {
 		/// in order to generically handle all encodings. Therefore, the encoding_scheme will always have both
 		/// @c encode_state and @c decode_state.
 		//////
-		using encode_state = encoding_encode_state_t<_UBaseEncoding>;
+		using encode_state = encode_state_of_t<_UBaseEncoding>;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code point values.
 		///
@@ -168,7 +322,38 @@ namespace ztd { namespace text {
 		inline static constexpr const ::std::size_t max_code_units
 			= (max_code_units_v<_UBaseEncoding> * sizeof(_BaseCodeUnit)) / (sizeof(_Byte));
 
+		//////
+		/// @brief Constructs a ztd::text::encoding_scheme with the given arguments.
+		///
+		//////
 		using __base_t::__base_t;
+
+		//////
+		/// @brief Retrives the underlying encoding object.
+		///
+		/// @returns An l-value reference to the encoding object.
+		//////
+		constexpr encoding_type& base() & noexcept {
+			return this->__base_t::get_value();
+		}
+
+		//////
+		/// @brief Retrives the underlying encoding object.
+		///
+		/// @returns An l-value reference to the encoding object.
+		//////
+		constexpr const encoding_type& base() const& noexcept {
+			return this->__base_t::get_value();
+		}
+
+		//////
+		/// @brief Retrives the underlying encoding object.
+		///
+		/// @returns An l-value reference to the encoding object.
+		//////
+		constexpr encoding_type&& base() && noexcept {
+			return this->__base_t::get_value();
+		}
 
 		//////
 		/// @brief Decodes a single complete unit of information as code points and produces a result with the
@@ -205,8 +390,8 @@ namespace ztd { namespace text {
 				_InByteIt(::std::move(__init)), _InByteSen(::std::move(__inlast)));
 			__detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler> __scheme_handler(
 				__error_handler);
-			auto __result = this->get_value().decode_one(
-				__inbytes, ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
+			auto __result
+				= this->base().decode_one(__inbytes, ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
 			return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input.begin().base(),
 				               __result.input.end().base()),
 				__detail::__reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
@@ -245,7 +430,7 @@ namespace ztd { namespace text {
 			auto __outlast = __detail::__adl::__adl_end(__output);
 			subrange<_OutByteIt, _OutByteSen> __outwords(
 				_OutByteIt(::std::move(__outit)), _OutByteSen(::std::move(__outlast)));
-			auto __result = this->get_value().encode_one(::std::forward<_InputRange>(__input), __outwords,
+			auto __result = this->base().encode_one(::std::forward<_InputRange>(__input), __outwords,
 				::std::forward<_ErrorHandler>(__error_handler), __s);
 			return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input),
 				__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __result.output.begin().base(),
@@ -271,6 +456,14 @@ namespace ztd { namespace text {
 	using basic_utf16_be = encoding_scheme<utf16, endian::big, _Byte>;
 
 	//////
+	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	//////
+	template <typename _Byte>
+	using basic_utf16_ne = encoding_scheme<utf16, endian::native, _Byte>;
+
+	//////
 	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
 	//////
@@ -281,6 +474,12 @@ namespace ztd { namespace text {
 	///
 	//////
 	using utf16_be = basic_utf16_be<::std::byte>;
+
+	//////
+	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
+	///
+	//////
+	using utf16_ne = basic_utf16_ne<::std::byte>;
 
 	//////
 	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
@@ -299,6 +498,14 @@ namespace ztd { namespace text {
 	using basic_utf32_be = encoding_scheme<utf32, endian::big, _Byte>;
 
 	//////
+	/// @brief A UTF-32 encoding, in Native Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	//////
+	template <typename _Byte>
+	using basic_utf32_ne = encoding_scheme<utf32, endian::native, _Byte>;
+
+	//////
 	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
 	//////
@@ -309,6 +516,16 @@ namespace ztd { namespace text {
 	///
 	//////
 	using utf32_be = basic_utf32_be<::std::byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
+	///
+	//////
+	using utf32_ne = basic_utf32_ne<::std::byte>;
+
+	//////
+	/// @}
+	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

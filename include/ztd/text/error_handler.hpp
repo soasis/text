@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -42,8 +42,8 @@
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/is_code_point_replaceable.hpp>
-#include <ztd/text/is_code_unit_replaceable.hpp>
+#include <ztd/text/is_code_points_replaceable.hpp>
+#include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 
 #include <ztd/text/detail/range.hpp>
@@ -102,10 +102,21 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _Result>
 		constexpr _Result&& __write_static_code_points_direct(
 			const _Encoding& __encoding, _Result&& __result) noexcept {
-			using _InputCodePoint = encoding_code_point_t<_Encoding>;
-			if constexpr (__detail::__is_code_points_replaceable_v<_Encoding>) {
+			using _InputCodePoint = code_point_of_t<_Encoding>;
+			if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				return __detail::__write_direct(
 					__encoding, __encoding.replacement_code_points(), ::std::forward<_Result>(__result));
+			}
+			else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
+				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_points();
+				if (__maybe_code_points) {
+					return __detail::__write_direct(__encoding,
+						*::std::forward<decltype(__maybe_code_points)>(__maybe_code_points),
+						::std::forward<_Result>(__result));
+				}
+				else {
+					return std::forward<_Result>(__result);
+				}
 			}
 			else if constexpr (is_unicode_code_point_v<_InputCodePoint>) {
 				constexpr _InputCodePoint __replacements[1]
@@ -121,13 +132,26 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding>
 		constexpr ::std::size_t __fill_replacement_code_point_static(const _Encoding& __encoding,
-			encoding_code_point_t<_Encoding> (&__replacement_code_points)[max_code_points_v<_Encoding>]) {
-			using _InputCodePoint = encoding_code_point_t<_Encoding>;
-			if constexpr (__detail::__is_code_points_replaceable_v<_Encoding>) {
+			code_point_of_t<_Encoding> (&__replacement_code_points)[max_code_points_v<_Encoding>]) {
+			using _InputCodePoint = code_point_of_t<_Encoding>;
+			if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				::std::size_t __replacement_index = 0;
 				for (const auto& __element : __encoding.replacement_code_points()) {
 					__replacement_code_points[__replacement_index] = static_cast<_InputCodePoint>(__element);
 					++__replacement_index;
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
+				::std::size_t __replacement_index  = 0;
+				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_points();
+				if (__maybe_code_points) {
+					decltype(auto) __code_points
+						= *::std::forward<decltype(__maybe_code_points)>(__maybe_code_points);
+					for (const auto& __element : __code_points) {
+						__replacement_code_points[__replacement_index] = static_cast<_InputCodePoint>(__element);
+						++__replacement_index;
+					}
 				}
 				return __replacement_index;
 			}
@@ -158,9 +182,14 @@ namespace ztd { namespace text {
 	/// sequence.
 	///
 	/// @remarks This class hooks into the encodings passed as the first parameter to the error handling functions to
-	/// see if they define either @c replacement_code_points() or @c replacement_code_units() . If at all possible,
-	/// these replacement code points and code units will be used in lieu of the default replacement character U+FFFD
-	/// or the ever-elusive @c ? .
+	/// see if they define either @c replacement_code_points() or @c replacement_code_units() function. If so, they
+	/// will call them and use the returned contiguous range to isnert code points or code units into the function. If
+	/// neither of these exist, then it checks for a definition of a @c maybe_replacement_code_points() or a @c
+	/// maybe_replacement_code_units() function. If either is present, they are expected to return a @c std::optional
+	/// of a contiguous range. If it is engaged (the @c std::optional is filled) it will be used. Otherwise, if it is
+	/// not engaged, then it will explicitly fall back to attempt to insert the default replacement character @c U+FFFD
+	/// (@c U'�') or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will be
+	/// inserted at all.
 	//////
 	class replacement_handler {
 	public:
@@ -190,15 +219,15 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			if constexpr (__detail::__is_code_units_replaceable_v<_Encoding>) {
+			if constexpr (is_code_units_replaceable_v<_Encoding>) {
 				return __detail::__write_direct(
 					__encoding, __encoding.replacement_code_units(), ::std::move(__result));
 			}
 			else {
-				using _InputCodePoint = encoding_code_point_t<_Encoding>;
+				using _InputCodePoint = code_point_of_t<_Encoding>;
 				_InputCodePoint __replacement[max_code_points_v<_Encoding>];
 				::std::size_t __replacement_size = 0;
-				if constexpr (__detail::__is_code_points_replaceable_v<_Encoding>) {
+				if constexpr (is_code_points_replaceable_v<_Encoding>) {
 					auto __replacement_code_points = __encoding.replacement_code_points();
 					for (const auto& __element : __replacement_code_points) {
 						__replacement[__replacement_size] = __element;
@@ -209,10 +238,10 @@ namespace ztd { namespace text {
 					__replacement_size = __detail::__fill_replacement_code_point_static(__encoding, __replacement);
 				}
 
-				const ::std::span<_InputCodePoint> __replacement_range(__replacement, __replacement_size);
+				const ::std::span<const _InputCodePoint> __replacement_range(__replacement, __replacement_size);
 
 				__detail::__pass_through_handler __handler {};
-				encoding_encode_state_t<_Encoding> __state = make_encode_state(__encoding);
+				encode_state_of_t<_Encoding> __state = make_encode_state(__encoding);
 				auto __encresult
 					= __encoding.encode_one(__replacement_range, ::std::move(__result.output), __handler, __state);
 				__result.output = ::std::move(__encresult.output);
@@ -298,8 +327,8 @@ namespace ztd { namespace text {
 	class incomplete_handler : private __detail::__ebco<_ErrorHandler> {
 	private:
 		using __error_handler_base_t = __detail::__ebco<_ErrorHandler>;
-		using _CodeUnit              = encoding_code_unit_t<_Encoding>;
-		using _CodePoint             = encoding_code_point_t<_Encoding>;
+		using _CodeUnit              = code_unit_of_t<_Encoding>;
+		using _CodePoint             = code_point_of_t<_Encoding>;
 
 	public:
 		//////
@@ -440,6 +469,29 @@ namespace ztd { namespace text {
 		template <typename _ErrorHandler>
 		inline constexpr bool __is_careless_error_handler_v
 			= ::std::is_same_v<__detail::__remove_cvref_t<_ErrorHandler>, __careless_handler>;
+
+		template <typename _ErrorHandler>
+		constexpr auto __duplicate_or_be_careless(_ErrorHandler& __original) {
+			using _UErrorHandler = __remove_cvref_t<_ErrorHandler>;
+			// just copy? Albeit polymorphic nature of call makes this dubious...
+			// A function would have to take both encode/decode result to work for
+			// both ends of transcode.... so we can't really JUST copy for a function type...!
+			/*if constexpr (::std::is_function_v<_UErrorHandler>) {
+				return __original;
+			}
+			else*/
+			if constexpr (!::std::is_function_v<_UErrorHandler>) {
+				if constexpr (::std::is_copy_constructible_v<_UErrorHandler>) {
+					return __original;
+				}
+				else {
+					return __careless_handler {};
+				}
+			}
+			else {
+				return __careless_handler {};
+			}
+		}
 	} // namespace __detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

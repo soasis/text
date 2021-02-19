@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -118,8 +118,8 @@ namespace ztd { namespace text {
 				return _Result(::std::move(__working_input), true, __encode_state);
 			}
 			else {
-				using _CodeUnit  = encoding_code_unit_t<_UEncoding>;
-				using _CodePoint = encoding_code_point_t<_UEncoding>;
+				using _CodeUnit  = code_unit_of_t<_UEncoding>;
+				using _CodePoint = code_point_of_t<_UEncoding>;
 				using _SubRange
 					= subrange<__detail::__range_iterator_t<_UInput>, __detail::__range_sentinel_t<_UInput>>;
 
@@ -177,7 +177,7 @@ namespace ztd { namespace text {
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
 		}
 		else {
-			using _State = encoding_decode_state_t<_UEncoding>;
+			using _State = decode_state_of_t<_UEncoding>;
 
 			_State __decode_state = make_decode_state(__encoding);
 			return validate_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -194,7 +194,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding>
 	constexpr auto validate_code_points(_Input&& __input, _Encoding&& __encoding) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_encode_state_t<_UEncoding>;
+		using _State     = encode_state_of_t<_UEncoding>;
 
 		_State __state = make_encode_state(__encoding);
 		auto __stateful_result
@@ -213,8 +213,10 @@ namespace ztd { namespace text {
 	template <typename _Input>
 	constexpr auto validate_code_points(_Input&& __input) {
 		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_point_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		return validate_code_points(::std::forward<_Input>(__input), _Encoding {});
+		using _CodeUnit = __detail::__remove_cvref_t<__detail::__range_value_type_t<_UInput>>;
+		using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
+		_Encoding __encoding {};
+		return validate_code_points(::std::forward<_Input>(__input), __encoding);
 	}
 
 	//////

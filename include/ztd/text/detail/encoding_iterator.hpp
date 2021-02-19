@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -108,7 +108,7 @@ namespace ztd { namespace text {
 			/// @brief The state type used for encode operations.
 			///
 			//////
-			using encoding_state_type = __detail::__remove_cvref_t<_State>;
+			using state_type = __detail::__remove_cvref_t<_State>;
 			//////
 			/// @brief The strength of the iterator category, as defined in relation to the base.
 			///
@@ -128,7 +128,7 @@ namespace ztd { namespace text {
 			///
 			//////
 			using value_type = ::std::conditional_t<_EncodeOrDecode == __transaction::__encode,
-				encoding_code_unit_t<_Encoding>, encoding_code_point_t<_Encoding>>;
+				code_unit_of_t<_Encoding>, code_point_of_t<_Encoding>>;
 			//////
 			/// @brief A pointer type to the value_type.
 			///
@@ -176,7 +176,7 @@ namespace ztd { namespace text {
 			}
 
 			constexpr __encoding_iterator(range_type __range, encoding_type __encoding,
-				error_handler_type __error_handler, encoding_state_type __state)
+				error_handler_type __error_handler, state_type __state)
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->encoding(), ::std::move(__state))
@@ -213,7 +213,7 @@ namespace ztd { namespace text {
 			///
 			/// @returns A const l-value reference to the state object used to construct this iterator.
 			//////
-			constexpr const encoding_state_type& state() const {
+			constexpr const state_type& state() const {
 				return this->__base_state_t::_M_get_state();
 			}
 
@@ -222,7 +222,7 @@ namespace ztd { namespace text {
 			///
 			/// @returns An l-value reference to the state object used to construct this iterator.
 			//////
-			constexpr encoding_state_type& state() {
+			constexpr state_type& state() {
 				return this->__base_state_t::_M_get_state();
 			}
 

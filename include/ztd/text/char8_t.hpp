@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -38,7 +38,25 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @addtogroup ztd_text_properties Property and Trait Helpers
+	///
+	/// @{
+	/////
+
+	//////
+	/// @brief An alias to a unsigned representation of an 8-bit (or greater) code unit type.
+	///
+	/// @remarks This will be a type alias for the type given in @c ZTD_TEXT_CHAR8_T is defined by the user. Otherwise,
+	/// it will be a type alias for @c char8_t if present. If neither are available, it will alias @c unsigned @c char
+	/// for the type.
+	//////
 	using uchar8_t = ZTD_TEXT_CHAR8_T_I_;
+
+	//////
+	/// @}
+	/////
+
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

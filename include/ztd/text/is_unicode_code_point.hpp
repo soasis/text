@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -41,17 +41,19 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _Type>
-	class is_unicode_scalar_value : public ::std::integral_constant<bool,
-		                                ::std::is_same_v<__detail::__remove_cvref_t<_Type>, unicode_scalar_value>> {
-	};
+	class is_unicode_scalar_value
+	: public ::std::integral_constant<bool,
+		  ::std::is_same_v<__detail::__remove_cvref_t<_Type>, __impl::__unicode_scalar_value>> { };
 
 	template <typename _Type>
 	inline constexpr bool is_unicode_scalar_value_v = is_unicode_scalar_value<_Type>::value;
 
 	template <typename _Type>
-	class is_unicode_code_point : public ::std::integral_constant<bool,
-		                              ::std::is_same_v<__detail::__remove_cvref_t<_Type>,
-		                                   unicode_code_point> || is_unicode_scalar_value_v<_Type>> { };
+	class is_unicode_code_point
+	: public ::std::integral_constant<bool,
+		  ::std::is_same_v<__detail::__remove_cvref_t<_Type>,
+		       char32_t> || ::std::is_same_v<__detail::__remove_cvref_t<_Type>, __impl::__unicode_code_point> || is_unicode_scalar_value_v<_Type>> {
+	};
 
 	template <typename _Type>
 	inline constexpr bool is_unicode_code_point_v = is_unicode_code_point<_Type>::value;

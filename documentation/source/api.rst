@@ -1,42 +1,127 @@
+.. =============================================================================
+..
+.. ztd.text
+.. Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+.. Contact: opensource@soasis.org
+..
+.. Commercial License Usage
+.. Licensees holding valid commercial ztd.text licenses may use this file in
+.. accordance with the commercial license agreement provided with the
+.. Software or, alternatively, in accordance with the terms contained in
+.. a written agreement between you and Shepherd's Oasis, LLC.
+.. For licensing terms and conditions see your agreement. For
+.. further information contact opensource@soasis.org.
+..
+.. Apache License Version 2 Usage
+.. Alternatively, this file may be used under the terms of Apache License
+.. Version 2.0 (the "License") for non-commercial use; you may not use this
+.. file except in compliance with the License. You may obtain a copy of the
+.. License at
+..
+..		http:..www.apache.org/licenses/LICENSE-2.0
+..
+.. Unless required by applicable law or agreed to in writing, software
+.. distributed under the License is distributed on an "AS IS" BASIS,
+.. WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.. See the License for the specific language governing permissions and
+.. limitations under the License.
+..
+.. =============================================================================>
+
 API Reference
 =============
 
 This is simply a listing of all the available pages containing various APIs, or links to pages that link to API documentation.
 
+
+
+Views
+-----
+
+.. toctree::
+	:maxdepth: 1
+	:glob:
+	
+	api/views/*
+
+
+
+
+Encodings
+---------
+
+See also :doc:`the top-level encodings page <encodings>` for more details about the overall status and known vs. implemented encodings.
+
+.. toctree:: 
+	:maxdepth: 1
+	:glob:
+	
+	api/encodings/*
+
+
+
+Error Handlers
+--------------
+
+.. toctree:: 
+	:maxdepth: 1
+	:glob:
+	
+	api/error handlers/*
+
+
+
+Conversion and Counting Functions
+---------------------------------
+
+.. toctree::
+	:maxdepth: 1
+	:glob:
+	
+	api/conversions/*
+	
+
+
+Properties and Classifications
+------------------------------
+
 .. toctree::
 	:maxdepth: 1
 
-	api/views/decode_view
-	api/views/encode_view
-	api/views/transcode_view
-	api/encodings/any_encoding
-	api/encodings/any_encoding_with
-	api/encodings/encoding_scheme
-	api/encodings/ascii
-	api/encodings/utf8
-	api/encodings/mutf8
-	api/encodings/wtf8
-	api/encodings/utf16
-	api/encodings/utf32
-	api/encodings/literal
-	api/encodings/wide_literal
-	api/encodings/execution
-	api/encodings/wide_execution
-	api/encodings/iconv_encoding
-	api/encodings/cuneicode_encoding
-	api/encoding_error
-	api/is_ignorable_error_handler
-	api/error handlers/default_handler
-	api/error handlers/replacement_handler
-	api/error handlers/throw_handler
-	api/error handlers/incomplete_handler
-	api/error handlers/assume_valid_handler
-	api/encoding_code_point
-	api/encoding_code_unit
-	api/encoding_decode_state
-	api/encoding_encode_state
+	api/code_point_of
+	api/code_unit_of
+	api/decode_state_of
+	api/encode_state_of
 	api/max_code_points
 	api/max_code_units
+	api/is_state_independent
+	api/is_decode_state_independent
+	api/is_encode_state_independent
+	api/is_decode_injective
+	api/is_encode_injective
+	api/is_code_units_replaceable
+	api/is_code_points_replaceable
+	api/is_ignorable_error_handler
+	api/is_unicode_encoding
+	api/maybe_is_unicode_encoding
+	api/is_unicode_code_point
+	api/is_unicode_scalar_value
+	api/default_code_point_encoding
+	api/default_code_unit_encoding
+
+
+
+Result Types, Status Codes and Quality Aides
+--------------------------------------------
+
+.. toctree::
+	:maxdepth: 1
+
+	api/char8_t
+	api/endian
+	api/encoding_error
+	api/unicode_code_point
+	api/unicode_scalar_value
 	api/stateless_decode_result
 	api/decode_result
 	api/stateless_encode_result

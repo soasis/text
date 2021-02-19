@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
 
 find_package(Doxygen REQUIRED)
 find_package(Python3 REQUIRED)

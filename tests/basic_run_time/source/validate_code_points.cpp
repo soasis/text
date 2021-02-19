@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #include <ztd/text/validate_code_points.hpp>
 #include <ztd/text/encoding.hpp>
@@ -37,44 +37,38 @@
 
 TEST_CASE("text/validate_code_points/basic", "basic usages of validate_code_points function do not explode") {
 	SECTION("execution") {
-		auto result0
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_single_truth, ztd::text::execution {});
+		auto result0 = ztd::text::validate_code_points(
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::execution {});
 		REQUIRE(result0);
-
-		auto result1
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_sequence_truth, ztd::text::execution {});
-		REQUIRE(result1);
 	}
 	SECTION("wide_execution") {
-		auto result0
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_single_truth, ztd::text::wide_execution {});
+		auto result0 = ztd::text::validate_code_points(
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_execution {});
 		REQUIRE(result0);
-
-		auto result1 = ztd::text::validate_code_points(
-		     ztd::text::tests::u32_ansi_sequence_truth, ztd::text::wide_execution {});
-		REQUIRE(result1);
 	}
 	SECTION("utf8") {
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_single_truth, ztd::text::utf8 {});
+		auto result0
+		     = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8 {});
 		REQUIRE(result0);
-
-		auto result1 = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_sequence_truth, ztd::text::utf8 {});
-		REQUIRE(result1);
 	}
 	SECTION("utf16") {
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_single_truth, ztd::text::utf16 {});
+		auto result0
+		     = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16 {});
 		REQUIRE(result0);
-
-		auto result1
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_sequence_truth, ztd::text::utf16 {});
-		REQUIRE(result1);
 	}
 	SECTION("utf32") {
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_single_truth, ztd::text::utf32 {});
+		auto result0
+		     = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
 		REQUIRE(result0);
-
-		auto result1
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_ansi_sequence_truth, ztd::text::utf32 {});
-		REQUIRE(result1);
+	}
+	SECTION("literal") {
+		auto result0 = ztd::text::validate_code_points(
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::literal {});
+		REQUIRE(result0);
+	}
+	SECTION("wide_literal") {
+		auto result0 = ztd::text::validate_code_points(
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal {});
+		REQUIRE(result0);
 	}
 }

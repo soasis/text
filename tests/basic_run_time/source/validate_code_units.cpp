@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #include <ztd/text/validate_code_units.hpp>
 #include <ztd/text/encoding.hpp>
@@ -49,31 +49,36 @@ TEST_CASE("text/validate_code_units/basic", "basic usages of validate_code_units
 	SECTION("execution") {
 		ztd::text::execution encoding {};
 		validate_check(ztd::text::tests::basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::ansi_sequence_truth, encoding);
-		validate_check(ztd::text::tests::unicode_sequence_truth, encoding);
+		validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
 	}
 	SECTION("wide_execution") {
 		ztd::text::wide_execution encoding {};
 		validate_check(ztd::text::tests::w_basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::w_ansi_sequence_truth, encoding);
-		validate_check(ztd::text::tests::w_unicode_sequence_truth, encoding);
+		validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+	}
+	SECTION("literal") {
+		ztd::text::literal encoding {};
+		validate_check(ztd::text::tests::basic_source_character_set, encoding);
+		validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+	}
+	SECTION("wide_literal") {
+		ztd::text::wide_literal encoding {};
+		validate_check(ztd::text::tests::w_basic_source_character_set, encoding);
+		validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
 	}
 	SECTION("utf8") {
 		ztd::text::utf8 encoding {};
 		validate_check(ztd::text::tests::u8_basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::u8_ansi_sequence_truth, encoding);
-		validate_check(ztd::text::tests::u8_unicode_sequence_truth, encoding);
+		validate_check(ztd::text::tests::u8_unicode_sequence_truth_native_endian, encoding);
 	}
 	SECTION("utf16") {
 		ztd::text::utf16 encoding {};
 		validate_check(ztd::text::tests::u16_basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::u16_ansi_sequence_truth, encoding);
-		validate_check(ztd::text::tests::u16_unicode_sequence_truth, encoding);
+		validate_check(ztd::text::tests::u16_unicode_sequence_truth_native_endian, encoding);
 	}
 	SECTION("utf32") {
 		ztd::text::utf32 encoding {};
 		validate_check(ztd::text::tests::u32_basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::u32_ansi_sequence_truth, encoding);
-		validate_check(ztd::text::tests::u32_unicode_sequence_truth, encoding);
+		validate_check(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 	}
 }

@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 
 		template <typename _Iterator0, typename _Sentinel0, typename _Iterator1, typename _Sentinel1>
 		constexpr bool __ce_equal(_Iterator0 __first0, _Sentinel0 __last0, _Iterator1 __first1, _Sentinel1 __last1) {
-#ifdef __cpp_lib_constexpr_algorithms
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_)
 			return ::std::equal(
 				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
 #else
@@ -278,7 +278,7 @@ namespace ztd { namespace text {
 				"you "
 				"may lose data that you did not intend to lose; specify an 'in_handler' error handler "
 				"parameter to "
-				"transcode(in, in_encoding, out_encoding, in_handler, ...) or transcode_into(in, in_encoding, "
+				"transcode[_to](in, in_encoding, out_encoding, in_handler, ...) or transcode_into(in, in_encoding, "
 				"out, "
 				"out_encoding, in_handler, ...) explicitly in order to bypass this.");
 			static_assert(__detail::__is_encode_lossless_or_deliberate_v<__remove_cvref_t<_ToEncoding>,
@@ -287,7 +287,7 @@ namespace ztd { namespace text {
 				"means you "
 				"may lose data that you did not intend to lose; specify an 'out_handler' error handler "
 				"parameter "
-				"to transcode(in, in_encoding, out_encoding, in_handler, out_handler, ...) or "
+				"to transcode[_to](in, in_encoding, out_encoding, in_handler, out_handler, ...) or "
 				"transcode_into(in, "
 				"in_encoding, out, out_encoding, in_handler, out_handler, ...) explicitly in order to bypass "
 				"this.");
@@ -333,7 +333,7 @@ namespace ztd { namespace text {
 		constexpr auto __super_basic_transcode_one(_Input&& __input, _FromEncoding& __from_encoding,
 			_Output&& __output, _ToEncoding& __to_encoding, _FromErrorHandler& __from_error_handler,
 			_ToErrorHandler& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
-			using _IntermediateCodePoint                       = encoding_code_point_t<_FromEncoding>;
+			using _IntermediateCodePoint                       = code_point_of_t<_FromEncoding>;
 			constexpr ::std::size_t _IntermediateMaxCodePoints = max_code_points_v<_FromEncoding>;
 
 			_IntermediateCodePoint __intermediate_buffer[_IntermediateMaxCodePoints] {};
@@ -409,7 +409,7 @@ namespace ztd { namespace text {
 		constexpr auto __basic_transcode_one(_Input&& __input, _FromEncoding& __from_encoding, _Output&& __output,
 			_ToEncoding& __to_encoding, _FromErrorHandler& __from_error_handler, _ToErrorHandler& __to_error_handler,
 			_FromState& __from_state, _ToState& __to_state) {
-			using _IntermediateCodePoint                       = encoding_code_point_t<_FromEncoding>;
+			using _IntermediateCodePoint                       = code_point_of_t<_FromEncoding>;
 			constexpr ::std::size_t _IntermediateMaxCodePoints = max_code_points_v<_FromEncoding>;
 
 			_IntermediateCodePoint __intermediate[_IntermediateMaxCodePoints] {};
@@ -456,7 +456,7 @@ namespace ztd { namespace text {
 		constexpr auto __basic_validate_code_units_one(
 			_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
 			using _UEncoding = __remove_cvref_t<_Encoding>;
-			using _CodeUnit  = encoding_code_unit_t<_UEncoding>;
+			using _CodeUnit  = code_unit_of_t<_UEncoding>;
 
 			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
 			::std::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
@@ -510,8 +510,8 @@ namespace ztd { namespace text {
 		constexpr auto __basic_validate_code_points_one(
 			_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
 			using _UEncoding = __remove_cvref_t<_Encoding>;
-			using _CodePoint = encoding_code_point_t<_UEncoding>;
-			using _CodeUnit  = encoding_code_unit_t<_UEncoding>;
+			using _CodePoint = code_point_of_t<_UEncoding>;
+			using _CodeUnit  = code_unit_of_t<_UEncoding>;
 
 			_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
 			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
@@ -542,7 +542,7 @@ namespace ztd { namespace text {
 		auto __basic_count_code_points_one(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			using _UEncoding                                   = __remove_cvref_t<_Encoding>;
-			using _IntermediateCodePoint                       = encoding_code_point_t<_UEncoding>;
+			using _IntermediateCodePoint                       = code_point_of_t<_UEncoding>;
 			constexpr ::std::size_t _IntermediateMaxCodePoints = max_code_points_v<_UEncoding>;
 
 			_IntermediateCodePoint __intermediate_buffer[_IntermediateMaxCodePoints] {};
@@ -571,7 +571,7 @@ namespace ztd { namespace text {
 		auto __basic_count_code_units_one(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			using _UEncoding                                  = __remove_cvref_t<_Encoding>;
-			using _IntermediateCodeUnit                       = encoding_code_unit_t<_UEncoding>;
+			using _IntermediateCodeUnit                       = code_unit_of_t<_UEncoding>;
 			constexpr ::std::size_t _IntermediateMaxCodeUnits = max_code_units_v<_UEncoding>;
 
 			_IntermediateCodeUnit __intermediate_buffer[_IntermediateMaxCodeUnits] {};

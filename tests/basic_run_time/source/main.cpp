@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,14 +26,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
 
 #include <clocale>
 #include <ztd/text/tests/basic_unicode_strings.hpp>
-#include <ztd/text/text.hpp>
 
 int main(int argc, char* argv[]) {
 #ifdef _WIN32

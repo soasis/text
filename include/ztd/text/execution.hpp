@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -81,7 +81,7 @@ namespace ztd { namespace text {
 
 			__decode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char32_t __ghost_space[2];
-				::std::size_t __init_result = ::std::mbrtoc32(__ghost_space, "", 1, &__narrow_state);
+				::std::size_t __init_result = ::std::mbrtoc32(__ghost_space, "\0", 1, &__narrow_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == U'\0');
 				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
@@ -211,7 +211,7 @@ namespace ztd { namespace text {
 				// just go straight to UTF8
 				using __exec_utf8 = __impl::__utf8_with<void, code_unit>;
 				__exec_utf8 __u8enc {};
-				encoding_encode_state_t<__exec_utf8> __intermediate_s {};
+				encode_state_of_t<__exec_utf8> __intermediate_s {};
 				__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 				auto __intermediate_result = __u8enc.encode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
@@ -408,7 +408,7 @@ namespace ztd { namespace text {
 				// just go straight to UTF8
 				using __char_utf8 = __impl::__utf8_with<void, code_unit>;
 				__char_utf8 __u8enc {};
-				encoding_decode_state_t<__char_utf8> __intermediate_s {};
+				decode_state_of_t<__char_utf8> __intermediate_s {};
 				__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 				auto __intermediate_result = __u8enc.decode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);

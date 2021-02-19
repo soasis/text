@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/transcode.hpp>
@@ -38,43 +38,43 @@
 TEST_CASE("text/transcode/roundtrip", "transcode can roundtrip") {
 	SECTION("execution") {
 		ztd::text::execution encoding {};
-		std::string result = ztd::text::transcode(ztd::text::tests::ansi_sequence_truth, encoding, encoding,
+		std::string result = ztd::text::transcode(ztd::text::tests::basic_source_character_set, encoding, encoding,
 		     ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
-		REQUIRE(result == ztd::text::tests::ansi_sequence_truth);
+		REQUIRE(result == ztd::text::tests::basic_source_character_set);
 	}
 	SECTION("wide_execution") {
 		ztd::text::wide_execution encoding {};
-		std::wstring result0 = ztd::text::transcode(ztd::text::tests::w_ansi_sequence_truth, encoding, encoding,
+		std::wstring result0 = ztd::text::transcode(ztd::text::tests::w_basic_source_character_set, encoding, encoding,
 		     ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
-		REQUIRE(result0 == ztd::text::tests::w_ansi_sequence_truth);
+		REQUIRE(result0 == ztd::text::tests::w_basic_source_character_set);
 
-		std::wstring result1 = ztd::text::transcode(ztd::text::tests::w_unicode_sequence_truth, encoding, encoding,
+		std::wstring result1 = ztd::text::transcode(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding, encoding,
 		     ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
-		REQUIRE(result1 == ztd::text::tests::w_unicode_sequence_truth);
+		REQUIRE(result1 == ztd::text::tests::w_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf8") {
 		std::basic_string<char8_t> result0
-		     = ztd::text::transcode(ztd::text::tests::u8_ansi_sequence_truth, ztd::text::utf8 {});
-		REQUIRE(result0 == ztd::text::tests::u8_ansi_sequence_truth);
+		     = ztd::text::transcode(ztd::text::tests::u8_basic_source_character_set, ztd::text::utf8 {});
+		REQUIRE(result0 == ztd::text::tests::u8_basic_source_character_set);
 
 		std::basic_string<char8_t> result1
-		     = ztd::text::transcode(ztd::text::tests::u8_unicode_sequence_truth, ztd::text::utf8 {});
-		REQUIRE(result1 == ztd::text::tests::u8_unicode_sequence_truth);
+		     = ztd::text::transcode(ztd::text::tests::u8_unicode_sequence_truth_native_endian, ztd::text::utf8 {});
+		REQUIRE(result1 == ztd::text::tests::u8_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf16") {
-		std::u16string result0 = ztd::text::transcode(ztd::text::tests::u16_ansi_sequence_truth, ztd::text::utf16 {});
-		REQUIRE(result0 == ztd::text::tests::u16_ansi_sequence_truth);
+		std::u16string result0 = ztd::text::transcode(ztd::text::tests::u16_basic_source_character_set, ztd::text::utf16 {});
+		REQUIRE(result0 == ztd::text::tests::u16_basic_source_character_set);
 
 		std::u16string result1
-		     = ztd::text::transcode(ztd::text::tests::u16_unicode_sequence_truth, ztd::text::utf16 {});
-		REQUIRE(result1 == ztd::text::tests::u16_unicode_sequence_truth);
+		     = ztd::text::transcode(ztd::text::tests::u16_unicode_sequence_truth_native_endian, ztd::text::utf16 {});
+		REQUIRE(result1 == ztd::text::tests::u16_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf32") {
-		std::u32string result0 = ztd::text::transcode(ztd::text::tests::u32_ansi_sequence_truth, ztd::text::utf32 {});
-		REQUIRE(result0 == ztd::text::tests::u32_ansi_sequence_truth);
+		std::u32string result0 = ztd::text::transcode(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
+		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
 
 		std::u32string result1
-		     = ztd::text::transcode(ztd::text::tests::u32_unicode_sequence_truth, ztd::text::utf32 {});
-		REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth);
+		     = ztd::text::transcode(ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32 {});
+		REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth_native_endian);
 	}
 }

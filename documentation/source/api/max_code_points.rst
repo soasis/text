@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 max_code_points
 ===============
@@ -35,7 +35,7 @@ The maximum number of code points needed for a given encoding object. This can b
 
 .. code-block:: cpp
 
-	using code_point = ztd::text::encoding_code_point_t<ztd::text::utf8>;
+	using code_point = ztd::text::code_point_of_t<ztd::text::utf8>;
 	constexpr std::size_t max_output_size = ztd::text::max_code_points_v<ztd::text::utf8>;
 	
 	std::array<code_point, max_output_size> my_cxx_buffer;

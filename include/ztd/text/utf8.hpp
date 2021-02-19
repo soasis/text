@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -71,6 +71,11 @@ namespace ztd { namespace text {
 			bool __surrogates_allowed = false, bool __use_overlong_null_only = false>
 		class __utf8_with : public __utf8_tag {
 		public:
+			//////
+			/// @brief Whether or not this encoding that can encode all of Unicode.
+			///
+			//////
+			using is_unicode_encoding = std::true_type;
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is an empty struct
 			/// because there is no shift state to preserve between complete units of encoded information.
@@ -292,10 +297,11 @@ namespace ztd { namespace text {
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-				using _UInputRange   = __detail::__remove_cvref_t<_InputRange>;
-				using _UOutputRange  = __detail::__remove_cvref_t<_OutputRange>;
-				using _UErrorHandler = __detail::__remove_cvref_t<_ErrorHandler>;
-				using _Result        = __detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, state>;
+				using _UInputRange    = __detail::__remove_cvref_t<_InputRange>;
+				using _UOutputRange   = __detail::__remove_cvref_t<_OutputRange>;
+				using _UErrorHandler  = __detail::__remove_cvref_t<_ErrorHandler>;
+				using _Result         = __detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, state>;
+				using _InputValueType = __detail::__range_value_type_t<_UInputRange>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				auto __init   = __detail::__adl::__adl_cbegin(__input);
@@ -326,7 +332,16 @@ namespace ztd { namespace text {
 				}
 
 				::std::array<code_unit, max_code_units> __units {};
-				__units[0]               = __detail::__dereference(__init);
+				if constexpr (sizeof(code_unit) == sizeof(_InputValueType)) {
+					// explicitly cast, since we know it's of the same size
+					// (e.g., unsigned char -> std::byte should work, but it requires a cast!)
+					__units[0] = static_cast<code_unit>(__detail::__dereference(__init));
+				}
+				else {
+					// let it warn/error for weird ranges
+					// (e.g., short -> char8_t should give a narrowing conversion warning)
+					__units[0] = __detail::__dereference(__init);
+				}
 				const code_unit& __unit0 = __units[0];
 				__init                   = __detail::__next(__init);
 				::std::size_t __length   = __detail::__sequence_length(static_cast<char8_t>(__unit0));
@@ -382,9 +397,14 @@ namespace ztd { namespace text {
 								::std::span<code_unit>(__units.data(), i));
 						}
 					}
-					__units[i] = __detail::__dereference(__init);
-					__init     = __detail::__next(__init);
-					if (!__detail::__utf8_is_continuation(__units[i])) {
+					if constexpr (sizeof(code_unit) == sizeof(_InputValueType)) {
+						__units[i] = static_cast<code_unit>(__detail::__dereference(__init));
+					}
+					else {
+						__units[i] = __detail::__dereference(__init);
+					}
+					__init = __detail::__next(__init);
+					if (!__detail::__utf8_is_continuation(static_cast<char8_t>(__units[i]))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(
@@ -399,14 +419,18 @@ namespace ztd { namespace text {
 				code_point __decoded {};
 				switch (__length) {
 				case 2:
-					__decoded = __detail::__decode(__units[0], __units[1]);
+					__decoded
+						= __detail::__decode(static_cast<char8_t>(__units[0]), static_cast<char8_t>(__units[1]));
 					break;
 				case 3:
-					__decoded = __detail::__decode(__units[0], __units[1], __units[2]);
+					__decoded = __detail::__decode(static_cast<char8_t>(__units[0]),
+						static_cast<char8_t>(__units[1]), static_cast<char8_t>(__units[2]));
 					break;
 				case 4:
 				default:
-					__decoded = __detail::__decode(__units[0], __units[1], __units[2], __units[3]);
+					__decoded
+						= __detail::__decode(static_cast<char8_t>(__units[0]), static_cast<char8_t>(__units[1]),
+						     static_cast<char8_t>(__units[2]), static_cast<char8_t>(__units[3]));
 					break;
 				}
 

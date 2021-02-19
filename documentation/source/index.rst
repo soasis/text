@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 ``ztd.text``
 ============
@@ -60,14 +60,6 @@ then ``ztd.text`` is for you!
 	design
 	encodings
 	config
-	error handling
-	encode
-	decode
-	transcode
-	validate code points
-	validate code units
-	count code points
-	count code units
 	api
 	license
 

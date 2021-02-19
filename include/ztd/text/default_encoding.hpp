@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -37,10 +37,13 @@
 
 #include <ztd/text/execution.hpp>
 #include <ztd/text/wide_execution.hpp>
+#include <ztd/text/literal.hpp>
+#include <ztd/text/wide_literal.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/utf32.hpp>
 #include <ztd/text/encoding_scheme.hpp>
+#include <ztd/text/no_encoding.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/unicode_scalar_value.hpp>
@@ -52,6 +55,90 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	namespace __detail {
+		template <typename _Type, bool _CompileTime>
+		class __default_code_unit_encoding {
+		private:
+			// clang-format off
+			using _ChosenType = ::std::conditional_t<
+				::std::is_same_v<_Type, char>,
+					::std::conditional_t<_CompileTime, literal, execution>,
+					::std::conditional_t<::std::is_same_v<_Type, wchar_t>,
+						::std::conditional_t<_CompileTime, wide_literal, wide_execution>,
+						::std::conditional_t<::std::is_same_v<_Type, signed char>, basic_ascii<signed char>,
+							::std::conditional_t<::std::is_same_v<_Type, uchar8_t>, utf8,
+								::std::conditional_t<::std::is_same_v<_Type, unsigned char>, basic_utf8<unsigned char>,
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+									::std::conditional_t<::std::is_same_v<_Type, char8_t>, basic_utf8<char8_t>,
+#endif
+										::std::conditional_t<::std::is_same_v<_Type, char16_t>, utf16,
+											::std::conditional_t<::std::is_same_v<_Type, char32_t>, utf32,
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+												::std::conditional_t<::std::is_same_v<_Type, unicode_code_point>, basic_utf32<unicode_code_point>,
+#endif
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+													::std::conditional_t<::std::is_same_v<_Type, unicode_scalar_value>, basic_utf32<unicode_scalar_value>,
+#endif
+														::std::conditional_t<::std::is_same_v<_Type, ::std::byte>, encoding_scheme<utf8, endian::native, ::std::byte>, basic_no_encoding<_Type, unicode_code_point>>
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+													>
+#endif
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+												>
+#endif
+											>
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+										>
+#endif
+									>
+								>
+							>
+						>
+					>
+				>;
+			// clang-format on
+
+			static_assert(!__detail::__is_specialization_of_v<_ChosenType, basic_no_encoding>,
+				"there is no default encoding for the given code unit type");
+
+		public:
+			//////
+			/// @brief The chosen type for the given code unit.
+			///
+			/// @remarks The default encodings for code unit types are as follows
+			/// - @c char ➡ ztd::text::execution (runtime), ztd::text::literal (compiletime)
+			/// - @c wchar_t ➡ ztd::text::wide_execution (runtime), ztd::text::wide_literal (compiletime)
+			/// - @c char8_t ➡ ztd::text::utf8
+			/// - @c ztd::text::uchar8_t ➡ ztd::text::utf8 (if different from @c char8_t type)
+			/// - @c std::byte ➡ ztd::text::basic_utf8<std::byte>
+			/// - @c signed char ➡ ztd::text::basic_ascii<signed char>
+			/// - @c char16_t ➡ ztd::text::utf16
+			/// - @c char32_t ➡ ztd::text::utf32
+			/// - @c unicode_code_point ➡ ztd::text::utf32 (if different from @c char32_t type)
+			/// - @c unicode_scalar_value ➡ ztd::text::utf32 (if different from @c char32_t type)
+			//////
+			using type = _ChosenType;
+		};
+
+		template <typename _Type>
+		class __default_code_point_encoding {
+		private:
+			static_assert(is_unicode_code_point_v<_Type> || ::std::is_same_v<_Type, char32_t>,
+				"there is no default encoding for the given code point type");
+
+		public:
+			//////
+			/// @brief The chosen type for the given code unit.
+			///
+			/// @remarks The default encodings for code point types are as follows
+			/// - @c char32_t ➡ ztd::text::utf8
+			/// - @c unicode_code_point ➡ ztd::text::utf8
+			/// - @c unicode_scalar_value ➡ ztd::text::utf8
+			//////
+			using type = utf8;
+		};
+	} // namespace __detail
+
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
 	/// @{
@@ -60,178 +147,54 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The default encoding associated with a given code unit type, that serves as either input to a decode
 	/// operation or output from an encode operation.
+	///
+	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_code_unit_encoding {
-		static_assert(__detail::__always_false_v<_Type>, "there is no default encoding for this type");
-	};
-
-	//////
-	/// @brief The default encoding associated with a given code unit type, that serves as either input to a decode
-	/// operation or output from an encode operation.
-	//////
-	template <>
-	class default_code_unit_encoding<char> {
-	public:
-		//////
-		/// @brief For @c char, @ref ztd::text::execution is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = execution;
-	};
-
-	//////
-	/// @copydoc ztd::text::default_code_unit_encoding
-	///
-	//////
-	template <>
-	class default_code_unit_encoding<wchar_t> {
-	public:
-		//////
-		/// @brief For @c wchar_t, ztd::text::wide_execution is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = wide_execution;
-	};
-
-	//////
-	/// @copydoc ztd::text::default_code_unit_encoding
-	///
-	//////
-	template <>
-	class default_code_unit_encoding<char8_t> {
-	public:
-		//////
-		/// @brief For @c char8_t, ztd::text::utf8 is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = utf8;
-	};
-
-	//////
-	/// @copydoc ztd::text::default_code_unit_encoding
-	///
-	//////
-	template <>
-	class default_code_unit_encoding<char16_t> {
-	public:
-		//////
-		/// @brief For @c char16_t, ztd::text::utf16 is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = utf16;
-	};
-
-	//////
-	/// @copydoc ztd::text::default_code_unit_encoding
-	///
-	//////
-	template <>
-	class default_code_unit_encoding<char32_t> {
-	public:
-		//////
-		/// @brief For @c char32_t, ztd::text::utf32 is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = utf32;
-	};
-
-	//////
-	/// @copydoc ztd::text::default_code_unit_encoding
-	///
-	//////
-	template <>
-	class default_code_unit_encoding<::std::byte> {
-	public:
-		//////
-		/// @brief For ``std::byte``, a native-endian utf8 ztd::text::encoding_scheme is assumed to be the default
-		/// appropriate encoding.
-		//////
-		using type = encoding_scheme<utf8, endian::native, ::std::byte>;
-	};
+	class default_code_unit_encoding : public __detail::__default_code_unit_encoding<_Type, false> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_code_unit_encoding.
 	///
+	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
 	using default_code_unit_encoding_t = typename default_code_unit_encoding<_Type>::type;
 
 	//////
-	/// @brief The default encoding associated with a given code point type, that serves as either input to an encode
-	/// operation or output from decode operation.
+	/// @brief The default encoding associated with a given code unit type, that serves as either input to a decode
+	/// operation or output from an encode operation. This uses the additional information that this is compiletime,
+	/// not runtime, to help make the decision on what to do.
+	///
+	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_code_point_encoding {
-		static_assert(__detail::__always_false_v<_Type>, "there is no default encoding for this code_point type");
-	};
+	class default_compile_time_code_unit_encoding : public __detail::__default_code_unit_encoding<_Type, true> { };
 
 	//////
-	/// @copydoc ztd::text::default_code_point_encoding
+	/// @brief A @c typename alias for ztd::text::default_compile_time_code_unit_encoding.
 	///
+	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
-	template <>
-	class default_code_point_encoding<char32_t> {
-	public:
-		//////
-		/// @brief For @c char32_t, ztd::text::utf8 encoding is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = utf8;
-	};
+	template <typename _Type>
+	using default_compile_time_code_unit_encoding_t = typename default_compile_time_code_unit_encoding<_Type>::type;
 
 	//////
-	/// @copydoc ztd::text::default_code_point_encoding
+	/// @brief The default encoding associated with a given code point type, that serves as either input to an encode
+	/// operation or output from decode operation.
 	///
+	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
-	template <>
-	class default_code_point_encoding<uint_least32_t> {
-	public:
-		//////
-		/// @brief For @c char32_t, ztd::text::utf8 encoding is assumed to be the default appropriate encoding.
-		///
-		//////
-		using type = utf8;
-	};
-
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
-	//////
-	/// @copydoc ztd::text::default_code_point_encoding
-	///
-	//////
-	template <>
-	class default_code_point_encoding<unicode_code_point> {
-	public:
-		//////
-		/// @brief For @c unicode_code_point, ztd::text::utf8 encoding is assumed to be the default appropriate
-		/// encoding.
-		//////
-		using type = utf8;
-	};
-#endif
-
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
-	//////
-	/// @copydoc ztd::text::default_code_point_encoding
-	///
-	//////
-	template <>
-	class default_code_point_encoding<unicode_scalar_value> {
-	public:
-		//////
-		/// @brief For @c unicode_scalar_value, ztd::text::utf8 encoding is assumed to be the default
-		/// appropriate encoding.
-		//////
-		using type = utf8;
-	};
-#endif
+	template <typename _Type>
+	class default_code_point_encoding : public __detail::__default_code_point_encoding<_Type> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_code_point_encoding.
 	///
+	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	using default_code_point_encoding_t = typename default_code_unit_encoding<_Type>::type;
+	using default_code_point_encoding_t = typename default_code_point_encoding<_Type>::type;
 
 	//////
 	/// @}

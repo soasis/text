@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -156,6 +156,14 @@ namespace ztd { namespace text {
 		template <typename _Tag, typename _Range>
 		inline constexpr bool __is_range_iterator_concept_or_better_v
 			= ::std::is_base_of_v<_Tag, __range_iterator_concept_t<_Range>>;
+
+		template <typename _Range, typename _Element>
+		using __detect_push_back = decltype(::std::declval<_Range>().push_back(::std::declval<_Element>()));
+
+		template <typename _Range, typename _IterFirst, typename _IterLast = _IterFirst>
+		using __detect_insert_bulk
+			= decltype(::std::declval<_Range>().insert(__adl::__adl_cbegin(::std::declval<_Range>()),
+			     ::std::declval<_IterFirst>(), ::std::declval<_IterLast>()));
 
 	} // namespace __detail
 

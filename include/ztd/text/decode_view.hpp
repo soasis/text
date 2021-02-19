@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -67,8 +67,8 @@ namespace ztd { namespace text {
 	/// maps into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
 	//////
-	template <typename _Encoding, typename _Range = ::std::basic_string_view<encoding_code_unit_t<_Encoding>>,
-		typename _ErrorHandler = default_handler, typename _State = encoding_decode_state_t<_Encoding>>
+	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_unit_of_t<_Encoding>>,
+		typename _ErrorHandler = default_handler, typename _State = decode_state_of_t<_Encoding>>
 	class decode_view {
 	private:
 		using _StoredRange = __detail::__reconstruct_t<__detail::__remove_cvref_t<_Range>>;
@@ -103,7 +103,7 @@ namespace ztd { namespace text {
 		/// @brief The state type used for decode operations.
 		///
 		//////
-		using encoding_state_type = encoding_decode_state_t<encoding_type>;
+		using state_type = decode_state_of_t<encoding_type>;
 
 		//////
 		/// @brief Constructs a decode_view from the underlying range.
@@ -146,7 +146,7 @@ namespace ztd { namespace text {
 		/// @param[in] __state The state to user for the decode operation.
 		//////
 		constexpr decode_view(range_type __range, encoding_type __encoding, error_handler_type __error_handler,
-			encoding_state_type __state) noexcept
+			state_type __state) noexcept
 		: _M_it(::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state)) {
 		}
 

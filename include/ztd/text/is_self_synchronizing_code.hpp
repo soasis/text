@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -48,7 +48,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename = void>
 		struct __is_self_synchronizing_code_sfinae
-		: std::integral_constant<bool, ::std::is_empty_v<encoding_decode_state_t<_Encoding>>> { };
+		: std::integral_constant<bool, ::std::is_empty_v<decode_state_of_t<_Encoding>>> { };
 
 		template <typename _Type>
 		struct __is_self_synchronizing_code_sfinae<_Type,
@@ -57,11 +57,11 @@ namespace ztd { namespace text {
 	} // namespace __detail
 
 	template <typename _Type>
-	class is_encoding_self_synchronizing_code
+	class is_self_synchronizing_code
 	: public __detail::__is_self_synchronizing_code_sfinae<__detail::__remove_cvref_t<_Type>> { };
 
 	template <typename _Type>
-	inline constexpr bool is_encoding_self_synchronizing_code_v = is_encoding_self_synchronizing_code<_Type>::value;
+	inline constexpr bool is_self_synchronizing_code_v = is_self_synchronizing_code<_Type>::value;
 
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

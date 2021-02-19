@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -61,25 +61,26 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __detail { namespace __windows {
 
-	inline int __determine_active_code_page() noexcept {
+		inline int __determine_active_code_page() noexcept {
 #if defined(_STL_LANG) || defined(_YVALS_CORE_H) || defined(_STDEXT)
-		// Removed in later versions of VC++
-		if (___lc_codepage_func() == CP_UTF8) {
-			return CP_UTF8;
-		}
+			// Removed in later versions of VC++
+			if (___lc_codepage_func() == CP_UTF8) {
+				return CP_UTF8;
+			}
 #endif // VC++ stuff
 
 #if !defined(_KERNELX) && !defined(_ONECORE)
-		if (!::AreFileApisANSI()) {
-			return CP_OEMCP;
-		}
+			if (!::AreFileApisANSI()) {
+				return CP_OEMCP;
+			}
 #endif // !defined(_KERNELX) && !defined(_ONECORE)
 
-		return CP_ACP;
-	}
+			return CP_ACP;
+		}
 
-}}ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text::__detail::__windows
+	}} // namespace __detail::__windows
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
 
 #pragma pop_macro("VC_EXTRALEAN")
 #pragma pop_macro("WIN32_LEAN_AND_MEAN")

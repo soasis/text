@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -42,22 +42,22 @@ namespace ztd { namespace text {
 
 	namespace __detail {
 		template <typename _Type, typename = void>
-		struct __encoding_decode_state {
+		struct __decode_state_of {
 			using type = typename _Type::state;
 		};
 
 		template <typename _Type>
-		struct __encoding_decode_state<_Type, std::void_t<typename _Type::decode_state>> {
+		struct __decode_state_of<_Type, std::void_t<typename _Type::decode_state>> {
 			using type = typename _Type::decode_state;
 		};
 
 		template <typename _Type, typename = void>
-		struct __encoding_encode_state {
+		struct __encode_state_of {
 			using type = typename _Type::state;
 		};
 
 		template <typename _Type>
-		struct __encoding_encode_state<_Type, std::void_t<typename _Type::encode_state>> {
+		struct __encode_state_of<_Type, std::void_t<typename _Type::encode_state>> {
 			using type = typename _Type::encode_state;
 		};
 	} // namespace __detail
@@ -77,42 +77,42 @@ namespace ztd { namespace text {
 	/// encoding.
 	//////
 	template <typename _Type>
-	class encoding_decode_state {
+	class decode_state_of {
 	public:
 		//////
 		/// @brief The @c decode_state type or @c state type on a given encoding type.
 		///
 		//////
-		using type = typename __detail::__encoding_decode_state<__detail::__remove_cvref_t<_Type>>::type;
+		using type = typename __detail::__decode_state_of<__detail::__remove_cvref_t<_Type>>::type;
 	};
 
 	//////
-	/// @brief Typename alias for @ref ztd::text::encoding_decode_state.
+	/// @brief Typename alias for @ref ztd::text::decode_state_of.
 	///
 	//////
 	template <typename _Type>
-	using encoding_decode_state_t = typename encoding_decode_state<_Type>::type;
+	using decode_state_of_t = typename decode_state_of<_Type>::type;
 
 	//////
 	/// @brief Retrieves the @c encode_state of the encoding type if it has one, or the @c state type of the
 	/// encoding.
 	//////
 	template <typename _Type>
-	class encoding_encode_state {
+	class encode_state_of {
 	public:
 		//////
 		/// @brief The @c encode_state type or @c state type on a given encoding type.
 		///
 		//////
-		using type = typename __detail::__encoding_encode_state<__detail::__remove_cvref_t<_Type>>::type;
+		using type = typename __detail::__encode_state_of<__detail::__remove_cvref_t<_Type>>::type;
 	};
 
 	//////
-	/// @brief Typename alias for @ref ztd::text::encoding_encode_state.
+	/// @brief Typename alias for @ref ztd::text::encode_state_of.
 	///
 	//////
 	template <typename _Type>
-	using encoding_encode_state_t = typename encoding_encode_state<_Type>::type;
+	using encode_state_of_t = typename encode_state_of<_Type>::type;
 
 	//////
 	/// @brief Whether or not the given type can be constructed without information from the encoding
@@ -126,58 +126,58 @@ namespace ztd { namespace text {
 	/// ztd::text::make_encode_state(_Encoding) — handle the details here.
 	//////
 	template <typename _Encoding, typename _Type>
-	inline constexpr bool is_encoding_state_independent_v
+	inline constexpr bool is_state_independent_v
 		= !::std::is_constructible_v<_Type, _Encoding> && ::std::is_default_constructible_v<_Type>;
 
 	//////
-	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the encoding
-	/// itself.
+	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the
+	/// encoding itself.
 	//////
 	template <typename _Encoding>
-	inline constexpr bool is_encoding_decode_state_independent_v
-		= is_encoding_state_independent_v<_Encoding, encoding_decode_state_t<_Encoding>>;
+	inline constexpr bool is_decode_state_independent_v
+		= is_state_independent_v<_Encoding, decode_state_of_t<_Encoding>>;
 
 	//////
-	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the encoding
-	/// itself.
+	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the
+	/// encoding itself.
 	//////
 	template <typename _Encoding>
-	inline constexpr bool is_encoding_encode_state_independent_v
-		= is_encoding_state_independent_v<_Encoding, encoding_encode_state_t<_Encoding>>;
+	inline constexpr bool is_encode_state_independent_v
+		= is_state_independent_v<_Encoding, encode_state_of_t<_Encoding>>;
 
 	//////
 	/// @brief Constructs the @c decode_state of the given encoding, based on whether or not the encoding and state
-	/// meet the criteria of ztd::text::is_encoding_decode_state_independent_v.
+	/// meet the criteria of ztd::text::is_decode_state_independent_v.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	//////
 	template <typename _Encoding>
-	constexpr encoding_decode_state_t<__detail::__remove_cvref_t<_Encoding>> make_decode_state(
+	constexpr decode_state_of_t<__detail::__remove_cvref_t<_Encoding>> make_decode_state(
 		_Encoding& __encoding) noexcept {
-		if constexpr (is_encoding_decode_state_independent_v<__detail::__remove_cvref_t<_Encoding>>) {
+		if constexpr (is_decode_state_independent_v<__detail::__remove_cvref_t<_Encoding>>) {
 			(void)__encoding;
-			return encoding_decode_state_t<__detail::__remove_cvref_t<_Encoding>>();
+			return decode_state_of_t<__detail::__remove_cvref_t<_Encoding>>();
 		}
 		else {
-			return encoding_decode_state_t<__detail::__remove_cvref_t<_Encoding>>(__encoding);
+			return decode_state_of_t<__detail::__remove_cvref_t<_Encoding>>(__encoding);
 		}
 	}
 
 	//////
 	/// @brief Constructs the @c encode_state of the given encoding, based on whether or not the encoding and state
-	/// meet the criteria of ztd::text::is_encoding_decode_state_independent_v.
+	/// meet the criteria of ztd::text::is_decode_state_independent_v.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	//////
 	template <typename _Encoding>
-	constexpr encoding_encode_state_t<__detail::__remove_cvref_t<_Encoding>> make_encode_state(
+	constexpr encode_state_of_t<__detail::__remove_cvref_t<_Encoding>> make_encode_state(
 		_Encoding& __encoding) noexcept {
-		if constexpr (is_encoding_encode_state_independent_v<__detail::__remove_cvref_t<_Encoding>>) {
+		if constexpr (is_encode_state_independent_v<__detail::__remove_cvref_t<_Encoding>>) {
 			(void)__encoding;
-			return encoding_encode_state_t<__detail::__remove_cvref_t<_Encoding>>();
+			return encode_state_of_t<__detail::__remove_cvref_t<_Encoding>>();
 		}
 		else {
-			return encoding_encode_state_t<__detail::__remove_cvref_t<_Encoding>>(__encoding);
+			return encode_state_of_t<__detail::__remove_cvref_t<_Encoding>>(__encoding);
 		}
 	}
 

@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -41,8 +41,8 @@
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/count_result.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/is_code_point_replaceable.hpp>
-#include <ztd/text/is_code_unit_replaceable.hpp>
+#include <ztd/text/is_code_points_replaceable.hpp>
+#include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/default_encoding.hpp>
@@ -64,6 +64,7 @@
 #include <functional>
 #include <memory>
 #include <cassert>
+#include <optional>
 
 namespace ztd { namespace text {
 
@@ -73,6 +74,11 @@ namespace ztd { namespace text {
 		inline constexpr ::std::size_t __default_max_code_points_any_encoding = 8;
 		inline constexpr ::std::size_t __default_max_code_units_any_encoding  = 32;
 	} // namespace __detail
+
+	//////
+	/// @addtogroup ztd_text_encodings Encodings
+	/// @{
+	//////
 
 	//////
 	/// @brief An encoding class which has the given encode output and input, as well as the decode input and output
@@ -177,8 +183,8 @@ namespace ztd { namespace text {
 		};
 
 		struct __erased {
-			virtual ::std::span<code_point> __replacement_code_points() const noexcept = 0;
-			virtual ::std::span<code_unit> __replacement_code_units() const noexcept   = 0;
+			virtual ::std::optional<::std::span<code_point>> __maybe_replacement_code_points() const noexcept = 0;
+			virtual ::std::optional<::std::span<code_unit>> __maybe_replacement_code_units() const noexcept   = 0;
 
 			virtual __decode_result __decode_one(_DecodeCodeUnits __input, _DecodeCodePoints __output,
 				__decode_error_handler __error_handler, decode_state& __state) const = 0;
@@ -283,25 +289,33 @@ namespace ztd { namespace text {
 			static_assert(max_code_units_v<_Encoding> <= max_code_units,
 				"encoding must have less than or equal to the number of max potential output code units");
 
-			using __real_decode_state = encoding_decode_state_t<_Encoding>;
-			using __real_encode_state = encoding_encode_state_t<_Encoding>;
+			using __real_decode_state = decode_state_of_t<_Encoding>;
+			using __real_encode_state = encode_state_of_t<_Encoding>;
 			using __base_t            = __detail::__ebco<_Encoding, 0>;
 
 		public:
 			using __base_t::__base_t;
 
-			virtual ::std::span<code_point> __replacement_code_points() const noexcept override {
-				if constexpr (__detail::__is_code_points_replaceable_v<_Encoding>) {
+			virtual ::std::optional<::std::span<code_point>>
+			__maybe_replacement_code_points() const noexcept override {
+				if constexpr (is_code_points_replaceable_v<_Encoding>) {
 					return this->__base_t::get_value().replacement_code_points();
 				}
+				else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
+					return this->__base_t::get_value().maybe_replacement_code_points();
+				}
 				else {
-					return {};
+					return ::std::nullopt;
 				}
 			}
 
-			virtual ::std::span<code_unit> __replacement_code_units() const noexcept override {
-				if constexpr (__detail::__is_code_units_replaceable_v<_Encoding>) {
+			virtual ::std::optional<::std::span<code_unit>>
+			__maybe_replacement_code_units() const noexcept override {
+				if constexpr (is_code_units_replaceable_v<_Encoding>) {
 					return this->__base_t::get_value().replacement_code_units();
+				}
+				else if constexpr (is_code_units_maybe_replaceable_v<_Encoding>) {
+					return this->__base_t::get_value().maybe_replacement_code_units();
 				}
 				else {
 					return {};
@@ -571,22 +585,28 @@ namespace ztd { namespace text {
 		/// @brief Retrieves the replacement code points for when conversions fail and ztd::text::replacement_handler
 		/// (or equivalent) needs to make a substitution.
 		///
-		/// @return A @c std::span of code units. The return value is empty if the stored encoding does not have a
-		/// valid @c replacement_code_points static variable.
+		/// @return A @c std::optional of @c std::span of @c code_point\ s. The returned @c std::optional value is
+		/// engaged (has a value) if the stored encoding has a valid @c replacement_code_points function and it can be
+		/// called. If it does not, then the library checks to see if the @c maybe_replacement_code_points function
+		/// exists, and returns the @c std::optional from that type directly. If neither are present, an unengaged @c
+		/// std::optional is returned.
 		//////
-		::std::span<code_point> replacement_code_points() const noexcept {
-			return this->_M_storage->__replacement_code_points();
+		::std::optional<::std::span<code_point>> maybe_replacement_code_points() const noexcept {
+			return this->_M_storage->__maybe_replacement_code_points();
 		}
 
 		//////
 		/// @brief Retrieves the replacement code units for when conversions fail and ztd::text::replacement_handler
 		/// (or equivalent) needs to make a substitution.
 		///
-		/// @return A @c std::span of code units. The return value is empty if the stored encoding does not have a
-		/// valid @c replacement_code_units variable.
+		/// @return A @c std::optional of @c std::span of @c code_unit\ s. The returned @c std::optional value is
+		/// engaged (has a value) if the stored encoding has a valid @c replacement_code_units function and it can be
+		/// called. If it does not, then the library checks to see if the @c maybe_replacement_code_units function
+		/// exists, and returns the @c std::optional from that type directly. If neither are present, an unengaged @c
+		/// std::optional is returned.
 		//////
-		::std::span<code_unit> replacement_code_units() const noexcept {
-			return this->_M_storage->__replacement_code_units();
+		::std::optional<::std::span<code_unit>> maybe_replacement_code_units() const noexcept {
+			return this->_M_storage->__maybe_replacement_code_units();
 		}
 
 		//////
@@ -881,7 +901,7 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<
-			     !::std::is_same_v<_Byte, encoding_code_unit_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
+			     !::std::is_same_v<_Byte, code_unit_of_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_Encoding>, _Args&&... __args)
 		: __base_t(
 			::std::in_place_type_t<encoding_scheme<__detail::__remove_cvref_t<_Encoding>, endian::native, _Byte>> {},
@@ -901,7 +921,7 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<
-			     ::std::is_same_v<_Byte, encoding_code_unit_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
+			     ::std::is_same_v<_Byte, code_unit_of_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_Encoding> __tag, _Args&&... __args)
 		: __base_t(::std::move(__tag), ::std::forward<_Args>(__args)...) {
 		}
@@ -945,6 +965,10 @@ namespace ztd { namespace text {
 	/// ztd::text::encoding_scheme first.
 	//////
 	using any_encoding = any_byte_encoding<::std::byte>;
+
+	//////
+	/// @}
+	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
 
 find_program(SPHINX_EXECUTABLE
              NAMES sphinx-build sphinx-build.exe

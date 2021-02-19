@@ -26,38 +26,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
 
 # # Tests
-file(GLOB ztd.text.test.basic_run_time.sources source/*.cpp)
+file(GLOB_RECURSE ztd.text.tests.basic_run_time.sources
+	LIST_DIRECTORIES FALSE CONFIGURE_DEPENDS source/*.cpp
+)
 
-add_executable(ztd.text.test.basic_run_time ${ztd.text.test.basic_run_time.sources})
+add_executable(ztd.text.tests.basic_run_time ${ztd.text.tests.basic_run_time.sources})
+target_compile_definitions(ztd.text.tests.basic_run_time
+	PRIVATE
+	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
+)
 if (MSVC)
-	target_compile_options(ztd.text.test.basic_run_time
+	target_compile_options(ztd.text.tests.basic_run_time
 		PRIVATE /std:c++latest /utf-8 /permissive-)
-	target_compile_definitions(ztd.text.test.basic_run_time
-		PRIVATE
-		ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
-	)
 else()
-	target_compile_options(ztd.text.test.basic_run_time
+	target_compile_options(ztd.text.tests.basic_run_time
 		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
-	if (MINGW)
-		target_compile_options(ztd.text.test.basic_run_time
-			PRIVATE -fexec-charset=UTF-8)
-		target_compile_definitions(ztd.text.test.basic_run_time
-			PRIVATE
-			ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
-		)
-	endif()
 endif()
-target_include_directories(ztd.text.test.basic_run_time
+target_include_directories(ztd.text.tests.basic_run_time
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/../shared/include")
-target_link_libraries(ztd.text.test.basic_run_time
+target_link_libraries(ztd.text.tests.basic_run_time
 	PRIVATE
 	ztd::text
 	Catch2::Catch2
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.text.test.basic_run_time COMMAND ztd.text.test.basic_run_time)
+add_test(NAME ztd.text.tests.basic_run_time COMMAND ztd.text.tests.basic_run_time)

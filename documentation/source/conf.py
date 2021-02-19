@@ -13,13 +13,14 @@
 import os
 import sys
 import subprocess
+import typing
 # sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'ztd.text'
-copyright = "2021, JeanHeyd Meneide & Shepherd's Oasis, LLC"
-author = "JeanHeyd Meneide & Shepherd's Oasis, LLC"
+copyright = "2021, ThePhD & Shepherd's Oasis, LLC"
+author = "ThePhD & Shepherd's Oasis, LLC"
 
 # The full version, including alpha/beta/rc tags
 #
@@ -31,7 +32,7 @@ release = '0.0.0'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 #
-extensions = ['breathe']
+extensions = ['breathe', 'sphinx.ext.autosectionlabel']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -40,7 +41,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 #
-exclude_patterns = []
+exclude_patterns: typing.List[str] = []
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -53,22 +54,30 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 #
-html_static_path = []
+html_static_path = ["_static"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
 #
-html_extra_path = []
+html_extra_path = ["resources"]
+
+# Text that is pre-pended to every built file. Useful for global substitution patterns.
+rst_prolog = """
+.. |specializations_okay| replace:: User Specializations: ✔️ Okay! You can add other types to this classification by specializing the class template to a definition that derives from ``std::true_type``, or turn it off explicitly by having a definition that derives from ``std::false_type``.
+"""
 
 # Breathe Configuration
 #
 breathe_projects = {}
 breathe_default_project = "ztd.text"
 
+# autosectionlabel Configuration
+#
+autosectionlabel_prefix_document = True
+
 # ReadTheDocs Build Help
 #
-import subprocess, sys
 
 
 def run_cmake_doxygen():

@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 Users in the Wild
 =================
@@ -34,4 +34,4 @@ Users in the Wild
 
 None have come and told us about their usage, yet!
 
-If you use the library to any success, please do not hesitate to reach out to `opensource@soasis.org <opensource@soasis.org>`_ or `phdofthehouse@gmail.com <mailto:phdofthehouse@gmail.com>`_!
+If you use the library to any success, please do not hesitate to reach out to `opensource@soasis.org <opensource@soasis.org>`_!

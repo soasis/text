@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -64,25 +64,31 @@ namespace ztd { namespace text {
 
 	public:
 		//////
+		/// @brief Whether or not this literal encoding is a Unicode Transformation Format, such as UTF-8,
+		/// UTF-EBCDIC, or GB18030.
+		//////
+		using is_unicode_encoding
+			= std::integral_constant<bool, __detail::__is_unicode_encoding_id(__detail::__literal_id)>;
+		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
 		//////
-		using code_unit = encoding_code_unit_t<__underlying_t>;
+		using code_unit = code_unit_of_t<__underlying_t>;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 		//////
-		using code_point = encoding_code_point_t<__underlying_t>;
+		using code_point = code_point_of_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to encode_one.
 		///
 		//////
-		using encode_state = encoding_encode_state_t<__underlying_t>;
+		using encode_state = encode_state_of_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to decode_one.
 		///
 		//////
-		using decode_state = encoding_decode_state_t<__underlying_t>;
+		using decode_state = decode_state_of_t<__underlying_t>;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
@@ -157,6 +163,9 @@ namespace ztd { namespace text {
 				"this "
 				"error and we will get right on doing exactly that for you.");
 #endif
+#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT_I_)
+			static_assert(__detail::__always_true_v<_Input> && !__detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
+#endif
 			__detail::__forwarding_handler<const literal, __detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
 			return this->__base_t::get_value().decode_one(
@@ -208,6 +217,9 @@ namespace ztd { namespace text {
 				"Please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore "
 				"this "
 				"error and we will get right on doing exactly that for you.");
+#endif
+#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT_I_)
+			static_assert(__detail::__always_true_v<_Input> && !__detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[Please read!]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
 #endif
 			__detail::__forwarding_handler<const literal, __detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);

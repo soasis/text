@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -58,8 +58,8 @@ namespace ztd { namespace text {
 			|| (::std::is_same_v<__remove_cvref_t<_From>, ascii>
 				&& (::std::is_same_v<__remove_cvref_t<_To>, utf8>
 					|| ::std::is_base_of_v<__impl::__utf8_tag, __remove_cvref_t<_To>>)
-				&& ((sizeof(encoding_code_unit_t<__remove_cvref_t<_To>>) == sizeof(char))
-					&& (alignof(encoding_code_unit_t<__remove_cvref_t<_To>>) == alignof(char)))
+				&& ((sizeof(code_unit_of_t<__remove_cvref_t<_To>>) == sizeof(char))
+					&& (alignof(code_unit_of_t<__remove_cvref_t<_To>>) == alignof(char)))
 			)
 		> { };
 		// clang-format on
@@ -107,9 +107,9 @@ namespace ztd { namespace text {
 	: public ::std::integral_constant<bool,
 		__detail::__is_bitwise_transcoding_compatible_v<_From,_To>
 		|| ::std::is_same_v<__detail::__remove_cvref_t<_From>, __detail::__remove_cvref_t<_To>>
-		|| ::std::is_same_v<encoding_code_point_t<_From>, encoding_code_point_t<_To>>
-		|| (is_unicode_scalar_value_v<encoding_code_point_t<_From>>
-			? (is_unicode_code_point_v<encoding_code_point_t<_To>>)
+		|| ::std::is_same_v<code_point_of_t<_From>, code_point_of_t<_To>>
+		|| (is_unicode_scalar_value_v<code_point_of_t<_From>>
+			? (is_unicode_code_point_v<code_point_of_t<_To>>)
 			: (is_unicode_code_point_v<_From> && !is_unicode_scalar_value_v<_To>))
 	> {
 	};

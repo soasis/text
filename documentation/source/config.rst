@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 Configuring the Library
 =======================
@@ -48,7 +48,37 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Attempts to load it from the system at runtime using ``GetProcAddress``, ``dlopen``/``dlsym``/``dlclose``.
 	- Makes the ``ztd::text::iconv_encoding`` available (accessible directly VIA ``#include <ztd/text/iconv_encoding.hpp>``).
 	- Default: off.
-	- Not turned on normally under any conditions.
+	- Not turned on by-default under any conditions.
+
+.. _config-ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE:
+
+- ``ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE``
+	- Turns ``ztd::text::unicode_code_point`` from a type definition to ``char32_t`` to an implementation-defined class type which enforces the various invariants of being a :term:`unicode code point`.
+	- Default: off.
+	- Not turned on by-default under any conditions.
+
+.. _config-ZTD_TEXT_UNICODE_CODE_POINT_INVARIANT_ABORT:
+
+- ``ZTD_TEXT_UNICODE_CODE_POINT_INVARIANT_ABORT``
+	- If ``ztd::text::unicode_code_point`` is a distinct class (as controlled by :ref:`ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE <config-ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE>`), each construction of a :doc:`unicode_code_point </api/unicode_code_point>` object that violates the required invariants of a :term:`unicode code point` will trigger an abort.
+	- It is normally a ``ZTD_TEXT_ASSERT(...)`` or equivalent.
+	- Default: off.
+	- Not turned on by-default under any conditions.
+
+.. _config-ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE:
+
+- ``ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE``
+	- Turns ``ztd::text::unicode_scalar_value`` from a type definition to ``char32_t`` to an implemenation-defined class type which enforces the various invariants of being a :term:`unicode scalar value`.
+	- Default: **on**.
+	- Not turned off by-default under any conditions.
+
+.. _config-ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT:
+
+- ``ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT``
+	- If ``ztd::text::unicode_scalar_value`` is a distinct class (as controlled by :ref:`ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE <config-ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE>`), each construction of a :doc:`unicode_scalar_value </api/unicode_scalar_value>` object that violates the required invariants of a :term:`unicode scalar value` will trigger an abort.
+	- It is normally a ``ZTD_TEXT_ASSERT(...)`` or equivalent.
+	- Default: off.
+	- Not turned on by-default under any conditions.
 
 .. _config-ZTD_TEXT_COMPILE_TIME_ENCODING_NAME:
 
@@ -65,7 +95,7 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Enables ignoring the fact that the string literal (``"🤷‍♀️"``) encoding cannot be determined/discovered on the given platform for the :doc:`ztd::text::literal encoding</api/encodings/literal>`.
 	- Will cause ☢️☢️Undefined Behavior☢️☢️ if a string literal or wide string literal is encoded or decoded to/from and the encoding does not match whatever pot-shot guess the system takes.
 	- Default: off
-	- Not turned on normally under any conditions.
+	- Not turned on by-default under any conditions.
 	- **Please don't use this unless you have some really, really weird setup that requires messing everything up...**
 
 .. _config-ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME:
@@ -83,5 +113,5 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Enables ignoring the fact that the wide string literal (``L"🤷‍♀️"``) encoding cannot be determined/discovered on the given platform for the :doc:`ztd::text::wide_literal encoding</api/encodings/wide_literal>`.
 	- Will cause ☢️☢️Undefined Behavior☢️☢️ if a string literal or wide string literal is encoded or decoded to/from and the encoding does not match whatever pot-shot guess the system takes.
 	- Default: off
-	- Not turned on normally under any conditions.
+	- Not turned on by-default under any conditions.
 	- **Please don't use this unless you have some really, really weird setup that requires messing everything up...**

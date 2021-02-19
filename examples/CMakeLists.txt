@@ -26,29 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
 
-file(GLOB ztd.text.examples.sources LIST_DIRECTORIES false 
-	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/source CONFIGURE_DEPENDS 
-	source/*.cpp)
-
-foreach (example_source_name ${ztd.text.examples.sources})
-	set(example_source_file source/${example_source_name})
-	set(example_target ztd.text.${example_source_name})
-	add_executable(${example_target} ${example_source_file})
-	if (MSVC)
-		target_compile_options(${example_target}
-			PRIVATE /std:c++latest /utf-8 /permissive-)
-	else()
-		target_compile_options(${example_target}
-			PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-	endif()
-	target_link_libraries(${example_target}
-		PRIVATE 
-		ztd::text
-		${CMAKE_DL_LIBS}
-	)
-	if (ZTD_OUT_PTR_TESTS)
-		add_test(NAME ${example_target} COMMAND ${example_target})
-	endif()
-endforeach()
+add_subdirectory(basic)
+add_subdirectory(documentation)

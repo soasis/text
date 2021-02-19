@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -53,12 +53,13 @@ namespace ztd { namespace text {
 	/// null terminator in its count.
 	//////
 	template <typename _CharType, typename _Traits = ::std::char_traits<_CharType>>
-	class basic_c_string_view : public ::std::basic_string_view<_CharType, _Traits> {
+	class basic_c_string_view : private ::std::basic_string_view<_CharType, _Traits> {
 	private:
 		using __base_t = ::std::basic_string_view<_CharType, _Traits>;
 
 		constexpr bool _M_last_element_check() const noexcept {
-			return ((this->size() > 0) ? *(this->data() + this->size()) == '\0' : true);
+			const _CharType& __last_element = *(this->data() + this->size());
+			return __last_element == static_cast<_CharType>('\0');
 		}
 
 	public:
@@ -227,11 +228,16 @@ namespace ztd { namespace text {
 		using __base_t::compare;
 
 		using __base_t::copy;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_STARTS_ENDS_WITH_I_)
 		using __base_t::ends_with;
-		using __base_t::remove_prefix;
 		using __base_t::starts_with;
+#endif
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_STRING_CONTAINS_I_)
+		using __base_t::contains;
+#endif
 
 		using __base_t::find;
+		using __base_t::remove_prefix;
 		using __base_t::rfind;
 
 		using __base_t::find_first_not_of;

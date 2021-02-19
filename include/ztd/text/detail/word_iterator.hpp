@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -73,7 +73,7 @@ namespace ztd { namespace text {
 			}
 
 			constexpr __word_reference& operator=(value_type __val) noexcept {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 				if (::std::is_constant_evaluated()) {
 					// God's given, handwritten, bit-splittin'
 					// one-way """memcpy""". 😵
@@ -120,7 +120,7 @@ namespace ztd { namespace text {
 						"read value from byte stream to native endianness that is neither little nor big (byte "
 						"order is impossible to infer from the standard)");
 				}
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 				if (::std::is_constant_evaluated()) {
 					__base_value_type __storage[__base_values_per_word] {};
 					__underlying_value_type __val = __any_to_underlying(value_type {});

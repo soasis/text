@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -55,16 +55,19 @@ namespace ztd { namespace text {
 		class __utf16_with;
 		template <typename, typename, bool>
 		class __utf32_with;
+
+		class __unicode_code_point;
+		class __unicode_scalar_value;
 	} // namespace __impl
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
-	class unicode_code_point;
+	using unicode_code_point = __impl::__unicode_code_point;
 #else
 	using unicode_code_point   = char32_t;
 #endif
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
-	class unicode_scalar_value;
+	using unicode_scalar_value = __impl::__unicode_scalar_value;
 #else
 	using unicode_scalar_value = char32_t;
 #endif
@@ -78,7 +81,9 @@ namespace ztd { namespace text {
 	class replacement_handler;
 	class default_handler;
 
-	class ascii;
+	template <typename>
+	class basic_ascii;
+	using ascii = basic_ascii<char>;
 	class execution;
 	class wide_execution;
 	template <typename>

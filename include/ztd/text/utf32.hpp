@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -67,6 +67,11 @@ namespace ztd { namespace text {
 		template <typename _Derived = void, typename _CodeUnit = char32_t, bool __validate_code_units = true>
 		class __utf32_with : public __utf32_tag {
 		public:
+			//////
+			/// @brief Whether or not this encoding that can encode all of Unicode.
+			///
+			//////
+			using is_unicode_encoding = std::true_type;
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is an empty struct
 			/// because there is no shift state to preserve between complete units of encoded information.

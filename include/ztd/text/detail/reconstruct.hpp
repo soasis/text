@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -92,10 +92,11 @@ namespace ztd { namespace text {
 			}
 		}
 
-		template <typename _Ty, typename _Traits, typename _Range>
+		template <typename _Ty, typename _Traits, typename _ArrayTy, ::std::size_t _ArraySize>
 		constexpr ::std::basic_string_view<_Ty, _Traits> reconstruct(
-			::std::in_place_type_t<::std::basic_string_view<_Ty, _Traits>>, _Range&& __range) noexcept {
-			return ::std::basic_string_view<_Ty, _Traits>(::std::forward<_Range>(__range));
+			::std::in_place_type_t<::std::basic_string_view<_Ty, _Traits>>,
+			const _ArrayTy (&__arr)[_ArraySize]) noexcept {
+			return ::std::basic_string_view<_Ty, _Traits>(__arr);
 		}
 
 		template <typename _Range, typename _It, typename _Sen>

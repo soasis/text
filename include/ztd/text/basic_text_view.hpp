@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -53,7 +53,7 @@ namespace ztd { namespace text {
 	/// compile-time error.
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
-		typename _Range        = ::std::basic_string_view<encoding_code_unit_t<_Encoding>>,
+		typename _Range        = ::std::basic_string_view<code_unit_of_t<_Encoding>>,
 		typename _ErrorHandler = default_handler>
 	class basic_text_view {
 	public:

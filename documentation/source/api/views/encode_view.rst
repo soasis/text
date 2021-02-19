@@ -26,14 +26,14 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 encode_view
 ===========
 
 The ``encode_view`` class provides a one-by-one view of the stored range's code points as the desired encoding's code units. Dereferencing the iterators returns a single ``code_unit`` value corresponding to the desired encoding's transformation of the internal code points.
 
-The range-based classes are excellent ways to walk over units of information in a low-memory environment, as they only store the minimum amount of data necessary to perform their operations on the fly. This reduces the speed but is fine for one-at-a-time encoding operations. To encode eagerly and in bulk, see :doc:`the encode functions </encode>`.
+The range-based classes are excellent ways to walk over units of information in a low-memory environment, as they only store the minimum amount of data necessary to perform their operations on the fly. This reduces the speed but is fine for one-at-a-time encoding operations. To encode eagerly and in bulk, see :doc:`the encode functions </api/conversions/encode>`.
 
 .. doxygenclass:: ztd::text::encode_view
 	:members:

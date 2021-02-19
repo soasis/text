@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -78,8 +78,8 @@ namespace ztd { namespace text {
 	class wide_execution {
 	private:
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-		using __wide_decode_state = __detail::__empty_state;
-		using __wide_encode_state = __detail::__empty_state;
+		using __wide_decode_state = decode_state_of_t<__impl::__utf16_with<void, wchar_t, false>>;
+		using __wide_encode_state = encode_state_of_t<__impl::__utf16_with<void, wchar_t, false>>;
 #else
 		class __wide_decode_state {
 		public:
@@ -88,7 +88,7 @@ namespace ztd { namespace text {
 
 			// TODO: states need to be split into 2
 			// different states, optionally...
-			__wide_state() noexcept : __wide_state(), __narrow_state() {
+			__wide_decode_state() noexcept : __wide_state(), __narrow_state() {
 				char __ghost_space[MB_LEN_MAX];
 				::std::size_t __init_result = ::std::wcrtomb(__ghost_space, L'\0', &__wide_state);
 				// make sure it is initialized
@@ -104,7 +104,7 @@ namespace ztd { namespace text {
 
 			// TODO: states need to be split into 2
 			// different states, optionally...
-			__wide_state() noexcept : __wide_state(), __narrow_state() {
+			__wide_encode_state() noexcept : __wide_state(), __narrow_state() {
 				wchar_t __ghost_space[2];
 				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__narrow_state);
 				// make sure it is initialized

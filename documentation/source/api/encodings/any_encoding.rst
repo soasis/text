@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 any_encoding
 ============
@@ -38,7 +38,7 @@ any_encoding
 
 
 Base Template
--------------------
+-------------
 
 .. doxygenclass:: ztd::text::any_byte_encoding
 	:members:

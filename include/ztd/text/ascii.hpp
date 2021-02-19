@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -65,17 +65,20 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The American Standard Code for Information Exchange (ASCII) Encoding.
 	///
+	/// @tparam _CodeUnit The code unit type to work over.
+	///
 	/// @remarks The most vanilla and unimaginative encoding there is in the world, excluding tons of other languages,
 	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
 	/// reason!
 	//////
-	class ascii {
+	template <typename _CodeUnit>
+	class basic_ascii {
 	public:
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
 		//////
-		using code_unit = char;
+		using code_unit = _CodeUnit;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
@@ -268,6 +271,16 @@ namespace ztd { namespace text {
 				encoding_error::ok);
 		}
 	};
+
+
+	//////
+	/// @brief The American Standard Code for Information Exchange (ASCII) Encoding.
+	///
+	/// @remarks The most vanilla and unimaginative encoding there is in the world, excluding tons of other languages,
+	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
+	/// reason!
+	//////
+	using ascii = basic_ascii<char>;
 
 	//////
 	/// @}

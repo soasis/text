@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -67,9 +67,9 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _Type the Error Handling type to chec.
 	///
-	/// @remarks An error handler type can mark itself as ignorable by using a @c "using assume_valid =
-	/// std::integral_constant<bool, value>" where @c value determines if the type's error handling callback can be
-	/// ignored. This is what ztd::text::assume_valid does. Being configurable means templated error handlers can
+	/// @remarks An error handler type can mark itself as ignorable by using a @c using @c assume_valid @c =
+	/// @c std::integral_constant<bool, @c value> where @c value determines if the type's error handling callback can
+	/// be ignored. This is what ztd::text::assume_valid does. Being configurable means templated error handlers can
 	/// select whether or not they should be ignorable based on compile-time, safe conditions that you can make up
 	/// (including checking Macros or other environment data as a means of determining whether or not validity should
 	/// be ignored.) If this results in a type derived from @c std::true_type and the encoder object using it
@@ -79,7 +79,7 @@ namespace ztd { namespace text {
 	class is_ignorable_error_handler : public __detail::__is_ignorable_error_handler_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c "constexpr bool ... = ... ::value" alias for ztd::text::is_ignorable_error_handler.
+	/// @brief A @c value alias for ztd::text::is_ignorable_error_handler.
 	///
 	//////
 	template <typename _Type>

@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -122,7 +122,7 @@ namespace ztd { namespace text {
 					::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
 			}
 			else {
-				using _CodeUnit = encoding_code_unit_t<_UEncoding>;
+				using _CodeUnit = code_unit_of_t<_UEncoding>;
 
 				::std::size_t __code_point_count = 0;
 
@@ -164,7 +164,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto count_code_units(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_encode_state_t<_UEncoding>;
+		using _State     = encode_state_of_t<_UEncoding>;
 
 		_State __state         = make_encode_state(__encoding);
 		auto __stateful_result = count_code_units(::std::forward<_Input>(__input),

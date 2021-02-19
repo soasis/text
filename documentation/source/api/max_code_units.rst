@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 max_code_units
 ==============
@@ -35,7 +35,7 @@ The maximum number of code units needed for a given encoding object. This can be
 
 .. code-block:: cpp
 
-	using code_unit = ztd::text::encoding_code_unit_t<ztd::text::utf8>;
+	using code_unit = ztd::text::code_unit_of_t<ztd::text::utf8>;
 	constexpr std::size_t max_output_size = ztd::text::max_code_units_v<ztd::text::utf8>;
 	
 	std::array<code_unit, max_output_size> my_cxx_buffer;

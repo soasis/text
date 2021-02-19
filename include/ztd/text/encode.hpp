@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -78,7 +78,7 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::encode_result object that contains references to @p __state.
 	///
-	/// @remark This function detects whether or not the ADL extension point @c text_encode can be called with the
+	/// @remarks This function detects whether or not the ADL extension point @c text_encode can be called with the
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to encode by repeatedly calling the encoding's required @c
 	/// encode_one function.
@@ -108,8 +108,8 @@ namespace ztd { namespace text {
 			using _IntermediateOutput = __detail::__reconstruct_t<_UOutput>;
 			using _Result             = decltype(__encoding.encode_one(::std::declval<_IntermediateInput>(),
                     ::std::declval<_IntermediateOutput>(), __error_handler, __state));
-			using _WorkingInput       = __detail::__remove_cvref_t<decltype(std::declval<_Result>().input)>;
-			using _WorkingOutput      = __detail::__remove_cvref_t<decltype(std::declval<_Result>().output)>;
+			using _WorkingInput       = __detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
+			using _WorkingOutput      = __detail::__remove_cvref_t<decltype(::std::declval<_Result>().output)>;
 			using _UEncoding          = __detail::__remove_cvref_t<_Encoding>;
 			using _UErrorHandler      = __detail::__remove_cvref_t<_ErrorHandler>;
 
@@ -157,13 +157,13 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_encode_result object that contains references to @p __state.
 	///
-	/// @remark Creates a default @c state using ztd::text::make_encode_state.
+	/// @remarks Creates a default @c state using ztd::text::make_encode_state.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler>
 	constexpr auto encode_into(
 		_Input&& __input, _Encoding&& __encoding, _Output&& __output, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_encode_state_t<_UEncoding>;
+		using _State     = encode_state_of_t<_UEncoding>;
 
 		_State __state         = make_encode_state(__encoding);
 		auto __stateful_result = encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -184,7 +184,7 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_encode_result object that contains references to @p __state.
 	///
-	/// @remark Creates a default @c error_handler that is similar to ztd::text::default_handler, but marked as
+	/// @remarks Creates a default @c error_handler that is similar to ztd::text::default_handler, but marked as
 	/// careless.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output>
@@ -205,7 +205,7 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_encode_result object that contains references to @p __state.
 	///
-	/// @remark Creates a default @c encoding by figuring out the @c value_type of the @p __input, then passing that
+	/// @remarks Creates a default @c encoding by figuring out the @c value_type of the @p __input, then passing that
 	/// type into ztd::text::default_code_point_encoding_t. That encoding is that used to encode the input code points,
 	/// by default.
 	//////
@@ -234,7 +234,7 @@ namespace ztd { namespace text {
 	/// @result A ztd::text::encode_result object that contains references to @p __state and an output of type @p
 	/// _OutputContainer.
 	///
-	/// @remark This function detects creates a container of type @p _OutputContainer and uses a typical @c
+	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
 	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to. The result is then
 	/// returned, with the @c .output value put into the container.
 	//////
@@ -273,12 +273,12 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_encode_result object whose output is of type @p _OutputContainer.
 	///
-	/// @remark This function creates a @c state using ztd::text::make_encode_state.
+	/// @remarks This function creates a @c state using ztd::text::make_encode_state.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_encode_state_t<_UEncoding>;
+		using _State     = encode_state_of_t<_UEncoding>;
 
 		_State __state         = make_encode_state(__encoding);
 		auto __stateful_result = encode_to<_OutputContainer>(::std::forward<_Input>(__input),
@@ -299,7 +299,7 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_encode_result object whose output is of type @p _OutputContainer.
 	///
-	/// @remark This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
+	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding) {
@@ -319,7 +319,7 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_encode_result object whose output is of type @p _OutputContainer.
 	///
-	/// @remark This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
+	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
 	/// through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _OutputContainer, typename _Input>
@@ -346,7 +346,7 @@ namespace ztd { namespace text {
 	///
 	/// @result An object of type @p _OutputContainer .
 	///
-	/// @remark This function detects creates a container of type @p _OutputContainer and uses a typical @c
+	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
 	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
@@ -384,12 +384,12 @@ namespace ztd { namespace text {
 	///
 	/// @result An object of type @p _OutputContainer .
 	///
-	/// @remark This function creates a @c state using ztd::text::make_encode_state.
+	/// @remarks This function creates a @c state using ztd::text::make_encode_state.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_encode_state_t<_UEncoding>;
+		using _State     = encode_state_of_t<_UEncoding>;
 
 		_State __state = make_encode_state(__encoding);
 		return encode<_OutputContainer>(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -409,7 +409,7 @@ namespace ztd { namespace text {
 	///
 	/// @result An object of type @p _OutputContainer .
 	///
-	/// @remark This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
+	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding) {
@@ -429,7 +429,7 @@ namespace ztd { namespace text {
 	///
 	/// @result An object of type @p _OutputContainer .
 	///
-	/// @remark This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
+	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
 	/// through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _OutputContainer, typename _Input>
@@ -455,14 +455,14 @@ namespace ztd { namespace text {
 	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
 	/// code unt type.
 	///
-	/// @remark This function detects creates a container of either @c std::Vector (when @c std::byte is involved) or
+	/// @remarks This function detects creates a container of either @c std::Vector (when @c std::byte is involved) or
 	/// @c std::basic_string and uses a typical @c std::back_inserter or @c std::push_back_inserter to fill in elements
 	/// as it is written to.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _CodeUnit  = encoding_code_unit_t<_UEncoding>;
+		using _CodeUnit  = code_unit_of_t<_UEncoding>;
 		using _OutputContainer
 			= ::std::conditional_t<is_unicode_code_point_v<_CodeUnit> || __detail::__is_character_v<_CodeUnit>,
 			     ::std::basic_string<_CodeUnit>, ::std::vector<_CodeUnit>>;
@@ -485,12 +485,12 @@ namespace ztd { namespace text {
 	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
 	/// code unt type.
 	///
-	/// @remark This function creates a @c state using ztd::text::make_encode_state.
+	/// @remarks This function creates a @c state using ztd::text::make_encode_state.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_encode_state_t<_UEncoding>;
+		using _State     = encode_state_of_t<_UEncoding>;
 
 		_State __state = make_encode_state(__encoding);
 		return encode(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -509,7 +509,7 @@ namespace ztd { namespace text {
 	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
 	/// code unt type.
 	///
-	/// @remark This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
+	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
 	//////
 	template <typename _Input, typename _Encoding>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding) {
@@ -527,7 +527,7 @@ namespace ztd { namespace text {
 	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
 	/// code unt type.
 	///
-	/// @remark This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
+	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
 	/// through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _Input>

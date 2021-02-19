@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #include <ztd/text/encode_view.hpp>
 
@@ -52,32 +52,32 @@ void check_encode_view(const Input& input, const Expected& expected_output) {
 TEST_CASE("text/encode_view/basic", "basic usages of encode_view type do not explode") {
 	SECTION("execution") {
 		check_encode_view<ztd::text::execution>(
-		     ztd::text::tests::u32_ansi_sequence_truth, ztd::text::tests::ansi_sequence_truth);
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::tests::basic_source_character_set);
 		check_encode_view<ztd::text::execution>(
-		     ztd::text::tests::u32_unicode_sequence_truth, ztd::text::tests::unicode_sequence_truth);
+		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::tests::unicode_sequence_truth_native_endian);
 	}
 	SECTION("wide_execution") {
 		check_encode_view<ztd::text::wide_execution>(
-		     ztd::text::tests::u32_ansi_sequence_truth, ztd::text::tests::w_ansi_sequence_truth);
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::tests::w_basic_source_character_set);
 		check_encode_view<ztd::text::wide_execution>(
-		     ztd::text::tests::u32_unicode_sequence_truth, ztd::text::tests::w_unicode_sequence_truth);
+		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::tests::w_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf8") {
 		check_encode_view<ztd::text::utf8>(
-		     ztd::text::tests::u32_ansi_sequence_truth, ztd::text::tests::u8_ansi_sequence_truth);
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::tests::u8_basic_source_character_set);
 		check_encode_view<ztd::text::utf8>(
-		     ztd::text::tests::u32_unicode_sequence_truth, ztd::text::tests::u8_unicode_sequence_truth);
+		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::tests::u8_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf16") {
 		check_encode_view<ztd::text::utf16>(
-		     ztd::text::tests::u32_ansi_sequence_truth, ztd::text::tests::u16_ansi_sequence_truth);
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::tests::u16_basic_source_character_set);
 		check_encode_view<ztd::text::utf16>(
-		     ztd::text::tests::u32_unicode_sequence_truth, ztd::text::tests::u16_unicode_sequence_truth);
+		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::tests::u16_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf32") {
 		check_encode_view<ztd::text::utf32>(
-		     ztd::text::tests::u32_ansi_sequence_truth, ztd::text::tests::u32_ansi_sequence_truth);
+		     ztd::text::tests::u32_basic_source_character_set, ztd::text::tests::u32_basic_source_character_set);
 		check_encode_view<ztd::text::utf32>(
-		     ztd::text::tests::u32_unicode_sequence_truth, ztd::text::tests::u32_unicode_sequence_truth);
+		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::tests::u32_unicode_sequence_truth_native_endian);
 	}
 }

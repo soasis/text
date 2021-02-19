@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -43,18 +43,54 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	using c_string_view    = basic_c_string_view<char>;
-	using wc_string_view   = basic_c_string_view<wchar_t>;
-	using u8c_string_view  = basic_c_string_view<uchar8_t>;
+	//////
+	/// @brief A basic_c_string_view for a @c char sequence.
+	///
+	//////
+	using c_string_view = basic_c_string_view<char>;
+	//////
+	/// @brief A basic_c_string_view for a @c wchar_t sequence.
+	///
+	//////
+	using wc_string_view = basic_c_string_view<wchar_t>;
+	//////
+	/// @brief A basic_c_string_view for a @c char8_t sequence.
+	///
+	//////
+	using u8c_string_view = basic_c_string_view<uchar8_t>;
+	//////
+	/// @brief A basic_c_string_view for a @c char16_t sequence.
+	///
+	//////
 	using u16c_string_view = basic_c_string_view<char16_t>;
+	//////
+	/// @brief A basic_c_string_view for a @c char32_t sequence.
+	///
+	//////
 	using u32c_string_view = basic_c_string_view<char32_t>;
 
 	inline namespace literals { inline namespace string_view_literals {
-		// suffix for basic_c_string_view literals
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::c_string_view from a @c "abc" string literal.
+		///
+		//////
 		inline constexpr c_string_view operator"" _csv(const char* __str, size_t __len) noexcept {
 			return c_string_view(__str, __len);
 		}
+
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::wc_string_view from a @c L"abc" string literal.
+		///
+		//////
+		inline constexpr wc_string_view operator"" _wcsv(const wchar_t* __str, size_t __len) noexcept {
+			return wc_string_view(__str, __len);
+		}
+
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a @c u8"abc" string literal.
+		///
+		//////
 		inline constexpr u8c_string_view operator"" _u8csv(const char8_t* __str, size_t __len) noexcept {
 			if constexpr (::std::is_same_v<uchar8_t, char8_t>) {
 				return u8c_string_view(__str, __len);
@@ -64,18 +100,29 @@ namespace ztd { namespace text {
 			}
 		}
 #else
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a @c u8"abc" string literal.
+		///
+		//////
 		inline u8c_string_view operator"" _u8csv(const char* __str, size_t __len) noexcept {
 			return u8c_string_view(reinterpret_cast<const uchar8_t*>(__str), __len);
 		}
 #endif // char8_t hacks
+
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::u16c_string_view from a @c u"abc" string literal.
+		///
+		//////
 		inline constexpr u16c_string_view operator"" _u16csv(const char16_t* __str, size_t __len) noexcept {
 			return u16c_string_view(__str, __len);
 		}
+
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::u32c_string_view from a @c U"abc" string literal.
+		///
+		//////
 		inline constexpr u32c_string_view operator"" _u32csv(const char32_t* __str, size_t __len) noexcept {
 			return u32c_string_view(__str, __len);
-		}
-		inline constexpr wc_string_view operator"" _wcsv(const wchar_t* __str, size_t __len) noexcept {
-			return wc_string_view(__str, __len);
 		}
 	}} // namespace literals::string_view_literals
 

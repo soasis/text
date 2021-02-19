@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -52,7 +52,7 @@ namespace ztd { namespace text {
 	///
 	//////
 	template <typename _Type>
-	class encoding_code_point {
+	class code_point_of {
 	public:
 		//////
 		/// @brief The code point type for the given encoding type. If it does not exist, @c
@@ -63,11 +63,11 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief A typename alias for ztd::text::encoding_code_point.
+	/// @brief A typename alias for ztd::text::code_point_of.
 	///
 	//////
 	template <typename _Type>
-	using encoding_code_point_t = typename encoding_code_point<_Type>::type;
+	using code_point_of_t = typename code_point_of<_Type>::type;
 
 	//////
 	/// @brief Gets the maximum number of code points that can be produced by an encoding during a decode operation,

@@ -26,22 +26,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
 
 # # Tests
 file(GLOB ztd.text.tests.basic_compile_time.sources source/*.cpp)
 
 add_executable(ztd.text.tests.basic_compile_time ${ztd.text.tests.basic_compile_time.sources})
+target_compile_definitions(ztd.text.tests.basic_compile_time
+	PRIVATE
+	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
+)
 if (MSVC)
 	target_compile_options(ztd.text.tests.basic_compile_time
 		PRIVATE /std:c++latest /utf-8 /permissive-)
 else()
 	target_compile_options(ztd.text.tests.basic_compile_time
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-	if (MINGW)
-		target_compile_options(ztd.text.tests.basic_compile_time
-			PRIVATE -fexec-charset=UTF-8)
-	endif()
+		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
 endif()
 target_include_directories(ztd.text.tests.basic_compile_time
 	PRIVATE 

@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -77,10 +77,10 @@ namespace ztd { namespace text {
 	/// interfaces.
 	//////
 	template <typename _FromEncoding, typename _ToEncoding = utf8,
-		typename _Range            = ::std::basic_string_view<encoding_code_unit_t<_FromEncoding>>,
+		typename _Range            = ::std::basic_string_view<code_unit_of_t<_FromEncoding>>,
 		typename _FromErrorHandler = default_handler, typename _ToErrorHandler = default_handler,
-		typename _FromState = encoding_decode_state_t<_FromEncoding>,
-		typename _ToState   = encoding_encode_state_t<_ToEncoding>>
+		typename _FromState = decode_state_of_t<_FromEncoding>,
+		typename _ToState   = encode_state_of_t<_ToEncoding>>
 	class transcode_view {
 	public:
 		//////

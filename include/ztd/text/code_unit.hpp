@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -58,7 +58,7 @@ namespace ztd { namespace text {
 	///
 	//////
 	template <typename _Type>
-	class encoding_code_unit {
+	class code_unit_of {
 	public:
 		//////
 		/// @brief The code unit type for the encoding type.
@@ -68,11 +68,11 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief A typename alias for ztd::text::encoding_code_unit.
+	/// @brief A typename alias for ztd::text::code_unit_of.
 	///
 	//////
 	template <typename _Type>
-	using encoding_code_unit_t = typename encoding_code_unit<_Type>::type;
+	using code_unit_of_t = typename code_unit_of<_Type>::type;
 
 	//////
 	/// @brief Gets the maximum number of code units that can be produced by an encoding during an encode operation,

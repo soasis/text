@@ -26,7 +26,7 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 Design Goals and Philosophy
 ===========================
@@ -34,9 +34,9 @@ Design Goals and Philosophy
 The goal of this library are to
 
 - enable people to write new code that can properly handle encoded information, specifically text;
-- offer them effective means to encode and decode that information;
+- offer them effective means to convert that information in various ways;
 - impose no run-time overhead compared to writing the code by hand; and
-- statically track encodings, where possible, to make lossless or bad conversions a compile-time error rather than a runtime explosion;
+- statically track encodings, where possible, to make lossless or bad conversions a compile-time error rather than a runtime problem;
 
 These four goals inform the design of the library to its deepest levels and helps us go through the following important tenents:
 
@@ -46,4 +46,8 @@ These four goals inform the design of the library to its deepest levels and help
 	:caption: Contents:
 
 	design/lucky 7
-	design/preventing loss
+	design/loss
+	design/error handling
+	design/converting
+	design/strong vs weak code points
+	design/beyond lucky 7

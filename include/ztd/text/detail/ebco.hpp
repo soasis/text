@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -53,15 +53,15 @@ namespace ztd { namespace text {
 			__ebco(__ebco&&)      = default;
 			__ebco& operator=(const __ebco&) = default;
 			__ebco& operator=(__ebco&&) = default;
-			__ebco(const _Type& __value) noexcept(::std::is_nothrow_copy_constructible_v<_Type>)
+			constexpr __ebco(const _Type& __value) noexcept(::std::is_nothrow_copy_constructible_v<_Type>)
 			: _M_value(__value) {};
-			__ebco(_Type&& __value) noexcept(::std::is_nothrow_move_constructible_v<_Type>)
+			constexpr __ebco(_Type&& __value) noexcept(::std::is_nothrow_move_constructible_v<_Type>)
 			: _M_value(::std::move(__value)) {};
-			__ebco& operator=(const _Type& __value) noexcept(::std::is_nothrow_copy_assignable_v<_Type>) {
+			constexpr __ebco& operator=(const _Type& __value) noexcept(::std::is_nothrow_copy_assignable_v<_Type>) {
 				this->_M_value = __value;
 				return *this;
 			}
-			__ebco& operator=(_Type&& __value) noexcept(::std::is_nothrow_move_assignable_v<_Type>) {
+			constexpr __ebco& operator=(_Type&& __value) noexcept(::std::is_nothrow_move_assignable_v<_Type>) {
 				this->_M_value = ::std::move(__value);
 				return *this;
 			};
@@ -69,20 +69,20 @@ namespace ztd { namespace text {
 				typename = ::std::enable_if_t<
 				     !::std::is_same_v<::std::remove_reference_t<::std::remove_cv_t<_Arg>>,
 				          __ebco> && !::std::is_same_v<::std::remove_reference_t<::std::remove_cv_t<_Arg>>, _Type>>>
-			__ebco(_Arg&& __arg, _Args&&... __args) noexcept(
+			constexpr __ebco(_Arg&& __arg, _Args&&... __args) noexcept(
 				::std::is_nothrow_constructible_v<_Type, _Arg, _Args...>)
 			: _M_value(::std::forward<_Arg>(__arg), ::std::forward<_Args>(__args)...) {
 			}
 
-			_Type& get_value() & noexcept {
+			constexpr _Type& get_value() & noexcept {
 				return static_cast<_Type&>(this->_M_value);
 			}
 
-			_Type const& get_value() const& noexcept {
+			constexpr _Type const& get_value() const& noexcept {
 				return static_cast<_Type const&>(this->_M_value);
 			}
 
-			_Type&& get_value() && noexcept {
+			constexpr _Type&& get_value() && noexcept {
 				return static_cast<_Type&&>(this->_M_value);
 			}
 		};
@@ -96,38 +96,39 @@ namespace ztd { namespace text {
 			__ebco()              = default;
 			__ebco(const __ebco&) = default;
 			__ebco(__ebco&&)      = default;
-			__ebco(const _Type& __value) noexcept(::std::is_nothrow_copy_constructible_v<_Type>) : _Type(__value) {};
-			__ebco(_Type&& __value) noexcept(::std::is_nothrow_move_constructible_v<_Type>)
+			constexpr __ebco(const _Type& __value) noexcept(::std::is_nothrow_copy_constructible_v<_Type>)
+			: _Type(__value) {};
+			constexpr __ebco(_Type&& __value) noexcept(::std::is_nothrow_move_constructible_v<_Type>)
 			: _Type(::std::move(__value)) {};
 			template <typename _Arg, typename... _Args,
 				typename = ::std::enable_if_t<
 				     !::std::is_same_v<::std::remove_reference_t<::std::remove_cv_t<_Arg>>,
 				          __ebco> && !::std::is_same_v<::std::remove_reference_t<::std::remove_cv_t<_Arg>>, _Type>>>
-			__ebco(_Arg&& __arg, _Args&&... __args) noexcept(
+			constexpr __ebco(_Arg&& __arg, _Args&&... __args) noexcept(
 				::std::is_nothrow_constructible_v<_Type, _Arg, _Args...>)
 			: _Type(::std::forward<_Arg>(__arg), ::std::forward<_Args>(__args)...) {
 			}
 
 			__ebco& operator=(const __ebco&) = default;
 			__ebco& operator=(__ebco&&) = default;
-			__ebco& operator=(const _Type& __value) noexcept(::std::is_nothrow_copy_assignable_v<_Type>) {
+			constexpr __ebco& operator=(const _Type& __value) noexcept(::std::is_nothrow_copy_assignable_v<_Type>) {
 				static_cast<_Type&>(*this) = __value;
 				return *this;
 			}
-			__ebco& operator=(_Type&& __value) noexcept(::std::is_nothrow_move_assignable_v<_Type>) {
+			constexpr __ebco& operator=(_Type&& __value) noexcept(::std::is_nothrow_move_assignable_v<_Type>) {
 				static_cast<_Type&>(*this) = ::std::move(__value);
 				return *this;
 			}
 
-			_Type& get_value() & noexcept {
+			constexpr _Type& get_value() & noexcept {
 				return static_cast<_Type&>(*this);
 			}
 
-			_Type const& get_value() const& noexcept {
+			constexpr _Type const& get_value() const& noexcept {
 				return static_cast<_Type const&>(*this);
 			}
 
-			_Type&& get_value() && noexcept {
+			constexpr _Type&& get_value() && noexcept {
 				return static_cast<_Type&&>(*this);
 			}
 		};
@@ -143,21 +144,21 @@ namespace ztd { namespace text {
 			__ebco(__ebco&&)      = default;
 			__ebco& operator=(const __ebco&) = default;
 			__ebco& operator=(__ebco&&) = default;
-			__ebco(_Type& __value) noexcept : _M_p_value(::std::addressof(__value)) {};
-			__ebco& operator=(_Type& __value) noexcept {
+			constexpr __ebco(_Type& __value) noexcept : _M_p_value(::std::addressof(__value)) {};
+			constexpr __ebco& operator=(_Type& __value) noexcept {
 				*(this->_M_p_value) = __value;
 				return *this;
 			}
 
-			_Type& get_value() & noexcept {
+			constexpr _Type& get_value() & noexcept {
 				return *(this->_M_p_value);
 			}
 
-			_Type const& get_value() const& noexcept {
+			constexpr _Type const& get_value() const& noexcept {
 				return *(this->_M_p_value);
 			}
 
-			_Type&& get_value() && noexcept {
+			constexpr _Type&& get_value() && noexcept {
 				return ::std::move(*(this->_M_p_value));
 			}
 		};

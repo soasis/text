@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/decode.hpp>
@@ -41,64 +41,78 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 	SECTION("endian::native") {
 		SECTION("execution") {
 			ztd::text::encoding_scheme<ztd::text::execution, ztd::text::endian::native> encoding {};
-			std::u32string result0 = ztd::text::decode(
-			     ztd::text::tests::ansi_sequence_bytes_truth, encoding, ztd::text::replacement_handler {});
+			std::u32string result0
+			     = ztd::text::decode(ztd::text::tests::basic_source_character_set_bytes_native_endian, encoding,
+			          ztd::text::replacement_handler {});
 			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
-			     ztd::text::tests::u32_ansi_sequence_truth.begin(), ztd::text::tests::u32_ansi_sequence_truth.end());
+			     ztd::text::tests::u32_basic_source_character_set.begin(),
+			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 		}
 		SECTION("wide_execution") {
 			ztd::text::encoding_scheme<ztd::text::wide_execution, ztd::text::endian::native> encoding {};
-			std::u32string result0 = ztd::text::decode(
-			     ztd::text::tests::w_ansi_sequence_bytes_truth, encoding, ztd::text::replacement_handler {});
+			std::u32string result0
+			     = ztd::text::decode(ztd::text::tests::w_basic_source_character_set_bytes_native_endian, encoding,
+			          ztd::text::replacement_handler {});
 			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
-			     ztd::text::tests::u32_ansi_sequence_truth.begin(), ztd::text::tests::u32_ansi_sequence_truth.end());
+			     ztd::text::tests::u32_basic_source_character_set.begin(),
+			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
-			std::u32string result1 = ztd::text::decode(
-			     ztd::text::tests::w_unicode_sequence_bytes_truth, encoding, ztd::text::replacement_handler {});
-			bool is_equal1
-			     = std::equal(result1.cbegin(), result1.cend(), ztd::text::tests::u32_unicode_sequence_truth.begin(),
-			          ztd::text::tests::u32_unicode_sequence_truth.end());
+			std::u32string result1
+			     = ztd::text::decode(ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian, encoding,
+			          ztd::text::replacement_handler {});
+			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf8") {
 			ztd::text::encoding_scheme<ztd::text::utf8, ztd::text::endian::native> encoding {};
-			std::u32string result0 = ztd::text::decode(ztd::text::tests::u8_ansi_sequence_bytes_truth, encoding);
-			bool is_equal0         = std::equal(result0.cbegin(), result0.cend(),
-                    ztd::text::tests::u32_ansi_sequence_truth.begin(), ztd::text::tests::u32_ansi_sequence_truth.end());
+			std::u32string result0
+			     = ztd::text::decode(ztd::text::tests::u8_basic_source_character_set_bytes_native_endian, encoding);
+			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			     ztd::text::tests::u32_basic_source_character_set.begin(),
+			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
-			std::u32string result1 = ztd::text::decode(ztd::text::tests::u8_unicode_sequence_bytes_truth, encoding);
-			bool is_equal1
-			     = std::equal(result1.cbegin(), result1.cend(), ztd::text::tests::u32_unicode_sequence_truth.begin(),
-			          ztd::text::tests::u32_unicode_sequence_truth.end());
+			std::u32string result1
+			     = ztd::text::decode(ztd::text::tests::u8_unicode_sequence_bytes_truth_native_endian, encoding);
+			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf16") {
 			ztd::text::encoding_scheme<ztd::text::utf16, ztd::text::endian::native> encoding {};
-			std::u32string result0 = ztd::text::decode(ztd::text::tests::u16_ansi_sequence_bytes_truth, encoding);
-			bool is_equal0         = std::equal(result0.cbegin(), result0.cend(),
-                    ztd::text::tests::u32_ansi_sequence_truth.begin(), ztd::text::tests::u32_ansi_sequence_truth.end());
+			std::u32string result0
+			     = ztd::text::decode(ztd::text::tests::u16_basic_source_character_set_bytes_native_endian, encoding);
+			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			     ztd::text::tests::u32_basic_source_character_set.begin(),
+			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
-			std::u32string result1 = ztd::text::decode(ztd::text::tests::u16_unicode_sequence_bytes_truth, encoding);
-			bool is_equal1
-			     = std::equal(result1.cbegin(), result1.cend(), ztd::text::tests::u32_unicode_sequence_truth.begin(),
-			          ztd::text::tests::u32_unicode_sequence_truth.end());
+			std::u32string result1
+			     = ztd::text::decode(ztd::text::tests::u16_unicode_sequence_bytes_truth_native_endian, encoding);
+			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf32") {
 			ztd::text::encoding_scheme<ztd::text::utf32, ztd::text::endian::native> encoding {};
-			std::u32string result0 = ztd::text::decode(ztd::text::tests::u32_ansi_sequence_bytes_truth, encoding);
-			bool is_equal0         = std::equal(result0.cbegin(), result0.cend(),
-                    ztd::text::tests::u32_ansi_sequence_truth.begin(), ztd::text::tests::u32_ansi_sequence_truth.end());
+			std::u32string result0
+			     = ztd::text::decode(ztd::text::tests::u32_basic_source_character_set_bytes_native_endian, encoding);
+			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			     ztd::text::tests::u32_basic_source_character_set.begin(),
+			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
-			std::u32string result1 = ztd::text::decode(ztd::text::tests::u32_unicode_sequence_bytes_truth, encoding);
-			bool is_equal1
-			     = std::equal(result1.cbegin(), result1.cend(), ztd::text::tests::u32_unicode_sequence_truth.begin(),
-			          ztd::text::tests::u32_unicode_sequence_truth.end());
+			std::u32string result1
+			     = ztd::text::decode(ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian, encoding);
+			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);
 		}
 	}

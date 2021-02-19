@@ -26,9 +26,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
 
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.15.0)
 
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
@@ -74,6 +74,7 @@ endif()
 include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
+include(FetchContent)
 
 # # Options
 option(ZTD_TEXT_CI "Whether or not we are in continuous integration mode" OFF)
@@ -87,12 +88,6 @@ option(ZTD_TEXT_USE_CUNEICODE "Enable generation of a single header and its targ
 
 # # Dependencies
 # # Dependencies (test-specific)
-if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Catch2)
-	set(ztd_text_has_catch2 ON)
-	add_subdirectory(vendor/Catch2)
-else()
-	set(ztd_text_has_catch2 OFF)
-endif()
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cuneicode)
 	set(ztd_text_has_cuneicode ON)
 	add_subdirectory(vendor/cuneicode)
@@ -104,8 +99,9 @@ file(GLOB ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
 
 add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
-# Not quite yet
-# target_link_libraries(ztd.text INTERFACE ztd::cuneicode)
+if (ZTD_TEXT_USE_CUNEICODE AND ztd_text_has_cuneicode)
+	target_link_libraries(ztd.text INTERFACE ztd::cuneicode)
+endif()
 target_include_directories(ztd.text INTERFACE 
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>
@@ -123,14 +119,48 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 	endif()
 endif()
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
-#set_target_properties(ztd.text
-#	PROPERTIES
-#	EXPORT_NAME ztd::text
-#)
+set_target_properties(ztd.text
+	PROPERTIES
+	EXPORT_NAME ztd::text
+)
+
+# # Config / Version packaging
+# Version configurations
+configure_package_config_file(
+	cmake/ztd.text-config.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-config.cmake"
+	INSTALL_DESTINATION lib/cmake/ztd.text
+	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+write_basic_package_version_file(
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-config-version.cmake"
+	COMPATIBILITY SameMajorVersion)
+
+export(TARGETS ztd.text
+	FILE
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-targets.cmake")
+
 
 if (ZTD_TEXT_GENERATE_SINGLE)
 	add_subdirectory(single)
 endif(ZTD_TEXT_GENERATE_SINGLE)
+
+# # Benchmarks, Tests, Examples
+if (ZTD_TEXT_TESTS)
+	enable_testing()
+endif()
+if (ZTD_TEXT_TESTS)
+	add_subdirectory(tests)
+endif()
+if (ZTD_TEXT_DOCUMENTATION)
+	add_subdirectory(documentation)
+endif()
+if (ZTD_TEXT_BENCHMARKS)
+	add_subdirectory(benchmarks)
+endif()
+if (ZTD_TEXT_EXAMPLES)
+	add_subdirectory(examples)
+endif()
 
 if (ZTD_TEXT_SCRATCH)
 	add_executable(scratch main.cpp)
@@ -148,34 +178,3 @@ if (ZTD_TEXT_SCRATCH)
 		)
 	endif()
 endif()
-
-# # Benchmarks, Tests, Examples
-if (ZTD_TEXT_TESTS)
-	enable_testing()
-endif()
-if (ZTD_TEXT_TESTS AND ztd_text_has_catch2)
-	add_subdirectory(tests)
-endif()
-if (ZTD_TEXT_DOCUMENTATION)
-	add_subdirectory(documentation)
-endif()
-if (ZTD_TEXT_BENCHMARKS)
-	add_subdirectory(benchmarks)
-endif()
-if (ZTD_TEXT_EXAMPLES)
-	add_subdirectory(examples)
-endif()
-
-# # Config / Version packaging
-# Version configurations
-#configure_package_config_file(
-#	cmake/ztd-config.cmake.in
-#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-config.cmake"
-#	INSTALL_DESTINATION lib/cmake/ztd.text
-#	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
-
-#write_basic_package_version_file(
-#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-config-version.cmake"
-#	COMPATIBILITY AnyNewerVersion)
-
-#export(TARGETS ztd.text FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-targets.cmake")

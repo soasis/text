@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #ifndef ZTD_TEXT_TRANSCODE_ITERATOR_HPP
 #define ZTD_TEXT_TRANSCODE_ITERATOR_HPP
@@ -105,7 +105,7 @@ namespace ztd { namespace text {
 		using _UFromState            = __detail::__remove_cvref_t<__detail::__unwrap_t<_FromState>>;
 		using _UToState              = __detail::__remove_cvref_t<__detail::__unwrap_t<_ToState>>;
 		using _BaseIterator          = __detail::__range_iterator_t<_URange>;
-		using _IntermediateCodePoint = encoding_code_point_t<_UToEncoding>;
+		using _IntermediateCodePoint = code_point_of_t<_UToEncoding>;
 		static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;
 		static constexpr bool _IsSingleValueType  = _MaxValues == 1;
 		using __base_cursor_t                     = __detail::__cache_cursor<_MaxValues>;
@@ -154,12 +154,12 @@ namespace ztd { namespace text {
 		/// @brief The state type used for decode operations.
 		///
 		//////
-		using from_encoding_state_type = _FromState;
+		using from_state_type = _FromState;
 		//////
 		/// @brief The state type used for encode operations.
 		///
 		//////
-		using to_encoding_state_type = _ToState;
+		using to_state_type = _ToState;
 		//////
 		/// @brief The strength of the iterator category, as defined in relation to the base.
 		///
@@ -178,7 +178,7 @@ namespace ztd { namespace text {
 		/// @brief The object type that gets output on every dereference.
 		///
 		//////
-		using value_type = encoding_code_unit_t<_ToEncoding>;
+		using value_type = code_unit_of_t<_ToEncoding>;
 		//////
 		/// @brief A pointer type to the value_type.
 		///
@@ -260,8 +260,8 @@ namespace ztd { namespace text {
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler)
 		: transcode_iterator(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			::std::move(__from_error_handler), ::std::move(__to_error_handler), from_encoding_state_type {},
-			to_encoding_state_type {}) {
+			::std::move(__from_error_handler), ::std::move(__to_error_handler), from_state_type {},
+			to_state_type {}) {
 		}
 
 		//////
@@ -277,8 +277,7 @@ namespace ztd { namespace text {
 		//////
 		constexpr transcode_iterator(range_type __range, from_encoding_type __from_encoding,
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
-			to_error_handler_type __to_error_handler, from_encoding_state_type __from_state,
-			to_encoding_state_type __to_state)
+			to_error_handler_type __to_error_handler, from_state_type __from_state, to_state_type __to_state)
 		: __base_from_encoding_t(::std::move(__from_encoding))
 		, __base_to_encoding_t(::std::move(__to_encoding))
 		, __base_from_error_handler_t(::std::move(__from_error_handler))
@@ -344,7 +343,7 @@ namespace ztd { namespace text {
 		/// @brief The decoding ("from") state object.
 		///
 		//////
-		constexpr const from_encoding_state_type& from_state() const {
+		constexpr const from_state_type& from_state() const {
 			return this->__base_from_state_t::_M_get_state();
 		}
 
@@ -352,7 +351,7 @@ namespace ztd { namespace text {
 		/// @brief The decoding ("from") state object.
 		///
 		//////
-		constexpr from_encoding_state_type& from_state() {
+		constexpr from_state_type& from_state() {
 			return this->__base_from_state_t::_M_get_state();
 		}
 
@@ -360,7 +359,7 @@ namespace ztd { namespace text {
 		/// @brief The encoding ("to") state object.
 		///
 		//////
-		constexpr const to_encoding_state_type& to_state() const {
+		constexpr const to_state_type& to_state() const {
 			return this->__base_to_state_t::_M_get_state();
 		}
 
@@ -368,7 +367,7 @@ namespace ztd { namespace text {
 		/// @brief The encoding ("to") state object.
 		///
 		//////
-		constexpr to_encoding_state_type& to_state() {
+		constexpr to_state_type& to_state() {
 			return this->__base_to_state_t::_M_get_state();
 		}
 

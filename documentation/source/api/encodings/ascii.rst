@@ -26,10 +26,12 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 ASCII
 =====
 
-.. doxygenclass:: ztd::text::ascii
+.. doxygenclass:: ztd::text::basic_ascii
 	:members:
+
+.. doxygentypedef:: ztd::text::ascii

@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -56,9 +56,9 @@ namespace ztd { namespace text {
 			using __state_base_t  = __ebco<__remove_cvref_t<__unwrap_t<_EncodingState>>, _Id>;
 
 		public:
-			template <typename _ArgEncoding,
+			template <typename _ArgEncoding = _UEncodingState,
 				::std::enable_if_t<
-				     !is_encoding_state_independent_v<_ArgEncoding,
+				     !is_state_independent_v<__remove_cvref_t<_ArgEncoding>,
 				          _UEncodingState> && !::std::is_same_v<__remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding& __encoding) noexcept(
 				::std::is_nothrow_constructible_v<__state_base_t, _Encoding&>)
@@ -66,7 +66,7 @@ namespace ztd { namespace text {
 			}
 			template <typename _ArgEncoding = _UEncodingState,
 				::std::enable_if_t<
-				     is_encoding_state_independent_v<_ArgEncoding,
+				     is_state_independent_v<__remove_cvref_t<_ArgEncoding>,
 				          _UEncodingState> && !::std::is_same_v<__remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding& __encoding) noexcept(
 				::std::is_nothrow_default_constructible_v<__state_base_t>)

@@ -26,7 +26,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# =============================================================================
+# ============================================================================>
+
+# # Fetch dependencies
+# Catch2
+FetchContent_Declare(
+	Catch2
+	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+	GIT_TAG        v2.13.4
+)
+FetchContent_MakeAvailable(Catch2)
 
 # # Test Subdirectories
 add_subdirectory(basic_run_time)

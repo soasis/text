@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -35,22 +35,11 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/forward.hpp>
+#include <ztd/text/basic_text.hpp>
 #include <ztd/text/char8_t.hpp>
 #include <ztd/text/encoding.hpp>
-#include <ztd/text/text_view.hpp>
-#include <ztd/text/c_string_view.hpp>
-#include <ztd/text/encode.hpp>
-#include <ztd/text/decode.hpp>
-#include <ztd/text/transcode.hpp>
-#include <ztd/text/count_code_units.hpp>
-#include <ztd/text/count_code_points.hpp>
-#include <ztd/text/validate_code_units.hpp>
-#include <ztd/text/encode_view.hpp>
-#include <ztd/text/decode_view.hpp>
-#include <ztd/text/transcode_view.hpp>
 
-#include <ztd/text/basic_text.hpp>
+#include <string>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_

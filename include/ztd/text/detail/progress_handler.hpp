@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -54,9 +54,9 @@ namespace ztd { namespace text {
 	public:
 		using assume_valid = ::std::integral_constant<bool, _AssumeValid>;
 
-		::std::array<encoding_code_point_t<_DesiredEncoding>, max_code_points_v<_DesiredEncoding>> _M_code_points;
+		::std::array<code_point_of_t<_DesiredEncoding>, max_code_points_v<_DesiredEncoding>> _M_code_points;
 		::std::size_t _M_code_points_size;
-		::std::array<encoding_code_unit_t<_DesiredEncoding>, max_code_units_v<_DesiredEncoding>> _M_code_units;
+		::std::array<code_unit_of_t<_DesiredEncoding>, max_code_units_v<_DesiredEncoding>> _M_code_units;
 		::std::size_t _M_code_units_size;
 
 		constexpr __progress_handler() noexcept

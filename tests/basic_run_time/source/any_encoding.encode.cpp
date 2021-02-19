@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/any_encoding.hpp>
@@ -39,12 +39,12 @@
 #include <algorithm>
 
 TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays through any_encoding interface") {
-	const auto& input0 = ztd::text::tests::u32_ansi_sequence_truth;
-	const auto& input1 = ztd::text::tests::u32_unicode_sequence_truth;
+	const auto& input0 = ztd::text::tests::u32_basic_source_character_set;
+	const auto& input1 = ztd::text::tests::u32_unicode_sequence_truth_native_endian;
 
 	SECTION("endian::native") {
 		SECTION("execution") {
-			const auto& output0 = ztd::text::tests::ansi_sequence_bytes_truth;
+			const auto& output0 = ztd::text::tests::basic_source_character_set_bytes_native_endian;
 
 			ztd::text::any_encoding encoding(
 			     ztd::text::encoding_scheme<ztd::text::execution, ztd::text::endian::native> {});
@@ -60,8 +60,8 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 			REQUIRE(is_equal0);
 		}
 		SECTION("wide_execution") {
-			const auto& output0 = ztd::text::tests::w_ansi_sequence_bytes_truth;
-			const auto& output1 = ztd::text::tests::w_unicode_sequence_bytes_truth;
+			const auto& output0 = ztd::text::tests::w_basic_source_character_set_bytes_native_endian;
+			const auto& output1 = ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian;
 
 			ztd::text::any_encoding encoding(
 			     ztd::text::encoding_scheme<ztd::text::wide_execution, ztd::text::endian::native> {});
@@ -87,8 +87,8 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf8") {
-			const auto& output0 = ztd::text::tests::u8_ansi_sequence_bytes_truth;
-			const auto& output1 = ztd::text::tests::u8_unicode_sequence_bytes_truth;
+			const auto& output0 = ztd::text::tests::u8_basic_source_character_set_bytes_native_endian;
+			const auto& output1 = ztd::text::tests::u8_unicode_sequence_bytes_truth_native_endian;
 
 			ztd::text::any_encoding encoding(
 			     ztd::text::encoding_scheme<ztd::text::utf8, ztd::text::endian::native> {});
@@ -114,8 +114,8 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf16") {
-			const auto& output0 = ztd::text::tests::u16_ansi_sequence_bytes_truth;
-			const auto& output1 = ztd::text::tests::u16_unicode_sequence_bytes_truth;
+			const auto& output0 = ztd::text::tests::u16_basic_source_character_set_bytes_native_endian;
+			const auto& output1 = ztd::text::tests::u16_unicode_sequence_bytes_truth_native_endian;
 
 			ztd::text::any_encoding encoding(
 			     ztd::text::encoding_scheme<ztd::text::utf16, ztd::text::endian::native> {});
@@ -141,8 +141,8 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf32") {
-			const auto& output0 = ztd::text::tests::u32_ansi_sequence_bytes_truth;
-			const auto& output1 = ztd::text::tests::u32_unicode_sequence_bytes_truth;
+			const auto& output0 = ztd::text::tests::u32_basic_source_character_set_bytes_native_endian;
+			const auto& output1 = ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian;
 
 			ztd::text::any_encoding encoding(
 			     ztd::text::encoding_scheme<ztd::text::utf32, ztd::text::endian::native> {});

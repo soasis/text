@@ -26,14 +26,14 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 ..
-.. =============================================================================
+.. =============================================================================>
 
 decode_view
 ===========
 
 The ``decode_view`` class provides a one-by-one view of the stored range's code points as the desired encoding's code units. Dereferencing the iterators returns a single ``code_point`` value corresponding to the desired encoding's transformation of the internal code units.
 
-The range-based classes are excellent ways to walk over units of information in a low-memory environment, as they only store the minimum amount of data necessary to perform their operations on the fly. This reduces the speed but is fine for one-at-a-time encoding operations. To decode eagerly and in bulk, see :doc:`the decode functions </decode>`.
+The range-based classes are excellent ways to walk over units of information in a low-memory environment, as they only store the minimum amount of data necessary to perform their operations on the fly. This reduces the speed but is fine for one-at-a-time encoding operations. To decode eagerly and in bulk, see :doc:`the decode functions </api/conversions/decode>`.
 
 .. doxygenclass:: ztd::text::decode_view
 	:members:

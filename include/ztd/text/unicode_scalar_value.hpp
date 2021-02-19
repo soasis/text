@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -38,100 +38,110 @@
 #include <ztd/text/detail/assert.hpp>
 #include <ztd/text/detail/unicode.hpp>
 
-#include <cassert>
+#include <string>
+#include <utility>
+#include <cstdint>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
-	//////
-	/// @brief A 32-bit value that is within the allowed 21 bits of Unicode and is not one of the Surrogate values.
-	///
-	/// @remarks The invariant is enforced with an assertion in normal modes, and can optionally be enforced by turning
-	/// on @c ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT.
-	//////
-	class unicode_scalar_value {
-	public:
+	namespace __impl {
 		//////
-		/// @brief Constructs a scalar value of indeterminate value (if no parentheses/brackets are provided) or with
-		/// the value 0 (if parentheses/brackets are provided for intentional value initialization).
+		/// @brief A 32-bit value that is within the allowed 21 bits of Unicode and is not one of the Surrogate
+		/// values.
 		///
+		/// @remarks The invariant is enforced with an assertion in normal modes, and can optionally be enforced by
+		/// turning on @c ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT.
 		//////
-		constexpr unicode_scalar_value() noexcept = default;
+		class alignas(alignof(char32_t)) __unicode_scalar_value {
+		public:
+			//////
+			/// @brief Constructs a scalar value of indeterminate value (if no parentheses/brackets are provided) or
+			/// with the value 0 (if parentheses/brackets are provided for intentional value initialization).
+			///
+			//////
+			constexpr __unicode_scalar_value() noexcept = default;
 
-		//////
-		/// @brief Constructs a scalar value with the given code point value.
-		///
-		/// @remarks
-		//////
-		constexpr unicode_scalar_value(char32_t __code_point) noexcept : _M_scalar(__code_point) {
+			//////
+			/// @brief Constructs a scalar value with the given code point value.
+			///
+			/// @remarks
+			//////
+			constexpr __unicode_scalar_value(char32_t __code_point) noexcept : _M_scalar(__code_point) {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT_I_)
-			if (__detail::__is_surrogate(this->_M_scalar) || (this->_M_scalar > __detail::__last_code_point)) {
-				::std::abort();
-			}
+				if (__detail::__is_surrogate(this->_M_scalar) || (this->_M_scalar > __detail::__last_code_point)) {
+					::std::abort();
+				}
 #else
-			ZTD_TEXT_ASSERT_MESSAGE_I_(
-				"The code point value must be a valid code point and must not be a surrogate value.",
-				!__detail::__is_surrogate(this->_M_scalar) && (this->_M_scalar <= __detail::__last_code_point));
+				ZTD_TEXT_ASSERT_MESSAGE_I_(
+					"The code point value must be a valid code point and must not be a surrogate value.",
+					!__detail::__is_surrogate(this->_M_scalar)
+					     && (this->_M_scalar <= __detail::__last_code_point));
 #endif
-		}
+			}
 
-		//////
-		/// @brief An explicit conversion to a typical char32_t value, bit-compatible with a normal code point value.
-		///
-		//////
-		constexpr explicit operator char32_t() const noexcept {
-			return this->_M_scalar;
-		}
+			//////
+			/// @brief An explicit conversion to a typical char32_t value, bit-compatible with a normal code point
+			/// value.
+			///
+			//////
+			constexpr explicit operator char32_t() const noexcept {
+				return this->_M_scalar;
+			}
 
-		//////
-		/// @brief Retrieves the underlying value.
-		///
-		//////
-		constexpr const char32_t& value() const& noexcept {
-			return this->_M_scalar;
-		}
+			//////
+			/// @brief Retrieves the underlying value.
+			///
+			//////
+			constexpr const char32_t& value() const& noexcept {
+				return this->_M_scalar;
+			}
 
-		//////
-		/// @brief Retrieves the underlying value.
-		///
-		//////
-		constexpr char32_t& value() & noexcept {
-			return this->_M_scalar;
-		}
+			//////
+			/// @brief Retrieves the underlying value.
+			///
+			//////
+			constexpr char32_t& value() & noexcept {
+				return this->_M_scalar;
+			}
 
-		//////
-		/// @brief Retrieves the underlying value.
-		///
-		//////
-		constexpr char32_t&& value() && noexcept {
-			return ::std::move(this->_M_scalar);
-		}
+			//////
+			/// @brief Retrieves the underlying value.
+			///
+			//////
+			constexpr char32_t&& value() && noexcept {
+				return ::std::move(this->_M_scalar);
+			}
 
-		//////
-		/// @brief Check if two unicode scalar values are equal.
-		///
-		/// @param[in] __left Left hand value of equality operator.
-		/// @param[in] __right Right hand value of equality operator.
-		//////
-		friend constexpr bool operator==(const unicode_scalar_value& __left, const unicode_scalar_value& __right) {
-			return __left._M_scalar == __right._M_scalar;
-		}
+			//////
+			/// @brief Check if two unicode scalar values are equal.
+			///
+			/// @param[in] __left Left hand value of equality operator.
+			/// @param[in] __right Right hand value of equality operator.
+			//////
+			friend constexpr bool operator==(
+				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
+				return __left._M_scalar == __right._M_scalar;
+			}
 
-		//////
-		/// @brief Check if one unicode scalar value is less than the other.
-		///
-		/// @param[in] __left Left hand value of less than operator.
-		/// @param[in] __right Right hand value of less than operator.
-		//////
-		friend constexpr bool operator<(const unicode_scalar_value& __left, const unicode_scalar_value& __right) {
-			return __left._M_scalar < __right._M_scalar;
-		}
+			//////
+			/// @brief Check if one unicode scalar value is less than the other.
+			///
+			/// @param[in] __left Left hand value of less than operator.
+			/// @param[in] __right Right hand value of less than operator.
+			//////
+			friend constexpr bool operator<(
+				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
+				return __left._M_scalar < __right._M_scalar;
+			}
 
+		private:
+			char32_t _M_scalar;
+		};
+	} // namespace __impl
 
-	private:
-		char32_t _M_scalar;
-	};
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+	using unicode_scalar_value = __impl::__unicode_scalar_value;
 #else
 	using unicode_scalar_value = char32_t;
 #endif
@@ -139,12 +149,11 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
 namespace std {
 
 	template <>
-	class char_traits<::ztd::text::unicode_scalar_value> {
-		using char_type  = ::ztd::text::unicode_scalar_value;
+	class char_traits<::ztd::text::__impl::__unicode_scalar_value> {
+		using char_type  = ::ztd::text::__impl::__unicode_scalar_value;
 		using int_type   = ::std::int_least32_t;
 		using pos_type   = ::std::streampos;
 		using off_type   = ::std::streamoff;
@@ -233,6 +242,5 @@ namespace std {
 	};
 
 } // namespace std
-#endif
 
 #endif // ZTD_TEXT_UNICODE_SCALAR_VALUE_HPP

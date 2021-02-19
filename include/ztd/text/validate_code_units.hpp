@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// =============================================================================
+// ============================================================================>
 
 #pragma once
 
@@ -120,7 +120,7 @@ namespace ztd { namespace text {
 				return _Result(::std::move(__working_input), true, __decode_state);
 			}
 			else {
-				using _CodeUnit = encoding_code_unit_t<_UEncoding>;
+				using _CodeUnit = code_unit_of_t<_UEncoding>;
 
 				_WorkingInput __working_input(
 					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
@@ -158,7 +158,8 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions checks to see if extension points for @c text_validate_code_units is available taking
 	/// the available 3 parameters. If so, it calls this. Otherwise, it creates an encoding state through
-	/// ztd::text::make_encode_state before calling ztd::text::validate_code_units(__input, __encoding, __decode_state,
+	/// ztd::text::make_encode_state before calling ztd::text::validate_code_units(__input, __encoding,
+	/// __decode_state,
 	/// __encode_state).
 	//////
 	template <typename _Input, typename _Encoding, typename _DecodeState>
@@ -175,7 +176,7 @@ namespace ztd { namespace text {
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else {
-			using _State = encoding_encode_state_t<_UEncoding>;
+			using _State = encode_state_of_t<_UEncoding>;
 
 			_State __encode_state = make_encode_state(__encoding);
 			return validate_code_units(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -196,7 +197,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding>
 	constexpr auto validate_code_units(_Input&& __input, _Encoding&& __encoding) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = encoding_decode_state_t<_UEncoding>;
+		using _State     = decode_state_of_t<_UEncoding>;
 
 		_State __state = make_decode_state(__encoding);
 		auto __stateful_result
@@ -218,7 +219,16 @@ namespace ztd { namespace text {
 	template <typename _Input>
 	constexpr auto validate_code_units(_Input&& __input) {
 		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_unit_encoding_t<__detail::__range_value_type_t<_UInput>>;
+		using _CodeUnit = __detail::__remove_cvref_t<__detail::__range_value_type_t<_UInput>>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return validate_code_units(::std::forward<_Input>(__input), __encoding);
+		}
+#endif
+		using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
 		_Encoding __encoding {};
 		return validate_code_units(::std::forward<_Input>(__input), __encoding);
 	}
