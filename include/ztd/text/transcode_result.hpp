@@ -57,7 +57,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief The result of transcoding operations (such as @ref ztd_text_transcode) that specifically do not include
+	/// @brief The result of transcoding operations (such as ztd_text_transcode) that specifically do not include
 	/// a reference to the state.
 	//////
 	template <typename _Input, typename _Output>
@@ -80,13 +80,13 @@ namespace ztd { namespace text {
 		encoding_error error_code;
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
-		/// @ref ztd::text::encoding_error::ok.
+		/// ztd::text::encoding_error::ok.
 		//////
 		bool handled_error;
 
 
 		//////
-		/// @brief Constructs a @ref ztd::text::stateless_transcode_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::stateless_transcode_result, defaulting the error code to 
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -104,7 +104,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a @ref ztd::text::stateless_transcode_result with the provided parameters and
+		/// @brief Constructs a ztd::text::stateless_transcode_result with the provided parameters and
 		/// information, including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -112,7 +112,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
-		/// @ref ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput>
@@ -127,7 +127,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of transcoding operations (such as @ref ztd_text_transcode).
+	/// @brief The result of transcoding operations (such as ztd_text_transcode).
 	///
 	//////
 	template <typename _Input, typename _Output, typename _FromState, typename _ToState>
@@ -148,7 +148,7 @@ namespace ztd { namespace text {
 		_ToState& to_state;
 
 		//////
-		/// @brief Constructs a @ref ztd::text::transcode_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to 
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -169,7 +169,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a @ref ztd::text::transcode_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::transcode_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -181,7 +181,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
-		/// @ref ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>

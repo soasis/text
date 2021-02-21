@@ -28,11 +28,15 @@
 ..
 .. =============================================================================>
 
-cuneicode_encoding
-==================
+🔨 cuneicode_encoding (In Progress)
+===================================
+
+.. warning::
+
+	|unfinished_warning|
 
 This encoding is only available if the :ref:`configuration macro for ZTD_TEXT_USE_CUNEICODE <config-ZTD_TEXT_USE_CUNEICODE>` is turned on.
 
 This encoding is tied to the `cuneicode library <https://ztdcuneicode.rtfd.io>`_. The cuneicode library is a C library for validation, counting, and transcoding between a fixed set of encodings, with an additional plug for arbitrary encodings that can be added at run-time. This is in opposition to :doc:`iconv </api/encodings/iconv_encoding>`, where additional encodings can only be added by-hand through recompiling the code or hooking specific system configuration points.
 
-cuneicode has a variable number of encodings it can be compiled with to support. States are pre-constructed in the encoding itself and copied as necessary when ``encode_state_of`` or ``decode_state_of``\ s are being created to call the desired conversion functions. The user can inspect the output error parameter from the ``cuneicode_encoding`` constructor to know of failure, or not pass in the output error parameter and instead take one of a assert, thrown exception, or ``abort`` (preferred invocation in that order).
+cuneicode has a variable number of encodings it can be compiled with to support. States are pre-constructed in the encoding itself and copied as necessary when ``encode_state`` or ``decode_state``\ s are being created to call the desired conversion functions. The user can inspect the output error parameter from the ``cuneicode_encoding`` constructor to know of failure, or not pass in the output error parameter and instead take one of a assert, thrown exception, or ``abort`` (preferred invocation in that order).

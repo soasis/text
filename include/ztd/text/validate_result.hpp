@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -53,7 +53,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief The result of valdation operations (such as @ref ztd_text_validate_code_units and @ref
+	/// @brief The result of valdation operations (such as ztd_text_validate_code_units and 
 	/// ztd_text_validate_code_points) that specifically do not include a reference to the state.
 	//////
 	template <typename _Input>
@@ -70,7 +70,7 @@ namespace ztd { namespace text {
 		bool valid;
 
 		//////
-		/// @brief Constructs a @ref ztd::text::validate_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to 
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -92,7 +92,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of validation operations (such as @ref ztd_text_validate_code_units and @ref
+	/// @brief The result of validation operations (such as ztd_text_validate_code_units and 
 	/// ztd_text_validate_code_points).
 	///
 	//////
@@ -109,7 +109,7 @@ namespace ztd { namespace text {
 		_State& state;
 
 		//////
-		/// @brief Constructs a @ref ztd::text::validate_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to 
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.

@@ -35,7 +35,6 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/basic_c_string_view.hpp>
 #include <ztd/text/basic_text_view.hpp>
 #include <ztd/text/char8_t.hpp>
 #include <ztd/text/encoding.hpp>
@@ -45,10 +44,40 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	using text_view    = basic_text_view<execution>;
-	using wtext_view   = basic_text_view<wide_execution>;
-	using u8text_view  = basic_text_view<utf8>;
+	//////
+	/// @brief A view for examining text in the locale, runtime-based execution encoding.
+	///
+	//////
+	using text_view = basic_text_view<execution>;
+	//////
+	/// @brief A view for examining text in the locale, runtime-based wide execution encoding.
+	///
+	//////
+	using wtext_view = basic_text_view<wide_execution>;
+	//////
+	/// @brief A view for examining text in the string literal encoding.
+	///
+	//////
+	using ltext_view = basic_text_view<literal>;
+	//////
+	/// @brief A view for examining text in the wide string literal encoding.
+	///
+	//////
+	using wltext_view = basic_text_view<wide_literal>;
+	//////
+	/// @brief A view for examining text in the UTF-8 encoding.
+	///
+	//////
+	using u8text_view = basic_text_view<utf8>;
+	//////
+	/// @brief A view for examining text in the UTF-16 encoding.
+	///
+	//////
 	using u16text_view = basic_text_view<utf16>;
+	//////
+	/// @brief A view for examining text in the UTF-32 encoding.
+	///
+	//////
 	using u32text_view = basic_text_view<utf32>;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

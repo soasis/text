@@ -67,8 +67,9 @@ namespace ztd { namespace text {
 		///
 		/// @remarks Relies on CRTP.
 		//////
-		template <typename _Derived = void, typename _CodeUnit = char8_t, bool __overlong_allowed = false,
-			bool __surrogates_allowed = false, bool __use_overlong_null_only = false>
+		template <typename _Derived = void, typename _CodeUnit = char8_t, typename _CodePoint = unicode_code_point,
+			bool __overlong_allowed = false, bool __surrogates_allowed = false,
+			bool __use_overlong_null_only = false>
 		class __utf8_with : public __utf8_tag {
 		public:
 			//////
@@ -83,7 +84,7 @@ namespace ztd { namespace text {
 			using state = __detail::__empty_state;
 			//////
 			/// @brief The individual units that result from an encode operation or are used as input to a decode
-			/// operation. For UTF-8 formats, this is usually char8_t, but this can change (see @ref
+			/// operation. For UTF-8 formats, this is usually char8_t, but this can change (see
 			/// ztd::text::basic_utf8).
 			//////
 			using code_unit = _CodeUnit;
@@ -91,7 +92,7 @@ namespace ztd { namespace text {
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
 			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 			//////
-			using code_point = unicode_code_point;
+			using code_point = _CodePoint;
 			//////
 			/// @brief Whether or not the decode operation can process all forms of input into code point values.
 			/// Thsi is true for all Unicode Transformation Formats (UTFs), which can encode and decode without a
@@ -130,7 +131,7 @@ namespace ztd { namespace text {
 			/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
 			/// very little.
 			///
-			/// @returns A @ref ztd::text::encode_result object that contains the reconstructed input range,
+			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
@@ -172,7 +173,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+							::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 					}
 					if constexpr (!__surrogates_allowed) {
 						if (__detail::__is_surrogate(__point)) {
@@ -183,7 +184,7 @@ namespace ztd { namespace text {
 								     __detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::invalid_sequence),
-								::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+								::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 						}
 					}
 				}
@@ -202,7 +203,7 @@ namespace ztd { namespace text {
 										     __detail::__reconstruct(
 										          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 										     __s, encoding_error::insufficient_output_space),
-										::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+										::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 								}
 							}
 							__detail::__dereference(__outit) = static_cast<code_unit>(__payload[i]);
@@ -224,7 +225,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
-							::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+							::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 					}
 				}
 				constexpr char8_t __first_mask_continuation_values[][2] = {
@@ -259,7 +260,7 @@ namespace ztd { namespace text {
 									     __detail::__reconstruct(
 									          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 									     __s, encoding_error::insufficient_output_space),
-									::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+									::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 							}
 						}
 
@@ -287,7 +288,7 @@ namespace ztd { namespace text {
 			/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
 			/// very little.
 			///
-			/// @returns A @ref ztd::text::decode_result object that contains the reconstructed input range,
+			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
@@ -324,7 +325,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
-							::std::span<code_unit, 0>());
+							::ztd::text::span<code_unit, 0>());
 					}
 				}
 				else {
@@ -356,7 +357,7 @@ namespace ztd { namespace text {
 								     __detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::invalid_sequence),
-								::std::span<code_unit, 1>(__units.data(), __units.size()));
+								::ztd::text::span<code_unit, 1>(__units.data(), __units.size()));
 						}
 					}
 				}
@@ -380,7 +381,7 @@ namespace ztd { namespace text {
 							     __s,
 							     __is_invalid_cu ? encoding_error::invalid_sequence
 							                     : encoding_error::invalid_sequence),
-							::std::span<code_unit, 1>(__units.data(), 1));
+							::ztd::text::span<code_unit, 1>(__units.data(), 1));
 					}
 				}
 
@@ -394,7 +395,7 @@ namespace ztd { namespace text {
 								     __detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::incomplete_sequence),
-								::std::span<code_unit>(__units.data(), i));
+								::ztd::text::span<code_unit>(__units.data(), i));
 						}
 					}
 					if constexpr (sizeof(code_unit) == sizeof(_InputValueType)) {
@@ -412,7 +413,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit>(__units.data(), i + 1));
+							::ztd::text::span<code_unit>(__units.data(), i + 1));
 					}
 				}
 
@@ -444,7 +445,7 @@ namespace ztd { namespace text {
 								     __detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::invalid_sequence),
-								::std::span<code_unit>(__units.data(), __length));
+								::ztd::text::span<code_unit>(__units.data(), __length));
 						}
 					}
 					if constexpr (!__surrogates_allowed) {
@@ -456,7 +457,7 @@ namespace ztd { namespace text {
 								     __detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::invalid_sequence),
-								::std::span<code_unit>(__units.data(), __length));
+								::ztd::text::span<code_unit>(__units.data(), __length));
 						}
 					}
 					if (__decoded > __detail::__last_code_point) {
@@ -467,7 +468,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit>(__units.data(), __length));
+							::ztd::text::span<code_unit>(__units.data(), __length));
 					}
 				}
 
@@ -493,37 +494,46 @@ namespace ztd { namespace text {
 	/// @brief A UTF-8 Encoding that traffics in, specifically, the desired code unit type provided as a template
 	/// argument.
 	///
-	/// @tparam _Type The code unit type to use.
+	/// @tparam _CodeUnit The code unit type to use.
+	/// @tparam _CodePoint The code point type to use.
 	///
 	/// @remarks This type as a maximum of 4 input code points and a maximum of 1 output code point. It strictly
 	/// follows the Unicode Specification for allowed conversions. For overlong sequences (e.g., similar to Android or
-	/// Java UTF-8 implementations) and other quirks, see @ref ztd::text::basic_mutf8 or @ref ztd::text::basic_wtf8 .
+	/// Java UTF-8 implementations) and other quirks, see ztd::text::basic_mutf8 or ztd::text::basic_wtf8 .
 	//////
-	template <typename _Type>
-	class basic_utf8 : public __impl::__utf8_with<basic_utf8<_Type>, _Type> { };
+	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
+	class basic_utf8 : public __impl::__utf8_with<basic_utf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
 	//////
-	/// @brief A UTF-8 Encoding that traffics in char8_t. See @ref ztd::text::basic_utf8 for more details.
+	/// @brief A UTF-8 Encoding that traffics in char8_t. See ztd::text::basic_utf8 for more details.
 	///
 	//////
 	using utf8 = basic_utf8<char8_t>;
 
 	//////
+	/// @brief A UTF-8 Encoding that traffics in char, for compatibility purposes with older codebases. See
+	/// ztd::text::basic_utf8 for more details.
+	//////
+	using compat_utf8 = basic_utf8<char>;
+
+	//////
 	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in, specifically, the desired code
 	/// unit type provided as a template argument.
 	///
-	/// @tparam _Type The code unit type to use.
+	/// @tparam _CodeUnit The code unit type to use.
+	/// @tparam _CodePoint The code point type to use.
 	///
 	/// @remarks This type as a maximum of 4 input code points and a maximum of 1 output code point. Unpaired
 	/// surrogates are allowed in this type, which may be useful for dealing with legacy storage and implementations of
 	/// the Windows Filesystem (modern Windows no longer lets non-Unicode filenames through). For a strict,
-	/// Unicode-compliant UTF-8 Encoding, see @ref ztd::text::basic_utf8 .
+	/// Unicode-compliant UTF-8 Encoding, see ztd::text::basic_utf8 .
 	//////
-	template <typename _Type>
-	class basic_wtf8 : public __impl::__utf8_with<basic_wtf8<_Type>, _Type, false, true, false> { };
+	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
+	class basic_wtf8
+	: public __impl::__utf8_with<basic_wtf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint, false, true, false> { };
 
 	//////
-	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in char8_t. See @ref
+	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in char8_t. See
 	/// ztd::text::basic_wtf8 for more details.
 	//////
 	using wtf8 = basic_wtf8<char8_t>;
@@ -532,18 +542,20 @@ namespace ztd { namespace text {
 	/// @brief A Modified UTF-8 Encoding that traffics in, specifically, the desired code unit type provided as a
 	/// template argument.
 	///
-	/// @tparam _Type The code unit type to use.
+	/// @tparam _CodeUnit The code unit type to use.
+	/// @tparam _CodePoint The code point type to use.
 	///
 	/// @remarks This type as a maximum of 6 input code points and a maximum of 1 output code point. Null values are
 	/// encoded as an overlong sequence to specifically avoid problems with C-style strings, which is useful for
 	/// working with bad implementations sitting on top of POSIX or other Operating System APIs. For a strict,
-	/// Unicode-compliant UTF-8 Encoding, see @ref ztd::text::basic_utf8 .
+	/// Unicode-compliant UTF-8 Encoding, see ztd::text::basic_utf8 .
 	//////
-	template <typename _Type>
-	class basic_mutf8 : public __impl::__utf8_with<basic_mutf8<_Type>, _Type, true, false, true> { };
+	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
+	class basic_mutf8
+	: public __impl::__utf8_with<basic_mutf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint, true, false, true> { };
 
 	//////
-	/// @brief A Modified UTF-8 Encoding that traffics in char8_t. See @ref ztd::text::basic_mutf8 for more details.
+	/// @brief A Modified UTF-8 Encoding that traffics in char8_t. See ztd::text::basic_mutf8 for more details.
 	///
 	//////
 	using mutf8 = basic_mutf8<char8_t>;
@@ -551,13 +563,15 @@ namespace ztd { namespace text {
 
 	namespace __detail {
 
-		template <typename _UTF8Unit, typename _WTF8Unit>
-		struct __is_bitwise_transcoding_compatible<basic_utf8<_UTF8Unit>, basic_wtf8<_WTF8Unit>>
+		template <typename _UTF8Unit, typename _UTF8Point, typename _WTF8Unit, typename _WTF8Point>
+		struct __is_bitwise_transcoding_compatible<basic_utf8<_UTF8Unit, _UTF8Point>,
+			basic_wtf8<_WTF8Unit, _WTF8Point>>
 		: std::integral_constant<bool,
 			  (sizeof(_UTF8Unit) == sizeof(_WTF8Unit)) && (alignof(_UTF8Unit) == alignof(_WTF8Unit))> { };
 
-		template <typename _UTF8Unit, typename _MUTF8Unit>
-		struct __is_bitwise_transcoding_compatible<basic_utf8<_UTF8Unit>, basic_mutf8<_MUTF8Unit>>
+		template <typename _UTF8Unit, typename _UTF8Point, typename _MUTF8Unit, typename _MUTF8Point>
+		struct __is_bitwise_transcoding_compatible<basic_utf8<_UTF8Unit, _UTF8Point>,
+			basic_mutf8<_MUTF8Unit, _MUTF8Point>>
 		: std::integral_constant<bool,
 			  (sizeof(_UTF8Unit) == sizeof(_MUTF8Unit)) && (alignof(_UTF8Unit) == alignof(_MUTF8Unit))> { };
 

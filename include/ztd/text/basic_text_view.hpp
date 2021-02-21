@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -36,8 +36,11 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/code_unit.hpp>
+#include <ztd/text/code_point.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/normalization.hpp>
+#include <ztd/text/decode_view.hpp>
+#include <ztd/text/state.hpp>
 
 #include <string_view>
 
@@ -48,13 +51,20 @@ namespace ztd { namespace text {
 	/// @brief A view over a sequence of code units. The code units are expected to be of the given encoding and
 	/// normalization form.
 	///
+	/// @tparam _Encoding The encoding to store any input and presented text as.
+	/// @tparam _NormalizationForm The normalization form to impose on the stored text's sequences.
+	/// @tparam _Range The range type that will be stored within this ztd::text::basic_text_view and examined using the
+	/// iterators, following the @p _Encoding type decoding procedure.
+	/// @tparam _ErrorHandler The default error handler to use for any and all operations on text. Generally, most
+	/// operations will provide room to override this.
+	///
 	/// @remarks The default type for this is a basic_string_view templated on the code unit type from the encoding.
-	/// The error handler is also the default handler, meaning that any lossy conversions will automatically cause a
-	/// compile-time error.
+	/// The error handler is also the default careless error handler, meaning that any lossy conversions will
+	/// automatically cause a compile-time error.
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
-		typename _Range        = ::std::basic_string_view<code_unit_of_t<_Encoding>>,
-		typename _ErrorHandler = default_handler>
+		typename _Range        = ::std::basic_string_view<code_unit_t<_Encoding>>,
+		typename _ErrorHandler = __detail::__careless_handler>
 	class basic_text_view {
 	public:
 		//////
@@ -68,6 +78,11 @@ namespace ztd { namespace text {
 		//////
 		using encoding_type = _Encoding;
 		//////
+		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
+		///
+		//////
+		using state_type = encode_state_t<_Encoding>;
+		//////
 		/// @brief The normalization form type this view is imposing on top of the encoded sequence.
 		///
 		//////
@@ -79,30 +94,80 @@ namespace ztd { namespace text {
 		using error_handler_type = _ErrorHandler;
 
 	private:
+		template <typename, typename, typename, typename>
+		friend class basic_text;
+
+		template <typename _ViewErrorHandler = error_handler_type>
+		using _CodePointView
+			= decode_view<encoding_type, range_type, __detail::__remove_cvref_t<_ViewErrorHandler>, state_type>;
+
 		range_type _M_storage;
 		encoding_type _M_encoding;
+		state_type _M_state;
 		normalization_type _M_normalization;
 		error_handler_type _M_error_handler;
 
 	public:
 		//////
-		/// @brief Access the storage as an r-value reference.
+		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
+		///
+		/// @remarks Copies the stored @c state within the ztd::text::basic_text_view to perform the code point
+		/// iteration process.
 		//////
-		range_type&& base() && {
+		constexpr _CodePointView<> code_points() const noexcept {
+			return _CodePointView<>(this->_M_storage, this->_M_encoding, this->_M_error_handler, this->_M_state);
+		}
+
+		//////
+		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
+		///
+		/// @param[in] __state The state to use for this code point view.
+		///
+		/// @remarks Moves the provided @c __state in as the "starting point".
+		//////
+		constexpr _CodePointView<> code_points(state_type __state) const noexcept {
+			return _CodePointView<>(
+				this->_M_storage, this->_M_encoding, this->_M_error_handler, ::std::move(__state));
+		}
+
+		//////
+		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
+		///
+		/// @tparam _ViewErrorHandler The type of the passed-in error handler to use for these operations.
+		///
+		/// @param[in] __state The state to use for this code point view.
+		/// @param[in] __error_handler The error handler to look at the code points for this code point view.
+		///
+		/// @remarks Moves the provided @p __state in as the "starting point".
+		//////
+		template <typename _ViewErrorHandler>
+		constexpr _CodePointView<_ViewErrorHandler> code_points(
+			state_type __state, _ViewErrorHandler&& __error_handler) const noexcept {
+			return _CodePointView<_ViewErrorHandler>(this->_M_storage, this->_M_encoding,
+				::std::forward<_ViewErrorHandler>(__error_handler), ::std::move(__state));
+		}
+
+		//////
+		/// @brief Access the storage as an r-value reference.
+		///
+		//////
+		constexpr range_type&& base() && noexcept {
 			return ::std::move(this->_M_storage);
 		}
 
 		//////
 		/// @brief Access the storage as a const-qualified l-value reference.
+		///
 		//////
-		const range_type& base() const& {
+		constexpr const range_type& base() const& noexcept {
 			return this->_M_storage;
 		}
 
 		//////
 		/// @brief Access the storage as an l-value reference.
+		///
 		//////
-		range_type& base() & {
+		constexpr range_type& base() & noexcept {
 			return this->_M_storage;
 		}
 	};

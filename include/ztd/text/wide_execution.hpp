@@ -76,15 +76,30 @@ namespace ztd { namespace text {
 	/// Windows when possible to avoid some of the platform-specific shenanigans.
 	//////
 	class wide_execution {
+	public:
+		//////
+		/// @brief The individual units that result from an encode operation or are used as input to a decode
+		/// operation.
+		///
+		/// @remarks Please note that wchar_t is a variably sized type across platforms and may not represent either
+		/// UTF-16 or UTF-32, including on *nix or POSIX platforms.
+		//////
+		using code_unit = wchar_t;
+		//////
+		/// @brief The individual units that result from a decode operation or as used as input to an encode
+		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
+		//////
+		using code_point = unicode_code_point;
+
 	private:
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-		using __wide_decode_state = decode_state_of_t<__impl::__utf16_with<void, wchar_t, false>>;
-		using __wide_encode_state = encode_state_of_t<__impl::__utf16_with<void, wchar_t, false>>;
+		using __wide_decode_state = decode_state_t<__impl::__utf16_with<void, wchar_t, code_point, false>>;
+		using __wide_encode_state = encode_state_t<__impl::__utf16_with<void, wchar_t, code_point, false>>;
 #else
 		class __wide_decode_state {
 		public:
 			::std::mbstate_t wide_state;
-			execution::state narrow_state;
+			decode_state_t<execution> narrow_state;
 
 			// TODO: states need to be split into 2
 			// different states, optionally...
@@ -100,7 +115,7 @@ namespace ztd { namespace text {
 		class __wide_encode_state {
 		public:
 			::std::mbstate_t __wide_state;
-			execution::state __narrow_state;
+			encode_state_t<execution> __narrow_state;
 
 			// TODO: states need to be split into 2
 			// different states, optionally...
@@ -130,19 +145,6 @@ namespace ztd { namespace text {
 		//////
 		using encode_state = __wide_encode_state;
 		//////
-		/// @brief The individual units that result from an encode operation or are used as input to a decode
-		/// operation.
-		///
-		/// @remarks Please note that wchar_t is a variably sized type across platforms and may not represent either
-		/// UTF-16 or UTF-32, including on *nix or POSIX platforms.
-		//////
-		using code_unit = wchar_t;
-		//////
-		/// @brief The individual units that result from a decode operation or as used as input to an encode
-		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-		//////
-		using code_point = unicode_code_point;
-		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
 		/// @remarks All known wide execution encodings can decode into Unicode just fine.
@@ -161,6 +163,7 @@ namespace ztd { namespace text {
 #else
 			::std::false_type;
 #endif
+
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
 		///
@@ -173,6 +176,25 @@ namespace ztd { namespace text {
 		inline static constexpr const ::std::size_t max_code_points = 4;
 
 		//////
+		/// @brief Returns whether or not this encoding is a unicode encoding.
+		///
+		/// @remarks This function operates at runtime and queries the existing locale through a variety of
+		/// platform-specific means (such as @c nl_langinfo for POSIX, ACP probing on Windows, or fallin back to @c
+		/// std::setlocale name checking otherwise).
+		//////
+		static bool contains_unicode_encoding() noexcept {
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
+			return true;
+#elif ZTD_TEXT_IS_ON_(ZTD_TEXT_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
+			const char* __ctype_name = nl_langinfo(CODESET);
+			return __detail::__is_unicode_encoding_name(__ctype_name);
+#else
+			// On very specific platforms, we must probe......
+			return true;
+#endif
+		}
+
+		//////
 		/// @brief Encodes a single complete unit of information as code units and produces a result with the
 		/// input and output ranges moved past what was successfully read and written; or, produces an error and
 		/// returns the input and output ranges untouched.
@@ -183,7 +205,7 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this is
 		/// effectively a runtime encoding and therefore it is important to preserve and manage this state.
 		///
-		/// @returns A @ref ztd::text::encode_result object that contains the reconstructed input range,
+		/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 		/// reconstructed output range, error handler, and a reference to the passed-in state.
 		///
 		/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit of
@@ -205,8 +227,8 @@ namespace ztd { namespace text {
 			using _Result = __detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-			using __u16e               = __impl::__utf16_with<void, wchar_t, false>;
-			using __intermediate_state = typename __u16e::state;
+			using __u16e               = __impl::__utf16_with<void, wchar_t, code_point, false>;
+			using __intermediate_state = encode_state_t<__u16e>;
 
 			__u16e __u16enc {};
 			__intermediate_state __intermediate_s {};
@@ -217,7 +239,7 @@ namespace ztd { namespace text {
 				wide_execution __self {};
 				return __error_handler(__self,
 					_Result(::std::move(__result.input), ::std::move(__result.output), __s, __result.error_code),
-					::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+					::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 					     __intermediate_handler._M_code_points_size));
 			}
 			return _Result(::std::move(__result.input), ::std::move(__result.output), __s, __result.error_code);
@@ -237,7 +259,7 @@ namespace ztd { namespace text {
 			constexpr const ::std::size_t __state_max = 32;
 			char __pray_for_state[__state_max + 1] {};
 			char* __pray_start = &__pray_for_state[0];
-			::std::span<char, __state_max> __intermediate_output(__pray_start, __state_max);
+			::ztd::text::span<char, __state_max> __intermediate_output(__pray_start, __state_max);
 			execution __exec {};
 			__detail::__progress_handler<!__call_error_handler, wide_execution> __intermediate_handler {};
 			auto __result = __exec.encode_one(::std::forward<_InputRange>(__input), __intermediate_output,
@@ -249,12 +271,12 @@ namespace ztd { namespace text {
 						_Result(::std::move(__result.input),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, __result.error_code),
-						::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+						::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 						     __intermediate_handler._M_code_points_size));
 				}
 			}
 
-			auto __current_input = ::std::span<char>(__intermediate_output.data(),
+			auto __current_input = ::ztd::text::span<char>(__intermediate_output.data(),
 				::std::distance(__intermediate_output.data(), __result.output.data()));
 			code_unit __units[1] {};
 			::std::size_t __res = ::std::mbrtowc(::std::addressof(__units[0]), __current_input.data(),
@@ -267,7 +289,7 @@ namespace ztd { namespace text {
 						_Result(::std::move(__result.input),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::invalid_sequence),
-						::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+						::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 						     __intermediate_handler._M_code_points_size));
 				}
 			}
@@ -279,7 +301,7 @@ namespace ztd { namespace text {
 						_Result(::std::move(__result.input),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::incomplete_sequence),
-						::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+						::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 						     __intermediate_handler._M_code_points_size));
 				}
 			}
@@ -303,7 +325,7 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this is
 		/// effectively a runtime encoding and therefore it is important to preserve and manage this state.
 		///
-		/// @returns A @ref ztd::text::decode_result object that contains the reconstructed input range,
+		/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 		/// reconstructed output range, error handler, and a reference to the passed-in state.
 		///
 		/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit of
@@ -326,8 +348,8 @@ namespace ztd { namespace text {
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-			using __u16e               = __impl::__utf16_with<void, wchar_t, false>;
-			using __intermediate_state = typename __u16e::state;
+			using __u16e               = __impl::__utf16_with<void, wchar_t, code_point, false>;
+			using __intermediate_state = decode_state_t<__u16e>;
 
 			__u16e __u16enc {};
 			__detail::__progress_handler<!__call_error_handler, wide_execution> __intermediate_handler {};
@@ -340,7 +362,7 @@ namespace ztd { namespace text {
 					return __error_handler(wide_execution {},
 						_Result(
 						     ::std::move(__result.input), ::std::move(__result.output), __s, __result.error_code),
-						::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+						::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 						     __intermediate_handler._M_code_points_size));
 				}
 			}
@@ -366,7 +388,7 @@ namespace ztd { namespace text {
 					return __error_handler(__self,
 						_Result(::std::forward<_InputRange>(__input), ::std::forward<_OutputRange>(__output), __s,
 						     encoding_error::insufficient_output_space),
-						::std::span<code_unit, 0>());
+						::ztd::text::span<code_unit, 0>());
 				}
 			}
 
@@ -394,7 +416,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit>(::std::addressof(__units[0]), __units_count));
+							::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
 					}
 				}
 				else {
@@ -413,7 +435,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit>(::std::addressof(__units[0]), __units_count));
+							::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
 					}
 				}
 				else if (__res == 0 && ::std::mbsinit(::std::addressof(__s.wide_state)) == 0) {
@@ -432,7 +454,7 @@ namespace ztd { namespace text {
 								_Result(::std::forward<_InputRange>(__input),
 								     ::std::forward<_OutputRange>(__output), __s,
 								     encoding_error::incomplete_sequence),
-								::std::span<code_unit>(::std::addressof(__units[0]), __units_count));
+								::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
 						}
 					}
 					continue;
@@ -452,7 +474,7 @@ namespace ztd { namespace text {
 					return __error_handler(__self,
 						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						     ::std::move(__result.output), __s, __result.error_code),
-						::std::span<code_unit>(::std::addressof(__units[0]), __units_count));
+						::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
 				}
 			}
 			return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),

@@ -44,8 +44,8 @@ namespace ztd { namespace text {
 
 	namespace __detail {
 		template <typename _Type>
-		using __detect_maybe_is_unicode_encoding
-			= decltype(::std::declval<const _Type&>().maybe_is_unicode_encoding());
+		using __detect_contains_unicode_encoding
+			= decltype(::std::declval<const _Type&>().contains_unicode_encoding());
 
 		template <typename _Type>
 		using __detect_is_unicode_encoding = decltype(_Type::is_unicode_encoding::value);
@@ -88,15 +88,15 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __encoding The encoding to query.
 	///
-	/// @remarks This function first checks if there is a function called @c maybe_is_unicode_encoding . If it is
+	/// @remarks This function first checks if there is a function called @c contains_unicode_encoding . If it is
 	/// present, then it returns the value of that function directly. Otherwise, it checks if
 	/// ztd::text::is_unicode_encoding_v is true for the provided @p __encoding . If that's the case, then @c true is
 	/// returned. Otherwise, it assumes the encoding is not a Unicode-compatible encoding and returns false.
 	//////
 	template <typename _Encoding>
-	constexpr bool maybe_is_unicode_encoding(const _Encoding& __encoding) noexcept {
-		if constexpr (__detail::__is_detected_v<__detail::__detect_maybe_is_unicode_encoding>) {
-			return __encoding.maybe_is_unicode_encoding();
+	constexpr bool contains_unicode_encoding(const _Encoding& __encoding) noexcept {
+		if constexpr (__detail::__is_detected_v<__detail::__detect_contains_unicode_encoding, _Encoding>) {
+			return __encoding.contains_unicode_encoding();
 		}
 		else if constexpr (is_unicode_encoding_v<_Encoding>) {
 			return true;

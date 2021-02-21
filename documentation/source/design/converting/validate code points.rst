@@ -28,6 +28,11 @@
 ..
 .. =============================================================================>
 
-Validating Code Points
-======================
+🔨 Validating Code Points (In Progress)
+=======================================
 
+.. warning::
+
+	|unfinished_warning|
+
+For now, you can go check out the API documentation for :doc:`ztd::text::validate_code_points </api/conversions/validate_code_points>`.

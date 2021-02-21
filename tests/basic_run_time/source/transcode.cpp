@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -41,16 +41,48 @@ TEST_CASE("text/transcode/roundtrip", "transcode can roundtrip") {
 		std::string result = ztd::text::transcode(ztd::text::tests::basic_source_character_set, encoding, encoding,
 		     ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
 		REQUIRE(result == ztd::text::tests::basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::string result1 = ztd::text::transcode(ztd::text::tests::unicode_sequence_truth_native_endian,
+			     encoding, encoding, ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
+			REQUIRE(result1 == ztd::text::tests::unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("wide_execution") {
 		ztd::text::wide_execution encoding {};
-		std::wstring result0 = ztd::text::transcode(ztd::text::tests::w_basic_source_character_set, encoding, encoding,
-		     ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
+		std::wstring result0 = ztd::text::transcode(ztd::text::tests::w_basic_source_character_set, encoding,
+		     encoding, ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
 		REQUIRE(result0 == ztd::text::tests::w_basic_source_character_set);
 
-		std::wstring result1 = ztd::text::transcode(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding, encoding,
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::wstring result1 = ztd::text::transcode(ztd::text::tests::w_unicode_sequence_truth_native_endian,
+			     encoding, encoding, ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
+			REQUIRE(result1 == ztd::text::tests::w_unicode_sequence_truth_native_endian);
+		}
+	}
+	SECTION("literal") {
+		ztd::text::literal encoding {};
+		std::string result = ztd::text::transcode(ztd::text::tests::basic_source_character_set, encoding, encoding,
 		     ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
-		REQUIRE(result1 == ztd::text::tests::w_unicode_sequence_truth_native_endian);
+		REQUIRE(result == ztd::text::tests::basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::string result1 = ztd::text::transcode(ztd::text::tests::unicode_sequence_truth_native_endian,
+			     encoding, encoding, ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
+			REQUIRE(result1 == ztd::text::tests::unicode_sequence_truth_native_endian);
+		}
+	}
+	SECTION("wide_literal") {
+		ztd::text::wide_literal encoding {};
+		std::wstring result0 = ztd::text::transcode(ztd::text::tests::w_basic_source_character_set, encoding,
+		     encoding, ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
+		REQUIRE(result0 == ztd::text::tests::w_basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::wstring result1 = ztd::text::transcode(ztd::text::tests::w_unicode_sequence_truth_native_endian,
+			     encoding, encoding, ztd::text::replacement_handler {}, ztd::text::replacement_handler {});
+			REQUIRE(result1 == ztd::text::tests::w_unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("utf8") {
 		std::basic_string<char8_t> result0
@@ -62,7 +94,8 @@ TEST_CASE("text/transcode/roundtrip", "transcode can roundtrip") {
 		REQUIRE(result1 == ztd::text::tests::u8_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf16") {
-		std::u16string result0 = ztd::text::transcode(ztd::text::tests::u16_basic_source_character_set, ztd::text::utf16 {});
+		std::u16string result0
+		     = ztd::text::transcode(ztd::text::tests::u16_basic_source_character_set, ztd::text::utf16 {});
 		REQUIRE(result0 == ztd::text::tests::u16_basic_source_character_set);
 
 		std::u16string result1
@@ -70,7 +103,8 @@ TEST_CASE("text/transcode/roundtrip", "transcode can roundtrip") {
 		REQUIRE(result1 == ztd::text::tests::u16_unicode_sequence_truth_native_endian);
 	}
 	SECTION("utf32") {
-		std::u32string result0 = ztd::text::transcode(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
+		std::u32string result0
+		     = ztd::text::transcode(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
 		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
 
 		std::u32string result1

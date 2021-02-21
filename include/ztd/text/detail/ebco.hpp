@@ -134,7 +134,7 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _Type, ::std::size_t _Tag>
-		class __ebco<_Type&, _Tag> : private _Type {
+		class __ebco<_Type&, _Tag> {
 		private:
 			_Type* _M_p_value;
 

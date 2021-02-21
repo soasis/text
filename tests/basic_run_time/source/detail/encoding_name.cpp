@@ -58,5 +58,9 @@ TEST_CASE("text/detail/encoding_name", "Ensure that basic usages of the encoding
 	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("Mutf__8"));
 	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("Mutf    8            "));
 	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("gb18030"));
+	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("utf\t\t\t\n\r\n\r\nebcdic"));
+	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("gb18030"));
 	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("g    B     18  ____0 30"));
+	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("cesu8"));
+	REQUIRE(ztd::text::__detail::__is_unicode_encoding_name("UTF---------1"));
 }

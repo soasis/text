@@ -28,6 +28,12 @@
 ..
 .. =============================================================================>
 
-Decode Functions
-================
+🔨 Decode Functions (In Progress)
+=================================
+
+.. warning::
+
+	|unfinished_warning|
+
+For now, you can go check out the API documentation for :doc:`ztd::text::decode </api/conversions/decode>`.
 

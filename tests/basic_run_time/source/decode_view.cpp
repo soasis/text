@@ -51,16 +51,44 @@ void check_decode_view(const Input& input, const Expected& expected_output) {
 
 TEST_CASE("text/decode_view/basic", "basic usages of decode_view type do not explode") {
 	SECTION("execution") {
+		ztd::text::execution encoding {};
 		check_decode_view<ztd::text::execution>(
 		     ztd::text::tests::basic_source_character_set, ztd::text::tests::u32_basic_source_character_set);
-		check_decode_view<ztd::text::execution>(ztd::text::tests::unicode_sequence_truth_native_endian,
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			check_decode_view<ztd::text::execution>(ztd::text::tests::unicode_sequence_truth_native_endian,
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("wide_execution") {
+		ztd::text::wide_execution encoding {};
 		check_decode_view<ztd::text::wide_execution>(
 		     ztd::text::tests::w_basic_source_character_set, ztd::text::tests::u32_basic_source_character_set);
-		check_decode_view<ztd::text::wide_execution>(ztd::text::tests::w_unicode_sequence_truth_native_endian,
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			check_decode_view<ztd::text::wide_execution>(ztd::text::tests::w_unicode_sequence_truth_native_endian,
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
+	}
+	SECTION("literal") {
+		ztd::text::literal encoding {};
+		check_decode_view<ztd::text::literal>(
+		     ztd::text::tests::basic_source_character_set, ztd::text::tests::u32_basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			check_decode_view<ztd::text::literal>(ztd::text::tests::unicode_sequence_truth_native_endian,
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
+	}
+	SECTION("wide_literal") {
+		ztd::text::wide_literal encoding {};
+		check_decode_view<ztd::text::wide_literal>(
+		     ztd::text::tests::w_basic_source_character_set, ztd::text::tests::u32_basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			check_decode_view<ztd::text::wide_literal>(ztd::text::tests::w_unicode_sequence_truth_native_endian,
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("utf8") {
 		check_decode_view<ztd::text::utf8>(

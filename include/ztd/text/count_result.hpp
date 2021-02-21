@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -55,7 +55,7 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief The result of counting operations (such as @ref ztd_text_count_code_units and @ref
+	/// @brief The result of counting operations (such as ztd_text_count_code_units and
 	/// ztd_text_count_code_points) that specifically do not include a reference to the state.
 	//////
 	template <typename _Input>
@@ -99,7 +99,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a @ref ztd::text::stateless_count_result with the provided parameters and
+		/// @brief Constructs a ztd::text::stateless_count_result with the provided parameters and
 		/// information, including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -107,7 +107,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
-		/// @ref ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput>
@@ -121,7 +121,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of counting operations (such as @ref ztd_text_count_code_points and @ref
+	/// @brief The result of counting operations (such as ztd_text_count_code_points and
 	/// ztd_text_count_code_units).
 	//////
 	template <typename _Input, typename _State>
@@ -136,7 +136,7 @@ namespace ztd { namespace text {
 		_State& state;
 
 		//////
-		/// @brief Constructs a @ref ztd::text::count_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::count_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -153,7 +153,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a @ref ztd::text::count_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::count_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -162,7 +162,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
-		/// @ref ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgState>

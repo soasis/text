@@ -28,10 +28,23 @@
 ..
 .. =============================================================================>
 
-encode_state_of
-===============
+Known Unicode Encodings
+=======================
 
-.. doxygenclass:: ztd::text::encode_state_of
-	:members:
+Out of all the encodings listed on the :doc:`encodings page <>`, only a handful are known to be Unicode Encodings. These are as follows:
 
-.. doxygentypedef:: ztd::text::encode_state_of_t
+- UTF-7
+- UTF-7-IMAP
+- UTF-8
+- UTF-16 (All Endiannesses)
+- UTF-32 (All Endiannesses)
+- GB18030
+- CESU-8
+- MUTF-8
+- WTF-8
+- UTF-1
+- UTF-EBCDIC
+
+When the encoding is known at compile-time (e.g., it is just a plain object), it contains a ``is_unicode_encoding`` type member that is set to ``std::true_type``. Otherwise, it is left off. This is detected by :doc:`ztd::text::contains_unicode_encoding </api/contains_unicode_encoding>` and :doc:`ztd::text::is_unicode_encoding </api/is_unicode_encoding>`.
+
+If you know of any others, please let us know!

@@ -28,6 +28,11 @@
 ..
 .. =============================================================================>
 
-Counting Code Units
-===================
+🔨 Counting Code Units (In Progress)
+====================================
 
+.. warning::
+
+	|unfinished_warning|
+
+For now, you can go check out the API documentation for :doc:`ztd::text::count_code_units </api/conversions/count_code_units>`.

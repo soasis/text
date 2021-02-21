@@ -28,7 +28,10 @@
 ..
 .. =============================================================================>
 
-maybe_is_unicode_encoding
-=========================
+code_point
+===================
 
-.. doxygenfunction:: ztd::text::maybe_is_unicode_encoding
+.. doxygenclass:: ztd::text::code_point
+	:members:
+
+.. doxygentypedef:: ztd::text::code_point_t

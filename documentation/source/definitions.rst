@@ -79,7 +79,7 @@ Occassionally, we may need to use precise language to describe what we want. Thi
 		An operation which can map all input information to an output. This is used for this library, particularly, to determine whether an operation is lossy (loses information) or not. For example, UTF-8 to UTF-32 is an injective operation because the values in a UTF-8 encoding are preserved in a UTF-32 encoding. UTF-16 to GB18030 is also an injective operation. But, converting something like Latin-1 to ASCII is a lossy operation, or UTF-8 to SHIFT-JIS.
 
 	mojibake
-		When text is converted from one encoding to another encoding, and it results in mangled and garbled text.
+		(Japanese: 文字化け Pronunciation: [modʑibake] "unintelligible sequence of characters".) From Japanese 文字 (moji), meaning "character" and 化け (bake), meaning change, is an occurence of incorrect unreadable characters displayed when computer software fails to render text correctly to its associated character encoding.
 
 	execution encoding
 		The locale-based encoding related to "multibyte characters" (C and C++ magic words) processed during program evaluation/execution. It is directly related to the ``std::set_locale(LC_CTYPE, ...)`` calls. Note that this is different from :term:`literal encoding`, which is the encoding of string literals. The two may not be (and many times, are not) the same.

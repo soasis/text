@@ -36,24 +36,64 @@
 
 TEST_CASE("text/count_code_units/core", "basic usages of count_code_units function do not explode") {
 	SECTION("execution") {
-		auto result0
-		     = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, ztd::text::execution {});
+		ztd::text::execution encoding {};
+		auto result0 = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, encoding);
 		std::size_t expected0 = std::size(ztd::text::tests::basic_source_character_set);
 		REQUIRE_FALSE(result0.handled_error);
 		REQUIRE(result0.count == expected0);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1
+			     = ztd::text::count_code_units(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			std::size_t expected1 = std::size(ztd::text::tests::unicode_sequence_truth_native_endian);
+			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE(result1.count == expected1);
+		}
 	}
 	SECTION("wide_execution") {
-		auto result0 = ztd::text::count_code_units(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_execution {});
+		ztd::text::wide_execution encoding {};
+		auto result0 = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, encoding);
 		std::size_t expected0 = std::size(ztd::text::tests::w_basic_source_character_set);
 		REQUIRE_FALSE(result0.handled_error);
 		REQUIRE(result0.count == expected0);
 
-		auto result1 = ztd::text::count_code_units(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_execution {});
-		std::size_t expected1 = std::size(ztd::text::tests::w_unicode_sequence_truth_native_endian);
-		REQUIRE_FALSE(result1.handled_error);
-		REQUIRE(result1.count == expected1);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1
+			     = ztd::text::count_code_units(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			std::size_t expected1 = std::size(ztd::text::tests::w_unicode_sequence_truth_native_endian);
+			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE(result1.count == expected1);
+		}
+	}
+	SECTION("literal") {
+		ztd::text::literal encoding {};
+		auto result0 = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, encoding);
+		std::size_t expected0 = std::size(ztd::text::tests::basic_source_character_set);
+		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE(result0.count == expected0);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1
+			     = ztd::text::count_code_units(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			std::size_t expected1 = std::size(ztd::text::tests::unicode_sequence_truth_native_endian);
+			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE(result1.count == expected1);
+		}
+	}
+	SECTION("wide_literal") {
+		ztd::text::wide_literal encoding {};
+		auto result0 = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, encoding);
+		std::size_t expected0 = std::size(ztd::text::tests::w_basic_source_character_set);
+		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE(result0.count == expected0);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1
+			     = ztd::text::count_code_units(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			std::size_t expected1 = std::size(ztd::text::tests::w_unicode_sequence_truth_native_endian);
+			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE(result1.count == expected1);
+		}
 	}
 	SECTION("utf8") {
 		auto result0

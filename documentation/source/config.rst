@@ -85,15 +85,15 @@ There are various configuration macros and CMake/build-time switches that will c
 - ``ZTD_TEXT_COMPILE_TIME_ENCODING_NAME``
 	- Gives the :doc:`ztd::text::literal encoding</api/encodings/literal>` a name that matches what the encoding of string literals (``"👍"``) are.
 	- Overrides any of library's heuristics and shenanigans to determine the string literal encoding.
-	- If this does not match the actual string literal encoding, it can cause ☢️☢️Undefined Behavior☢️☢️.
+	- If this does not match the actual string literal encoding, it can cause |ub|.
 	- Default: A complex set of platform checks. See :doc:`ztd::text::literal encoding</api/encodings/literal>` for more details.
 	- Not turned on normally under any circumstances.
 
-.. _config-ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT:
+.. _config-ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT:
 
-- ``ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT``
+- ``ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT``
 	- Enables ignoring the fact that the string literal (``"🤷‍♀️"``) encoding cannot be determined/discovered on the given platform for the :doc:`ztd::text::literal encoding</api/encodings/literal>`.
-	- Will cause ☢️☢️Undefined Behavior☢️☢️ if a string literal or wide string literal is encoded or decoded to/from and the encoding does not match whatever pot-shot guess the system takes.
+	- Will cause |ub| if a string literal or wide string literal is encoded or decoded to/from and the encoding does not match whatever pot-shot guess the system takes.
 	- Default: off
 	- Not turned on by-default under any conditions.
 	- **Please don't use this unless you have some really, really weird setup that requires messing everything up...**
@@ -103,15 +103,15 @@ There are various configuration macros and CMake/build-time switches that will c
 - ``ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME``
 	- Gives the :doc:`ztd::text::wide_literal encoding</api/encodings/wide_literal>` a name that matches what the encoding of wide string literals (``L"👍"``) are.
 	- Overrides any of library's heuristics and shenanigans to determine the wide string literal encoding.
-	- If this does not match the actual wide string literal encoding, it can cause ☢️☢️Undefined Behavior☢️☢️.
+	- If this does not match the actual wide string literal encoding, it can cause |ub|.
 	- Default: A complex set of platform checks. See :doc:`ztd::text::wide_literal encoding</api/encodings/wide_literal>` for more details.
 	- Not turned on normally under any circumstances.
 
-.. _config-ZTD_TEXT_YES_PLEASE_FUCK_MY_WIDE_LITERALS_UP_I_MEAN_IT:
+.. _config-ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT:
 
-- ``ZTD_TEXT_YES_PLEASE_FUCK_MY_WIDE_LITERALS_UP_I_MEAN_IT``
+- ``ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT``
 	- Enables ignoring the fact that the wide string literal (``L"🤷‍♀️"``) encoding cannot be determined/discovered on the given platform for the :doc:`ztd::text::wide_literal encoding</api/encodings/wide_literal>`.
-	- Will cause ☢️☢️Undefined Behavior☢️☢️ if a string literal or wide string literal is encoded or decoded to/from and the encoding does not match whatever pot-shot guess the system takes.
+	- Will cause |ub| if a string literal or wide string literal is encoded or decoded to/from and the encoding does not match whatever pot-shot guess the system takes.
 	- Default: off
 	- Not turned on by-default under any conditions.
 	- **Please don't use this unless you have some really, really weird setup that requires messing everything up...**

@@ -31,7 +31,7 @@
 assume_valid_handler
 ====================
 
-The ``assume_valid_handler`` is a Undefined-Behavior invoking error handler. If an error is encountered, the encoding can legally ignore and never, ever call the error handler at all. This can invoke ☢️☢️Undefined Behavior☢️☢️ on malformed input.
+The ``assume_valid_handler`` is a Undefined-Behavior invoking error handler. If an error is encountered, the encoding can legally ignore and never, ever call the error handler at all. This can invoke |ub| on malformed input.
 
 .. warning
 

@@ -37,38 +37,67 @@
 
 TEST_CASE("text/validate_code_points/basic", "basic usages of validate_code_points function do not explode") {
 	SECTION("execution") {
-		auto result0 = ztd::text::validate_code_points(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::execution {});
+		ztd::text::execution encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1 = ztd::text::validate_code_points(
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			REQUIRE(result1);
+		}
 	}
 	SECTION("wide_execution") {
-		auto result0 = ztd::text::validate_code_points(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_execution {});
+		ztd::text::wide_execution encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
-	}
-	SECTION("utf8") {
-		auto result0
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8 {});
-		REQUIRE(result0);
-	}
-	SECTION("utf16") {
-		auto result0
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16 {});
-		REQUIRE(result0);
-	}
-	SECTION("utf32") {
-		auto result0
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
-		REQUIRE(result0);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1 = ztd::text::validate_code_points(
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			REQUIRE(result1);
+		}
 	}
 	SECTION("literal") {
-		auto result0 = ztd::text::validate_code_points(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::literal {});
+		ztd::text::literal encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1 = ztd::text::validate_code_points(
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			REQUIRE(result1);
+		}
 	}
 	SECTION("wide_literal") {
-		auto result0 = ztd::text::validate_code_points(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal {});
+		ztd::text::wide_literal encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			auto result1 = ztd::text::validate_code_points(
+			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+			REQUIRE(result1);
+		}
+	}
+	SECTION("utf8") {
+		ztd::text::utf8 encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		REQUIRE(result0);
+		auto result1
+		     = ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+		REQUIRE(result1);
+	}
+	SECTION("utf16") {
+		ztd::text::utf16 encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		REQUIRE(result0);
+		auto result1
+		     = ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+		REQUIRE(result1);
+	}
+	SECTION("utf32") {
+		ztd::text::utf32 encoding {};
+		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		REQUIRE(result0);
+		auto result1
+		     = ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+		REQUIRE(result1);
 	}
 }

@@ -39,7 +39,7 @@ If you know the encoding of literals for your project (you provide the command l
 
 If the library does not recognize the encoding and cannot transcode it properly, it will also loudly warn you that it does not understand the encoding of the literal (in which case, file an issue about it and we will add it to the list of acceptable literal encodings).
 
-If you like to live dangerously and do not care for the warnings, you can define :ref:`a configuration macro named ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT <config-ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT>` and it will just blindly go with whatever weird default it ended up deciding on.
+If you like to live dangerously and do not care for the warnings, you can define :ref:`a configuration macro named ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT <config-ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT>` and it will just blindly go with whatever weird default it ended up deciding on.
 
 (This is usually a catastrophically terrible idea, but let is not be said that we didn't give you the power to do great things, even if it cost you your foot.)
 

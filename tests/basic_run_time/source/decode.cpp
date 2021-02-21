@@ -38,28 +38,53 @@
 
 TEST_CASE("text/decode/core", "basic usages of decode function do not explode") {
 	SECTION("execution") {
-		std::u32string result0 = ztd::text::decode(ztd::text::tests::basic_source_character_set,
-		     ztd::text::execution {}, ztd::text::replacement_handler {});
-		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
-	}
-	SECTION("wide_execution") {
-		std::u32string result0 = ztd::text::decode(ztd::text::tests::w_basic_source_character_set,
-		     ztd::text::wide_execution {}, ztd::text::replacement_handler {});
+		ztd::text::execution encoding {};
+
+		std::u32string result0 = ztd::text::decode(
+		     ztd::text::tests::basic_source_character_set, encoding, ztd::text::default_handler {});
 		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
 
-		std::u32string result1 = ztd::text::decode(ztd::text::tests::w_unicode_sequence_truth_native_endian,
-		     ztd::text::wide_execution {}, ztd::text::default_handler {});
-		REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::u32string result1 = ztd::text::decode(
+			     ztd::text::tests::unicode_sequence_truth_native_endian, encoding, ztd::text::default_handler {});
+			REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
+	}
+	SECTION("wide_execution") {
+		ztd::text::wide_execution encoding {};
+		std::u32string result0 = ztd::text::decode(
+		     ztd::text::tests::w_basic_source_character_set, encoding, ztd::text::default_handler {});
+		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::u32string result1 = ztd::text::decode(
+			     ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding, ztd::text::default_handler {});
+			REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("literal") {
+		ztd::text::literal encoding {};
 		std::u32string result0
 		     = ztd::text::decode(ztd::text::tests::basic_source_character_set, ztd::text::literal {});
 		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::u32string result1 = ztd::text::decode(
+			     ztd::text::tests::unicode_sequence_truth_native_endian, encoding, ztd::text::default_handler {});
+			REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("wide_literal") {
-		std::u32string result0
-		     = ztd::text::decode(ztd::text::tests::w_basic_source_character_set, ztd::text::wide_literal {});
+		ztd::text::wide_literal encoding {};
+		std::u32string result0 = ztd::text::decode(
+		     ztd::text::tests::w_basic_source_character_set, encoding, ztd::text::default_handler {});
 		REQUIRE(result0 == ztd::text::tests::u32_basic_source_character_set);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			std::u32string result1 = ztd::text::decode(
+			     ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding, ztd::text::default_handler {});
+			REQUIRE(result1 == ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+		}
 	}
 	SECTION("utf8") {
 		std::u32string result0

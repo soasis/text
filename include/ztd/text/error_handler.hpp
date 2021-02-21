@@ -102,7 +102,7 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _Result>
 		constexpr _Result&& __write_static_code_points_direct(
 			const _Encoding& __encoding, _Result&& __result) noexcept {
-			using _InputCodePoint = code_point_of_t<_Encoding>;
+			using _InputCodePoint = code_point_t<_Encoding>;
 			if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				return __detail::__write_direct(
 					__encoding, __encoding.replacement_code_points(), ::std::forward<_Result>(__result));
@@ -132,8 +132,8 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding>
 		constexpr ::std::size_t __fill_replacement_code_point_static(const _Encoding& __encoding,
-			code_point_of_t<_Encoding> (&__replacement_code_points)[max_code_points_v<_Encoding>]) {
-			using _InputCodePoint = code_point_of_t<_Encoding>;
+			code_point_t<_Encoding> (&__replacement_code_points)[max_code_points_v<_Encoding>]) {
+			using _InputCodePoint = code_point_t<_Encoding>;
 			if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				::std::size_t __replacement_index = 0;
 				for (const auto& __element : __encoding.replacement_code_points()) {
@@ -224,7 +224,7 @@ namespace ztd { namespace text {
 					__encoding, __encoding.replacement_code_units(), ::std::move(__result));
 			}
 			else {
-				using _InputCodePoint = code_point_of_t<_Encoding>;
+				using _InputCodePoint = code_point_t<_Encoding>;
 				_InputCodePoint __replacement[max_code_points_v<_Encoding>];
 				::std::size_t __replacement_size = 0;
 				if constexpr (is_code_points_replaceable_v<_Encoding>) {
@@ -238,10 +238,11 @@ namespace ztd { namespace text {
 					__replacement_size = __detail::__fill_replacement_code_point_static(__encoding, __replacement);
 				}
 
-				const ::std::span<const _InputCodePoint> __replacement_range(__replacement, __replacement_size);
+				const ::ztd::text::span<const _InputCodePoint> __replacement_range(
+					__replacement, __replacement_size);
 
 				__detail::__pass_through_handler __handler {};
-				encode_state_of_t<_Encoding> __state = make_encode_state(__encoding);
+				encode_state_t<_Encoding> __state = make_encode_state(__encoding);
 				auto __encresult
 					= __encoding.encode_one(__replacement_range, ::std::move(__result.output), __handler, __state);
 				__result.output = ::std::move(__encresult.output);
@@ -327,8 +328,8 @@ namespace ztd { namespace text {
 	class incomplete_handler : private __detail::__ebco<_ErrorHandler> {
 	private:
 		using __error_handler_base_t = __detail::__ebco<_ErrorHandler>;
-		using _CodeUnit              = code_unit_of_t<_Encoding>;
-		using _CodePoint             = code_point_of_t<_Encoding>;
+		using _CodeUnit              = code_unit_t<_Encoding>;
+		using _CodePoint             = code_point_t<_Encoding>;
 
 	public:
 		//////
@@ -428,16 +429,16 @@ namespace ztd { namespace text {
 		/// @brief Returns the code units from the last incomplete decode operations.
 		///
 		//////
-		::std::span<_CodeUnit> code_units() const noexcept {
-			return ::std::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+		::ztd::text::span<_CodeUnit> code_units() const noexcept {
+			return ::ztd::text::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 		//////
 		/// @brief Returns the code points from the last incomplete encode operations.
 		///
 		//////
-		::std::span<_CodePoint> code_points() const noexcept {
-			return ::std::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
+		::ztd::text::span<_CodePoint> code_points() const noexcept {
+			return ::ztd::text::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 	private:
@@ -449,7 +450,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
-	/// time. Without configuration, it defaults to the @ref ztd::text::replacement_handler .
+	/// time. Without configuration, it defaults to the ztd::text::replacement_handler .
 	//////
 	class default_handler : private replacement_handler {
 	private:
@@ -473,13 +474,6 @@ namespace ztd { namespace text {
 		template <typename _ErrorHandler>
 		constexpr auto __duplicate_or_be_careless(_ErrorHandler& __original) {
 			using _UErrorHandler = __remove_cvref_t<_ErrorHandler>;
-			// just copy? Albeit polymorphic nature of call makes this dubious...
-			// A function would have to take both encode/decode result to work for
-			// both ends of transcode.... so we can't really JUST copy for a function type...!
-			/*if constexpr (::std::is_function_v<_UErrorHandler>) {
-				return __original;
-			}
-			else*/
 			if constexpr (!::std::is_function_v<_UErrorHandler>) {
 				if constexpr (::std::is_copy_constructible_v<_UErrorHandler>) {
 					return __original;

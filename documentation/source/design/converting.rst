@@ -22,9 +22,9 @@ As shown in the :doc:`Lucky 7 Design </design/lucky 7>`, everything here is supp
 
 That's it for the core loop. Failure is determined exclusively by whether or not the ``error_code`` returned from the decode or encode operation's result object is :doc:`ztd::text::encoding_error::ok </api/encoding_error>`. If it is OK, then the loop continues until the ``input`` is exhausted. Otherwise, it stops.
 
-.. image:: /img/core-loop.png
-	:alt: An image from a presentation at C++ Russia 2020 Moscow Online, showing some of the core loop.
-	:target: https://www.youtube.com/watch?v=RnVWON7JmQ0
+.. .. image:: /img/core-loop.png
+..	:alt: An image from a presentation at C++ Russia 2020 Moscow Online, showing some of the core loop.
+..	:target: https://www.youtube.com/watch?v=RnVWON7JmQ0
 
 
 This loop produces what is known as Transcoding. That is, it converts — through a common, intermediate Code Point type -- from one code unit type in one encoding to the other code unit types in the other encoding. Typically, the intermediate is a :doc:`ztd::text::unicode_code_point </api/unicode_code_point>`, :doc:`ztd::text::unicode_scalar_value </api/unicode_scalar_value>`, or ``char32_t``.

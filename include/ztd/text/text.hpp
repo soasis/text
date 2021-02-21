@@ -44,10 +44,40 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	using text    = basic_text<execution>;
-	using wtext   = basic_text<wide_execution>;
-	using u8text  = basic_text<utf8>;
+	//////
+	/// @brief A container for storing text in the locale, runtime-based execution encoding.
+	///
+	//////
+	using text = basic_text<execution>;
+	//////
+	/// @brief A container for storing text in the locale, runtime-based wide execution encoding.
+	///
+	//////
+	using wtext = basic_text<wide_execution>;
+	//////
+	/// @brief A container for storing text in the string literal encoding.
+	///
+	//////
+	using ltext = basic_text<literal>;
+	//////
+	/// @brief A container for storing text in the wide string literal encoding.
+	///
+	//////
+	using wltext = basic_text<wide_literal>;
+	//////
+	/// @brief A container for storing text in the UTF-8 encoding.
+	///
+	//////
+	using u8text = basic_text<utf8>;
+	//////
+	/// @brief A container for storing text in the UTF-16 encoding.
+	///
+	//////
 	using u16text = basic_text<utf16>;
+	//////
+	/// @brief A container for storing text in the UTF-32 encoding.
+	///
+	//////
 	using u32text = basic_text<utf32>;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

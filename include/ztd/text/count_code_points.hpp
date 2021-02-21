@@ -94,7 +94,7 @@ namespace ztd { namespace text {
 			using _InputValueType = __detail::__range_value_type_t<_UInput>;
 			using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                     ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::std::span<const _InputValueType>>,
+                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                     _UInput>>;
 			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
 			using _Result         = count_result<_WorkingInput, _State>;
@@ -124,7 +124,7 @@ namespace ztd { namespace text {
 					::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
 			}
 			else {
-				using _CodePoint = code_point_of_t<_UEncoding>;
+				using _CodePoint = code_point_t<_UEncoding>;
 
 				::std::size_t __code_point_count = 0;
 
@@ -165,7 +165,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _ErrorHandler>
 	auto count_code_points(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = decode_state_of_t<_UEncoding>;
+		using _State     = decode_state_t<_UEncoding>;
 
 		_State __state = make_decode_state(__encoding);
 

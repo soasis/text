@@ -95,7 +95,7 @@ namespace ztd { namespace text {
 			using _InputValueType = __detail::__range_value_type_t<_UInput>;
 			using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                     ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::std::span<const _InputValueType>>,
+                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                     _UInput>>;
 			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
 			using _Result         = validate_result<_WorkingInput, _DecodeState>;
@@ -120,13 +120,13 @@ namespace ztd { namespace text {
 				return _Result(::std::move(__working_input), true, __decode_state);
 			}
 			else {
-				using _CodeUnit = code_unit_of_t<_UEncoding>;
+				using _CodeUnit = code_unit_t<_UEncoding>;
 
 				_WorkingInput __working_input(
 					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
 				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
-				::std::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
+				::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
 
 				for (;;) {
 					auto __validate_result = __detail::__basic_validate_code_units_one(
@@ -176,7 +176,7 @@ namespace ztd { namespace text {
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else {
-			using _State = encode_state_of_t<_UEncoding>;
+			using _State = encode_state_t<_UEncoding>;
 
 			_State __encode_state = make_encode_state(__encoding);
 			return validate_code_units(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -197,7 +197,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding>
 	constexpr auto validate_code_units(_Input&& __input, _Encoding&& __encoding) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = decode_state_of_t<_UEncoding>;
+		using _State     = decode_state_t<_UEncoding>;
 
 		_State __state = make_decode_state(__encoding);
 		auto __stateful_result

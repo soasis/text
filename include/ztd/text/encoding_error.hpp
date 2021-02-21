@@ -51,8 +51,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encoding_error ztd::text::encoding_error
-	/// @brief This enumeration describes the kind of failures that can happen in @ref ztd_text_transcode, @ref
-	/// ztd_text_decode, @ref ztd_text_encode, and lower-level operations.
+	/// @brief This enumeration describes the kind of failures that can happen in ztd_text_transcode,
+	/// ztd_text_decode, ztd_text_encode, and lower-level operations.
 	/// @{
 	//////
 

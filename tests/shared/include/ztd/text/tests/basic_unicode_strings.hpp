@@ -46,13 +46,14 @@
 namespace ztd { namespace text { namespace tests {
 
 	template <typename Container>
-	inline std::span<const std::byte> as_bytes(Container& c) {
-		return std::as_bytes(std::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
+	inline ztd::text::span<const std::byte> as_bytes(Container& c) {
+		return ztd::text::as_bytes(ztd::text::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
 	}
 
 	template <typename Container>
-	inline std::span<const std::byte> as_writeable_bytes(Container& c) {
-		return std::as_writable_bytes(std::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
+	inline ztd::text::span<const std::byte> as_writeable_bytes(Container& c) {
+		return ztd::text::as_writable_bytes(
+			ztd::text::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
 	}
 
 	template <typename CharType>
@@ -1549,7 +1550,7 @@ namespace ztd { namespace text { namespace tests {
 		= x_u8_unicode_sequence_truth_native_endian_storage<ztd::text::uchar8_t>;
 	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_sequence_truth_big_endian
 		= u8_unicode_sequence_truth_native_endian;
-	inline constexpr const std::basic_string_view<char8_t> u8_unicode_sequence_truth_little_endian
+	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_sequence_truth_little_endian
 		= u8_unicode_sequence_truth_native_endian;
 
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_native_endian
@@ -1577,77 +1578,84 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const std::basic_string_view<char> unicode_sequence_truth_little_endian
 		= unicode_sequence_truth_native_endian;
 
-	inline const std::span<const std::byte> u32_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_native_endian);
-	inline const std::span<const std::byte> u16_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::text::span<const std::byte> u16_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_unicode_sequence_truth_native_endian);
-	inline const std::span<const std::byte> u8_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::text::span<const std::byte> u8_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_native_endian);
-	inline const std::span<const std::byte> w_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_native_endian);
-	inline constexpr std::span<const std::byte> unicode_sequence_bytes_truth_native_endian
+	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_native_endian
 		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
 
-	inline const std::span<const std::byte> u32_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_big_endian);
-	inline const std::span<const std::byte> u16_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::text::span<const std::byte> u16_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_unicode_sequence_truth_big_endian);
-	inline const std::span<const std::byte> u8_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::text::span<const std::byte> u8_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_big_endian);
-	inline const std::span<const std::byte> w_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_big_endian);
-	inline constexpr std::span<const std::byte> unicode_sequence_bytes_truth_big_endian
+	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_big_endian
 		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
 
-	inline const std::span<const std::byte> u32_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_little_endian);
-	inline const std::span<const std::byte> u16_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::text::span<const std::byte> u16_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_unicode_sequence_truth_little_endian);
-	inline const std::span<const std::byte> u8_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::text::span<const std::byte> u8_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_little_endian);
-	inline const std::span<const std::byte> w_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_little_endian);
-	inline constexpr std::span<const std::byte> unicode_sequence_bytes_truth_little_endian
+	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_little_endian
 		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
 
 	inline constexpr const char32_t u32_unicode_invalid_input_arr[]                   = { 0xFFFFFFFF, 0 };
 	inline constexpr const char16_t u16_unicode_invalid_input_arr[]                   = { 0xD800, 0 };
-	inline constexpr const char8_t u8_unicode_invalid_input_arr[]                     = { 0xC0, 0 };
+	inline constexpr const uchar8_t u8_unicode_invalid_input_arr[]                    = { 0xC0, 0 };
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_invalid_input = u32_unicode_invalid_input_arr;
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_invalid_input = u16_unicode_invalid_input_arr;
-	inline constexpr const std::basic_string_view<char8_t> u8_unicode_invalid_input   = u8_unicode_invalid_input_arr;
+	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_invalid_input
+		= u8_unicode_invalid_input_arr;
 
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_replacement_truth = U"\uFFFD";
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_replacement_truth = u"\uFFFD";
-	inline constexpr const std::basic_string_view<char8_t> u8_unicode_replacement_truth   = u8"\uFFFD";
-	inline constexpr const std::basic_string_view<wchar_t> w_unicode_replacement_truth    = L"?";
-	inline constexpr const std::basic_string_view<char> unicode_replacement_truth         = "?";
+	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_replacement_truth
+		= (const ztd::text::uchar8_t*)u8"\uFFFD";
+	inline constexpr const std::basic_string_view<wchar_t> w_unicode_replacement_truth = L"?";
+	inline constexpr const std::basic_string_view<char> unicode_replacement_truth      = "?";
 
-	inline constexpr const std::basic_string_view<char32_t> u32_basic_source_character_set
-		= U"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'";
-	inline constexpr const std::basic_string_view<char16_t> u16_basic_source_character_set
-		= u"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'";
-	inline constexpr const std::basic_string_view<uchar8_t> u8_basic_source_character_set
-		= u8"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'";
-	inline constexpr const std::basic_string_view<wchar_t> w_basic_source_character_set
-		= L"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'";
-	inline constexpr const std::basic_string_view<char> basic_source_character_set
-		= "\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'";
+	inline constexpr const std::basic_string_view<char32_t> u32_basic_source_character_set(
+		U"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		97);
+	inline constexpr const std::basic_string_view<char16_t> u16_basic_source_character_set(
+		u"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		97);
+	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set(
+		u8"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		97);
+	inline constexpr const std::basic_string_view<wchar_t> w_basic_source_character_set(
+		L"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		97);
+	inline constexpr const std::basic_string_view<char> basic_source_character_set(
+		"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		97);
 
-	inline const std::span<const std::byte> u32_basic_source_character_set_bytes_native_endian
-		= ztd::text::tests::as_bytes(ztd::text::tests::u32_basic_source_character_set_bytes_native_endian);
-	inline const std::span<const std::byte> u16_basic_source_character_set_bytes_native_endian
+	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_native_endian
+		= ztd::text::tests::as_bytes(ztd::text::tests::u32_basic_source_character_set);
+	inline const ztd::text::span<const std::byte> u16_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_basic_source_character_set);
-	inline const std::span<const std::byte> u8_basic_source_character_set_bytes_native_endian
+	inline const ztd::text::span<const std::byte> u8_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_basic_source_character_set);
-	inline const std::span<const std::byte> w_basic_source_character_set_bytes_native_endian
+	inline const ztd::text::span<const std::byte> w_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_basic_source_character_set);
-	inline const std::span<const std::byte> basic_source_character_set_bytes_native_endian
+	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::basic_source_character_set);
 
 	template <typename Encoding>
 	constexpr auto basic_source_character_set_for() {
-		using CodeUnit = ztd::text::code_unit_of_t<Encoding>;
+		using CodeUnit = ztd::text::code_unit_t<Encoding>;
 		if constexpr (std::is_same_v<Encoding,
 				         utf8> || std::is_same_v<Encoding, mutf8> || std::is_same_v<Encoding, wtf8>) {
 			return u8_basic_source_character_set;
@@ -1659,7 +1667,7 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, wchar_t>) {
 				return w_basic_source_character_set;
 			}
-			else if constexpr (std::is_same_v<CodeUnit, uchar8_t>) {
+			else if constexpr (std::is_same_v<CodeUnit, ztd::text::uchar8_t>) {
 				return u8_basic_source_character_set;
 			}
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
@@ -1682,7 +1690,7 @@ namespace ztd { namespace text { namespace tests {
 
 	template <typename Encoding>
 	constexpr auto unicode_sequence_for() {
-		using CodeUnit = ztd::text::code_unit_of_t<Encoding>;
+		using CodeUnit = ztd::text::code_unit_t<Encoding>;
 		if constexpr (std::is_same_v<Encoding, utf16_le>) {
 			return u16_unicode_sequence_truth_little_endian;
 		}

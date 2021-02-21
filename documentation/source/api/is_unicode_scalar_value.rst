@@ -39,7 +39,7 @@ This checks if the provided type is a :doc:`unicode_scalar_value </api/unicode_s
 
 .. warning::
 
-	Note there are some :term:`expectations of scalar value types <unicode scalar value>`. If your type violates these expectations then code depending on them is free to execute ☢️☢️Undefined Behavior☢️☢️.
+	Note there are some :term:`expectations of scalar value types <unicode scalar value>`. If your type violates these expectations then code depending on them is free to execute |ub|.
 
 .. doxygenclass:: ztd::text::is_unicode_scalar_value
 	:members:

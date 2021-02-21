@@ -49,7 +49,9 @@
 #include <ztd/text/detail/span.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
 #include <ztd/text/detail/windows.hpp>
+#include <ztd/text/detail/posix.hpp>
 #include <ztd/text/detail/assert.hpp>
+#include <ztd/text/detail/encoding_name.hpp>
 
 #include <cuchar>
 #include <cwchar>
@@ -165,13 +167,33 @@ namespace ztd { namespace text {
 		inline static constexpr ::std::size_t max_code_units = MB_LEN_MAX;
 		//////
 		/// @brief A range of code unit values that can be used as a replacement value, instead of the ones used in
-		/// @ref ztd::text::default_handler.
+		/// ztd::text::default_handler.
 		///
 		/// @remarks The default replacement code point / code unit is U+FFFD (). This, obviously, does not fit in the
 		/// majority of the (legacy) locale encodings in C and C++. '?' is a much more conservative option, here, and
 		/// most (all?) locale encodings have some form of representation for it.
 		//////
 		inline static constexpr code_unit replacement_code_units[1] = { '?' };
+
+		//////
+		/// @brief Returns whether or not this encoding is a unicode encoding.
+		///
+		/// @remarks This function operates at runtime and queries the existing locale through a variety of
+		/// platform-specific means (such as @c nl_langinfo for POSIX, ACP probing on Windows, or fallin back to @c
+		/// std::setlocale name checking otherwise).
+		//////
+		static bool contains_unicode_encoding() noexcept {
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
+			int __codepage_id = __detail::__windows::__determine_active_code_page();
+			return __detail::__windows::__is_unicode_code_page(__codepage_id);
+#elif ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_)
+			const char* __ctype_name = nl_langinfo(CODESET);
+			return __detail::__is_unicode_encoding_name(__ctype_name);
+#else
+				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
+				return __detail::__is_encoding_name_unicode(__ctype_name);
+#endif
+		}
 
 		//////
 		/// @brief Encodes a single complete unit of information as code units and produces a result with the
@@ -184,7 +206,7 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this is
 		/// effectively a runtime encoding and therefore it is important to preserve and manage this state.
 		///
-		/// @returns A @ref ztd::text::encode_result object that contains the reconstructed input range,
+		/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 		/// reconstructed output range, error handler, and a reference to the passed-in state.
 		///
 		/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit of
@@ -209,9 +231,9 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
 			if (__detail::__windows::__determine_active_code_page() == CP_UTF8) {
 				// just go straight to UTF8
-				using __exec_utf8 = __impl::__utf8_with<void, code_unit>;
+				using __exec_utf8 = __impl::__utf8_with<void, code_unit, code_point>;
 				__exec_utf8 __u8enc {};
-				encode_state_of_t<__exec_utf8> __intermediate_s {};
+				encode_state_t<__exec_utf8> __intermediate_s {};
 				__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 				auto __intermediate_result = __u8enc.encode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
@@ -222,7 +244,7 @@ namespace ztd { namespace text {
 							_Result(::std::move(__intermediate_result.input),
 							     ::std::move(__intermediate_result.output), __s,
 							     __intermediate_result.error_code),
-							::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+							::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 							     __intermediate_handler._M_code_points_size));
 					}
 				}
@@ -240,18 +262,18 @@ namespace ztd { namespace text {
 					return __error_handler(execution {},
 						_Result(::std::forward<_InputRange>(__input), ::std::forward<_OutputRange>(__output), __s,
 						     encoding_error::insufficient_output_space),
-						::std::span<code_point, 0>());
+						::ztd::text::span<code_point, 0>());
 				}
 			}
 
-			using __u16e               = __impl::__utf16_with<void, wchar_t, false>;
-			using __intermediate_state = typename __u16e::state;
+			using __u16e               = __impl::__utf16_with<void, wchar_t, code_point, false>;
+			using __intermediate_state = encode_state_t<__u16e>;
 
 			__u16e __u16enc {};
 			__intermediate_state __intermediate_s {};
 			__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 			wchar_t __wide_intermediary[8] {};
-			::std::span<wchar_t> __wide_write_buffer(__wide_intermediary);
+			::ztd::text::span<wchar_t> __wide_write_buffer(__wide_intermediary);
 			auto __intermediate_result = __u16enc.encode_one(::std::forward<_InputRange>(__input),
 				__wide_write_buffer, __intermediate_handler, __intermediate_s);
 			if constexpr (__call_error_handler) {
@@ -260,14 +282,15 @@ namespace ztd { namespace text {
 					return __error_handler(__self,
 						_Result(::std::move(__intermediate_result.input), ::std::forward<_OutputRange>(__output),
 						     __s, __intermediate_result.error_code),
-						::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+						::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 						     __intermediate_handler._M_code_points_size));
 				}
 			}
 			constexpr const ::std::size_t __state_count_max = 12;
 			code_unit __intermediary_output[__state_count_max] {};
 			int __used_default_char = false;
-			::std::span<const wchar_t> __wide_read_buffer(__wide_intermediary, __intermediate_result.output.data());
+			::ztd::text::span<const wchar_t> __wide_read_buffer(
+				__wide_intermediary, __intermediate_result.output.data());
 			int __res = ::WideCharToMultiByte(__detail::__windows::__determine_active_code_page(),
 				WC_ERR_INVALID_CHARS, __wide_read_buffer.data(), static_cast<int>(__wide_read_buffer.size()),
 				__intermediary_output, __state_count_max, ::std::addressof(replacement_code_units[0]),
@@ -281,7 +304,7 @@ namespace ztd { namespace text {
 						     ::GetLastError() == ERROR_INSUFFICIENT_BUFFER
 						          ? encoding_error::insufficient_output_space
 						          : encoding_error::invalid_sequence),
-						::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+						::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 						     __intermediate_handler._M_code_points_size));
 				}
 			}
@@ -296,7 +319,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
-							::std::span<code_point>(__intermediate_handler._M_code_points.data(),
+							::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 							     __intermediate_handler._M_code_points_size));
 					}
 				}
@@ -326,7 +349,7 @@ namespace ztd { namespace text {
 					return __error_handler(__self,
 						_Result(::std::forward<_InputRange>(__input), ::std::forward<_OutputRange>(__output), __s,
 						     encoding_error::insufficient_output_space),
-						::std::span<code_point, 0>());
+						::ztd::text::span<code_point, 0>());
 				}
 			}
 
@@ -342,7 +365,7 @@ namespace ztd { namespace text {
 						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::invalid_sequence),
-						::std::span<code_point, 1>(&__codepoint, 1));
+						::ztd::text::span<code_point, 1>(&__codepoint, 1));
 				}
 			}
 
@@ -356,7 +379,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
-							::std::span<code_point, 1>(&__codepoint, 1));
+							::ztd::text::span<code_point, 1>(&__codepoint, 1));
 					}
 				}
 				__detail::__dereference(__outit) = __detail::__dereference(__intermediary_it);
@@ -380,7 +403,7 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this is
 		/// effectively a runtime encoding and therefore it is important to preserve and manage this state.
 		///
-		/// @returns A @ref ztd::text::decode_result object that contains the reconstructed input range,
+		/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 		/// reconstructed output range, error handler, and a reference to the passed-in state.
 		///
 		/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit of
@@ -406,9 +429,9 @@ namespace ztd { namespace text {
 			if (__detail::__windows::__determine_active_code_page() == CP_UTF8) {
 				// just use utf8 directly
 				// just go straight to UTF8
-				using __char_utf8 = __impl::__utf8_with<void, code_unit>;
+				using __char_utf8 = __impl::__utf8_with<void, code_unit, code_point>;
 				__char_utf8 __u8enc {};
-				decode_state_of_t<__char_utf8> __intermediate_s {};
+				decode_state_t<__char_utf8> __intermediate_s {};
 				__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 				auto __intermediate_result = __u8enc.decode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
@@ -419,7 +442,7 @@ namespace ztd { namespace text {
 							_Result(::std::move(__intermediate_result.input),
 							     ::std::move(__intermediate_result.output), __s,
 							     __intermediate_result.error_code),
-							::std::span<code_unit>(__intermediate_handler._M_code_units.data(),
+							::ztd::text::span<code_unit>(__intermediate_handler._M_code_units.data(),
 							     __intermediate_handler._M_code_units_size));
 					}
 				}
@@ -446,7 +469,7 @@ namespace ztd { namespace text {
 					return __error_handler(__self,
 						_Result(::std::forward<_InputRange>(__input), ::std::forward<_OutputRange>(__output), __s,
 						     encoding_error::insufficient_output_space),
-						::std::span<code_unit, 0>());
+						::ztd::text::span<code_unit, 0>());
 				}
 			}
 
@@ -456,8 +479,8 @@ namespace ztd { namespace text {
 			__init                      = __detail::__next(__init);
 			::std::size_t __state_count = 1;
 			for (; __state_count < max_code_units; ++__state_count) {
-				using __u16e               = __impl::__utf16_with<void, wchar_t, false>;
-				using __intermediate_state = typename __u16e::state;
+				using __u16e               = __impl::__utf16_with<void, wchar_t, code_point, false>;
+				using __intermediate_state = decode_state_t<__u16e>;
 
 				constexpr const int __wide_intermediary_size = 4;
 				wchar_t __wide_intermediary[__wide_intermediary_size] {};
@@ -476,7 +499,7 @@ namespace ztd { namespace text {
 									     __detail::__reconstruct(
 									          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 									     __s, encoding_error::incomplete_sequence),
-									::std::span<code_unit>(__intermediary_input, __state_count));
+									::ztd::text::span<code_unit>(__intermediary_input, __state_count));
 							}
 						}
 						__intermediary_input[__state_count] = __detail::__dereference(__init);
@@ -491,7 +514,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit>(__intermediary_input, __state_count));
+							::ztd::text::span<code_unit>(__intermediary_input, __state_count));
 					}
 				}
 
@@ -508,7 +531,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 							     ::std::move(__intermediate_result.output), __s,
 							     __intermediate_result.error_code),
-							::std::span<code_unit>(__intermediary_input, __state_count));
+							::ztd::text::span<code_unit>(__intermediary_input, __state_count));
 					}
 				}
 				return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
@@ -528,7 +551,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit, 0>());
+							::ztd::text::span<code_unit, 0>());
 					}
 				}
 				__detail::__dereference(__outit) = __intermediary_output[0];
@@ -561,7 +584,7 @@ namespace ztd { namespace text {
 								     __detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::incomplete_sequence),
-								::std::span<code_unit>(__intermediary_input, __state_count));
+								::ztd::text::span<code_unit>(__intermediary_input, __state_count));
 						}
 					}
 					break;
@@ -587,7 +610,8 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit>(::std::addressof(__intermediary_input[0]), __state_count));
+							::ztd::text::span<code_unit>(
+							     ::std::addressof(__intermediary_input[0]), __state_count));
 					}
 					else {
 						break;
@@ -615,7 +639,7 @@ namespace ztd { namespace text {
 					_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 					     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 					     encoding_error::incomplete_sequence),
-					::std::span<code_unit>(::std::addressof(__intermediary_input[0]), __state_count));
+					::ztd::text::span<code_unit>(::std::addressof(__intermediary_input[0]), __state_count));
 			}
 			else {
 				// ... I mean.

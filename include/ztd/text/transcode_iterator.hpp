@@ -105,7 +105,7 @@ namespace ztd { namespace text {
 		using _UFromState            = __detail::__remove_cvref_t<__detail::__unwrap_t<_FromState>>;
 		using _UToState              = __detail::__remove_cvref_t<__detail::__unwrap_t<_ToState>>;
 		using _BaseIterator          = __detail::__range_iterator_t<_URange>;
-		using _IntermediateCodePoint = code_point_of_t<_UToEncoding>;
+		using _IntermediateCodePoint = code_point_t<_UToEncoding>;
 		static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;
 		static constexpr bool _IsSingleValueType  = _MaxValues == 1;
 		using __base_cursor_t                     = __detail::__cache_cursor<_MaxValues>;
@@ -178,7 +178,7 @@ namespace ztd { namespace text {
 		/// @brief The object type that gets output on every dereference.
 		///
 		//////
-		using value_type = code_unit_of_t<_ToEncoding>;
+		using value_type = code_unit_t<_ToEncoding>;
 		//////
 		/// @brief A pointer type to the value_type.
 		///

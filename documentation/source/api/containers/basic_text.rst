@@ -28,10 +28,28 @@
 ..
 .. =============================================================================>
 
-code_unit_of
-==================
+🔨 basic_text (In Progress)
+===========================
 
-.. doxygenclass:: ztd::text::code_unit_of
+.. warning::
+
+	|unfinished_warning|
+
+The ``basic_text`` class provides functionality similar to ``std::string`` but for performing it on encoded, normalized text.
+
+.. doxygenclass:: ztd::text::basic_text
 	:members:
 
-.. doxygentypedef:: ztd::text::code_unit_of_t
+.. doxygentypedef:: ztd::text::text
+
+.. doxygentypedef:: ztd::text::wtext
+
+.. doxygentypedef:: ztd::text::ltext
+
+.. doxygentypedef:: ztd::text::wltext
+
+.. doxygentypedef:: ztd::text::u8text
+
+.. doxygentypedef:: ztd::text::u16text
+
+.. doxygentypedef:: ztd::text::u32text

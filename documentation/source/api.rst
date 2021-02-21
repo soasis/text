@@ -35,6 +35,17 @@ This is simply a listing of all the available pages containing various APIs, or 
 
 
 
+Containers
+----------
+
+.. toctree::
+	:maxdepth: 1
+	:glob:
+	
+	api/containers/*
+
+
+
 Views
 -----
 
@@ -43,7 +54,6 @@ Views
 	:glob:
 	
 	api/views/*
-
 
 
 
@@ -88,10 +98,10 @@ Properties and Classifications
 .. toctree::
 	:maxdepth: 1
 
-	api/code_point_of
-	api/code_unit_of
-	api/decode_state_of
-	api/encode_state_of
+	api/code_point
+	api/code_unit
+	api/decode_state
+	api/encode_state
 	api/max_code_points
 	api/max_code_units
 	api/is_state_independent
@@ -103,9 +113,10 @@ Properties and Classifications
 	api/is_code_points_replaceable
 	api/is_ignorable_error_handler
 	api/is_unicode_encoding
-	api/maybe_is_unicode_encoding
+	api/contains_unicode_encoding
 	api/is_unicode_code_point
 	api/is_unicode_scalar_value
+	api/is_transcoding_compatible
 	api/default_code_point_encoding
 	api/default_code_unit_encoding
 

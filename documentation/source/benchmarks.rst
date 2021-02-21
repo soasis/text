@@ -28,10 +28,9 @@
 ..
 .. =============================================================================>
 
-code_point_of
-===================
+🔨 Benchmarks (In Progress)
+===========================
 
-.. doxygenclass:: ztd::text::code_point_of
-	:members:
+.. warning::
 
-.. doxygentypedef:: ztd::text::code_point_of_t
+	|unfinished_warning|

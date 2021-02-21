@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -32,20 +32,22 @@
 
 #include <catch2/catch.hpp>
 
+#include <ztd/text/tests/basic_unicode_strings.hpp>
+
 TEST_CASE("text/text/basic", "basic usages of text do not explode") {
 	SECTION("execution") {
-		REQUIRE(true);
+		ztd::text::text txt;
 	}
 	SECTION("wide_execution") {
-		REQUIRE(true);
+		ztd::text::wtext txt;
 	}
 	SECTION("utf8") {
-		REQUIRE(true);
+		ztd::text::u8text txt;
 	}
 	SECTION("utf16") {
-		REQUIRE(true);
+		ztd::text::u16text txt;
 	}
 	SECTION("utf32") {
-		REQUIRE(true);
+		ztd::text::u32text txt;
 	}
 }

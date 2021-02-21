@@ -45,10 +45,55 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief A wrapper (container adapter) that takes the given @p _Encoding type and @p _NormalizationForm type and
+	/// imposes it over the given chosen @p _Container storage for the purposes of allowing users to examine the text.
+	///
+	/// @tparam _Encoding The encoding to store any input and presented text as.
+	/// @tparam _NormalizationForm The normalization form to impose on the stored text's sequences.
+	/// @tparam _Container The container type that will be stored within this ztd::text::basic_text using the code
+	/// units from the @p _Encoding type.
+	/// @tparam _ErrorHandler The default error handler to use for any and all operations on text. Generally, most
+	/// operations will provide room to override this.
+	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
-		typename _Container    = ::std::basic_string<code_unit_of_t<_Encoding>>,
-		typename _ErrorHandler = default_handler>
-	class basic_text : private basic_text_view<_Encoding, _NormalizationForm, _Container, _ErrorHandler> { };
+		typename _Container    = ::std::basic_string<code_unit_t<_Encoding>>,
+		typename _ErrorHandler = __detail::__careless_handler>
+	class basic_text : private basic_text_view<_Encoding, _NormalizationForm, _Container, _ErrorHandler> {
+	private:
+		using __base_t = basic_text_view<_Encoding, _NormalizationForm, _Container, _ErrorHandler>;
+
+	public:
+		//////
+		/// @brief The type that this view is wrapping.
+		///
+		//////
+		using range_type = typename __base_t::range_type;
+		//////
+		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
+		///
+		//////
+		using encoding_type = typename __base_t::encoding_type;
+		//////
+		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
+		///
+		//////
+		using state_type = typename __base_t::state_type;
+		//////
+		/// @brief The normalization form type this view is imposing on top of the encoded sequence.
+		///
+		//////
+		using normalization_type = typename __base_t::normalization_type;
+		//////
+		/// @brief The error handling type used by default for any problems in conversions.
+		///
+		//////
+		using error_handler_type = typename __base_t::error_handler_type;
+
+		using __base_t::code_points;
+
+		using __base_t::base;
+	};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

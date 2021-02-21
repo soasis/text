@@ -40,9 +40,9 @@ A unicode code point is stored as an at least 32-bit value, but may occupy more 
 Internal Type
 -------------
 
-.. note::
+.. warning::
 
-	Names with double underscores are reserved for the implementation. Referencing this class directly is bad, and the name can be changed at any point in the future.
+	|reserved_name|
 
 .. doxygenclass:: ztd::text::__impl::__unicode_code_point
 	:members:

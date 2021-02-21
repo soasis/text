@@ -155,7 +155,7 @@
 #define span_FEATURE(feature) (span_FEATURE_##feature)
 #define span_FEATURE_TO_STD(feature) (span_IN_STD(span_FEATURE(feature##_TO_STD)))
 
-// Use C++20 std::span if available and requested:
+// Use C++20 ztd::text::span if available and requested:
 
 #if span_CPP20_OR_GREATER && defined(__has_include)
 #if __has_include(<span> )
@@ -172,7 +172,7 @@
 	     || ((span_CONFIG_SELECT_SPAN == span_SPAN_DEFAULT) && span_HAVE_STD_SPAN))
 
 //
-// Use C++20 std::span:
+// Use C++20 ztd::text::span:
 //
 
 #if span_USES_STD_SPAN
@@ -181,7 +181,7 @@
 
 namespace nonstd {
 
-	using std::span;
+	using ztd::text::span;
 
 	// Note: C++20 does not provide comparison
 	// using std::operator==;

@@ -78,6 +78,21 @@ namespace ztd { namespace text {
 			return CP_ACP;
 		}
 
+		inline int __is_unicode_code_page(int __codepage_id) {
+			switch (__codepage_id) {
+			case CP_UTF7:
+			case CP_UTF8:
+			case 1200:  // UTF-16, Little Endian ("utf-16")
+			case 1201:  // UTF-16, Big Endian ("unicodeFFFE")
+			case 12000: // UTF-16, Little Endian ("utf-32")
+			case 12001: // UTF-16, Big Endian ("utf-32BE")
+			case 54936: // GB18030, 4 bytes long
+				return true;
+			default:
+				return false;
+			}
+		}
+
 	}} // namespace __detail::__windows
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

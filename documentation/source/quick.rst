@@ -28,9 +28,9 @@
 ..
 .. =============================================================================>
 
-Quick 'n' Dirty Tutorial
-========================
+🔨 Quick 'n' Dirty Tutorial (In Progress)
+=========================================
 
-.. TODO: to be filled out!
+.. warning::
 
-☢️ This isn't quite finished yet; come back at the next minor version update! ☢️
+	|unfinished_warning|

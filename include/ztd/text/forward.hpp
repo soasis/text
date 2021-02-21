@@ -49,11 +49,11 @@ namespace ztd { namespace text {
 		class __utf16_tag;
 		class __utf32_tag;
 
-		template <typename, typename, bool, bool, bool>
+		template <typename, typename, typename, bool, bool, bool>
 		class __utf8_with;
-		template <typename, typename, bool>
+		template <typename, typename, typename, bool>
 		class __utf16_with;
-		template <typename, typename, bool>
+		template <typename, typename, typename, bool>
 		class __utf32_with;
 
 		class __unicode_code_point;
@@ -81,20 +81,20 @@ namespace ztd { namespace text {
 	class replacement_handler;
 	class default_handler;
 
-	template <typename>
+	template <typename, typename>
 	class basic_ascii;
-	using ascii = basic_ascii<char>;
+	using ascii = basic_ascii<char, unicode_code_point>;
 	class execution;
 	class wide_execution;
-	template <typename>
+	template <typename, typename>
 	class basic_utf8;
-	template <typename>
+	template <typename, typename>
 	class basic_utf16;
-	template <typename>
+	template <typename, typename>
 	class basic_utf32;
-	using utf8  = basic_utf8<uchar8_t>;
-	using utf16 = basic_utf16<char16_t>;
-	using utf32 = basic_utf32<char32_t>;
+	using utf8  = basic_utf8<uchar8_t, unicode_code_point>;
+	using utf16 = basic_utf16<char16_t, unicode_code_point>;
+	using utf32 = basic_utf32<char32_t, unicode_code_point>;
 
 	class nfc;
 	class nfd;

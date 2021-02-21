@@ -51,7 +51,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state0(encoding);
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
+			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
@@ -68,7 +68,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state0(encoding);
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
+			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
@@ -78,7 +78,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state1(encoding);
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
+			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
@@ -95,7 +95,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state0(encoding);
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
+			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
@@ -105,7 +105,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state1(encoding);
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
+			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
@@ -122,7 +122,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state0(encoding);
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
+			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
@@ -132,7 +132,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state1(encoding);
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
+			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
@@ -141,15 +141,15 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf32") {
-			const auto& input0 = ztd::text::tests::u32_basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian;
+			const auto input0 = ztd::text::tests::u32_basic_source_character_set_bytes_native_endian;
+			const auto input1 = ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian;
 
 			ztd::text::any_encoding encoding(
 			     ztd::text::encoding_scheme<ztd::text::utf32, ztd::text::endian::native> {});
 
 			ztd::text::any_encoding::decode_state state0(encoding);
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
+			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
@@ -159,7 +159,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 
 			ztd::text::any_encoding::decode_state state1(encoding);
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			std::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
+			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());

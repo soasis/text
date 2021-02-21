@@ -28,6 +28,11 @@
 ..
 .. =============================================================================>
 
-Counting Code Points
-====================
+🔨 Counting Code Points (In Progress)
+=====================================
 
+.. warning::
+
+	|unfinished_warning|
+
+For now, you can go check out the API documentation for :doc:`ztd::text::count_code_points </api/conversions/count_code_points>`.

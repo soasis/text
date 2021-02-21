@@ -86,16 +86,16 @@ Lucky 7
 		
 		// (6)
 		ue_encode_result encode_one(
-			std::span<char32_t> input,
-			std::span<char> output,
+			ztd::text::span<char32_t> input,
+			ztd::text::span<char> output,
 			state& current,
 			ue_encode_error_handler error_handler
 		);
 
 		// (7)
 		ue_decode_result decode_one(
-			std::span<char> input,
-			std::span<char32_t> output,
+			ztd::text::span<char> input,
+			ztd::text::span<char32_t> output,
 			state& current,
 			ue_decode_error_handler error_handler
 		);
@@ -135,14 +135,14 @@ Result types are specific structs in the library that mark encode and decode ope
 	#include <ztd/text/decode_result.hpp>
 
 	using ue_decode_result = ztd::text::decode_result<
-		std::span<char>,
-		std::span<char32_t>,
+		ztd::text::span<char>,
+		ztd::text::span<char32_t>,
 		empty_struct
 	>;
 
 	using ue_encode_result = ztd::text::encode_result<
-		std::span<char32_t>,
-		std::span<char>,
+		ztd::text::span<char32_t>,
+		ztd::text::span<char>,
 		empty_struct
 	>;
 
@@ -172,7 +172,7 @@ The only other thing we need is the error handler, now. Generally, this is a tem
 		ue_decode_result(
 			const utf_ebcdic&,
 			ue_decode_result,
-			std::span<char>
+			ztd::text::span<char>
 		)
 	>;
 
@@ -180,7 +180,7 @@ The only other thing we need is the error handler, now. Generally, this is a tem
 		ue_encode_result(
 			const utf_ebcdic&,
 			ue_encode_result,
-			std::span<char32_t>
+			ztd::text::span<char32_t>
 		)
 	>;
 
@@ -188,7 +188,7 @@ The error handlers use a result-in, result-out design. The parameters given are:
 
 0. The encoding which triggered the error. This allows you to access any information about the encoding object type or any values stored on the encoding object itself.
 1. The result object. This object has the ``error_code`` member set to what went wrong (see :doc:`ztd::text::encoding_error </api/encoding_error>`), and any other changes made to the ``input`` or ``output`` during the operation.
-2. A contiguous range (``std::span``) of ``code_unit``\ s or ``code_point``\ s that were already read by the algorithm. This is useful for when the ``input`` range uses input iterators, which sometimes cannot be "rolled back" after something is read (e.g., consider `std::istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_).
+2. A contiguous range (``ztd::text::span``) of ``code_unit``\ s or ``code_point``\ s that were already read by the algorithm. This is useful for when the ``input`` range uses input iterators, which sometimes cannot be "rolled back" after something is read (e.g., consider `std::istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_).
 
 It returns the same type as the result object. Within this function, anyone can perform any modifications they like to the type, before returning it. This is an incredibly useful behavior that comes in handy for defining custom error handling behaviors, as shown in :doc:`the Error Handling Design section </design/error handling>`. For example, this allows us to do things like insert **REPLACEMENT_CHARACTER \\uFFFD** (�) into a encoding through the :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` or enable speedy encoding for pre-validated text using :doc:`ztd::text::assume_valid_handler </api/error handlers/assume_valid_handler>`. When writing your ``encode_one`` or ``decode_one`` function, it is your responsibility to invoke the error handler (or not, depending on the value of :doc:`ztd::text::is_ignorable_error_handler </api/is_ignorable_error_handler>`).
 

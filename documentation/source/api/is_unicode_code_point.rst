@@ -39,7 +39,7 @@ This checks if the provided type is a :doc:`unicode_code_point </api/unicode_cod
 
 .. warning::
 
-	Note there are some :term:`expectations of unicode code points <unicode code point>`. If your type violates these expectations then code depending on them is free to execute ☢️☢️Undefined Behavior☢️☢️.
+	Note there are some :term:`expectations of unicode code points <unicode code point>`. If your type violates these expectations then code depending on them is free to execute |ub|.
 
 .. doxygenclass:: ztd::text::is_unicode_code_point
 	:members:

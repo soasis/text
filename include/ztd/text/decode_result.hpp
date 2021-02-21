@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -40,6 +40,8 @@
 #include <ztd/text/encoding_error.hpp>
 
 #include <ztd/text/detail/reconstruct.hpp>
+#include <ztd/text/detail/span.hpp>
+#include <ztd/text/detail/encoding_range.hpp>
 
 #include <cstddef>
 #include <array>
@@ -55,7 +57,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as @ref
+	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as 
 	/// ztd_text_decode).
 	//////
 	template <typename _Input, typename _Output>
@@ -77,12 +79,12 @@ namespace ztd { namespace text {
 		encoding_error error_code;
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
-		/// @ref ztd::text::encoding_error::ok.
+		/// ztd::text::encoding_error::ok.
 		//////
 		bool handled_error;
 
 		//////
-		/// @brief Constructs a @ref ztd::text::decode_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to 
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -99,7 +101,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a @ref ztd::text::decode_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::decode_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -107,7 +109,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the decode
 		/// operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
-		/// @ref ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput>
@@ -122,7 +124,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as @ref
+	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as 
 	/// ztd_text_decode).
 	//////
 	template <typename _Input, typename _Output, typename _State>
@@ -138,7 +140,7 @@ namespace ztd { namespace text {
 		_State& state;
 
 		//////
-		/// @brief Constructs a @ref ztd::text::decode_result, defaulting the error code to @ref
+		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to 
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -154,7 +156,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a @ref ztd::text::decode_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::decode_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -163,7 +165,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the decode
 		/// operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
-		/// @ref ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
@@ -225,6 +227,11 @@ namespace ztd { namespace text {
 				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last),
 				::std::forward<_ArgState>(__state), __error_code, __error_code != encoding_error::ok);
 		}
+
+		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
+		inline constexpr bool __is_decode_one_callable_v = __is_detected_v<__detect_object_decode_one, _Encoding,
+			_Input, _Output, _ErrorHandler>&& __is_detected_v<__detect_callable_handler, _ErrorHandler, _Encoding,
+			__reconstruct_decode_result_t<_Input, _Output, _State>, ::ztd::text::span<code_unit_t<_Encoding>>>;
 	} // namespace __detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

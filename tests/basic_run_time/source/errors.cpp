@@ -44,7 +44,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::utf8 enc;
 
 				ztd::text::unicode_code_point output0[decode_output_max] {};
-				std::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
+				ztd::text::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
 				ztd::text::utf8::state s0 {};
 				auto result0 = enc.decode_one(std::u8string_view(ztd::text::tests::u8_unicode_invalid_input),
 				     output_buffer0, ztd::text::default_handler {}, s0);
@@ -55,7 +55,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::utf16 enc;
 
 				ztd::text::unicode_code_point output0[decode_output_max] {};
-				std::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
+				ztd::text::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
 				ztd::text::utf16::state s0 {};
 				auto result0 = enc.decode_one(std::u16string_view(ztd::text::tests::u16_unicode_invalid_input),
 				     output_buffer0, ztd::text::default_handler {}, s0);
@@ -66,7 +66,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::utf32 enc;
 
 				char32_t output0[decode_output_max] {};
-				std::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
+				ztd::text::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
 				ztd::text::utf32::state s0 {};
 				auto result0 = enc.decode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
 				     output_buffer0, ztd::text::default_handler {}, s0);
@@ -79,7 +79,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::utf8 enc;
 
 				char8_t output0[encode_output_max] {};
-				std::span<char8_t> output_buffer0(output0, encode_output_max);
+				ztd::text::span<char8_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf8::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
 				     output_buffer0, ztd::text::default_handler {}, s0);
@@ -90,7 +90,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::utf16 enc;
 
 				char16_t output0[encode_output_max] {};
-				std::span<char16_t> output_buffer0(output0, encode_output_max);
+				ztd::text::span<char16_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf16::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
 				     output_buffer0, ztd::text::default_handler {}, s0);
@@ -101,7 +101,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::utf32 enc;
 
 				char32_t output0[encode_output_max] {};
-				std::span<char32_t> output_buffer0(output0, encode_output_max);
+				ztd::text::span<char32_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf32::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
 				     output_buffer0, ztd::text::default_handler {}, s0);

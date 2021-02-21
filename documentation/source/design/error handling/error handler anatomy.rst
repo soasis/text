@@ -45,12 +45,14 @@ They are classes with a function call operator and utilizes a few templates. Her
 	:linenos:
 	:start-after: // ============================================================================>
 
+This skeleton, by itself, works. It doesn't do anything: it just returns the ``result`` object as-is. This will result in the algorithm stopping exactly where the error occurs, and returning back to the user. This is because the ``result`` has an ``error_code`` member variable, and that member variable, when it reaches the higher level algorithms, stops all encoding, decoding, transcoding, counting, validation, and etc. work and exists with the proper information.
+
 
 
 First Parameter
 ---------------
 
-The first parameter is simple enough: it is the encoding that is calling this error handler. If you invoke an ``encode_one`` or ``decode_one`` on a :doc:`ztd::text::utf8 </api/encodings/utf8>` object, then you can expect the first parameter of type ``ztd::text::utf8``.
+The first parameter is simple enough: it is the encoding that is calling this error handler. If you invoke an ``encode_one`` or ``decode_one`` (or a higher-level conversion algorithm) on a :doc:`ztd::text::utf8 </api/encodings/utf8>` object, then you can expect the first parameter of type ``ztd::text::utf8``.
 
 .. note::
 
@@ -58,12 +60,12 @@ The first parameter is simple enough: it is the encoding that is calling this er
 
 This can be handy if you need to access information about the encoding object or encoding type. You can get information about the encoding by using:
 
-- :doc:`ztd::text::encode_state_of_t </api/decode_state_of>`
-- :doc:`ztd::text::decode_state_of_t </api/encode_state_of>`
-- :doc:`ztd::text::code_unit_of_t\<Encoding\> </api/code_unit_of>`
-- :doc:`ztd::text::code_point_of_t\<Encoding\> </api/code_point_of>`
-- :doc:`ztd::text::code_unit_of_v\<Encoding\> </api/code_unit_of>`
-- :doc:`ztd::text::code_point_of_v\<Encoding\> </api/code_point_of>`
+- :doc:`ztd::text::encode_state_t </api/decode_state>`
+- :doc:`ztd::text::decode_state_t </api/encode_state>`
+- :doc:`ztd::text::code_unit_t\<Encoding\> </api/code_unit>`
+- :doc:`ztd::text::code_point_t\<Encoding\> </api/code_point>`
+- :doc:`ztd::text::code_unit_v\<Encoding\> </api/code_unit>`
+- :doc:`ztd::text::code_point_v\<Encoding\> </api/code_point>`
 
 
 
@@ -81,7 +83,7 @@ For example, someone can see if there is space left in the ``result.output`` par
 Third Parameter
 ---------------
 
-The third parameter is a contiguous range of inpts that were read. Typically, this is a ``std::span`` handed to you, or something that can construct a ``std::span`` or either code units or code points (whatever the input type has). This is useful for ``input_range``\ s and ``input_iterator``\ s where it is impossible to guarantee a value can be re-read, as is the case `with istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_ and other I/O-style iterators and ranges.
+The third parameter is a contiguous range of inpts that were read. Typically, this is a ``ztd::text::span`` handed to you, or something that can construct a ``ztd::text::span`` or either code units or code points (whatever the input type has). This is useful for ``input_range``\ s and ``input_iterator``\ s where it is impossible to guarantee a value can be re-read, as is the case `with istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_ and other I/O-style iterators and ranges.
 
 This is useful for grabbing any unused-but-read input data, and storing it for later. For example, reading from a network buffer where the network still has more data means that getting a :doc:`ztd::text::encoding_error::incomplete_sequence </api/encoding_error>` is not **really** an error. It just means to save what has not been read yet, change the buffer pointer to leave those characters in the right place, and try again. This can also be done a little bit easier by utilizing the :doc:`ztd::text::incomplete_handler </api/error handlers/incomplete_handler>`.
 

@@ -54,14 +54,14 @@ namespace ztd { namespace text {
 
 	namespace __detail {
 
-		template <typename _Ty, decltype(::std::dynamic_extent) _Extent, typename _It, typename _Sen>
-		constexpr ::std::span<_Ty> reconstruct(
-			::std::in_place_type_t<::std::span<_Ty, _Extent>>, _It __iterator, _Sen __sentinel) noexcept {
+		template <typename _Ty, decltype(::ztd::text::dynamic_extent) _Extent, typename _It, typename _Sen>
+		constexpr ::ztd::text::span<_Ty> reconstruct(
+			::std::in_place_type_t<::ztd::text::span<_Ty, _Extent>>, _It __iterator, _Sen __sentinel) noexcept {
 			if constexpr (!::std::is_integral_v<_Sen>) {
-				return ::std::span<_Ty>(__adl::__adl_to_address(__iterator), __sentinel - __iterator);
+				return ::ztd::text::span<_Ty>(__adl::__adl_to_address(__iterator), __sentinel - __iterator);
 			}
 			else {
-				return ::std::span<_Ty>(__adl::__adl_to_address(__iterator), __sentinel);
+				return ::ztd::text::span<_Ty>(__adl::__adl_to_address(__iterator), __sentinel);
 			}
 		}
 

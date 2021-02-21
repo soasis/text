@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -58,8 +58,8 @@ namespace ztd { namespace text {
 			|| (::std::is_same_v<__remove_cvref_t<_From>, ascii>
 				&& (::std::is_same_v<__remove_cvref_t<_To>, utf8>
 					|| ::std::is_base_of_v<__impl::__utf8_tag, __remove_cvref_t<_To>>)
-				&& ((sizeof(code_unit_of_t<__remove_cvref_t<_To>>) == sizeof(char))
-					&& (alignof(code_unit_of_t<__remove_cvref_t<_To>>) == alignof(char)))
+				&& ((sizeof(code_unit_t<__remove_cvref_t<_To>>) == sizeof(char))
+					&& (alignof(code_unit_t<__remove_cvref_t<_To>>) == alignof(char)))
 			)
 		> { };
 		// clang-format on
@@ -68,7 +68,14 @@ namespace ztd { namespace text {
 		inline constexpr bool __is_bitwise_transcoding_compatible_v
 			= __is_bitwise_transcoding_compatible<_From, _To>::value;
 
+
 	} // namespace __detail
+
+	//////
+	/// @addtogroup ztd_text_properties Property and Trait Helpers
+	///
+	/// @{
+	/////
 
 	//////
 	/// @brief Checks whether or not the specified @p _From encoding can be transcoded to the @p _To encoding without
@@ -88,6 +95,19 @@ namespace ztd { namespace text {
 	template <typename _From, typename _To>
 	constexpr bool is_bitwise_transcoding_compatible_v = is_bitwise_transcoding_compatible<_From, _To>::value;
 
+	namespace __detail {
+		// clang-format off
+		template <typename _From, typename _To>
+		inline constexpr bool __is_transcoding_compatible_v
+			= is_bitwise_transcoding_compatible_v<_From,_To>
+			|| ::std::is_same_v<__detail::__remove_cvref_t<_From>, __detail::__remove_cvref_t<_To>>
+			|| ::std::is_same_v<code_point_t<_From>, code_point_t<_To>>
+			|| (is_unicode_scalar_value_v<code_point_t<_From>>
+				? (is_unicode_code_point_v<code_point_t<_To>>)
+				: (is_unicode_code_point_v<_From> && !is_unicode_scalar_value_v<_To>));
+		// clang-format on
+	} // namespace __detail
+
 	//////
 	/// @brief Checks whether or not the specified @p _From encoding can be transcoded to the @p _To encoding without
 	/// invoking a lossy conversion when using the intermediate code points.
@@ -101,19 +121,10 @@ namespace ztd { namespace text {
 	/// valid one way, but not the other way since scalar values do not allow surrogates). If none of these are true,
 	/// then, the intermediate code point likely cannot convert between the two losslessly.
 	//////
-	// clang-format off
 	template <typename _From, typename _To>
 	class is_transcoding_compatible
-	: public ::std::integral_constant<bool,
-		__detail::__is_bitwise_transcoding_compatible_v<_From,_To>
-		|| ::std::is_same_v<__detail::__remove_cvref_t<_From>, __detail::__remove_cvref_t<_To>>
-		|| ::std::is_same_v<code_point_of_t<_From>, code_point_of_t<_To>>
-		|| (is_unicode_scalar_value_v<code_point_of_t<_From>>
-			? (is_unicode_code_point_v<code_point_of_t<_To>>)
-			: (is_unicode_code_point_v<_From> && !is_unicode_scalar_value_v<_To>))
-	> {
-	};
-	// clang-format on
+	: public ::std::integral_constant<bool, __detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
+
 
 	//////
 	/// @brief A @c "::value" alias for ztd::text::is_transcoding_compatible.
@@ -121,6 +132,10 @@ namespace ztd { namespace text {
 	//////
 	template <typename _From, typename _To>
 	constexpr bool is_transcoding_compatible_v = is_transcoding_compatible<_To, _From>::value;
+
+	//////
+	/// @}
+	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

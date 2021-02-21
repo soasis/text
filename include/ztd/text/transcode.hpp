@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 	///
 	/// @brief These functions convert from a view of input code units into a view of output code units (typically,
 	/// through an intermediary code point type that is similar between the two) using either the inferred or specified
-	/// encodings. If no error handler is provided, the equivalent of the @ref ztd::text::default_handler is used by
+	/// encodings. If no error handler is provided, the equivalent of the ztd::text::default_handler is used by
 	/// default, but it is marked as careless. If no associated state is provided for either the "to" or "from"
 	/// encodings, one will be created with automatic storage duration (as a "stack" variable) for the provided
 	/// encoding.
@@ -121,11 +121,11 @@ namespace ztd { namespace text {
 			using _InputValueType        = __detail::__range_value_type_t<_UInput>;
 			using _WorkingInput          = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                     ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::std::span<const _InputValueType>>,
+                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                     _UInput>>;
 			using _WorkingOutput         = __detail::__reconstruct_t<_UOutput>;
 			using _UFromEncoding         = __detail::__remove_cvref_t<_FromEncoding>;
-			using _IntermediateCodePoint = code_point_of_t<_UFromEncoding>;
+			using _IntermediateCodePoint = code_point_t<_UFromEncoding>;
 			using _Result
 				= __detail::__reconstruct_transcode_result_t<_WorkingInput, _WorkingOutput, _FromState, _ToState>;
 
@@ -211,7 +211,7 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state) {
 		using _UToEncoding = __detail::__remove_cvref_t<_ToEncoding>;
-		using _ToState     = encode_state_of_t<_UToEncoding>;
+		using _ToState     = encode_state_t<_UToEncoding>;
 
 		_ToState __to_state = make_encode_state(__to_encoding);
 
@@ -249,7 +249,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
 		using _UFromEncoding = __detail::__remove_cvref_t<_FromEncoding>;
-		using _FromState     = decode_state_of_t<_UFromEncoding>;
+		using _FromState     = decode_state_t<_UFromEncoding>;
 
 		_FromState __from_state = make_decode_state(__from_encoding);
 
@@ -428,7 +428,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state) {
 		using _UToEncoding = __detail::__remove_cvref_t<_ToEncoding>;
-		using _ToState     = encode_state_of_t<_UToEncoding>;
+		using _ToState     = encode_state_t<_UToEncoding>;
 
 		_ToState __to_state = make_encode_state(__to_encoding);
 
@@ -467,7 +467,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
 		using _UFromEncoding = __detail::__remove_cvref_t<_FromEncoding>;
-		using _FromState     = decode_state_of_t<_UFromEncoding>;
+		using _FromState     = decode_state_t<_UFromEncoding>;
 
 		_FromState __from_state = make_decode_state(__from_encoding);
 
@@ -656,7 +656,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state) {
 		using _UToEncoding = __detail::__remove_cvref_t<_ToEncoding>;
-		using _ToState     = encode_state_of_t<_UToEncoding>;
+		using _ToState     = encode_state_t<_UToEncoding>;
 
 		_ToState __to_state = make_encode_state(__to_encoding);
 
@@ -695,7 +695,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
 		using _UFromEncoding = __detail::__remove_cvref_t<_FromEncoding>;
-		using _FromState     = decode_state_of_t<_UFromEncoding>;
+		using _FromState     = decode_state_t<_UFromEncoding>;
 
 		_FromState __from_state = make_decode_state(__from_encoding);
 
@@ -820,7 +820,7 @@ namespace ztd { namespace text {
 	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
 	///
 	/// @returns A @c std::basic_string or @c std::vector with an element type of @c
-	/// ztd::text::code_unit_of<_ToEncoding> with the result, regardless of whether an error occurs or not. If
+	/// ztd::text::code_unit<_ToEncoding> with the result, regardless of whether an error occurs or not. If
 	/// you are looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
@@ -830,7 +830,7 @@ namespace ztd { namespace text {
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
 		_ToState& __to_state) {
 		using _UToEncoding = __detail::__remove_cvref_t<_ToEncoding>;
-		using _CodeUnit    = code_unit_of_t<_UToEncoding>;
+		using _CodeUnit    = code_unit_t<_UToEncoding>;
 		using _OutputContainer
 			= ::std::conditional_t<is_unicode_code_point_v<_CodeUnit> || __detail::__is_character_v<_CodeUnit>,
 			     ::std::basic_string<_CodeUnit>, ::std::vector<_CodeUnit>>;
@@ -857,7 +857,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks A default @c to_state is created by calling ztd::text::make_encode_state.
 	///
-	/// @returns A @c std::basic_string<ztd::text::code_unit_of_t<_ToEncoding>> with the result, regardless of
+	/// @returns A @c std::basic_string<ztd::text::code_unit_t<_ToEncoding>> with the result, regardless of
 	/// whether an error occurs or not. If you are looking for error information and not just a quick one-off
 	/// conversion function, please use ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
@@ -866,7 +866,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state) {
 		using _UToEncoding = __detail::__remove_cvref_t<_ToEncoding>;
-		using _ToState     = encode_state_of_t<_UToEncoding>;
+		using _ToState     = encode_state_t<_UToEncoding>;
 
 		_ToState __to_state = make_encode_state(__to_encoding);
 
@@ -891,7 +891,7 @@ namespace ztd { namespace text {
 	/// @remarks A default @c from_state is created by calling ztd::text::make_decode_state. It is then passed to
 	/// further overloads of this function.
 	///
-	/// @returns A @c std::basic_string<ztd::text::code_unit_of_t<_ToEncoding>> with the result, regardless of
+	/// @returns A @c std::basic_string<ztd::text::code_unit_t<_ToEncoding>> with the result, regardless of
 	/// whether an error occurs or not. If you are looking for error information and not just a quick one-off
 	/// conversion function, please use ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
@@ -900,7 +900,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
 		using _UFromEncoding = __detail::__remove_cvref_t<_FromEncoding>;
-		using _FromState     = decode_state_of_t<_UFromEncoding>;
+		using _FromState     = decode_state_t<_UFromEncoding>;
 
 		_FromState __from_state = make_decode_state(__from_encoding);
 
@@ -924,7 +924,7 @@ namespace ztd { namespace text {
 	/// @remarks A @c to_error_handler similar to ztd::text::default_handler is created, but it is marked as careless.
 	/// It is then passed to further overloads of this function.
 	///
-	/// @returns A @c std::basic_string<ztd::text::code_unit_of_t<_ToEncoding>> with the result, regardless of
+	/// @returns A @c std::basic_string<ztd::text::code_unit_t<_ToEncoding>> with the result, regardless of
 	/// whether an error occurs or not. If you are looking for error information and not just a quick one-off
 	/// conversion function, please use ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
@@ -952,7 +952,7 @@ namespace ztd { namespace text {
 	/// @remarks A @c from_error_handler similar to ztd::text::default_handler is created, but it is marked as
 	/// careless.
 	///
-	/// @returns A @c std::basic_string<ztd::text::code_unit_of_t<_ToEncoding>> with the result, regardless of
+	/// @returns A @c std::basic_string<ztd::text::code_unit_t<_ToEncoding>> with the result, regardless of
 	/// whether an error occurs or not. If you are looking for error information and not just a quick one-off
 	/// conversion function, please use ztd::text::transcode_to or ztd::text::transcode_into.
 	//////

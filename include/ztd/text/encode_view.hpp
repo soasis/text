@@ -67,8 +67,8 @@ namespace ztd { namespace text {
 	/// into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
 	//////
-	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_point_of_t<_Encoding>>,
-		typename _ErrorHandler = default_handler, typename _State = encode_state_of_t<_Encoding>>
+	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_point_t<_Encoding>>,
+		typename _ErrorHandler = __detail::__careless_handler, typename _State = encode_state_t<_Encoding>>
 	class encode_view {
 	private:
 		using _StoredRange = __detail::__reconstruct_t<__detail::__remove_cvref_t<_Range>>;
@@ -103,7 +103,7 @@ namespace ztd { namespace text {
 		/// @brief The state type used for encode operations.
 		///
 		//////
-		using state_type = encode_state_of_t<encoding_type>;
+		using state_type = encode_state_t<encoding_type>;
 
 		//////
 		/// @brief Constructs an encode_view from the underlying range.

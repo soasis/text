@@ -28,10 +28,10 @@
 ..
 .. =============================================================================>
 
-decode_state_of
+encode_state
 ===============
 
-.. doxygenclass:: ztd::text::decode_state_of
+.. doxygenclass:: ztd::text::encode_state
 	:members:
 
-.. doxygentypedef:: ztd::text::decode_state_of_t
+.. doxygentypedef:: ztd::text::encode_state_t

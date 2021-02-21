@@ -51,10 +51,10 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 
 			ztd::text::any_encoding::encode_state state0(encoding);
 			std::vector<std::byte> result0_storage(std::size(input0) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result0_storage_view(result0_storage);
+			ztd::text::span<std::byte> result0_storage_view(result0_storage);
 			auto result0 = ztd::text::encode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
-			std::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
+			ztd::text::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
 			     = std::equal(result0_view.cbegin(), result0_view.cend(), output0.cbegin(), output0.cend());
 			REQUIRE(is_equal0);
@@ -68,20 +68,20 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 
 			ztd::text::any_encoding::encode_state state0(encoding);
 			std::vector<std::byte> result0_storage(std::size(input0) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result0_storage_view(result0_storage);
+			ztd::text::span<std::byte> result0_storage_view(result0_storage);
 			auto result0 = ztd::text::encode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
-			std::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
+			ztd::text::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
 			     = std::equal(result0_view.cbegin(), result0_view.cend(), output0.cbegin(), output0.cend());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::encode_state state1(encoding);
 			std::vector<std::byte> result1_storage(std::size(input1) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result1_storage_view(result1_storage);
+			ztd::text::span<std::byte> result1_storage_view(result1_storage);
 			auto result1 = ztd::text::encode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
-			std::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
+			ztd::text::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
 			     = std::equal(result1_view.cbegin(), result1_view.cend(), output1.cbegin(), output1.cend());
 			REQUIRE(is_equal1);
@@ -95,20 +95,20 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 
 			ztd::text::any_encoding::encode_state state0(encoding);
 			std::vector<std::byte> result0_storage(std::size(input0) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result0_storage_view(result0_storage);
+			ztd::text::span<std::byte> result0_storage_view(result0_storage);
 			auto result0 = ztd::text::encode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
-			std::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
+			ztd::text::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
 			     = std::equal(result0_view.cbegin(), result0_view.cend(), output0.cbegin(), output0.cend());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::encode_state state1(encoding);
 			std::vector<std::byte> result1_storage(std::size(input1) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result1_storage_view(result1_storage);
+			ztd::text::span<std::byte> result1_storage_view(result1_storage);
 			auto result1 = ztd::text::encode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
-			std::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
+			ztd::text::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
 			     = std::equal(result1_view.cbegin(), result1_view.cend(), output1.cbegin(), output1.cend());
 			REQUIRE(is_equal1);
@@ -122,20 +122,20 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 
 			ztd::text::any_encoding::encode_state state0(encoding);
 			std::vector<std::byte> result0_storage(std::size(input0) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result0_storage_view(result0_storage);
+			ztd::text::span<std::byte> result0_storage_view(result0_storage);
 			auto result0 = ztd::text::encode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
-			std::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
+			ztd::text::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
 			     = std::equal(result0_view.cbegin(), result0_view.cend(), output0.cbegin(), output0.cend());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::encode_state state1(encoding);
 			std::vector<std::byte> result1_storage(std::size(input1) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result1_storage_view(result1_storage);
+			ztd::text::span<std::byte> result1_storage_view(result1_storage);
 			auto result1 = ztd::text::encode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
-			std::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
+			ztd::text::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
 			     = std::equal(result1_view.cbegin(), result1_view.cend(), output1.cbegin(), output1.cend());
 			REQUIRE(is_equal1);
@@ -149,20 +149,20 @@ TEST_CASE("text/encode/any_encoding/encoding_scheme", "encode to byte arrays thr
 
 			ztd::text::any_encoding::encode_state state0(encoding);
 			std::vector<std::byte> result0_storage(std::size(input0) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result0_storage_view(result0_storage);
+			ztd::text::span<std::byte> result0_storage_view(result0_storage);
 			auto result0 = ztd::text::encode_into(
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
-			std::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
+			ztd::text::span<std::byte> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
 			     = std::equal(result0_view.cbegin(), result0_view.cend(), output0.cbegin(), output0.cend());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::encode_state state1(encoding);
 			std::vector<std::byte> result1_storage(std::size(input1) * encoding.max_code_units, std::byte {});
-			std::span<std::byte> result1_storage_view(result1_storage);
+			ztd::text::span<std::byte> result1_storage_view(result1_storage);
 			auto result1 = ztd::text::encode_into(
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
-			std::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
+			ztd::text::span<std::byte> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
 			     = std::equal(result1_view.cbegin(), result1_view.cend(), output1.cbegin(), output1.cend());
 			REQUIRE(is_equal1);

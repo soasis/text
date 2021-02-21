@@ -58,7 +58,7 @@ namespace ztd { namespace text {
 	///
 	//////
 	template <typename _Type>
-	class code_unit_of {
+	class code_unit {
 	public:
 		//////
 		/// @brief The code unit type for the encoding type.
@@ -68,11 +68,11 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief A typename alias for ztd::text::code_unit_of.
+	/// @brief A typename alias for ztd::text::code_unit.
 	///
 	//////
 	template <typename _Type>
-	using code_unit_of_t = typename code_unit_of<_Type>::type;
+	using code_unit_t = typename code_unit<_Type>::type;
 
 	//////
 	/// @brief Gets the maximum number of code units that can be produced by an encoding during an encode operation,

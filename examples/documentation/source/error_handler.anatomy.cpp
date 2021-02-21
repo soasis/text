@@ -5,8 +5,8 @@
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
-// Licensees holding valid commercial ztd.text licenses may use this file in
-// accordance with the commercial license agreement provided with the
+// Licensees holding valid commercial ztd.text licenses may use this file
+// in accordance with the commercial license agreement provided with the
 // Software or, alternatively, in accordance with the terms contained in
 // a written agreement between you and Shepherd's Oasis, LLC.
 // For licensing terms and conditions see your agreement. For
@@ -30,36 +30,53 @@
 
 #include <ztd/text.hpp>
 
-namespace txt = ztd::text;
-
 struct my_error_handler {
+	// Helper definintions
+	template <typename Encoding>
+	using code_point_span
+	     = ztd::text::span<const ztd::text::code_point_t<Encoding>>;
+	template <typename Encoding>
+	using code_unit_span
+	     = ztd::text::span<const ztd::text::code_unit_t<Encoding>>;
 
-	// For encode_one/encode failures
+	// Function call operatorthat returns a "deduced" (auto) type
+	// Specifically, this one is called for encode failures
 	template <typename Encoding, typename Input, typename Output,
 	     typename State>
-	auto operator()(                                        // Function call operator
-	     const Encoding& encoding,                          // First Parameter
-	     txt::encode_result<Input, Output, State> result,   // Second Parameter, encode-specific
-	     std::span<txt::code_point_of_t<Encoding>> progress // Third Parameter
-	) const {
+	auto operator()(
+	     // First Parameter
+	     const Encoding& encoding,
+	     // Second Parameter, encode-specific
+	     ztd::text::encode_result<Input, Output, State> result,
+	     // Third Parameter
+	     code_point_span<Encoding> progress) const {
 		// ... implementation here!
 		return result;
 	}
 
-	// For decode_one/decode failures
+	// Function call operator that returns a "deduced" (auto) type
+	// Specifically, this one is called for decode failures
 	template <typename Encoding, typename Input, typename Output,
 	     typename State>
-	auto operator()(               // Function call operator that returns a "deduced" (auto) type
-	     const Encoding& encoding, // First Parameter
-	     txt::decode_result<Input, Output, State> result,   // Second Parameter, decode-specific
-	     std::span<txt::code_point_of_t<Encoding>> progress // Third Parameter
-	) const {
+	auto operator()(
+	     // First Parameter
+	     const Encoding& encoding,
+	     // Second Parameter, decode-specific
+	     ztd::text::decode_result<Input, Output, State> result,
+	     // Third Parameter
+	     code_unit_span<Encoding> progress) const {
 		// ... implementation here!
 		return result;
 	}
 };
 
-int main() {
+int main(int, char* argv[]) {
+
+	// convert from execution encoding to utf8 encoding,
+	// using our new handler
+	std::string utf8_string = ztd::text::transcode(
+	     std::string_view(argv[0]), ztd::text::execution {},
+	     ztd::text::basic_utf8<char> {}, my_error_handler {});
 
 	return 0;
 }

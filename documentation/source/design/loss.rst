@@ -50,20 +50,7 @@ As the maintainer of code inside of the function ``read_name``, what is the enco
 	}
 
 
-Even here, we've only made marginal improvements. We know the string is stored in some heap by the default allocator, we have the size of the string, but that only tells us how many ``char`` units are stored, not how many conceptual, human-readable :term:`characters <character>` there are or any other pertinent information. Is this information encoded? Is it UTF-8? Maybe it's EBCDIC Code Page 833. Maybe it's UTF-7-IMAP. You don't know, and by the time you start inspecting or poking at the individual ``char`` :term:`code units <code unit>`, who knows what can happen?
-
-.. epigraph::
-
-	.. raw:: html
-
-		<video autoplay muted loop alt="std::string is not designed to hold text. That's not what std::string was made for for. You take a freaking bag of contiguous bytes and add a null terminator so that it's efficient when you pass it to a C function on a PDP11! It's fucking bytes, see? It's fucking bytes, you asshole! And you don't do anything, what do you do? You change the locale, and you specialize char_traits, and you want Unicode?! You know how it costs to instantiate char_traits? You know how hard it is to implement 176 member functions?! What sacrifices we make to keep your PDP11 working?! And then you smugly keep talking about Perl and Rust and Swift and shits? It HURTS!">
-			<source src="../_videos/corentin-string.mp4" type="video/mp4">
-			A parody video of Corentin Jabot's frustrations with how C++ handles strings, Unicode, and text. (Your browser does not support the video tag or the video failed to load.)
-		</video> 
-
-	-- Courtesy of Corentin Jabot, `February 6th, 2021 <https://twitter.com/Cor3ntin/status/1358037434060201986>`_
-
-To make matters worse, even C++ and its Standard Library have poor support for encoding/decoding, let alone Unicode in general. These problems have been explained in quite a lot of detail up to ths point, but the pitfalls are many:
+Even here, we've only made marginal improvements. We know the string is stored in some heap by the default allocator, we have the size of the string, but that only tells us how many ``char`` units are stored, not how many conceptual, human-readable :term:`characters <character>` there are or any other pertinent information. Is this information encoded? Is it UTF-8? Maybe it's EBCDIC Code Page 833. Maybe it's UTF-7-IMAP. You don't know, and by the time you start inspecting or poking at the individual ``char`` :term:`code units <code unit>`, who knows what can happen? To make matters worse, even C++ and its Standard Library have poor support for encoding/decoding, let alone Unicode in general. These problems have been explained in quite a lot of detail up to ths point, but the pitfalls are many:
 
 .. epigraph::
 	

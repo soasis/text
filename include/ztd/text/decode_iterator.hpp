@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 	/// interfaces.
 	//////
 	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler,
-		typename _State = decode_state_of_t<_Encoding>>
+		typename _State = decode_state_t<_Encoding>>
 	class decode_iterator
 	: public __detail::__encoding_iterator<__detail::__transaction::__decode,
 		  decode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State> {

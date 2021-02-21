@@ -96,7 +96,7 @@ namespace ztd { namespace text {
 		inline constexpr bool __is_unicode_encoding_name(std::string_view __encoding_name) noexcept {
 			constexpr const char* __unicode_names[]
 				= { "UTF-7", "UTF-7-IMAP", "UTF-8", "UTF-16", "UTF-32", "UTF-16LE", "UTF-16BE", "UTF-32LE",
-					  "UTF-32BE", "UTF-EBCDIC", "UTF-8-EBCDIC", "MUTF-8", "WTF-8", "GB18030" };
+					  "UTF-32BE", "UTF-EBCDIC", "UTF-8-EBCDIC", "MUTF-8", "WTF-8", "GB18030", "CESU-8", "UTF-1" };
 			constexpr ::std::size_t __unicode_names_count = sizeof(__unicode_names) / sizeof(__unicode_names[0]);
 			for (::std::size_t __index = 0; __index < __unicode_names_count; ++__index) {
 				std::string_view __unicode_name = __unicode_names[__index];
@@ -122,6 +122,8 @@ namespace ztd { namespace text {
 			__utf32le,
 			__utf32be,
 			__gb18030,
+			__utf1,
+			__cesu8,
 			__ascii
 		};
 
@@ -197,6 +199,8 @@ namespace ztd { namespace text {
 			case __encoding_id::__gb18030:
 			case __encoding_id::__wtf8:
 			case __encoding_id::__mutf8:
+			case __encoding_id::__utf1:
+			case __encoding_id::__cesu8:
 				return true;
 			default:
 				return false;

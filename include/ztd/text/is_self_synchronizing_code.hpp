@@ -48,7 +48,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename = void>
 		struct __is_self_synchronizing_code_sfinae
-		: std::integral_constant<bool, ::std::is_empty_v<decode_state_of_t<_Encoding>>> { };
+		: std::integral_constant<bool, ::std::is_empty_v<decode_state_t<_Encoding>>> { };
 
 		template <typename _Type>
 		struct __is_self_synchronizing_code_sfinae<_Type,

@@ -52,7 +52,7 @@ namespace ztd { namespace text {
 	///
 	//////
 	template <typename _Type>
-	class code_point_of {
+	class code_point {
 	public:
 		//////
 		/// @brief The code point type for the given encoding type. If it does not exist, @c
@@ -63,11 +63,11 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief A typename alias for ztd::text::code_point_of.
+	/// @brief A typename alias for ztd::text::code_point.
 	///
 	//////
 	template <typename _Type>
-	using code_point_of_t = typename code_point_of<_Type>::type;
+	using code_point_t = typename code_point<_Type>::type;
 
 	//////
 	/// @brief Gets the maximum number of code points that can be produced by an encoding during a decode operation,

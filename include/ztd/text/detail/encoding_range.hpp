@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -38,7 +38,6 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-#include <ztd/text/error_handler.hpp>
 
 #include <ztd/text/detail/adl.hpp>
 #include <ztd/text/detail/type_traits.hpp>
@@ -170,6 +169,10 @@ namespace ztd { namespace text {
 			= decltype(text_transcode_one(::std::declval<_Input>(), ::std::declval<_FromEncoding>(),
 			     ::std::declval<_Output>(), ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(),
 			     ::std::declval<_ToHandler>(), ::std::declval<_FromState&>(), ::std::declval<_ToState&>()));
+
+		template <typename _Handler, typename _Encoding, typename _Result, typename _Progress>
+		using __detect_callable_handler = decltype(::std::declval<_Handler>()(
+			::std::declval<const _Encoding&>(), ::std::declval<_Result>(), ::std::declval<_Progress>()));
 
 		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
 		inline constexpr bool __is_decode_encoding_for_v

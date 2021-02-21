@@ -55,9 +55,9 @@ namespace ztd { namespace text {
 #if !defined(__cpp_lib_subviewible_ranges)
 
 	template <typename _Ty, ::std::ptrdiff_t _Extent, typename _It, typename _Sen>
-	constexpr ::std::span<_Ty> subview(::std::span<_Ty, _Extent>, _It __iterator, _Sen __sentinel) {
+	constexpr ::ztd::text::span<_Ty> subview(::ztd::text::span<_Ty, _Extent>, _It __iterator, _Sen __sentinel) {
 		return __subview(
-			::std::in_place_type<::std::span<_Ty, _Extent>>, ::std::move(__iterator), ::std::move(__sentinel));
+			::std::in_place_type<::ztd::text::span<_Ty, _Extent>>, ::std::move(__iterator), ::std::move(__sentinel));
 	}
 
 	template <typename _Ty, typename _Traits, typename _It, typename _Sen>

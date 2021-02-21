@@ -73,22 +73,22 @@ namespace ztd { namespace text {
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
 		//////
-		using code_unit = code_unit_of_t<__underlying_t>;
+		using code_unit = code_unit_t<__underlying_t>;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 		//////
-		using code_point = code_point_of_t<__underlying_t>;
+		using code_point = code_point_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to encode_one.
 		///
 		//////
-		using encode_state = encode_state_of_t<__underlying_t>;
+		using encode_state = encode_state_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to decode_one.
 		///
 		//////
-		using decode_state = decode_state_of_t<__underlying_t>;
+		using decode_state = decode_state_t<__underlying_t>;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
@@ -108,14 +108,38 @@ namespace ztd { namespace text {
 		/// @brief The maximum number of code points a single complete operation of decoding can produce.
 		///
 		//////
-		inline static constexpr ::std::size_t max_code_points = 8;
+		inline static constexpr ::std::size_t max_code_points = 16;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
 		///
 		//////
-		inline static constexpr ::std::size_t max_code_units = 16;
+		inline static constexpr ::std::size_t max_code_units = 32;
 
-		using __base_t::__base_t;
+		//////
+		/// @brief Default constructs a ztd::text::literal.
+		///
+		//////
+		constexpr literal() noexcept = default;
+		//////
+		/// @brief Copy constructs a ztd::text::literal.
+		///
+		//////
+		constexpr literal(const literal&) noexcept = default;
+		//////
+		/// @brief Move constructs a ztd::text::literal.
+		///
+		//////
+		constexpr literal(literal&&) noexcept = default;
+		//////
+		/// @brief Copy assigns into a ztd::text::literal object.
+		///
+		//////
+		constexpr literal& operator=(const literal&) noexcept = default;
+		//////
+		/// @brief Move assigns into a ztd::text::literal object.
+		///
+		//////
+		constexpr literal& operator=(literal&&) noexcept = default;
 
 		//////
 		/// @brief Decodes a single complete unit of information as code points and produces a result with the
@@ -139,7 +163,7 @@ namespace ztd { namespace text {
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
 #if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
-     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT_I_)
+     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(__detail::__always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string literal "
@@ -159,12 +183,13 @@ namespace ztd { namespace text {
 				"prevent that from happening, this error is being printed out and to go ahead with the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
-				"Please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore "
+				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
+				"ignore "
 				"this "
 				"error and we will get right on doing exactly that for you.");
 #endif
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT_I_)
-			static_assert(__detail::__always_true_v<_Input> && !__detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
+#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+			static_assert(__detail::__always_true_v<_Input> && !__detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
 #endif
 			__detail::__forwarding_handler<const literal, __detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
@@ -194,7 +219,7 @@ namespace ztd { namespace text {
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
 #if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
-     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT_I_)
+     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(__detail::__always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string literal "
@@ -214,12 +239,13 @@ namespace ztd { namespace text {
 				"prevent that from happening, this error is being printed out and to go ahead with the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
-				"Please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore "
+				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
+				"ignore "
 				"this "
 				"error and we will get right on doing exactly that for you.");
 #endif
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT_I_)
-			static_assert(__detail::__always_true_v<_Input> && !__detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[Please read!]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_FUCK_MY_LITERALS_UP_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
+#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+			static_assert(__detail::__always_true_v<_Input> && !__detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[Please read!]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
 #endif
 			__detail::__forwarding_handler<const literal, __detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);

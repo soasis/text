@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
 	/// reason!
 	//////
-	template <typename _CodeUnit>
+	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_ascii {
 	public:
 		//////
@@ -83,7 +83,7 @@ namespace ztd { namespace text {
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 		//////
-		using code_point = unicode_code_point;
+		using code_point = _CodePoint;
 		//////
 		/// @brief The state that can be used between calls to the encoder and decoder.
 		///
@@ -167,7 +167,7 @@ namespace ztd { namespace text {
 						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::insufficient_output_space),
-						::std::span<code_unit, 0>());
+						::ztd::text::span<code_unit, 0>());
 				}
 			}
 			else {
@@ -185,7 +185,7 @@ namespace ztd { namespace text {
 						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::invalid_sequence),
-						::std::span<code_unit, 1>(::std::addressof(__units[0]), 1));
+						::ztd::text::span<code_unit, 1>(::std::addressof(__units[0]), 1));
 				}
 			}
 
@@ -240,7 +240,7 @@ namespace ztd { namespace text {
 						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::insufficient_output_space),
-						::std::span<code_point, 0>());
+						::ztd::text::span<code_point, 0>());
 				}
 			}
 			else {
@@ -259,7 +259,7 @@ namespace ztd { namespace text {
 						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::invalid_sequence),
-						::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+						::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 				}
 			}
 

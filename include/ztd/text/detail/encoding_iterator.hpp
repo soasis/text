@@ -128,7 +128,7 @@ namespace ztd { namespace text {
 			///
 			//////
 			using value_type = ::std::conditional_t<_EncodeOrDecode == __transaction::__encode,
-				code_unit_of_t<_Encoding>, code_point_of_t<_Encoding>>;
+				code_unit_t<_Encoding>, code_point_t<_Encoding>>;
 			//////
 			/// @brief A pointer type to the value_type.
 			///

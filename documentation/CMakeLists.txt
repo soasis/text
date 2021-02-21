@@ -64,10 +64,15 @@ file(GLOB_RECURSE ztd_text_sphinx_sources LIST_DIRECTORIES false CONFIGURE_DEPEN
 #Replace variables inside @@ with the current values
 configure_file(${ZTD_TEXT_DOXYFILE_IN} ${ZTD_TEXT_DOXYFILE_OUT} @ONLY)
 
-# Ensure Doxygen won't crash because it doesn't create directories for us
+# Ensure Doxygen/Sphinx won't crash because it doesn't create directories for us
 file(MAKE_DIRECTORY ${ZTD_TEXT_DOXYGEN_OUTPUT_DIR})
 file(MAKE_DIRECTORY ${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR})
 file(MAKE_DIRECTORY ${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR})
+file(MAKE_DIRECTORY ${ZTD_TEXT_SPHINX_BUILD_DIR})
+
+set_directory_properties(PROPERTIES ADDITIONAL_CLEAN_FILES
+	"${ZTD_TEXT_DOXYGEN_OUTPUT_DIR};${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR};${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR};${ZTD_TEXT_SPHINX_BUILD_DIR}"
+)
 
 add_custom_command(OUTPUT ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 	COMMAND ${DOXYGEN_EXECUTABLE} ${ZTD_TEXT_DOXYFILE_OUT}

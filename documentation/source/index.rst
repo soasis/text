@@ -59,16 +59,21 @@ then ``ztd.text`` is for you!
 	definitions
 	design
 	encodings
+	known unicode encodings
 	config
 	api
+	future
+	benchmarks
 	license
+	bibliography
 
 
 
 
-Indices and tables
-==================
+Indices & Search
+================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+
+	genindex
+

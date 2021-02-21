@@ -66,7 +66,7 @@ inline namespace ztd_text_tests_basic_compile_time_validate_code_units {
 		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32()));
 	}
 
-	static void instantiate() {
+	void instantiate() {
 		delayed<void>();
 	}
 

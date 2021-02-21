@@ -51,7 +51,7 @@ Clearly, the Korean characters present in the UTF-8 string just cannot fit in a 
 - :doc:`default_handler </api/error handlers/default_handler>`, which is just a name for the ``replacement_handler`` or ``throw_handler`` or some other type based on compile-time configuration of the library;
 - :doc:`throw_handler </api/error handlers/throw_handler>`, for throwing an exception on any failed operation;
 - :doc:`incomplete_handler </api/error handlers/incomplete_handler>`, for throwing an exception on any failed encode/decode operation; and,
-- :doc:`assume_valid_handler </api/error handlers/throw_handler>`, which triggers no checking for many error conditions and can leads to ☢️☢️Undefined Behavior☢️☢️ if used on malformed input.
+- :doc:`assume_valid_handler </api/error handlers/throw_handler>`, which triggers no checking for many error conditions and can leads to |ub| if used on malformed input.
 
 
 .. warning::

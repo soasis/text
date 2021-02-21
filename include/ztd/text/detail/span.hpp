@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -39,7 +39,8 @@
 
 #if !defined(span_HAVE_STD_SPAN) || span_HAVE_STD_SPAN == 0
 
-namespace std {
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	inline constexpr decltype(::nonstd::dynamic_extent) dynamic_extent = ::nonstd::dynamic_extent;
 
@@ -47,7 +48,8 @@ namespace std {
 	using ::nonstd::span_lite::as_writable_bytes;
 	using ::nonstd::span_lite::span;
 
-} // namespace std
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
 
 #endif // Have Standard Span
 

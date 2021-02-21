@@ -43,6 +43,7 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_code_points_replaceable.hpp>
 #include <ztd/text/is_code_units_replaceable.hpp>
+#include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/default_encoding.hpp>
@@ -95,9 +96,9 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This class is generally interacted with by using its derivate class, ztd::text::any_byte_encoding, and
 	/// its convenience alias, ztd::text::any_encoding. This class's use is recommended only for power users who have
-	/// encoding ranges that cannot be interacted with through @c std::span and therefore need other ways. We are
+	/// encoding ranges that cannot be interacted with through @c ztd::text::span and therefore need other ways. We are
 	/// looking into ways to produce a subrange<any_iterator> as a completely generic range to aid those individuals
-	/// who do not want to deal in just @c std::span s.
+	/// who do not want to deal in just @c ztd::text::span s.
 	//////
 	template <typename _EncodeCodeUnits, typename _EncodeCodePoints, typename _DecodeCodeUnits,
 		typename _DecodeCodePoints, ::std::size_t _MaxCodeUnits = __detail::__default_max_code_units_any_encoding,
@@ -169,13 +170,13 @@ namespace ztd { namespace text {
 		using __validate_code_units_result      = validate_result<_DecodeCodeUnits, decode_state>;
 		using __validate_code_points_result     = validate_result<_EncodeCodePoints, encode_state>;
 		using __decode_error_handler            = ::std::function<__decode_result(
-               const any_encoding_with&, __decode_result, const ::std::span<const code_unit>&)>;
+               const any_encoding_with&, __decode_result, const ::ztd::text::span<const code_unit>&)>;
 		using __encode_error_handler            = ::std::function<__encode_result(
-               const any_encoding_with&, __encode_result, const ::std::span<const code_point>&)>;
+               const any_encoding_with&, __encode_result, const ::ztd::text::span<const code_point>&)>;
 		using __count_code_points_error_handler = ::std::function<__decode_result(
-			const any_encoding_with&, __count_code_points_result, const ::std::span<const code_unit>&)>;
+			const any_encoding_with&, __count_code_points_result, const ::ztd::text::span<const code_unit>&)>;
 		using __count_code_units_error_handler  = ::std::function<__encode_result(
-               const any_encoding_with&, __count_code_units_result, const ::std::span<const code_point>&)>;
+               const any_encoding_with&, __count_code_units_result, const ::ztd::text::span<const code_point>&)>;
 
 		struct __erased_state {
 			virtual ~__erased_state() {
@@ -183,8 +184,11 @@ namespace ztd { namespace text {
 		};
 
 		struct __erased {
-			virtual ::std::optional<::std::span<code_point>> __maybe_replacement_code_points() const noexcept = 0;
-			virtual ::std::optional<::std::span<code_unit>> __maybe_replacement_code_units() const noexcept   = 0;
+			virtual bool __contains_unicode_encoding() const noexcept = 0;
+			virtual ::std::optional<::ztd::text::span<const code_point>>
+			__maybe_replacement_code_points() const noexcept = 0;
+			virtual ::std::optional<::ztd::text::span<const code_unit>>
+			__maybe_replacement_code_units() const noexcept = 0;
 
 			virtual __decode_result __decode_one(_DecodeCodeUnits __input, _DecodeCodePoints __output,
 				__decode_error_handler __error_handler, decode_state& __state) const = 0;
@@ -289,14 +293,14 @@ namespace ztd { namespace text {
 			static_assert(max_code_units_v<_Encoding> <= max_code_units,
 				"encoding must have less than or equal to the number of max potential output code units");
 
-			using __real_decode_state = decode_state_of_t<_Encoding>;
-			using __real_encode_state = encode_state_of_t<_Encoding>;
+			using __real_decode_state = decode_state_t<_Encoding>;
+			using __real_encode_state = encode_state_t<_Encoding>;
 			using __base_t            = __detail::__ebco<_Encoding, 0>;
 
 		public:
 			using __base_t::__base_t;
 
-			virtual ::std::optional<::std::span<code_point>>
+			virtual ::std::optional<::ztd::text::span<const code_point>>
 			__maybe_replacement_code_points() const noexcept override {
 				if constexpr (is_code_points_replaceable_v<_Encoding>) {
 					return this->__base_t::get_value().replacement_code_points();
@@ -309,7 +313,7 @@ namespace ztd { namespace text {
 				}
 			}
 
-			virtual ::std::optional<::std::span<code_unit>>
+			virtual ::std::optional<::ztd::text::span<const code_unit>>
 			__maybe_replacement_code_units() const noexcept override {
 				if constexpr (is_code_units_replaceable_v<_Encoding>) {
 					return this->__base_t::get_value().replacement_code_units();
@@ -320,6 +324,11 @@ namespace ztd { namespace text {
 				else {
 					return {};
 				}
+			}
+
+			virtual bool __contains_unicode_encoding() const noexcept override {
+				const auto& __real_encoding = this->__base_t::get_value();
+				return ::ztd::text::contains_unicode_encoding(__real_encoding);
 			}
 
 			// TODO: use proper wrapping handlers,
@@ -585,13 +594,13 @@ namespace ztd { namespace text {
 		/// @brief Retrieves the replacement code points for when conversions fail and ztd::text::replacement_handler
 		/// (or equivalent) needs to make a substitution.
 		///
-		/// @return A @c std::optional of @c std::span of @c code_point\ s. The returned @c std::optional value is
-		/// engaged (has a value) if the stored encoding has a valid @c replacement_code_points function and it can be
-		/// called. If it does not, then the library checks to see if the @c maybe_replacement_code_points function
-		/// exists, and returns the @c std::optional from that type directly. If neither are present, an unengaged @c
-		/// std::optional is returned.
+		/// @return A @c std::optional of @c ztd::text::span of @c const @c code_point\ s. The returned @c
+		/// std::optional value is engaged (has a value) if the stored encoding has a valid @c replacement_code_points
+		/// function and it can be called. If it does not, then the library checks to see if the @c
+		/// maybe_replacement_code_points function exists, and returns the @c std::optional from that type directly.
+		/// If neither are present, an unengaged @c std::optional is returned.
 		//////
-		::std::optional<::std::span<code_point>> maybe_replacement_code_points() const noexcept {
+		::std::optional<::ztd::text::span<const code_point>> maybe_replacement_code_points() const noexcept {
 			return this->_M_storage->__maybe_replacement_code_points();
 		}
 
@@ -599,14 +608,27 @@ namespace ztd { namespace text {
 		/// @brief Retrieves the replacement code units for when conversions fail and ztd::text::replacement_handler
 		/// (or equivalent) needs to make a substitution.
 		///
-		/// @return A @c std::optional of @c std::span of @c code_unit\ s. The returned @c std::optional value is
-		/// engaged (has a value) if the stored encoding has a valid @c replacement_code_units function and it can be
-		/// called. If it does not, then the library checks to see if the @c maybe_replacement_code_units function
-		/// exists, and returns the @c std::optional from that type directly. If neither are present, an unengaged @c
-		/// std::optional is returned.
+		/// @return A @c std::optional of @c ztd::text::span of @c const @c code_unit s. The returned @c std::optional
+		/// value is engaged (has a value) if the stored encoding has a valid @c replacement_code_units function and
+		/// it can be called. If it does not, then the library checks to see if the @c maybe_replacement_code_units
+		/// function exists, and returns the @c std::optional from that type directly. If neither are present, an
+		/// unengaged @c std::optional is returned.
 		//////
-		::std::optional<::std::span<code_unit>> maybe_replacement_code_units() const noexcept {
+		::std::optional<::ztd::text::span<const code_unit>> maybe_replacement_code_units() const noexcept {
 			return this->_M_storage->__maybe_replacement_code_units();
+		}
+
+		//////
+		/// @brief Returns whether or not the encoding stored in this ztd::text::any_encoding_with is a Unicode
+		/// encoding.
+		///
+		/// @remarks This can be useful to know, in advance, whether or not there is a chance for lossy behavior. Even
+		/// if, at compile time, various functions will demand you use an error handler, this runtime property can
+		/// help you get a decent idea of just how bad and lossy this conversion might be compared to normal UTF
+		/// conversion formats.
+		//////
+		bool contains_unicode_encoding() const noexcept {
+			return this->_M_storage->__contains_unicode_encoding();
 		}
 
 		//////
@@ -842,8 +864,8 @@ namespace ztd { namespace text {
 		typename _DecodeCodePoint    = ::std::remove_const_t<_EncodeCodePoint>,
 		::std::size_t _MaxCodeUnits  = __detail::__default_max_code_units_any_encoding,
 		::std::size_t _MaxCodePoints = __detail::__default_max_code_points_any_encoding>
-	using any_encoding_of = any_encoding_with<::std::span<_EncodeCodeUnit>, ::std::span<_EncodeCodePoint>,
-		::std::span<_DecodeCodeUnit>, ::std::span<_DecodeCodePoint>, _MaxCodeUnits, _MaxCodePoints>;
+	using any_encoding_of = any_encoding_with<::ztd::text::span<_EncodeCodeUnit>, ::ztd::text::span<_EncodeCodePoint>,
+		::ztd::text::span<_DecodeCodeUnit>, ::ztd::text::span<_DecodeCodePoint>, _MaxCodeUnits, _MaxCodePoints>;
 
 	//////
 	/// @brief An encoding type that wraps up other encodings to specifically traffic in the given @p _Byte type
@@ -858,10 +880,10 @@ namespace ztd { namespace text {
 	/// ztd::text::any_encoding type definition instead of accessing this directly, unless you have a reason for using
 	/// a different byte type (e.g., interfacing with legacy APIs).
 	//////
-	template <typename _Byte>
-	class any_byte_encoding : public any_encoding_of<_Byte> {
+	template <typename _Byte, typename _CodePoint = unicode_code_point>
+	class any_byte_encoding : public any_encoding_of<_Byte, const _CodePoint, const _Byte, _CodePoint> {
 	private:
-		using __base_t = any_encoding_of<::std::byte>;
+		using __base_t = any_encoding_of<_Byte, const _CodePoint, const _Byte, _CodePoint>;
 
 	public:
 		//////
@@ -901,7 +923,7 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<
-			     !::std::is_same_v<_Byte, code_unit_of_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
+			     !::std::is_same_v<_Byte, code_unit_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_Encoding>, _Args&&... __args)
 		: __base_t(
 			::std::in_place_type_t<encoding_scheme<__detail::__remove_cvref_t<_Encoding>, endian::native, _Byte>> {},
@@ -921,7 +943,7 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<
-			     ::std::is_same_v<_Byte, code_unit_of_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
+			     ::std::is_same_v<_Byte, code_unit_t<__detail::__remove_cvref_t<_Encoding>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_Encoding> __tag, _Args&&... __args)
 		: __base_t(::std::move(__tag), ::std::forward<_Args>(__args)...) {
 		}

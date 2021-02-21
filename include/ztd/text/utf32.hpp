@@ -64,7 +64,8 @@ namespace ztd { namespace text {
 		///
 		/// @remarks Relies on CRTP.
 		//////
-		template <typename _Derived = void, typename _CodeUnit = char32_t, bool __validate_code_units = true>
+		template <typename _Derived = void, typename _CodeUnit = char32_t, typename _CodePoint = unicode_code_point,
+			bool __validate_code_units = true>
 		class __utf32_with : public __utf32_tag {
 		public:
 			//////
@@ -87,7 +88,7 @@ namespace ztd { namespace text {
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
 			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 			//////
-			using code_point = unicode_code_point;
+			using code_point = _CodePoint;
 			//////
 			/// @brief Whether or not the decode operation can process all forms of input into code point values.
 			/// Thsi is true for all Unicode Transformation Formats (UTFs), which can encode and decode without a
@@ -161,7 +162,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
-							::std::span<code_unit, 0>());
+							::ztd::text::span<code_unit, 0>());
 					}
 				}
 				else {
@@ -180,7 +181,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_unit, 1>(::std::addressof(__unit), 1));
+							::ztd::text::span<code_unit, 1>(::std::addressof(__unit), 1));
 					}
 				}
 
@@ -239,7 +240,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
-							::std::span<code_point, 0>());
+							::ztd::text::span<code_point, 0>());
 					}
 				}
 				else {
@@ -260,7 +261,7 @@ namespace ztd { namespace text {
 							     __detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
-							::std::span<code_point, 1>(::std::addressof(__points[0]), 1));
+							::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 					}
 				}
 
@@ -283,12 +284,13 @@ namespace ztd { namespace text {
 	/// @brief A UTF-32 Encoding that traffics in, specifically, the desired code unit type provided as a template
 	/// argument.
 	///
-	/// @tparam _Type The code unit type to use.
+	/// @tparam _CodeUnit The code unit type to use.
+	/// @tparam _CodeUnit The code point type to use.
 	///
 	/// @remarks This is a strict UTF-32 implementation that does not allow lone, unpaired surrogates either in or out.
 	//////
-	template <typename _Type>
-	class basic_utf32 : public __impl::__utf32_with<basic_utf32<_Type>, _Type> { };
+	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
+	class basic_utf32 : public __impl::__utf32_with<basic_utf32<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
 	//////
 	/// @brief A UTF-32 Encoding that traffics in char32_t. See ztd::text::basic_utf32 for more details.

@@ -35,7 +35,7 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-inline namespace ztd_text_validate_code_units_test {
+inline namespace ztd_text_tests_basic_run_time_validate_code_units {
 	template <typename Input, typename Encoding>
 	void validate_check(Input& input, Encoding& encoding) {
 		auto result0 = ztd::text::validate_code_units(input);
@@ -43,28 +43,36 @@ inline namespace ztd_text_validate_code_units_test {
 		auto result1 = ztd::text::validate_code_units(input, encoding);
 		REQUIRE(result1);
 	}
-} // namespace ztd_text_validate_code_units_test
+} // namespace ztd_text_tests_basic_run_time_validate_code_units
 
 TEST_CASE("text/validate_code_units/basic", "basic usages of validate_code_units function do not explode") {
 	SECTION("execution") {
 		ztd::text::execution encoding {};
 		validate_check(ztd::text::tests::basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+		}
 	}
 	SECTION("wide_execution") {
 		ztd::text::wide_execution encoding {};
 		validate_check(ztd::text::tests::w_basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+		}
 	}
 	SECTION("literal") {
 		ztd::text::literal encoding {};
 		validate_check(ztd::text::tests::basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+		}
 	}
 	SECTION("wide_literal") {
 		ztd::text::wide_literal encoding {};
 		validate_check(ztd::text::tests::w_basic_source_character_set, encoding);
-		validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+		}
 	}
 	SECTION("utf8") {
 		ztd::text::utf8 encoding {};
