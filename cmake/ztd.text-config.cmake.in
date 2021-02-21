@@ -1,7 +1,5 @@
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/sol2-targets.cmake")
-
 if (TARGET ztd::text)
 	get_target_property(ZTD_TEXT_INCLUDE_DIRS
 		ztd.text.single INTERFACE_INCLUDE_DIRECTORIES)
