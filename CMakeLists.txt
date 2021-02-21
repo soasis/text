@@ -29,14 +29,17 @@
 # ============================================================================>
 
 cmake_minimum_required(VERSION 3.15.0)
-
+cmake_policy(VERSION 3.15)
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
 set(ZTD_TEXT_PROJECT_NAME ztd.text)
 set(ZTD_TEXT_PROJECT_VERSION 0.0.0)
 set(ZTD_TEXT_PROJECT_DESCRIPTION "A spicy text library.")
-project(${ZTD_TEXT_PROJECT_NAME} VERSION ${ZTD_TEXT_PROJECT_VERSION} DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION} LANGUAGES C CXX)
+project(${ZTD_TEXT_PROJECT_NAME}
+  VERSION ${ZTD_TEXT_PROJECT_VERSION}
+  DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION}
+  LANGUAGES C CXX)
 
 # # Modules
 # Include modules useful to the project, whether locally made in our own cmake DIRECTORY
@@ -62,11 +65,6 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/lib")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
-	endif()
-
-	if (MSVC)
-		string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 	endif()
 endif()
 
