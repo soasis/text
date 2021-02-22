@@ -36,9 +36,10 @@ cmake_policy(VERSION 3.15)
 set(ZTD_TEXT_PROJECT_NAME ztd.text)
 set(ZTD_TEXT_PROJECT_VERSION 0.0.0)
 set(ZTD_TEXT_PROJECT_DESCRIPTION "A spicy text library.")
-project(${ZTD_TEXT_PROJECT_NAME}
-  VERSION ${ZTD_TEXT_PROJECT_VERSION}
-  DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION}
+project(ztd.text
+  VERSION 0.0.0
+  DESCRIPTION "A spicy text library"
+  HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
   LANGUAGES C CXX)
 
 # # Modules
