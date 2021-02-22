@@ -184,7 +184,7 @@ namespace ztd { namespace text {
 		__slice_to_stateless(encode_result<_Input, _Output, _State>&& __result) noexcept(
 			::std::is_nothrow_constructible_v<stateless_encode_result<_Input, _Output>,
 			     stateless_encode_result<_Input, _Output>>) {
-			return __result;
+			return ::std::move(__result);
 		}
 
 		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
