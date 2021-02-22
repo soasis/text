@@ -40,7 +40,18 @@
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_UNIX_I_)
 
 extern "C" {
+#if !defined(__has_include)
+// We can't detect it automatically. Most commonly, header is in langinfo.h
+#include <langinfo.h>
+#elif ZTD_TEXT_HAS_INCLUDE_I_(<nl_langinfo.h>)
+// Some platforms have an nl_langinfo.h instead
 #include <nl_langinfo.h>
+#elif ZTD_TEXT_HAS_INCLUDE_I_(<langinfo.h>)
+// <langinfo.h> is the standard name per POSIX
+#include <langinfo.h>
+#else
+#error "No langinfo.h header is available"
+#endif
 }
 
 namespace ztd { namespace text {

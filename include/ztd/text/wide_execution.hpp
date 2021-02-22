@@ -98,8 +98,8 @@ namespace ztd { namespace text {
 #else
 		class __wide_decode_state {
 		public:
-			::std::mbstate_t wide_state;
-			decode_state_t<execution> narrow_state;
+			::std::mbstate_t __wide_state;
+			decode_state_t<execution> __narrow_state;
 
 			// TODO: states need to be split into 2
 			// different states, optionally...
@@ -108,7 +108,7 @@ namespace ztd { namespace text {
 				::std::size_t __init_result = ::std::wcrtomb(__ghost_space, L'\0', &__wide_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT_I_(__init_result == 1 && __ghost_space[0] == '\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
+				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
 			}
 		};
 
@@ -121,10 +121,10 @@ namespace ztd { namespace text {
 			// different states, optionally...
 			__wide_encode_state() noexcept : __wide_state(), __narrow_state() {
 				wchar_t __ghost_space[2];
-				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__narrow_state);
+				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == L'\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
+				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
 			}
 		};
 #endif // Windows
@@ -185,7 +185,7 @@ namespace ztd { namespace text {
 		static bool contains_unicode_encoding() noexcept {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
 			return true;
-#elif ZTD_TEXT_IS_ON_(ZTD_TEXT_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
+#elif ZTD_TEXT_IS_ON(ZTD_TEXT_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
 			const char* __ctype_name = nl_langinfo(CODESET);
 			return __detail::__is_unicode_encoding_name(__ctype_name);
 #else
@@ -263,7 +263,7 @@ namespace ztd { namespace text {
 			execution __exec {};
 			__detail::__progress_handler<!__call_error_handler, wide_execution> __intermediate_handler {};
 			auto __result = __exec.encode_one(::std::forward<_InputRange>(__input), __intermediate_output,
-				__intermediate_handler, __s.narrow_state);
+				__intermediate_handler, __s.__narrow_state);
 			if constexpr (__call_error_handler) {
 				if (__result.error_code != encoding_error::ok) {
 					wide_execution __self {};
@@ -280,7 +280,7 @@ namespace ztd { namespace text {
 				::std::distance(__intermediate_output.data(), __result.output.data()));
 			code_unit __units[1] {};
 			::std::size_t __res = ::std::mbrtowc(::std::addressof(__units[0]), __current_input.data(),
-				__current_input.size(), ::std::addressof(__s.wide_state));
+				__current_input.size(), ::std::addressof(__s.__wide_state));
 			if (__res == static_cast<::std::size_t>(-1)) {
 				// error: cry about it
 				if constexpr (__call_error_handler) {
@@ -423,7 +423,7 @@ namespace ztd { namespace text {
 					(void)__err;
 				}
 #else
-				::std::size_t __res = ::std::wcrtomb(__pray_for_state, __unit, ::std::addressof(__s.wide_state));
+				::std::size_t __res = ::std::wcrtomb(__pray_for_state, __unit, ::std::addressof(__s.__wide_state));
 #endif
 
 				if (__res == static_cast<::std::size_t>(-1)) {
@@ -438,7 +438,7 @@ namespace ztd { namespace text {
 							::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
 					}
 				}
-				else if (__res == 0 && ::std::mbsinit(::std::addressof(__s.wide_state)) == 0) {
+				else if (__res == 0 && ::std::mbsinit(::std::addressof(__s.__wide_state)) == 0) {
 					// mixed conversion potential?!
 					// technically, not standard behavior, but I don't really care?
 					// Mr. Steve Downey points out I'm slightly right
@@ -467,7 +467,7 @@ namespace ztd { namespace text {
 			execution __exec {};
 			__detail::__pass_through_handler_with<!__call_error_handler> __exec_handler {};
 			auto __result = __exec.decode_one(::std::string_view(__pray_for_state, __state_count),
-				::std::forward<_OutputRange>(__output), __exec_handler, __s.narrow_state);
+				::std::forward<_OutputRange>(__output), __exec_handler, __s.__narrow_state);
 			if constexpr (__call_error_handler) {
 				if (__result.error_code != encoding_error::ok) {
 					wide_execution __self {};
