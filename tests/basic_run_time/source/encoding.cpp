@@ -53,7 +53,7 @@ inline namespace ztd_text_tests_basic_run_time_encoding {
 		     = encoding.decode_one(encoded, decode_output_buffer, ztd::text::default_handler {}, decode_state);
 		ztd::text::span<CodePoint> decode_output(decode_output_buffer.data(), decode_result.output.data());
 		bool decode_output_equal = std::equal(
-		     decode_output.cbegin(), decode_output.cend(), decoded.begin(), decoded.begin() + decode_output.size());
+		     decode_output.begin(), decode_output.end(), decoded.begin(), decoded.begin() + decode_output.size());
 		REQUIRE(decode_result.error_code == ztd::text::encoding_error::ok);
 		REQUIRE_FALSE(decode_result.handled_error);
 		REQUIRE(decode_output_equal);
@@ -65,22 +65,22 @@ inline namespace ztd_text_tests_basic_run_time_encoding {
 		     = encoding.encode_one(decoded, encode_output_buffer, ztd::text::default_handler {}, encode_state);
 		ztd::text::span<CodeUnit> encode_output(encode_output_buffer.data(), encode_result.output.data());
 		bool encode_output_equal = std::equal(
-		     encode_output.cbegin(), encode_output.cend(), encoded.begin(), encoded.begin() + encode_output.size());
+		     encode_output.begin(), encode_output.end(), encoded.begin(), encoded.begin() + encode_output.size());
 		REQUIRE(encode_result.error_code == ztd::text::encoding_error::ok);
 		REQUIRE_FALSE(encode_result.handled_error);
 		REQUIRE(encode_output_equal);
 
 		bool decode_result_input_okay = std::equal(decode_result.input.begin(), decode_result.input.end(),
-		     encoded.cbegin() + encode_output.size(), encoded.cend());
+		     encoded.begin() + encode_output.size(), encoded.end());
 		bool encode_result_input_okay = std::equal(encode_result.input.begin(), encode_result.input.end(),
-		     decoded.cbegin() + decode_output.size(), decoded.cend());
+		     decoded.begin() + decode_output.size(), decoded.end());
 		REQUIRE(decode_result_input_okay);
 		REQUIRE(encode_result_input_okay);
 
 		bool decode_result_output_okay = std::equal(decode_result.output.begin(), decode_result.output.end(),
-		     decode_output_buffer.cbegin() + decode_output.size(), decode_output_buffer.cend());
+		     decode_output_buffer.begin() + decode_output.size(), decode_output_buffer.end());
 		bool encode_result_output_okay = std::equal(encode_result.output.begin(), encode_result.output.end(),
-		     encode_output_buffer.cbegin() + encode_output.size(), encode_output_buffer.cend());
+		     encode_output_buffer.begin() + encode_output.size(), encode_output_buffer.end());
 		REQUIRE(decode_result_output_okay);
 		REQUIRE(encode_result_output_okay);
 	}

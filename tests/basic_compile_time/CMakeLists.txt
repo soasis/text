@@ -38,7 +38,7 @@ target_compile_definitions(ztd.text.tests.basic_compile_time
 )
 if (MSVC)
 	target_compile_options(ztd.text.tests.basic_compile_time
-		PRIVATE /std:c++latest /utf-8 /permissive-)
+		PRIVATE /std:c++latest /utf-8 /permissive- /constexpr:steps2097152)
 else()
 	target_compile_options(ztd.text.tests.basic_compile_time
 		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)

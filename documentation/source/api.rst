@@ -131,6 +131,8 @@ Result Types, Status Codes and Quality Aides
 	api/char8_t
 	api/endian
 	api/encoding_error
+	api/make_decode_state
+	api/make_encode_state
 	api/unicode_code_point
 	api/unicode_scalar_value
 	api/stateless_decode_result

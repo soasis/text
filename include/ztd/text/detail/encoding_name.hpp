@@ -202,6 +202,8 @@ namespace ztd { namespace text {
 			case __encoding_id::__utf1:
 			case __encoding_id::__cesu8:
 				return true;
+			case __encoding_id::__ascii:
+			case __encoding_id::__unknown:
 			default:
 				return false;
 			}

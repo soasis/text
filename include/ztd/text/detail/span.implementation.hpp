@@ -181,7 +181,7 @@
 
 namespace nonstd {
 
-	using ztd::text::span;
+	using ::std::span;
 
 	// Note: C++20 does not provide comparison
 	// using std::operator==;
@@ -558,9 +558,9 @@ namespace nonstd { namespace span_lite {
 		typedef integral_constant<bool, false> false_type;
 
 		template <class T, class U>
-		struct is_same : false_type {};
+		struct is_same : false_type { };
 		template <class T>
-		struct is_same<T, T> : true_type {};
+		struct is_same<T, T> : true_type { };
 
 #endif
 
@@ -571,7 +571,7 @@ namespace nonstd { namespace span_lite {
 	namespace std17 {
 
 		template <bool v>
-		struct bool_constant : std11::integral_constant<bool, v> {};
+		struct bool_constant : std11::integral_constant<bool, v> { };
 
 #if span_CPP11_120
 
@@ -631,66 +631,66 @@ namespace nonstd { namespace span_lite {
 
 	namespace detail {
 
-		/*enum*/ struct enabler {};
+		/*enum*/ struct enabler { };
 
 #if span_HAVE(TYPE_TRAITS)
 
 		template <class Q>
-		struct is_span_oracle : std::false_type {};
+		struct is_span_oracle : std::false_type { };
 
 		template <class T, std::ptrdiff_t Extent>
-		struct is_span_oracle<span<T, Extent>> : std::true_type {};
+		struct is_span_oracle<span<T, Extent>> : std::true_type { };
 
 		template <class Q>
-		struct is_span : is_span_oracle<typename std::remove_cv<Q>::type> {};
+		struct is_span : is_span_oracle<typename std::remove_cv<Q>::type> { };
 
 		template <class Q>
-		struct is_std_array_oracle : std::false_type {};
+		struct is_std_array_oracle : std::false_type { };
 
 #if span_HAVE(ARRAY)
 
 		template <class T, std::size_t Extent>
-		struct is_std_array_oracle<std::array<T, Extent>> : std::true_type {};
+		struct is_std_array_oracle<std::array<T, Extent>> : std::true_type { };
 
 #endif
 
 		template <class Q>
-		struct is_std_array : is_std_array_oracle<typename std::remove_cv<Q>::type> {};
+		struct is_std_array : is_std_array_oracle<typename std::remove_cv<Q>::type> { };
 
 		template <class Q>
-		struct is_array : std::false_type {};
+		struct is_array : std::false_type { };
 
 		template <class T>
-		struct is_array<T[]> : std::true_type {};
+		struct is_array<T[]> : std::true_type { };
 
 		template <class T, std::size_t N>
-		struct is_array<T[N]> : std::true_type {};
+		struct is_array<T[N]> : std::true_type { };
 
 #if span_CPP11_140 && !span_BETWEEN(span_COMPILER_GNUC_VERSION, 1, 500)
 
 		template <class, class = void>
-		struct has_size_and_data : std::false_type {};
+		struct has_size_and_data : std::false_type { };
 
 		template <class C>
 		struct has_size_and_data<C,
 			std17::void_t<decltype(std17::size(std::declval<C>())), decltype(std17::data(std::declval<C>()))>>
-		: std::true_type {};
+		: std::true_type { };
 
 		template <class, class, class = void>
-		struct is_compatible_element : std::false_type {};
+		struct is_compatible_element : std::false_type { };
 
 		template <class C, class E>
 		struct is_compatible_element<C, E, std17::void_t<decltype(std17::data(std::declval<C>()))>>
 		: std::is_convertible<typename std::remove_pointer<decltype(std17::data(std::declval<C&>()))>::type (*)[],
-			  E (*)[]> {};
+			  E (*)[]> { };
 
 		template <class C>
 		struct is_container : std17::bool_constant<!is_span<C>::value && !is_array<C>::value
-			                      && !is_std_array<C>::value && has_size_and_data<C>::value> {};
+			                      && !is_std_array<C>::value && has_size_and_data<C>::value> { };
 
 		template <class C, class E>
 		struct is_compatible_container
-		: std17::bool_constant<is_container<C>::value && is_compatible_element<C, E>::value> {};
+		: std17::bool_constant<is_container<C>::value && is_compatible_element<C, E>::value> { };
 
 #else // span_CPP11_140
 
@@ -702,7 +702,7 @@ namespace nonstd { namespace span_lite {
 			     //  &&   has_size_and_data< C >::value
 			     )),
 			class = decltype(std17::size(std::declval<C>())), class = decltype(std17::data(std::declval<C>()))>
-		struct is_compatible_container : std::true_type {};
+		struct is_compatible_container : std::true_type { };
 
 #endif // span_CPP11_140
 
@@ -1105,19 +1105,19 @@ namespace nonstd { namespace span_lite {
 #if span_HAVE(DEDUCTION_GUIDES) // span_CPP17_OR_GREATER
 
 	template <class T, size_t N>
-	span(T (&)[N])->span<T, static_cast<extent_t>(N)>;
+	span(T (&)[N]) -> span<T, static_cast<extent_t>(N)>;
 
 	template <class T, size_t N>
-	span(std::array<T, N>&)->span<T, static_cast<extent_t>(N)>;
+	span(std::array<T, N>&) -> span<T, static_cast<extent_t>(N)>;
 
 	template <class T, size_t N>
-	span(std::array<T, N> const&)->span<const T, static_cast<extent_t>(N)>;
+	span(std::array<T, N> const&) -> span<const T, static_cast<extent_t>(N)>;
 
 	template <class Container>
-	span(Container&)->span<typename Container::value_type>;
+	span(Container&) -> span<typename Container::value_type>;
 
 	template <class Container>
-	span(Container const&)->span<const typename Container::value_type>;
+	span(Container const&) -> span<const typename Container::value_type>;
 
 #endif // span_HAVE( DEDUCTION_GUIDES )
 

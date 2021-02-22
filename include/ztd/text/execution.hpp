@@ -80,6 +80,8 @@ namespace ztd { namespace text {
 		public:
 			::std::mbstate_t __narrow_state;
 			bool __output_pending;
+			unsigned char __padding_please_stop_warning_me_about_this_complete_nonsense_msvc
+				[sizeof(::std::mbstate_t) - sizeof(bool) < 1 ? 1 : sizeof(::std::mbstate_t) - sizeof(bool)];
 
 			__decode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char32_t __ghost_space[2];
@@ -94,6 +96,8 @@ namespace ztd { namespace text {
 		public:
 			::std::mbstate_t __narrow_state;
 			bool __output_pending;
+			unsigned char __padding_please_stop_warning_me_about_this_complete_nonsense_msvc
+				[sizeof(::std::mbstate_t) - sizeof(bool) < 1 ? 1 : sizeof(::std::mbstate_t) - sizeof(bool)];
 
 			__encode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char __ghost_space[MB_LEN_MAX];
@@ -186,7 +190,7 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
 			int __codepage_id = __detail::__windows::__determine_active_code_page();
 			return __detail::__windows::__is_unicode_code_page(__codepage_id);
-#elif ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_)
+#elif ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_) || ZTD_TEXT_IS_ON(ZTD_TEXT_LANGINFO_I_)
 			const char* __ctype_name = nl_langinfo(CODESET);
 			return __detail::__is_unicode_encoding_name(__ctype_name);
 #else
@@ -474,7 +478,7 @@ namespace ztd { namespace text {
 			}
 
 			code_unit __intermediary_input[max_code_units] {};
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_) && (ZTD_TEXT_PLATFORM_MINGW == 0)
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_) && ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILER_MINGW_I_)
 			__intermediary_input[0]     = __detail::__dereference(__init);
 			__init                      = __detail::__next(__init);
 			::std::size_t __state_count = 1;

@@ -44,7 +44,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::basic_source_character_set_bytes_native_endian, encoding,
 			          ztd::text::replacement_handler {});
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
@@ -53,7 +53,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1
 				     = ztd::text::decode(ztd::text::tests::unicode_sequence_bytes_truth_native_endian, encoding,
 				          ztd::text::replacement_handler {});
-				bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+				bool is_equal1 = std::equal(result1.begin(), result1.end(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
@@ -64,7 +64,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::w_basic_source_character_set_bytes_native_endian, encoding,
 			          ztd::text::replacement_handler {});
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
@@ -73,7 +73,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1
 				     = ztd::text::decode(ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian, encoding,
 				          ztd::text::replacement_handler {});
-				bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+				bool is_equal1 = std::equal(result1.begin(), result1.end(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
@@ -84,7 +84,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::basic_source_character_set_bytes_native_endian, encoding,
 			          ztd::text::replacement_handler {});
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
@@ -93,7 +93,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1
 				     = ztd::text::decode(ztd::text::tests::unicode_sequence_bytes_truth_native_endian, encoding,
 				          ztd::text::replacement_handler {});
-				bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+				bool is_equal1 = std::equal(result1.begin(), result1.end(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
@@ -104,7 +104,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::w_basic_source_character_set_bytes_native_endian, encoding,
 			          ztd::text::replacement_handler {});
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
@@ -113,7 +113,7 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1
 				     = ztd::text::decode(ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian, encoding,
 				          ztd::text::replacement_handler {});
-				bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+				bool is_equal1 = std::equal(result1.begin(), result1.end(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 				     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
@@ -123,14 +123,14 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			ztd::text::encoding_scheme<ztd::text::utf8, ztd::text::endian::native> encoding {};
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::u8_basic_source_character_set_bytes_native_endian, encoding);
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
 			std::u32string result1
 			     = ztd::text::decode(ztd::text::tests::u8_unicode_sequence_bytes_truth_native_endian, encoding);
-			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			bool is_equal1 = std::equal(result1.begin(), result1.end(),
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);
@@ -139,14 +139,14 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			ztd::text::encoding_scheme<ztd::text::utf16, ztd::text::endian::native> encoding {};
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::u16_basic_source_character_set_bytes_native_endian, encoding);
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
 			std::u32string result1
 			     = ztd::text::decode(ztd::text::tests::u16_unicode_sequence_bytes_truth_native_endian, encoding);
-			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			bool is_equal1 = std::equal(result1.begin(), result1.end(),
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);
@@ -155,14 +155,14 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 			ztd::text::encoding_scheme<ztd::text::utf32, ztd::text::endian::native> encoding {};
 			std::u32string result0
 			     = ztd::text::decode(ztd::text::tests::u32_basic_source_character_set_bytes_native_endian, encoding);
-			bool is_equal0 = std::equal(result0.cbegin(), result0.cend(),
+			bool is_equal0 = std::equal(result0.begin(), result0.end(),
 			     ztd::text::tests::u32_basic_source_character_set.begin(),
 			     ztd::text::tests::u32_basic_source_character_set.end());
 			REQUIRE(is_equal0);
 
 			std::u32string result1
 			     = ztd::text::decode(ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian, encoding);
-			bool is_equal1 = std::equal(result1.cbegin(), result1.cend(),
+			bool is_equal1 = std::equal(result1.begin(), result1.end(),
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.begin(),
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian.end());
 			REQUIRE(is_equal1);

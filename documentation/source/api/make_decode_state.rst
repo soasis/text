@@ -28,17 +28,11 @@
 ..
 .. =============================================================================>
 
-Lucky 7 Extension - Beyond the Basics
-=====================================
+make_decode_state
+=================
 
-While the given :doc:`Lucky 7 </design/lucky 7>` represents the simplest possible encoding object one can design, there are several more type definitions, member functions, and other things an individual can use to create more complex encoding objects. Below, we are going to review the most pertinent ones that allow for better extensibility of the core design and let you go `Even Further Beyond <https://www.youtube.com/watch?v=tTelnNmRUH0>`_.
+This detects when the ``decode_state`` of a given ``encoding`` requires the ``encoding`` itself to make said state. If so, it will call the ``decode_state``\ 's constructor with the encoding passed in. Otherwise, it simply default-constructs a state. In either case, the constructed value is returned to the user.
 
+The classification for this is done by :doc:`ztd::text::is_decode_state_independent </api/is_decode_state_independent>`.
 
-.. toctree::
-	:maxdepth: 1
-
-	lucky 7 extensions/seperate states
-	lucky 7 extensions/injective
-	lucky 7 extensions/replacement characters
-	lucky 7 extensions/unicode encoding
-	lucky 7 extensions/dependent states
+.. doxygenfunction:: ztd::text::make_decode_state
