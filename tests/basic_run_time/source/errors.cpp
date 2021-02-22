@@ -78,8 +78,8 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 			SECTION("utf8") {
 				ztd::text::utf8 enc;
 
-				char8_t output0[encode_output_max] {};
-				ztd::text::span<char8_t> output_buffer0(output0, encode_output_max);
+				ztd::text::uchar8_t output0[encode_output_max] {};
+				ztd::text::span<ztd::text::uchar8_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf8::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
 				     output_buffer0, ztd::text::replacement_handler {}, s0);

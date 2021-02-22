@@ -537,8 +537,8 @@ namespace ztd { namespace text {
 			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
 				__state);
-			::std::size_t __written
-				= __adl::__adl_cbegin(__intermediate_result.output) - __adl::__adl_cbegin(__output);
+			::std::size_t __written    = static_cast<::std::size_t>(
+                    __adl::__adl_cbegin(__intermediate_result.output) - __adl::__adl_cbegin(__output));
 
 			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state);
 		}
@@ -566,8 +566,8 @@ namespace ztd { namespace text {
 			auto __intermediate_result = __basic_encode_one<__consume::__no>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
 				__state);
-			::std::size_t __written
-				= __adl::__adl_cbegin(__intermediate_result.output) - __adl::__adl_cbegin(__output);
+			::std::size_t __written    = static_cast<::std::size_t>(
+                    __adl::__adl_cbegin(__intermediate_result.output) - __adl::__adl_cbegin(__output));
 
 			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state);
 		}

@@ -65,8 +65,8 @@ namespace ztd { namespace text {
 
 			template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 				typename _Progress>
-			constexpr auto operator()(const _Encoding& __encoding,
-				encode_result<_InputRange, _OutputRange, _State> __result, const _Progress& __progress) noexcept {
+			constexpr auto operator()(const _Encoding&, encode_result<_InputRange, _OutputRange, _State> __result,
+				const _Progress& __progress) noexcept {
 				_M_code_points_size = __adl::__adl_size(__progress);
 				// avoid needing potentially non-constexpr ::std::copy
 #ifdef __cpp_lib_constexpr_algorithms
@@ -82,8 +82,8 @@ namespace ztd { namespace text {
 
 			template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 				typename _Progress>
-			constexpr auto operator()(const _Encoding& __encoding,
-				decode_result<_InputRange, _OutputRange, _State> __result, const _Progress& __progress) noexcept {
+			constexpr auto operator()(const _Encoding&, decode_result<_InputRange, _OutputRange, _State> __result,
+				const _Progress& __progress) noexcept {
 				_M_code_units_size = __adl::__adl_size(__progress);
 #ifdef __cpp_lib_constexpr_algorithms
 				::std::copy_n(__adl::__adl_cbegin(__progress), this->_M_code_units_size,

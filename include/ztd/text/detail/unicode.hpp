@@ -71,35 +71,35 @@ namespace ztd { namespace text {
 		inline constexpr char32_t __last_5byte_value = 0x3FFFFFF;
 		inline constexpr char32_t __last_6byte_value = 0x7FFFFFFF;
 
-		inline constexpr char8_t __start_1byte_mask         = 0x80u;
-		inline constexpr char8_t __start_1byte_continuation = 0x00u;
-		inline constexpr char8_t __start_1byte_shift        = 7u;
-		inline constexpr char8_t __start_2byte_mask         = 0xC0u;
-		inline constexpr char8_t __start_2byte_continuation = __start_2byte_mask;
-		inline constexpr char8_t __start_2byte_shift        = 5u;
-		inline constexpr char8_t __start_3byte_mask         = 0xE0u;
-		inline constexpr char8_t __start_3byte_continuation = __start_3byte_mask;
-		inline constexpr char8_t __start_3byte_shift        = 4u;
-		inline constexpr char8_t __start_4byte_mask         = 0xF0u;
-		inline constexpr char8_t __start_4byte_continuation = __start_4byte_mask;
-		inline constexpr char8_t __start_4byte_shift        = 3u;
-		inline constexpr char8_t __start_5byte_mask         = 0xF8u;
-		inline constexpr char8_t __start_5byte_continuation = __start_5byte_mask;
-		inline constexpr char8_t __start_5byte_shift        = 2u;
-		inline constexpr char8_t __start_6byte_mask         = 0xFCu;
-		inline constexpr char8_t __start_6byte_continuation = __start_6byte_mask;
-		inline constexpr char8_t __start_6byte_shift        = 1u;
+		inline constexpr uchar8_t __start_1byte_mask         = 0x80u;
+		inline constexpr uchar8_t __start_1byte_continuation = 0x00u;
+		inline constexpr uchar8_t __start_1byte_shift        = 7u;
+		inline constexpr uchar8_t __start_2byte_mask         = 0xC0u;
+		inline constexpr uchar8_t __start_2byte_continuation = __start_2byte_mask;
+		inline constexpr uchar8_t __start_2byte_shift        = 5u;
+		inline constexpr uchar8_t __start_3byte_mask         = 0xE0u;
+		inline constexpr uchar8_t __start_3byte_continuation = __start_3byte_mask;
+		inline constexpr uchar8_t __start_3byte_shift        = 4u;
+		inline constexpr uchar8_t __start_4byte_mask         = 0xF0u;
+		inline constexpr uchar8_t __start_4byte_continuation = __start_4byte_mask;
+		inline constexpr uchar8_t __start_4byte_shift        = 3u;
+		inline constexpr uchar8_t __start_5byte_mask         = 0xF8u;
+		inline constexpr uchar8_t __start_5byte_continuation = __start_5byte_mask;
+		inline constexpr uchar8_t __start_5byte_shift        = 2u;
+		inline constexpr uchar8_t __start_6byte_mask         = 0xFCu;
+		inline constexpr uchar8_t __start_6byte_continuation = __start_6byte_mask;
+		inline constexpr uchar8_t __start_6byte_shift        = 1u;
 
-		inline constexpr char8_t __continuation_mask       = 0xC0u;
-		inline constexpr char8_t __continuation_signature  = 0x80u;
-		inline constexpr char8_t __continuation_mask_value = 0x3Fu;
-		inline constexpr char8_t __single_mask_value       = 0x7Fu;
+		inline constexpr uchar8_t __continuation_mask       = 0xC0u;
+		inline constexpr uchar8_t __continuation_signature  = 0x80u;
+		inline constexpr uchar8_t __continuation_mask_value = 0x3Fu;
+		inline constexpr uchar8_t __single_mask_value       = 0x7Fu;
 
-		inline constexpr bool __utf8_is_invalid(char8_t __b) noexcept {
+		inline constexpr bool __utf8_is_invalid(uchar8_t __b) noexcept {
 			return __b == 0xC0 || __b == 0xC1 || __b > 0xF4;
 		}
 
-		inline constexpr bool __utf8_is_continuation(char8_t __value) noexcept {
+		inline constexpr bool __utf8_is_continuation(uchar8_t __value) noexcept {
 			return (__value & __continuation_mask) == __continuation_signature;
 		}
 
@@ -139,14 +139,14 @@ namespace ztd { namespace text {
 			return 8;
 		}
 
-		inline constexpr int __sequence_length(char8_t __value) noexcept {
+		inline constexpr int __sequence_length(uchar8_t __value) noexcept {
 			return (__value & __start_1byte_mask) == __start_1byte_continuation ? 1
 				: (__value & __start_3byte_mask) != __start_3byte_continuation ? 2
 				: (__value & __start_4byte_mask) != __start_4byte_continuation ? 3
 				                                                               : 4;
 		}
 
-		inline constexpr int __sequence_length_extended(char8_t __value) noexcept {
+		inline constexpr int __sequence_length_extended(uchar8_t __value) noexcept {
 			return (__value & __start_1byte_mask) == __start_1byte_continuation ? 1
 				: (__value & __start_3byte_mask) != __start_3byte_continuation ? 2
 				: (__value & __start_4byte_mask) != __start_4byte_continuation ? 3
@@ -155,16 +155,16 @@ namespace ztd { namespace text {
 				                                                               : 6;
 		}
 
-		inline constexpr char32_t __decode(char8_t __value0, char8_t __value1) noexcept {
+		inline constexpr char32_t __decode(uchar8_t __value0, uchar8_t __value1) noexcept {
 			return static_cast<char32_t>(((__value0 & 0x1F) << 6) | (__value1 & 0x3F));
 		}
 
-		inline constexpr char32_t __decode(char8_t __value0, char8_t __value1, char8_t __value2) noexcept {
+		inline constexpr char32_t __decode(uchar8_t __value0, uchar8_t __value1, uchar8_t __value2) noexcept {
 			return static_cast<char32_t>(((__value0 & 0x0F) << 12) | ((__value1 & 0x3F) << 6) | (__value2 & 0x3F));
 		}
 
 		inline constexpr char32_t __decode(
-			char8_t __value0, char8_t __value1, char8_t __value2, char8_t __value3) noexcept {
+			uchar8_t __value0, uchar8_t __value1, uchar8_t __value2, uchar8_t __value3) noexcept {
 			return static_cast<char32_t>(((__value0 & 0x07) << 18) | ((__value1 & 0x3F) << 12)
 				| ((__value2 & 0x3F) << 6) | (__value3 & 0x3F));
 		}

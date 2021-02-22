@@ -238,6 +238,30 @@ namespace ztd { namespace text {
 			: _M_state(__encoding._M_storage->__create_decode_state()) {
 			}
 
+			//////
+			/// @brief You cannot copy construct an any_decode_state.
+			///
+			//////
+			any_decode_state(const any_decode_state&) = delete;
+
+			//////
+			/// @brief You cannot copy assign an any_decode_state.
+			///
+			//////
+			any_decode_state& operator=(const any_decode_state&) = delete;
+
+			//////
+			/// @brief Move constructs an any_decode_state.
+			///
+			//////
+			any_decode_state(any_decode_state&&) = default;
+
+			//////
+			/// @brief Move assigns an any_decode_state.
+			///
+			//////
+			any_decode_state& operator=(any_decode_state&&) = default;
+
 			__erased_state* _M_get_erased_state() const noexcept {
 				return _M_state.get();
 			}
@@ -262,6 +286,30 @@ namespace ztd { namespace text {
 			any_encode_state(const any_encoding_with& __encoding)
 			: _M_state(__encoding._M_storage->__create_encode_state()) {
 			}
+
+			//////
+			/// @brief You cannot copy construct an any_encode_state.
+			///
+			//////
+			any_encode_state(const any_encode_state&) = delete;
+
+			//////
+			/// @brief You cannot copy assign an any_encode_state.
+			///
+			//////
+			any_encode_state& operator=(const any_encode_state&) = delete;
+
+			//////
+			/// @brief Move constructs an any_encode_state.
+			///
+			//////
+			any_encode_state(any_encode_state&&) = default;
+
+			//////
+			/// @brief Move assigns an any_encode_state.
+			///
+			//////
+			any_encode_state& operator=(any_encode_state&&) = default;
 
 			__erased_state* _M_get_erased_state() const noexcept {
 				return _M_state.get();

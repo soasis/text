@@ -1,3 +1,7 @@
+
+
+
+
 // =============================================================================
 //
 // ztd.text
@@ -30,59 +34,38 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_EMPTY_STRING_HPP
-#define ZTD_TEXT_DETAIL_EMPTY_STRING_HPP
+#ifndef ZTD_TEXT_DETAIL_CAST_HPP
+#define ZTD_TEXT_DETAIL_CAST_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char8_t.hpp>
 #include <ztd/text/detail/type_traits.hpp>
+
+#include <utility>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __detail {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_NATIVE_CHAR8_T_I_)
-		using __arr8_one_t                            = char8_t[1];
-		inline constexpr const __arr8_one_t __u8_shim = {};
-#endif
+		enum class __match_alignment { no, yes };
 
-		template <typename C>
-		inline constexpr decltype(auto) __empty_string() noexcept {
-			static_assert(__always_false_v<C>, "unrecognized character type");
-			return "";
+		template <typename _To, __match_alignment __require_aligned = __match_alignment::no, typename _From>
+		constexpr decltype(auto) static_cast_if_lossless(_From&& __from) {
+			if constexpr ((sizeof(__remove_cvref_t<_To>) == sizeof(__remove_cvref_t<_From>))
+				&& ((__require_aligned == __match_alignment::no)
+				     || (alignof(__remove_cvref_t<_To>) == alignof(__remove_cvref_t<_From>)))) {
+				// explicitly cast, since we know it's of the same size/alignment
+				// (e.g., unsigned char -> std::byte should work, but it requires a cast!)
+				return static_cast<_To>(__from);
+			}
+			else {
+				// let it warn/error for weird conversions
+				// (e.g., short -> char8_t should give a narrowing conversion warning)
+				return ::std::forward<_From>(__from);
+			}
 		}
-
-		template <>
-		inline constexpr decltype(auto) __empty_string<char>() noexcept {
-			return "";
-		}
-
-		template <>
-		inline constexpr decltype(auto) __empty_string<wchar_t>() noexcept {
-			return L"";
-		}
-
-		template <>
-		inline constexpr decltype(auto) __empty_string<uchar8_t>() noexcept {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_NATIVE_CHAR8_T_I_)
-			return (__u8_shim);
-#else
-			return u8"";
-#endif
-		}
-
-		template <>
-		inline constexpr decltype(auto) __empty_string<char16_t>() noexcept {
-			return u"";
-		}
-
-		template <>
-		inline constexpr decltype(auto) __empty_string<char32_t>() noexcept {
-			return U"";
-		}
-
 	} // namespace __detail
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#endif // ZTD_TEXT_DETAIL_EMPTY_STRING_HPP
+#endif // ZTD_TEXT_DETAIL_CAST_HPP

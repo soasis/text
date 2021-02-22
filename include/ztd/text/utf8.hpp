@@ -46,6 +46,7 @@
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/range.hpp>
 #include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/detail/cast.hpp>
 
 #include <array>
 
@@ -67,7 +68,7 @@ namespace ztd { namespace text {
 		///
 		/// @remarks Relies on CRTP.
 		//////
-		template <typename _Derived = void, typename _CodeUnit = char8_t, typename _CodePoint = unicode_code_point,
+		template <typename _Derived = void, typename _CodeUnit = uchar8_t, typename _CodePoint = unicode_code_point,
 			bool __overlong_allowed = false, bool __surrogates_allowed = false,
 			bool __use_overlong_null_only = false>
 		class __utf8_with : public __utf8_tag {
@@ -192,7 +193,7 @@ namespace ztd { namespace text {
 				if constexpr (__use_overlong_null_only) {
 					if (__point == static_cast<code_point>(0)) {
 						// overlong MUTF-8
-						constexpr char8_t __payload[] = { 0b11000000u, 0b10000000u };
+						constexpr uchar8_t __payload[] = { 0b11000000u, 0b10000000u };
 						for (::std::size_t i = 0; i < static_cast<::std::size_t>(2); ++i) {
 							if constexpr (__call_error_handler) {
 								if (__outit == __outlast) {
@@ -228,7 +229,7 @@ namespace ztd { namespace text {
 							::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 					}
 				}
-				constexpr char8_t __first_mask_continuation_values[][2] = {
+				constexpr uchar8_t __first_mask_continuation_values[][2] = {
 					{ 0b01111111, __detail::__start_1byte_continuation },
 					{ 0b00011111, __detail::__start_2byte_continuation },
 					{ 0b00001111, __detail::__start_3byte_continuation },
@@ -240,12 +241,12 @@ namespace ztd { namespace text {
 				int __length                          = __detail::__decode_length<__overlong_allowed>(__point);
 				int __lengthindex                     = __length - 1;
 				const auto& __first_mask_continuation = __first_mask_continuation_values[__lengthindex];
-				const char8_t& __first_mask           = __first_mask_continuation[0];
-				const char8_t& __first_continuation   = __first_mask_continuation[1];
+				const uchar8_t& __first_mask          = __first_mask_continuation[0];
+				const uchar8_t& __first_continuation  = __first_mask_continuation[1];
 				int __current_shift                   = 6 * __lengthindex;
 
 				__detail::__dereference(__outit) = static_cast<code_unit>(
-					__first_continuation | static_cast<char8_t>((__point >> __current_shift) & __first_mask));
+					__first_continuation | static_cast<uchar8_t>((__point >> __current_shift) & __first_mask));
 				__outit = __detail::__next(__outit);
 
 				if (__lengthindex > 0) {
@@ -266,7 +267,7 @@ namespace ztd { namespace text {
 
 						__detail::__dereference(__outit)
 							= static_cast<code_unit>(__detail::__continuation_signature
-							     | static_cast<char8_t>(
+							     | static_cast<uchar8_t>(
 							          (__point >> __current_shift) & __detail::__continuation_mask_value));
 						__outit = __detail::__next(__outit);
 					}
@@ -298,11 +299,10 @@ namespace ztd { namespace text {
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-				using _UInputRange    = __detail::__remove_cvref_t<_InputRange>;
-				using _UOutputRange   = __detail::__remove_cvref_t<_OutputRange>;
-				using _UErrorHandler  = __detail::__remove_cvref_t<_ErrorHandler>;
-				using _Result         = __detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, state>;
-				using _InputValueType = __detail::__range_value_type_t<_UInputRange>;
+				using _UInputRange   = __detail::__remove_cvref_t<_InputRange>;
+				using _UOutputRange  = __detail::__remove_cvref_t<_OutputRange>;
+				using _UErrorHandler = __detail::__remove_cvref_t<_ErrorHandler>;
+				using _Result        = __detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				auto __init   = __detail::__adl::__adl_cbegin(__input);
@@ -333,19 +333,11 @@ namespace ztd { namespace text {
 				}
 
 				::std::array<code_unit, max_code_units> __units {};
-				if constexpr (sizeof(code_unit) == sizeof(_InputValueType)) {
-					// explicitly cast, since we know it's of the same size
-					// (e.g., unsigned char -> std::byte should work, but it requires a cast!)
-					__units[0] = static_cast<code_unit>(__detail::__dereference(__init));
-				}
-				else {
-					// let it warn/error for weird ranges
-					// (e.g., short -> char8_t should give a narrowing conversion warning)
-					__units[0] = __detail::__dereference(__init);
-				}
+				__units[0] = __detail::static_cast_if_lossless<code_unit>(__detail::__dereference(__init));
 				const code_unit& __unit0 = __units[0];
 				__init                   = __detail::__next(__init);
-				::std::size_t __length   = __detail::__sequence_length(static_cast<char8_t>(__unit0));
+				::std::size_t __length
+					= static_cast<::std::size_t>(__detail::__sequence_length(static_cast<uchar8_t>(__unit0)));
 
 				if constexpr (!__overlong_allowed) {
 					if constexpr (__call_error_handler) {
@@ -370,8 +362,8 @@ namespace ztd { namespace text {
 				}
 
 				if constexpr (__call_error_handler) {
-					const bool __is_invalid_cu = __detail::__utf8_is_invalid(static_cast<char8_t>(__unit0));
-					if (__is_invalid_cu || __detail::__utf8_is_continuation(static_cast<char8_t>(__unit0))) {
+					const bool __is_invalid_cu = __detail::__utf8_is_invalid(static_cast<uchar8_t>(__unit0));
+					if (__is_invalid_cu || __detail::__utf8_is_continuation(static_cast<uchar8_t>(__unit0))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(
@@ -398,14 +390,9 @@ namespace ztd { namespace text {
 								::ztd::text::span<code_unit>(__units.data(), i));
 						}
 					}
-					if constexpr (sizeof(code_unit) == sizeof(_InputValueType)) {
-						__units[i] = static_cast<code_unit>(__detail::__dereference(__init));
-					}
-					else {
-						__units[i] = __detail::__dereference(__init);
-					}
-					__init = __detail::__next(__init);
-					if (!__detail::__utf8_is_continuation(static_cast<char8_t>(__units[i]))) {
+					__units[i] = __detail::static_cast_if_lossless<code_unit>(__detail::__dereference(__init));
+					__init     = __detail::__next(__init);
+					if (!__detail::__utf8_is_continuation(static_cast<uchar8_t>(__units[i]))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(
@@ -420,18 +407,18 @@ namespace ztd { namespace text {
 				code_point __decoded {};
 				switch (__length) {
 				case 2:
-					__decoded
-						= __detail::__decode(static_cast<char8_t>(__units[0]), static_cast<char8_t>(__units[1]));
+					__decoded = __detail::__decode(
+						static_cast<uchar8_t>(__units[0]), static_cast<uchar8_t>(__units[1]));
 					break;
 				case 3:
-					__decoded = __detail::__decode(static_cast<char8_t>(__units[0]),
-						static_cast<char8_t>(__units[1]), static_cast<char8_t>(__units[2]));
+					__decoded = __detail::__decode(static_cast<uchar8_t>(__units[0]),
+						static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]));
 					break;
 				case 4:
 				default:
 					__decoded
-						= __detail::__decode(static_cast<char8_t>(__units[0]), static_cast<char8_t>(__units[1]),
-						     static_cast<char8_t>(__units[2]), static_cast<char8_t>(__units[3]));
+						= __detail::__decode(static_cast<uchar8_t>(__units[0]), static_cast<uchar8_t>(__units[1]),
+						     static_cast<uchar8_t>(__units[2]), static_cast<uchar8_t>(__units[3]));
 					break;
 				}
 
@@ -460,7 +447,7 @@ namespace ztd { namespace text {
 								::ztd::text::span<code_unit>(__units.data(), __length));
 						}
 					}
-					if (__decoded > __detail::__last_code_point) {
+					if (static_cast<char32_t>(__decoded) > __detail::__last_code_point) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(
@@ -505,10 +492,10 @@ namespace ztd { namespace text {
 	class basic_utf8 : public __impl::__utf8_with<basic_utf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
 	//////
-	/// @brief A UTF-8 Encoding that traffics in char8_t. See ztd::text::basic_utf8 for more details.
+	/// @brief A UTF-8 Encoding that traffics in uchar8_t. See ztd::text::basic_utf8 for more details.
 	///
 	//////
-	using utf8 = basic_utf8<char8_t>;
+	using utf8 = basic_utf8<uchar8_t>;
 
 	//////
 	/// @brief A UTF-8 Encoding that traffics in char, for compatibility purposes with older codebases. See
@@ -536,7 +523,7 @@ namespace ztd { namespace text {
 	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in char8_t. See
 	/// ztd::text::basic_wtf8 for more details.
 	//////
-	using wtf8 = basic_wtf8<char8_t>;
+	using wtf8 = basic_wtf8<uchar8_t>;
 
 	//////
 	/// @brief A Modified UTF-8 Encoding that traffics in, specifically, the desired code unit type provided as a
@@ -558,7 +545,7 @@ namespace ztd { namespace text {
 	/// @brief A Modified UTF-8 Encoding that traffics in char8_t. See ztd::text::basic_mutf8 for more details.
 	///
 	//////
-	using mutf8 = basic_mutf8<char8_t>;
+	using mutf8 = basic_mutf8<uchar8_t>;
 
 
 	namespace __detail {

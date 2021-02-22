@@ -200,7 +200,7 @@ namespace ztd { namespace text {
 			for (;;) {
 				// Ignore "out of output" errors and do our best to recover properly along the way...
 				_Output __intermediate_initial_output(__intermediate_translation_buffer);
-				auto __result = decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+				auto __result = decode_into(::std::move(__working_input), ::std::forward<_Encoding>(__encoding),
 					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
 				::ztd::text::span<_IntermediateValueType> __intermediate_output(
 					__intermediate_initial_output.data(), __result.output.data());
@@ -226,6 +226,7 @@ namespace ztd { namespace text {
 				}
 				if (__result.error_code == encoding_error::insufficient_output_space) {
 					// loop around, we've got S P A C E for more
+					__working_input = ::std::move(__result.input);
 					continue;
 				}
 				if (__result.error_code != encoding_error::ok) {

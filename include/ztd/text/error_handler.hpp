@@ -66,8 +66,7 @@ namespace ztd { namespace text {
 	namespace __detail {
 
 		template <typename _Encoding, typename _Input, typename _Result>
-		constexpr _Result&& __write_direct(
-			const _Encoding& __encoding, _Input&& __input, _Result&& __result) noexcept {
+		constexpr _Result&& __write_direct(const _Encoding&, _Input&& __input, _Result&& __result) noexcept {
 			using _UOutputRange = __detail::__remove_cvref_t<decltype(__result.output)>;
 
 			auto __outit   = __detail::__adl::__adl_begin(__result.output);
@@ -179,7 +178,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
-	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler which can invoke UB if an error occurs.
+	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler
+	/// which can invoke UB if an error occurs.
 	//////
 	class pass_handler : public __detail::__pass_through_handler_with<false> { };
 

@@ -295,7 +295,7 @@ namespace ztd { namespace text {
 			int __used_default_char = false;
 			::ztd::text::span<const wchar_t> __wide_read_buffer(
 				__wide_intermediary, __intermediate_result.output.data());
-			int __res = ::WideCharToMultiByte(__detail::__windows::__determine_active_code_page(),
+			int __res = ::WideCharToMultiByte(static_cast<UINT>(__detail::__windows::__determine_active_code_page()),
 				WC_ERR_INVALID_CHARS, __wide_read_buffer.data(), static_cast<int>(__wide_read_buffer.size()),
 				__intermediary_output, __state_count_max, ::std::addressof(replacement_code_units[0]),
 				::std::addressof(__used_default_char));
@@ -488,9 +488,10 @@ namespace ztd { namespace text {
 
 				constexpr const int __wide_intermediary_size = 4;
 				wchar_t __wide_intermediary[__wide_intermediary_size] {};
-				int __res = ::MultiByteToWideChar(__detail::__windows::__determine_active_code_page(),
-					MB_ERR_INVALID_CHARS, __intermediary_input, static_cast<int>(__state_count),
-					__wide_intermediary, __wide_intermediary_size);
+				int __res
+					= ::MultiByteToWideChar(static_cast<UINT>(__detail::__windows::__determine_active_code_page()),
+					     MB_ERR_INVALID_CHARS, __intermediary_input, static_cast<int>(__state_count),
+					     __wide_intermediary, __wide_intermediary_size);
 				if (__res == 0) {
 					if (::GetLastError() == ERROR_NO_UNICODE_TRANSLATION) {
 						// loopback; we might just not have enough code units
