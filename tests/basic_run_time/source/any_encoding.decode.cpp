@@ -54,7 +54,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -66,7 +66,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 				     std::size(input1) * encoding.max_code_points, char32_t {});
 				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 				bool is_equal1
 				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
@@ -84,7 +84,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -96,7 +96,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 				     std::size(input1) * encoding.max_code_points, char32_t {});
 				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 				bool is_equal1
 				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
@@ -114,7 +114,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -126,7 +126,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 				     std::size(input1) * encoding.max_code_points, char32_t {});
 				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 				bool is_equal1
 				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
@@ -144,7 +144,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -156,7 +156,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 				     std::size(input1) * encoding.max_code_points, char32_t {});
 				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 				bool is_equal1
 				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
@@ -174,7 +174,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -184,7 +184,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
-			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 			bool is_equal1
 			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
@@ -201,7 +201,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -211,7 +211,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
-			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 			bool is_equal1
 			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
@@ -228,7 +228,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
 			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
+			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(), result0.output.data());
 			bool is_equal0
 			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
@@ -238,7 +238,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
 			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
 			auto result1 = ztd::text::decode_into(
-			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
+			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(), result1.output.data());
 			bool is_equal1
 			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());

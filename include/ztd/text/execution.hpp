@@ -622,6 +622,8 @@ namespace ztd { namespace text {
 					}
 				case static_cast<::std::size_t>(0):
 					// 0 means null character; ok
+					__detail::__dereference(__outit) = __intermediary_output[0];
+					__outit                          = __detail::__next(__outit);
 					return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 						__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 						encoding_error::ok);

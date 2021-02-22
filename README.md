@@ -17,4 +17,4 @@ Please considering sponsoring the work via [any of the available means listed ne
 
 # Documentation
 
-The documentation can be found in full on [https://rtfd.io/text](https://rtfd.io/text)!
+The documentation can be found in full on [https://ztdtext.rtfd.io/](https://ztdtext.rtfd.io/)!

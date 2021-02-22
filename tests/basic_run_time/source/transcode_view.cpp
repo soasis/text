@@ -39,8 +39,8 @@ inline namespace ztd_text_tests_basic_run_time_transcode_view {
 	void check_transcode_view(
 	     FromEncoding& from, ToEncoding& to, const Input& input, const Expected& expected_output) {
 		using TranscodeRange = ztd::text::transcode_view<FromEncoding, ToEncoding,
-		     std::basic_string_view<ztd::text::code_unit_t<FromEncoding>>, ztd::text::default_handler,
-		     ztd::text::default_handler>;
+		     std::basic_string_view<ztd::text::code_unit_t<FromEncoding>>, ztd::text::replacement_handler,
+		     ztd::text::replacement_handler>;
 		TranscodeRange result0_view(input, from, to);
 		auto result0_it         = result0_view.begin();
 		const auto result0_last = result0_view.end();

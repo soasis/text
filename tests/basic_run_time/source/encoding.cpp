@@ -50,7 +50,7 @@ inline namespace ztd_text_tests_basic_run_time_encoding {
 		ztd::text::span<CodePoint, decode_output_max> decode_output_buffer(decode_output_storage, decode_output_max);
 		ztd::text::decode_state_t<Encoding> decode_state {};
 		auto decode_result
-		     = encoding.decode_one(encoded, decode_output_buffer, ztd::text::default_handler {}, decode_state);
+		     = encoding.decode_one(encoded, decode_output_buffer, ztd::text::replacement_handler {}, decode_state);
 		ztd::text::span<CodePoint> decode_output(decode_output_buffer.data(), decode_result.output.data());
 		bool decode_output_equal = std::equal(
 		     decode_output.begin(), decode_output.end(), decoded.begin(), decoded.begin() + decode_output.size());
@@ -62,7 +62,7 @@ inline namespace ztd_text_tests_basic_run_time_encoding {
 		ztd::text::span<CodeUnit, encode_output_max> encode_output_buffer(encode_output_storage, encode_output_max);
 		ztd::text::encode_state_t<Encoding> encode_state {};
 		auto encode_result
-		     = encoding.encode_one(decoded, encode_output_buffer, ztd::text::default_handler {}, encode_state);
+		     = encoding.encode_one(decoded, encode_output_buffer, ztd::text::replacement_handler {}, encode_state);
 		ztd::text::span<CodeUnit> encode_output(encode_output_buffer.data(), encode_result.output.data());
 		bool encode_output_equal = std::equal(
 		     encode_output.begin(), encode_output.end(), encoded.begin(), encoded.begin() + encode_output.size());

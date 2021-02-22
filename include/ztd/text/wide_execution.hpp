@@ -118,7 +118,7 @@ namespace ztd { namespace text {
 			// different states, optionally...
 			__wide_encode_state() noexcept : __wide_state(), __narrow_state() {
 				wchar_t __ghost_space[2];
-				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__narrow_state);
+				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == L'\0');
 				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
@@ -400,7 +400,7 @@ namespace ztd { namespace text {
 				const code_unit& __unit = __units[__units_count];
 				++__units_count;
 				__init = __detail::__next(__init);
-#ifdef _MSC_VER
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBVCXX_I_)
 				::std::size_t __res;
 				errno_t __err = wcrtomb_s(::std::addressof(__res), __pray_for_state, __state_max, __unit,
 					::std::addressof(__s.__wide_state));
@@ -436,26 +436,28 @@ namespace ztd { namespace text {
 							::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
 					}
 				}
-				else if (__res == 0 && ::std::mbsinit(::std::addressof(__s.__wide_state)) == 0) {
-					// mixed conversion potential?!
-					// technically, not standard behavior, but I don't really care?
-					// Mr. Steve Downey points out I'm slightly right
-					// about my assumption here: C has an open DR for this
-					// (DR 488, http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2059.htm#dr_488)
-					// Another DR, DR 499 (http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2059.htm#dr_498)
-					// addresses thread safety issues, both should be
-					// solved is this is to be anywhere near usable
-					if constexpr (__call_error_handler) {
-						if (__init == __inlast) {
-							wide_execution __self {};
-							return __error_handler(__self,
-								_Result(::std::forward<_InputRange>(__input),
-								     ::std::forward<_OutputRange>(__output), __s,
-								     encoding_error::incomplete_sequence),
-								::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
+				else if (__res == 0) {
+					if (::std::mbsinit(::std::addressof(__s.__wide_state)) == 0) {
+						// mixed conversion potential?!
+						// technically, not standard behavior, but I don't really care?
+						// Mr. Steve Downey points out I'm slightly right
+						// about my assumption here: C has an open DR for this
+						// (DR 488, http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2059.htm#dr_488)
+						// Another DR, DR 499 (http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2059.htm#dr_498)
+						// addresses thread safety issues, both should be
+						// solved is this is to be anywhere near usable
+						if constexpr (__call_error_handler) {
+							if (__init == __inlast) {
+								wide_execution __self {};
+								return __error_handler(__self,
+									_Result(::std::forward<_InputRange>(__input),
+									     ::std::forward<_OutputRange>(__output), __s,
+									     encoding_error::incomplete_sequence),
+									::ztd::text::span<code_unit>(::std::addressof(__units[0]), __units_count));
+							}
 						}
+						continue;
 					}
-					continue;
 				}
 
 				__state_count += __res;

@@ -31,7 +31,7 @@
 Known Unicode Encodings
 =======================
 
-Out of all the encodings listed on the :doc:`encodings page <>`, only a handful are known to be Unicode Encodings. These are as follows:
+Out of all the encodings listed on the :doc:`encodings page </encodings>`, only a handful are known to be Unicode Encodings. These are as follows:
 
 - UTF-7
 - UTF-7-IMAP

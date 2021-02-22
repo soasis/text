@@ -178,6 +178,12 @@ namespace ztd { namespace text {
 	class assume_valid_handler : public __detail::__pass_through_handler_with<true> { };
 
 	//////
+	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
+	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler which can invoke UB if an error occurs.
+	//////
+	class pass_handler : public __detail::__pass_through_handler_with<false> { };
+
+	//////
 	/// @brief An error handler that replaces bad code points and code units with a chosen code point / code unit
 	/// sequence.
 	///

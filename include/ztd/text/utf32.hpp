@@ -173,7 +173,8 @@ namespace ztd { namespace text {
 				__init           = __detail::__next(__init);
 
 				if constexpr (__validate_code_units && __call_error_handler) {
-					if (__unit > __detail::__last_code_point || __detail::__is_surrogate(__unit)) {
+					if (static_cast<char32_t>(__unit) > __detail::__last_code_point
+						|| __detail::__is_surrogate(static_cast<char32_t>(__unit))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(

@@ -110,7 +110,7 @@ We can see that creating a state with a default constructor no longer works, bec
 
 .. code-block:: cpp
 	:linenos:
-	:emphasize-lines: 36-39,46-49
+	:emphasize-lines: 7-11,18-22
 
 	class type_erased_encoding {
 		// from above, etc. …

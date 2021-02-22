@@ -60,7 +60,7 @@ html_static_path = ["_static"]
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
 #
-html_extra_path = ["resources"]
+html_extra_path = []
 
 # Text that is pre-pended to every built file. Useful for global substitution patterns.
 rst_prolog = """

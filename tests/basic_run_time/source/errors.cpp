@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -47,7 +47,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
 				ztd::text::utf8::state s0 {};
 				auto result0 = enc.decode_one(std::u8string_view(ztd::text::tests::u8_unicode_invalid_input),
-				     output_buffer0, ztd::text::default_handler {}, s0);
+				     output_buffer0, ztd::text::replacement_handler {}, s0);
 				REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
 				REQUIRE(std::u32string_view(output0) == ztd::text::tests::u32_unicode_replacement_truth);
 			}
@@ -58,7 +58,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
 				ztd::text::utf16::state s0 {};
 				auto result0 = enc.decode_one(std::u16string_view(ztd::text::tests::u16_unicode_invalid_input),
-				     output_buffer0, ztd::text::default_handler {}, s0);
+				     output_buffer0, ztd::text::replacement_handler {}, s0);
 				REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
 				REQUIRE(std::u32string_view(output0) == ztd::text::tests::u32_unicode_replacement_truth);
 			}
@@ -69,7 +69,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::span<ztd::text::unicode_code_point> output_buffer0(output0, 1);
 				ztd::text::utf32::state s0 {};
 				auto result0 = enc.decode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
-				     output_buffer0, ztd::text::default_handler {}, s0);
+				     output_buffer0, ztd::text::replacement_handler {}, s0);
 				REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
 				REQUIRE(std::u32string_view(output0) == ztd::text::tests::u32_unicode_replacement_truth);
 			}
@@ -82,7 +82,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::span<char8_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf8::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
-				     output_buffer0, ztd::text::default_handler {}, s0);
+				     output_buffer0, ztd::text::replacement_handler {}, s0);
 				REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
 				REQUIRE(std::u8string_view(output0) == ztd::text::tests::u8_unicode_replacement_truth);
 			}
@@ -93,7 +93,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::span<char16_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf16::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
-				     output_buffer0, ztd::text::default_handler {}, s0);
+				     output_buffer0, ztd::text::replacement_handler {}, s0);
 				REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
 				REQUIRE(std::u16string_view(output0) == ztd::text::tests::u16_unicode_replacement_truth);
 			}
@@ -104,7 +104,7 @@ TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 				ztd::text::span<char32_t> output_buffer0(output0, encode_output_max);
 				ztd::text::utf32::state s0 {};
 				auto result0 = enc.encode_one(std::u32string_view(ztd::text::tests::u32_unicode_invalid_input),
-				     output_buffer0, ztd::text::default_handler {}, s0);
+				     output_buffer0, ztd::text::replacement_handler {}, s0);
 				REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
 				REQUIRE(std::u32string_view(output0) == ztd::text::tests::u32_unicode_replacement_truth);
 			}

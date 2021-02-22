@@ -491,12 +491,12 @@ namespace ztd { namespace text {
 					__raw_result.error_code, __raw_result.handled_error);
 			}
 
-			virtual std::unique_ptr<__erased_state> __create_encode_state() const {
+			virtual std::unique_ptr<__erased_state> __create_encode_state() const override {
 				auto& __encoding = this->__base_t::get_value();
 				return std::make_unique<__typed_state<__real_encode_state>>(make_encode_state(__encoding));
 			}
 
-			virtual std::unique_ptr<__erased_state> __create_decode_state() const {
+			virtual std::unique_ptr<__erased_state> __create_decode_state() const override {
 				auto& __encoding = this->__base_t::get_value();
 				return std::make_unique<__typed_state<__real_decode_state>>(make_decode_state(__encoding));
 			}
