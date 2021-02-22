@@ -50,7 +50,7 @@ As the maintainer of code inside of the function ``read_name``, what is the enco
 	}
 
 
-Even here, we've only made marginal improvements. We know the string is stored in some heap by the default allocator, we have the size of the string, but that only tells us how many ``char`` units are stored, not how many conceptual, human-readable :term:`characters <character>` there are or any other pertinent information. Is this information encoded? Is it UTF-8? Maybe it's EBCDIC Code Page 833. Maybe it's UTF-7-IMAP. You don't know, and by the time you start inspecting or poking at the individual ``char`` :term:`code units <code unit>`, who knows what can happen? To make matters worse, even C++ and its Standard Library have poor support for encoding/decoding, let alone Unicode in general. These problems have been explained in quite a lot of detail up to ths point, but the pitfalls are many:
+Even here, we've only made marginal improvements. We know the string is stored in some heap by the default allocator, we have the size of the string, but that only tells us how many ``char`` units are stored, not how many conceptual, human-readable :term:`characters <character>` there are or any other pertinent information. Is this information encoded? Is it UTF-8? Maybe it's EBCDIC Code Page 833. Maybe it's UTF-7-IMAP. You don't know, and by the time you start inspecting or poking at the individual ``char`` :term:`code units <code unit>`, who knows what can happen? To make matters worse, even C++ and its Standard Library have poor support for encoding/decoding, let alone Unicode in general. These problems have been explained in quite a lot of detail up to this point, but the pitfalls are many:
 
 .. epigraph::
 	
@@ -68,7 +68,7 @@ Some proponents say that if we just change everything to mean "UTF-8" (`const ch
 "UTF-8 Everywhere!!"
 --------------------
 
-There are many in the programmign space that believe that just switching everything to UTF-8 everywhere will solve the problem. This is, unfortunately, greatly inadequate as a solution. For those who actually read the entire UTF-8 Everywhere manifesto in its fullness, they will come across this FAQ entry:
+There are many in the programming space that believe that just switching everything to UTF-8 everywhere will solve the problem. This is, unfortunately, greatly inadequate as a solution. For those who actually read the entire UTF-8 Everywhere manifesto in its fullness, they will come across this FAQ entry:
 
 .. epigraph::
 
@@ -78,7 +78,7 @@ There are many in the programmign space that believe that just switching everyth
 
 	-- `FAQ Entry #6 <https://utf8everywhere.org/#faq.liberal>`_
 
-The core problem with the "``std::string`` is always UTF-8" decision (even when they are as big as Gooogle, Apple, Facebook, or Microsoft and own everything from the data center to the browser you work with) is that they live on a planet with other people who do not share the same sweeping generalizations about their application environments. Nor have they invoked the ability to, magically, rewrite everyone's code or the data that's been put out by these programs in the last 50 or 60 years. This results in a gratuitous amount of replacement characters or :term:`Mojibake <mojibake>` when things do not encode or decode properly:
+The core problem with the "``std::string`` is always UTF-8" decision (even when they are as big as Google, Apple, Facebook, or Microsoft and own everything from the data center to the browser you work with) is that they live on a planet with other people who do not share the same sweeping generalizations about their application environments. Nor have they invoked the ability to, magically, rewrite everyone's code or the data that's been put out by these programs in the last 50 or 60 years. This results in a gratuitous amount of replacement characters or :term:`Mojibake <mojibake>` when things do not encode or decode properly:
 
 .. image:: /img/paris-post-office.jpg
 	:alt: A package going between Russia and Paris, written in Mojibake because of interpreting text with the wrong encoding. It has been corrected in marker with the correct lettering, because they are so used to this occurence for international packages.
@@ -100,7 +100,7 @@ So, what do we do from here?
 Fighting Code Rot
 -----------------
 
-We need ways to fight bit rot and issues of function invariants -- like expected encoding on string objects -- from infesting code. While we can't rewrite every function declaration or wrap every functin declaration, one of the core mechanisms this library provides is a way of tracking and tagging this kind of invariant information, particularly at compile-time.
+We need ways to fight bit rot and issues of function invariants -- like expected encoding on string objects -- from infesting code. While we can't rewrite every function declaration or wrap every function declaration, one of the core mechanisms this library provides is a way of tracking and tagging this kind of invariant information, particularly at compile-time.
 
 We know we can't solve interchange on a global level (e.g., demanding everyone use UTF-8) because, at some point, there is always going to be some small holdout of legacy data that has not yet been fixed or ported. The start of solving this is by having views and containers that keep encoding information with them after they are first constructed. This makes it possible to not "lose" that information as it flows through your program:
 
@@ -115,7 +115,7 @@ We know we can't solve interchange on a global level (e.g., demanding everyone u
 
 Now, we have an :doc:`explicit decoding view </api/views/decode_view>` into a sequence of UTF-8 code units, that produces ``unicode_code_point``\ s that we can inspect and work with. This is much better, as it uses C++'s strong typing mechanisms to give us a useful view. This means that not only does the person outside of the ``read_name`` function understand that the function expects some UTF-8 encoded text, but the person inside the function knows that they are working with UTF-8 encoded text. This solves both ends of the user and maintainer divide.
 
-Of course, sometimes this is not always possible. ABI stability mandates some functions can't have their signatures change. Other times, you can't modify the signature of functions youu don't own. This is still helpful in this case, as you can, at the nearest available point inside the function or outside of it, apply these transformations:
+Of course, sometimes this is not always possible. ABI stability mandates some functions can't have their signatures change. Other times, you can't modify the signature of functions you don't own. This is still helpful in this case, as you can, at the nearest available point inside the function or outside of it, apply these transformations:
 
 
 .. code-block:: cpp
@@ -140,4 +140,4 @@ Because the range and container types are templated on not only encoding, but th
 
 	-- `UTF-8 Everywhere, FAQ Entry #19 <https://utf8everywhere.org/#faq.ood>`_
 
-Rather than create a new ``std::string`` or ``std::string_view``, we simply wrap existing storage interfaces and provide specific views or operations on those things. This alleviates the burden of having to reinvent things that already work fine for byte-oriented interfaces, and helps programmers control (and prevent) bugs. They also get to communicate their intent in their APIs if they so desire ("This API takes a ``std::string_view``, but with the expectation that it's going to be decoded as ``utf8``). The wrapped type will always be available by calling ``.base()``, which means a developer can drop down to the level they think is appropriate when they want it (with the explicit acknowledgement they're going to be ruining things).
+Rather than create a new ``std::string`` or ``std::string_view``, we simply wrap existing storage interfaces and provide specific views or operations on those things. This alleviates the burden of having to reinvent things that already work fine for byte-oriented interfaces, and helps programmers control (and prevent) bugs. They also get to communicate their intent in their APIs if they so desire ("This API takes a ``std::string_view``, but with the expectation that it's going to be decoded as ``utf8``"). The wrapped type will always be available by calling ``.base()``, which means a developer can drop down to the level they think is appropriate when they want it (with the explicit acknowledgement they're going to be ruining things).

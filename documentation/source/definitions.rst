@@ -31,7 +31,7 @@
 Glossary of Terms & Definitions
 ===============================
 
-Occassionally, we may need to use precise language to describe what we want. This contains a list of definitions that can be linked to from the documentation to help describe key concepts that are useful for the explication of the concepts and ideas found in this documentation.
+Occasionally, we may need to use precise language to describe what we want. This contains a list of definitions that can be linked to from the documentation to help describe key concepts that are useful for the explication of the concepts and ideas found in this documentation.
 
 
 .. glossary::
@@ -55,7 +55,7 @@ Occassionally, we may need to use precise language to describe what we want. Thi
 
 		A unicode code point has been reserved to take at most 21 bits of space to identify itself.
 
-		A single unicode code point is NOT equivalent to a :term:`character <character>`, and multiple of them can be put together or taken apart and still have their sequence form a :term:`"character" <character>`. For a more holsitic, human-like interpretation of code points or other data, see :term:`grapheme clusters <grapheme cluster>`.
+		A single unicode code point is NOT equivalent to a :term:`character <character>`, and multiple of them can be put together or taken apart and still have their sequence form a :term:`"character" <character>`. For a more holistic, human-like interpretation of code points or other data, see :term:`grapheme clusters <grapheme cluster>`.
 
 	unicode scalar value
 		A single unit of decoded information for Unicode. It's definition is identical to that of :term:`unicode code points <unicode code point>`, with the additional constraint that every unicode svalar value may not be a "Surrogate Value". Surrogate values are non-characters used exclusively for the purpose of encoding and decoding specific sequences of code units, and therefore carry no useful meaning in general interchange. They may appear in text streams in certain encodings: see :doc:`Wobbly Transformation Format-8 (WTF-8) </api/encodings/wtf8>` for an example.
