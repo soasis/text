@@ -33,13 +33,12 @@ cmake_policy(VERSION 3.15)
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
-set(ZTD_TEXT_PROJECT_NAME ztd.text)
-set(ZTD_TEXT_PROJECT_VERSION 0.0.0)
-set(ZTD_TEXT_PROJECT_DESCRIPTION "A spicy text library.")
-project(${ZTD_TEXT_PROJECT_NAME}
-	VERSION ${ZTD_TEXT_PROJECT_VERSION}
-	DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION}
-	LANGUAGES C CXX)
+
+project(ztd.text
+  VERSION 0.0.0
+  DESCRIPTION "A spicy text library."
+  HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
+  LANGUAGES C CXX)
 
 # # Modules
 # Include modules useful to the project, whether locally made in our own cmake DIRECTORY

@@ -30,24 +30,23 @@
 
 find_package(Doxygen REQUIRED)
 find_package(Python3 REQUIRED)
-if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
-	find_package(Sphinx REQUIRED)
-endif()
+find_package(Sphinx QUIET)
 
 # Find all the public headers
-file(GLOB_RECURSE ztd_text_public_headers LIST_DIRECTORIES false CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../include/**.*)
+file(GLOB_RECURSE ztd_text_public_headers
+  LIST_DIRECTORIES NO
+  CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/**.*)
 # make a list copy for use with dependency tracking later down below
-list(LENGTH ztd_text_public_headers ztd_text_public_headers_size)
-list(SUBLIST ztd_text_public_headers 0 ${ztd_text_public_headers_size} ztd_text_doxygen_public_headers)
+set(ztd_text_doxygen_public_headers ${ztd_text_public_headers})
 # Remove every single public header
-list(FILTER ztd_text_doxygen_public_headers EXCLUDE REGEX /detail/*)
+list(FILTER ztd_text_doxygen_public_headers EXCLUDE REGEX /detail/.*)
 # separate text with spaces and surround them with quotes for Doxygen to understand them all
-list(JOIN ztd_text_doxygen_public_headers "\" \"" ztd_text_doxygen_public_headers)
-set(ztd_text_doxygen_public_headers \"${ztd_text_doxygen_public_headers}\")
+list(TRANSFORM ztd_text_doxygen_public_headers REPLACE ".*" [["\1"]])
+list(JOIN ztd_text_doxygen_public_headers " " ztd_text_doxygen_public_headers)
 
-set(ZTD_TEXT_DOXYGEN_PROJECT_NAME ${ZTD_TEXT_PROJECT_NAME})
-set(ZTD_TEXT_DOXYGEN_PROJECT_VERSION ${ZTD_TEXT_PROJECT_VERSION})
-set(ZTD_TEXT_DOXYGEN_PROJECT_DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION})
+set(ZTD_TEXT_DOXYGEN_PROJECT_DESCRIPTION ${PROJECT_DESCRIPTION})
+set(ZTD_TEXT_DOXYGEN_PROJECT_VERSION ${PROJECT_VERSION})
+set(ZTD_TEXT_DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
 set(ZTD_TEXT_DOXYGEN_INPUT ${ztd_text_doxygen_public_headers})
 set(ZTD_TEXT_DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/doxygen)
 set(ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR ${ZTD_TEXT_DOXYGEN_OUTPUT_DIR}/xml)
@@ -59,7 +58,9 @@ set(ZTD_TEXT_SPHINX_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
 set(ZTD_TEXT_SPHINX_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
 
 # Get all Sphinx source files
-file(GLOB_RECURSE ztd_text_sphinx_sources LIST_DIRECTORIES false CONFIGURE_DEPENDS ${ZTD_TEXT_SPHINX_SOURCE_DIR}/**.*)
+file(GLOB_RECURSE ztd_text_sphinx_sources
+  LIST_DIRECTORIES NO
+  CONFIGURE_DEPENDS ${ZTD_TEXT_SPHINX_SOURCE_DIR}/**.*)
 
 #Replace variables inside @@ with the current values
 configure_file(${ZTD_TEXT_DOXYFILE_IN} ${ZTD_TEXT_DOXYFILE_OUT} @ONLY)
@@ -70,9 +71,11 @@ file(MAKE_DIRECTORY ${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR})
 file(MAKE_DIRECTORY ${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR})
 file(MAKE_DIRECTORY ${ZTD_TEXT_SPHINX_BUILD_DIR})
 
-set_directory_properties(PROPERTIES ADDITIONAL_CLEAN_FILES
-	"${ZTD_TEXT_DOXYGEN_OUTPUT_DIR};${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR};${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR};${ZTD_TEXT_SPHINX_BUILD_DIR}"
-)
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES
+  ${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
+  ${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR}
+  ${ZTD_TEXT_DOXYGEN_OUTPUT_DIR}
+  ${ZTD_TEXT_SPHINX_BUILD_DIR})
 
 add_custom_command(OUTPUT ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 	COMMAND ${DOXYGEN_EXECUTABLE} ${ZTD_TEXT_DOXYFILE_OUT}
@@ -84,12 +87,16 @@ add_custom_target(ztd.text.documentation.doxygen ALL DEPENDS ${ZTD_TEXT_DOXYGEN_
 
 if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
 	add_custom_target(ztd.text.documentation.sphinx ALL
-		COMMAND ${SPHINX_EXECUTABLE} -b html ${ZTD_TEXT_SPHINX_SOURCE_DIR} ${ZTD_TEXT_SPHINX_BUILD_DIR}
-			-Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_sphinx_sources}
-		COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."
-	)
+    COMMAND Sphinx::Build
+      -b html
+      -Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
+      ${ZTD_TEXT_SPHINX_SOURCE_DIR}
+      ${ZTD_TEXT_SPHINX_BUILD_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_sphinx_sources}
+    COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."
+    COMMAND_EXPAND_LISTS
+    VERBATIM)
 
 	add_dependencies(ztd.text.documentation.sphinx ztd.text.documentation.doxygen)
 endif()
