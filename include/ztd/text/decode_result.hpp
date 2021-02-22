@@ -57,7 +57,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as 
+	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as
 	/// ztd_text_decode).
 	//////
 	template <typename _Input, typename _Output>
@@ -84,7 +84,7 @@ namespace ztd { namespace text {
 		bool handled_error;
 
 		//////
-		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to 
+		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -124,7 +124,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as 
+	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as
 	/// ztd_text_decode).
 	//////
 	template <typename _Input, typename _Output, typename _State>
@@ -140,7 +140,7 @@ namespace ztd { namespace text {
 		_State& state;
 
 		//////
-		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to 
+		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -183,8 +183,10 @@ namespace ztd { namespace text {
 
 	namespace __detail {
 		template <typename _Input, typename _Output, typename _State>
-		constexpr stateless_decode_result<_Input, _Output> __slice_to_stateless(
-			decode_result<_Input, _Output, _State>&& __result) {
+		constexpr stateless_decode_result<_Input, _Output>
+		__slice_to_stateless(decode_result<_Input, _Output, _State>&& __result) noexcept(
+			::std::is_nothrow_constructible_v<stateless_decode_result<_Input, _Output>,
+			     stateless_decode_result<_Input, _Output>>) {
 			return __result;
 		}
 

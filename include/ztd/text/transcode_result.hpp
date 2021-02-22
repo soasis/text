@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -86,7 +86,7 @@ namespace ztd { namespace text {
 
 
 		//////
-		/// @brief Constructs a ztd::text::stateless_transcode_result, defaulting the error code to 
+		/// @brief Constructs a ztd::text::stateless_transcode_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -148,7 +148,7 @@ namespace ztd { namespace text {
 		_ToState& to_state;
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to 
+		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -202,7 +202,7 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _FromState, typename _ToState>
 		constexpr stateless_transcode_result<_Input, _Output>
 		__slice_to_stateless(transcode_result<_Input, _Output, _FromState, _ToState>&& __result) noexcept(
-			::std::is_nothrow_convertible_v<stateless_transcode_result<_Input, _Output>,
+			::std::is_nothrow_constructible_v<stateless_transcode_result<_Input, _Output>,
 			     stateless_transcode_result<_Input, _Output>>) {
 			return __result;
 		}

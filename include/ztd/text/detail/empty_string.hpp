@@ -36,15 +36,17 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/char8_t.hpp>
+
 #include <ztd/text/detail/type_traits.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __detail {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_NATIVE_CHAR8_T_I_)
-		using __arr8_one_t                            = char8_t[1];
-		inline constexpr const __arr8_one_t __u8_shim = {};
-#endif
+		using __uchar_one_t                           = unsigned char[1];
+		inline constexpr const __uchar_one_t __u_shim = {};
+
+		using __schar_one_t                           = signed char[1];
+		inline constexpr const __schar_one_t __s_shim = {};
 
 		template <typename C>
 		inline constexpr decltype(auto) __empty_string() noexcept {
@@ -58,18 +60,26 @@ namespace ztd { namespace text {
 		}
 
 		template <>
+		inline constexpr decltype(auto) __empty_string<unsigned char>() noexcept {
+			return (__u_shim);
+		}
+
+		template <>
+		inline constexpr decltype(auto) __empty_string<signed char>() noexcept {
+			return (__s_shim);
+		}
+
+		template <>
 		inline constexpr decltype(auto) __empty_string<wchar_t>() noexcept {
 			return L"";
 		}
 
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
 		template <>
-		inline constexpr decltype(auto) __empty_string<uchar8_t>() noexcept {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_NATIVE_CHAR8_T_I_)
-			return (__u8_shim);
-#else
+		inline constexpr decltype(auto) __empty_string<char8_t>() noexcept {
 			return u8"";
-#endif
 		}
+#endif
 
 		template <>
 		inline constexpr decltype(auto) __empty_string<char16_t>() noexcept {

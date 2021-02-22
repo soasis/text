@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -34,6 +34,8 @@
 #define ZTD_TEXT_SUBRANGE_HPP
 
 #include <ztd/text/detail/range.hpp>
+
+#include <ztd/text/detail/type_traits.hpp>
 
 #include <iterator>
 #include <utility>
@@ -161,7 +163,7 @@ namespace ztd { namespace text {
 		/// iterators.
 		//////
 		template <typename _Range,
-			::std::enable_if_t<!::std::is_same_v<::std::remove_cvref_t<_Range>, subrange>>* = nullptr>
+			::std::enable_if_t<!::std::is_same_v<__detail::__remove_cvref_t<_Range>, subrange>>* = nullptr>
 		constexpr subrange(_Range&& __range) noexcept
 		: subrange(__detail::__adl::__adl_begin(__range), __detail::__adl::__adl_end(__range)) {
 		}
