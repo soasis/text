@@ -35,13 +35,38 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/span.implementation.hpp>
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_SPAN_I_)
 
-#if !defined(span_HAVE_STD_SPAN) || span_HAVE_STD_SPAN == 0
+#include <span>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief dynamic extent copycat
+	///
+	//////
+	inline constexpr decltype(::std::dynamic_extent) dynamic_extent = ::std::dynamic_extent;
+
+	using ::std::as_bytes;
+	using ::std::as_writable_bytes;
+	using ::std::span;
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+#else
+
+// Use home-grown span from Martin Moene
+#include <ztd/text/detail/span.implementation.hpp>
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	//////
+	/// @brief dynamic extent copycat
+	///
+	//////
 	inline constexpr decltype(::nonstd::dynamic_extent) dynamic_extent = ::nonstd::dynamic_extent;
 
 	using ::nonstd::span_lite::as_bytes;
@@ -51,21 +76,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#else
-
-namespace ztd { namespace text {
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-
-	inline constexpr decltype(::std::dynamic_extent) dynamic_extent = ::std::dynamic_extent;
-
-	using ::std::span_lite::as_bytes;
-	using ::std::span_lite::as_writable_bytes;
-	using ::std::span_lite::span;
-
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text
-
-
-#endif // Have Standard Span
+#endif
 
 #endif // ZTD_TEXT_DETAIL_SPAN_HPP

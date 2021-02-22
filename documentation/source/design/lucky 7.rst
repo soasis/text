@@ -86,16 +86,16 @@ Lucky 7
 		
 		// (6)
 		ue_encode_result encode_one(
-			ztd::text::span<char32_t> input,
-			ztd::text::span<char> output,
+			ztd::text::span<const code_point> input,
+			ztd::text::span<code_unit> output,
 			state& current,
 			ue_encode_error_handler error_handler
 		);
 
 		// (7)
 		ue_decode_result decode_one(
-			ztd::text::span<char> input,
-			ztd::text::span<char32_t> output,
+			ztd::text::span<const code_unit> input,
+			ztd::text::span<code_point> output,
 			state& current,
 			ue_decode_error_handler error_handler
 		);
@@ -135,13 +135,13 @@ Result types are specific structs in the library that mark encode and decode ope
 	#include <ztd/text/decode_result.hpp>
 
 	using ue_decode_result = ztd::text::decode_result<
-		ztd::text::span<char>,
+		ztd::text::span<const char>,
 		ztd::text::span<char32_t>,
 		empty_struct
 	>;
 
 	using ue_encode_result = ztd::text::encode_result<
-		ztd::text::span<char32_t>,
+		ztd::text::span<const char32_t>,
 		ztd::text::span<char>,
 		empty_struct
 	>;

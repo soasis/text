@@ -57,8 +57,10 @@
 // clang-format off
 
 #if defined(__has_include)
+	#define ZTD_TEXT_COMPILER_WITH_HAS_INCLUDE_I_ ZTD_TEXT_ON
 	#define ZTD_TEXT_HAS_INCLUDE_I_(...) __has_include(__VA_ARGS__)
 #else
+	#define ZTD_TEXT_COMPILER_WITH_HAS_INCLUDE_I_ ZTD_TEXT_OFF
 	#define ZTD_TEXT_HAS_INCLUDE_I_(...) 0
 #endif
 
@@ -92,9 +94,9 @@
 #endif
 
 #if defined(__MINGW32__)
-	#define SOL_COMPILER_MINGW_I_ ZTD_TEXT_ON
+	#define ZTD_TEXT_COMPILER_MINGW_I_ ZTD_TEXT_ON
 #else
-	#define SOL_COMPILER_MINGW_I_ ZTD_TEXT_OFF
+	#define ZTD_TEXT_COMPILER_MINGW_I_ ZTD_TEXT_OFF
 #endif
 
 #if defined(__GLIBCXX__)
@@ -308,6 +310,20 @@
 	#define ZTD_TEXT_ALIGNED_OPERATOR_NEW_I_ ZTD_TEXT_OFF
 #endif // C++ operator new, with alignment parameter
 
+#if defined(ZTD_TEXT_LANGINFO)
+	#if (ZTD_TEXT_LANGINFO != 0)
+		#define ZTD_TEXT_LANGINFO_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_LANGINFO_I_ ZTD_TEXT_OFF
+	#endif
+#else
+	#if ZTD_TEXT_HAS_INCLUDE_I_(<langinfo.h>)
+		#define ZTD_TEXT_LANGINFO_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_LANGINFO_I_ ZTD_TEXT_DEFAULT_OFF
+	#endif
+#endif // langinfo POSIX
+
 #if defined(ZTD_TEXT_NL_LANGINFO)
 	#if (ZTD_TEXT_NL_LANGINFO != 0)
 		#define ZTD_TEXT_NL_LANGINFO_I_ ZTD_TEXT_ON
@@ -320,7 +336,7 @@
 	#else
 		#define ZTD_TEXT_NL_LANGINFO_I_ ZTD_TEXT_DEFAULT_OFF
 	#endif
-#endif // nl_langinfo POSIX bullshit
+#endif // nl_langinfo POSIX
 
 #if defined(ZTD_TEXT_LOCALE_DEPENDENT_WIDE_EXECUTION)
 	#if (ZTD_TEXT_LOCALE_DEPENDENT_WIDE_EXECUTION != 0)
@@ -551,6 +567,18 @@
 	#define ZTD_TEXT_STD_LIBRARY_STRING_CONTAINS_I_ ZTD_TEXT_DEFAULT_ON
 #else
 	#define ZTD_TEXT_STD_LIBRARY_STRING_CONTAINS_I_ ZTD_TEXT_DEFAULT_OFF
+#endif
+
+#if defined(ZTD_TEXT_STD_LIBRARY_SPAN)
+	#if (ZTD_TEXT_STD_LIBRARY_SPAN != 0)
+		#define ZTD_TEXT_STD_LIBRARY_SPAN_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_STD_LIBRARY_SPAN_I_ ZTD_TEXT_ON
+	#endif
+#elif defined(__cpp_lib_span)
+	#define ZTD_TEXT_STD_LIBRARY_SPAN_I_ ZTD_TEXT_DEFAULT_ON
+#else
+	#define ZTD_TEXT_STD_LIBRARY_SPAN_I_ ZTD_TEXT_DEFAULT_OFF
 #endif
 
 #if defined (ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE)

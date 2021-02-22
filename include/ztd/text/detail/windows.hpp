@@ -78,7 +78,7 @@ namespace ztd { namespace text {
 			return CP_ACP;
 		}
 
-		inline int __is_unicode_code_page(int __codepage_id) {
+		inline bool __is_unicode_code_page(int __codepage_id) {
 			switch (__codepage_id) {
 			case CP_UTF7:
 			case CP_UTF8:
@@ -101,6 +101,6 @@ namespace ztd { namespace text {
 #pragma pop_macro("WIN32_LEAN_AND_MEAN")
 #pragma pop_macro("NOMINMAX")
 
-#endif // Windows shit
+#endif // Windows nightmare
 
 #endif // ZTD_TEXT_DETAIL_WINDOWS_HPP

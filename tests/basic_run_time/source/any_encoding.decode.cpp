@@ -56,7 +56,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
-			     = std::equal(result0_view.cbegin(), result0_view.cend(), expected0.begin(), expected0.end());
+			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
 			REQUIRE(is_equal0);
 		}
 		SECTION("wide_execution") {
@@ -73,7 +73,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
-			     = std::equal(result0_view.cbegin(), result0_view.cend(), expected0.begin(), expected0.end());
+			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::decode_state state1(encoding);
@@ -83,7 +83,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
-			     = std::equal(result1_view.cbegin(), result1_view.cend(), expected1.begin(), expected1.end());
+			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf8") {
@@ -100,7 +100,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
-			     = std::equal(result0_view.cbegin(), result0_view.cend(), expected0.begin(), expected0.end());
+			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::decode_state state1(encoding);
@@ -110,7 +110,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
-			     = std::equal(result1_view.cbegin(), result1_view.cend(), expected1.begin(), expected1.end());
+			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf16") {
@@ -127,7 +127,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
-			     = std::equal(result0_view.cbegin(), result0_view.cend(), expected0.begin(), expected0.end());
+			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::decode_state state1(encoding);
@@ -137,7 +137,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
-			     = std::equal(result1_view.cbegin(), result1_view.cend(), expected1.begin(), expected1.end());
+			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf32") {
@@ -154,7 +154,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input0, encoding, result0_storage_view, ztd::text::default_handler {}, state0);
 			std::basic_string_view<char32_t> result0_view(result0_storage_view.begin(), result0.output.begin());
 			bool is_equal0
-			     = std::equal(result0_view.cbegin(), result0_view.cend(), expected0.begin(), expected0.end());
+			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
 			REQUIRE(is_equal0);
 
 			ztd::text::any_encoding::decode_state state1(encoding);
@@ -164,7 +164,7 @@ TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays w
 			     input1, encoding, result1_storage_view, ztd::text::default_handler {}, state1);
 			std::basic_string_view<char32_t> result1_view(result1_storage_view.begin(), result1.output.begin());
 			bool is_equal1
-			     = std::equal(result1_view.cbegin(), result1_view.cend(), expected1.begin(), expected1.end());
+			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
 			REQUIRE(is_equal1);
 		}
 	}

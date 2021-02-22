@@ -33,12 +33,10 @@ cmake_policy(VERSION 3.15)
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
-set(ZTD_TEXT_PROJECT_NAME ztd.text)
-set(ZTD_TEXT_PROJECT_VERSION 0.0.0)
-set(ZTD_TEXT_PROJECT_DESCRIPTION "A spicy text library.")
+
 project(ztd.text
   VERSION 0.0.0
-  DESCRIPTION "A spicy text library"
+  DESCRIPTION "A spicy text library."
   HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
   LANGUAGES C CXX)
 
@@ -51,9 +49,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 # # # Top-Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-  set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT YES)
+	set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT YES)
 else()
-  set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT NO)
+	set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT NO)
 endif()
 
 # Modify bad flags / change defaults if we are the top level
@@ -87,7 +85,7 @@ option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its ta
 option(ZTD_TEXT_USE_CUNEICODE "Enable generation of a single header and its target" OFF)
 
 if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
-  set(CMAKE_CXX_STANDARD 20)
+	set(CMAKE_CXX_STANDARD 20)
 endif()
 
 # # Dependencies
@@ -110,16 +108,16 @@ check_cxx_compiler_flag(-Wall ZTD_TEXT_DIAGNOSTIC_DEFAULTS)
 
 string(CONCAT ztd-text-is-top-level $<STREQUAL:${PROJECT_NAME},${CMAKE_PROJECT_NAME}>)
 string(CONCAT --disable-permissive $<
-  $<AND:
-    $<BOOL:${ZTD_TEXT_MSVC_DISABLE_PERMISSIVE}>,
-    ${ztd-text-is-top-level}
-  >:/permissive-
+	$<AND:
+		$<BOOL:${ZTD_TEXT_MSVC_DISABLE_PERMISSIVE}>,
+		${ztd-text-is-top-level}
+	>:/permissive-
 >)
 string(CONCAT ztd-use-cuneicode $<
-  $<AND:
-    $<BOOL:${ZTD_TEXT_USE_CUNEICODE}>,
-    $<BOOL:${ztd_text_has_cuneicode}>
-  >:$<TARGET_NAME_IF_EXISTS:ztd::cuneicode>
+	$<AND:
+		$<BOOL:${ZTD_TEXT_USE_CUNEICODE}>,
+		$<BOOL:${ztd_text_has_cuneicode}>
+	>:$<TARGET_NAME_IF_EXISTS:ztd::cuneicode>
 >)
 
 string(CONCAT --warn-pedantic $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_PEDANTIC}>:-Wpedantic>)
@@ -129,9 +127,9 @@ string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)
 add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
 target_include_directories(ztd.text
-  INTERFACE
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
+	INTERFACE
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 target_compile_features(ztd.text INTERFACE $<${ztd-text-is-top-level}:cxx_std_20>)
 target_compile_options(ztd.text INTERFACE ${--disable-permissive})
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
@@ -165,8 +163,8 @@ endif()
 
 # # Benchmarks, Tests, Examples
 if (ZTD_TEXT_TESTS)
-  include(CTest)
-  add_subdirectory(tests)
+	include(CTest)
+	add_subdirectory(tests)
 endif()
 
 if (ZTD_TEXT_DOCUMENTATION)
@@ -180,12 +178,12 @@ if (ZTD_TEXT_EXAMPLES)
 endif()
 
 if (ZTD_TEXT_SCRATCH)
-  add_executable(scratch main.cpp)
-  target_link_libraries(scratch PRIVATE ztd::text)
-  target_compile_options(scratch
-    PRIVATE
-      ${--warn-pedantic}
-      ${--warn-default}
-      ${--deny-errors})
-  target_compile_features(scratch PRIVATE cxx_std_20)
+	add_executable(scratch main.cpp)
+	target_link_libraries(scratch PRIVATE ztd::text)
+	target_compile_options(scratch
+		PRIVATE
+		${--warn-pedantic}
+		${--warn-default}
+		${--deny-errors})
+	target_compile_features(scratch PRIVATE cxx_std_20)
 endif()
