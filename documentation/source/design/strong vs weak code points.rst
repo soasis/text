@@ -75,11 +75,11 @@ In a long piece on P0422, the C and C++ landscape, and Standardization efforts, 
 
 	-- `Henri Sivonen, It’s Time to Stop Adding New Features for Non-Unicode Execution Encodings in C++ <https://hsivonen.fi/non-unicode-in-cpp/>`_
 
-This is a different set of choices and a different set of priorities from the outset. Sivonen's work specifically is that with Browsers and large code bases like Firefox; they are responsible for making very good traction and progress on encoding issues in a world that is filled primarily with Unicode, but still has millions of documents that are not in Unicode and, for the forseeable future, won't end up as Unicode.
+This is a different set of choices and a different set of priorities from the outset. Sivonen's work specifically is that with Browsers and large code bases like Firefox; they are responsible for making very good traction and progress on encoding issues in a world that is filled primarily with Unicode, but still has millions of documents that are not in Unicode and, for the foreseeable future, won't end up as Unicode.
 
 This is a strong argument for simply channeling ``char16_t``, ``char32_t``, and -- since C++20 -- ``char8_t`` as the only types one would need. Firefox at most deals in UTF-16 (due to the JavaScript engine for legacy reasons) and UTF-8, internally. At the boundaries, it deals with many more text encodings, because it `has to from the world wide web <https://encoding.spec.whatwg.org/>`_. Occasionally, UTF-32 will appear in someone's codebase for interoperation purposes or algorithms that need to operate on something better than code units. 
 
-Unicode is also... well, a [UNI]versal [CODE]. It's purposes is interoperation, interchange, and common ground between all the encodings, and it has been the clear winner for this for quite some time now. Sivonen makes a compelling point for just considering Unicode — and only Unicode — for all future text endeavors.
+Unicode is also... well, a [UNI]versal [CODE]. Its purposes are interoperation, interchange, and common ground between all the encodings, and it has been the clear winner for this for quite some time now. Sivonen makes a compelling point for just considering Unicode — and only Unicode — for all future text endeavors.
 
 Do we really need to focus on having support for legacy encodings? Or at least, do we really need support for legacy encodings at the level that Tom Honermann's text_view is trying to achieve?
 
@@ -112,7 +112,7 @@ There is room in Sivonen's world, even with perfectly-consistent and fully-Unico
 
 That's why encodings can still define their own ``code_unit`` and ``code_point`` types; even if this library — or the Standard Library — traffics in strictly ``unicode_code_point``\ s, it doesn't mean the user should be forced to do that if they are willing to put in the effort for a more type-safe world.
 
-Being able to know, at compile-time, without any objects or markup, that a particular pointer + size pairing is meant for a specific encoding is aa powerful way to maintain invariants and track the flow of data without runtime cost through a program. It can also make it easy to find places where external, non-Unicode data is making it "too far" into the system, and try to push a conversion closer to the edges of the program.
+Being able to know, at compile-time, without any objects or markup, that a particular pointer + size pairing is meant for a specific encoding is a powerful way to maintain invariants and track the flow of data without runtime cost through a program. It can also make it easy to find places where external, non-Unicode data is making it "too far" into the system, and try to push a conversion closer to the edges of the program.
 
 While ztd.text will traffic and work with ``char32_t`` and consider it a ``unicode_code_point`` value :doc:`under most circumstances </api/is_unicode_code_point>`, users are free to define and extend this classification for their own types and generally create as strict (or loose) as taxonomy as they desire.
 
