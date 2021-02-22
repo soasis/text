@@ -37,17 +37,22 @@
 TEST_CASE("text/text/basic", "basic usages of text do not explode") {
 	SECTION("execution") {
 		ztd::text::text txt;
+		(void)txt;
 	}
 	SECTION("wide_execution") {
 		ztd::text::wtext txt;
+		(void)txt;
 	}
 	SECTION("utf8") {
 		ztd::text::u8text txt;
+		(void)txt;
 	}
 	SECTION("utf16") {
 		ztd::text::u16text txt;
+		(void)txt;
 	}
 	SECTION("utf32") {
 		ztd::text::u32text txt;
+		(void)txt;
 	}
 }

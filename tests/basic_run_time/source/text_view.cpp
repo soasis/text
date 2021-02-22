@@ -37,17 +37,22 @@
 TEST_CASE("text/text_view/basic", "basic usages of text_view do not explode") {
 	SECTION("execution") {
 		ztd::text::text_view txt;
+		(void)txt;
 	}
 	SECTION("wide_execution") {
 		ztd::text::wtext_view txt;
+		(void)txt;
 	}
 	SECTION("utf8") {
 		ztd::text::u8text_view txt;
+		(void)txt;
 	}
 	SECTION("utf16") {
 		ztd::text::u16text_view txt;
+		(void)txt;
 	}
 	SECTION("utf32") {
 		ztd::text::u32text_view txt;
+		(void)txt;
 	}
 }

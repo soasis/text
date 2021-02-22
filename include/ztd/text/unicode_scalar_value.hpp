@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 			/// with the value 0 (if parentheses/brackets are provided for intentional value initialization).
 			///
 			//////
-			constexpr __unicode_scalar_value() noexcept = default;
+			__unicode_scalar_value() noexcept = default;
 
 			//////
 			/// @brief Constructs a scalar value with the given code point value.
@@ -122,6 +122,17 @@ namespace ztd { namespace text {
 			friend constexpr bool operator==(
 				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
 				return __left._M_scalar == __right._M_scalar;
+			}
+
+			//////
+			/// @brief Check if two unicode code points are not equal.
+			///
+			/// @param[in] __left Left hand value of inequality operator.
+			/// @param[in] __right Right hand value of inequality operator.
+			//////
+			friend constexpr bool operator!=(
+				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
+				return __left._M_scalar != __right._M_scalar;
 			}
 
 			//////

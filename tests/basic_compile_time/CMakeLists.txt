@@ -42,6 +42,11 @@ if (MSVC)
 else()
 	target_compile_options(ztd.text.tests.basic_compile_time
 		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
+	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+		target_compile_options(ztd.text.tests.basic_compile_time
+			PRIVATE -fconstexpr-steps=2097152)
+		endif()
+	endif()
 endif()
 target_include_directories(ztd.text.tests.basic_compile_time
 	PRIVATE 
