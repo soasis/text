@@ -41,7 +41,7 @@ set(ztd_text_doxygen_public_headers ${ztd_text_public_headers})
 # Remove every single public header
 list(FILTER ztd_text_doxygen_public_headers EXCLUDE REGEX /detail/.*)
 # separate text with spaces and surround them with quotes for Doxygen to understand them all
-list(TRANSFORM ztd_text_doxygen_public_headers REPLACE ".*" [["\1"]])
+list(TRANSFORM ztd_text_doxygen_public_headers REPLACE "(.+)" [["\1"]])
 list(JOIN ztd_text_doxygen_public_headers " " ztd_text_doxygen_public_headers)
 
 set(ZTD_TEXT_DOXYGEN_PROJECT_DESCRIPTION ${PROJECT_DESCRIPTION})

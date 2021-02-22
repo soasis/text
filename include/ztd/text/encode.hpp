@@ -205,7 +205,7 @@ namespace ztd { namespace text {
 				auto __result = encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
 				::ztd::text::span<_IntermediateValueType> __intermediate_output(
-					__intermediate_initial_output.begin(), __result.output.begin());
+					__intermediate_initial_output.data(), __result.output.data());
 				using _SpanIterator = typename ::ztd::text::span<_IntermediateValueType>::iterator;
 				if constexpr (__detail::__is_detected_v<__detail::__detect_insert_bulk, _OutputContainer,
 					              _SpanIterator, _SpanIterator>) {

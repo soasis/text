@@ -72,8 +72,8 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __detail {
-		inline constexpr ::std::size_t __default_max_code_points_any_encoding = 8;
-		inline constexpr ::std::size_t __default_max_code_units_any_encoding  = 32;
+		inline constexpr ::std::size_t __default_max_code_points_any_encoding = 32;
+		inline constexpr ::std::size_t __default_max_code_units_any_encoding  = 128;
 	} // namespace __detail
 
 	//////

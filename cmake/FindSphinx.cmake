@@ -46,7 +46,7 @@ if (Sphinx_Build_FOUND)
   if (Sphinx_Build_VERSION_OUTPUT)
     string(REGEX
       MATCH "[^0-9]*([0-9]+)[.]([0-9]+)?[.]?([0-9]+)?[.]?([0-9]+)?.*"
-      Sphinx_Build_VERSION_CHECK ${Sphinx_Build_VERSION_OUTPUT)
+      Sphinx_Build_VERSION_CHECK ${Sphinx_Build_VERSION_OUTPUT})
   endif()
   if (Sphinx_Build_VERSION_CHECK)
     string(JOIN "." Sphinx_Build_VERSION
