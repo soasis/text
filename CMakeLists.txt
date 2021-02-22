@@ -29,27 +29,30 @@
 # ============================================================================>
 
 cmake_minimum_required(VERSION 3.15.0)
-
+cmake_policy(VERSION 3.15)
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
 set(ZTD_TEXT_PROJECT_NAME ztd.text)
 set(ZTD_TEXT_PROJECT_VERSION 0.0.0)
 set(ZTD_TEXT_PROJECT_DESCRIPTION "A spicy text library.")
-project(${ZTD_TEXT_PROJECT_NAME} VERSION ${ZTD_TEXT_PROJECT_VERSION} DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION} LANGUAGES C CXX)
+project(${ZTD_TEXT_PROJECT_NAME}
+  VERSION ${ZTD_TEXT_PROJECT_VERSION}
+  DESCRIPTION ${ZTD_TEXT_PROJECT_DESCRIPTION}
+  LANGUAGES C CXX)
 
 # # Modules
 # Include modules useful to the project, whether locally made in our own cmake DIRECTORY
 # our from the standard cmake libraries
 # Add home-rolled modules path to front of module path list
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # # # Top-Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT true)
+  set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT YES)
 else()
-    set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT false)
+  set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT NO)
 endif()
 
 # Modify bad flags / change defaults if we are the top level
@@ -63,16 +66,12 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
 	endif()
-
-	if (MSVC)
-		string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-	endif()
 endif()
 
 # # Include standard modules
-include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
+include(CheckCXXCompilerFlag)
+include(CMakeDependentOption)
 include(GNUInstallDirs)
 include(FetchContent)
 
@@ -86,6 +85,10 @@ option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
 option(ZTD_TEXT_USE_CUNEICODE "Enable generation of a single header and its target" OFF)
 
+if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+  set(CMAKE_CXX_STANDARD 20)
+endif()
+
 # # Dependencies
 # # Dependencies (test-specific)
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cuneicode)
@@ -97,28 +100,42 @@ endif()
 
 file(GLOB ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
 
+# Check environment/prepare generator expressions
+check_cxx_compiler_flag(/permissive- ZTD_TEXT_MSVC_DISABLE_PERMISSIVE)
+
+check_cxx_compiler_flag(-Wpedantic ZTD_TEXT_DIAGNOSTIC_PEDANTIC)
+check_cxx_compiler_flag(-Werror ZTD_TEXT_DIAGNOSTIC_ERRORS)
+check_cxx_compiler_flag(-Wall ZTD_TEXT_DIAGNOSTIC_DEFAULTS)
+
+string(CONCAT ztd-text-is-top-level $<STREQUAL:${PROJECT_NAME},${CMAKE_PROJECT_NAME}>)
+string(CONCAT --disable-permissive $<
+  $<AND:
+    $<BOOL:${ZTD_TEXT_MSVC_DISABLE_PERMISSIVE}>,
+    ${ztd-text-is-top-level}
+  >:/permissive-
+>)
+string(CONCAT ztd-use-cuneicode $<
+  $<AND:
+    $<BOOL:${ZTD_TEXT_USE_CUNEICODE}>,
+    $<BOOL:${ztd_text_has_cuneicode}>
+  >:$<TARGET_NAME_IF_EXISTS:ztd::cuneicode>
+>)
+
+string(CONCAT --warn-pedantic $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_PEDANTIC}>:-Wpedantic>)
+string(CONCAT --warn-default $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_DEFAULTS}>:-Wall>)
+string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)
+
 add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
-if (ZTD_TEXT_USE_CUNEICODE AND ztd_text_has_cuneicode)
-	target_link_libraries(ztd.text INTERFACE ztd::cuneicode)
-endif()
-target_include_directories(ztd.text INTERFACE 
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-	$<INSTALL_INTERFACE:include>
-)
-if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
-	if (MSVC)
-		target_compile_options(ztd.text INTERFACE
-			/std:c++latest
-			/permissive-
-		)
-	else()
-		target_compile_options(ztd.text INTERFACE
-			-std=c++2a
-		)
-	endif()
-endif()
+target_include_directories(ztd.text
+  INTERFACE
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+target_compile_features(ztd.text INTERFACE $<${ztd-text-is-top-level}:cxx_std_20>)
+target_compile_options(ztd.text INTERFACE ${--disable-permissive})
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
+target_link_libraries(ztd.text INTERFACE ${ztd-use-cuneicode})
+
 set_target_properties(ztd.text
 	PROPERTIES
 	EXPORT_NAME ztd::text
@@ -143,15 +160,14 @@ export(TARGETS ztd.text
 
 if (ZTD_TEXT_GENERATE_SINGLE)
 	add_subdirectory(single)
-endif(ZTD_TEXT_GENERATE_SINGLE)
+endif()
 
 # # Benchmarks, Tests, Examples
 if (ZTD_TEXT_TESTS)
-	enable_testing()
+  include(CTest)
+  add_subdirectory(tests)
 endif()
-if (ZTD_TEXT_TESTS)
-	add_subdirectory(tests)
-endif()
+
 if (ZTD_TEXT_DOCUMENTATION)
 	add_subdirectory(documentation)
 endif()
@@ -163,18 +179,12 @@ if (ZTD_TEXT_EXAMPLES)
 endif()
 
 if (ZTD_TEXT_SCRATCH)
-	add_executable(scratch main.cpp)
-	target_link_libraries(scratch PRIVATE ztd::text)
-	if (MSVC)
-		target_compile_options(scratch
-			PUBLIC
-			/std:c++latest
-			/permissive-
-		)
-	else()
-		target_compile_options(scratch
-			PUBLIC
-			-std=c++2a -Wall -Werror -Wpedantic
-		)
-	endif()
+  add_executable(scratch main.cpp)
+  target_link_libraries(scratch PRIVATE ztd::text)
+  target_compile_options(scratch
+    PRIVATE
+      ${--warn-pedantic}
+      ${--warn-default}
+      ${--deny-errors})
+  target_compile_features(scratch PRIVATE cxx_std_20)
 endif()
