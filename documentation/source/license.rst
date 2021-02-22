@@ -112,7 +112,9 @@ Charitable Contributions
 - Pascal Menuet
 - Elias Daler
 - Randomnetcat
-- Robery Maynard
+- Robert Maynard
+- Martin Hořeňovský
+- Hana Dusíková
 - 7 more private sponsors
 - And many, many more!
 

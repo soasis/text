@@ -51,6 +51,21 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
+#else
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	inline constexpr decltype(::std::dynamic_extent) dynamic_extent = ::std::dynamic_extent;
+
+	using ::std::span_lite::as_bytes;
+	using ::std::span_lite::as_writable_bytes;
+	using ::std::span_lite::span;
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+
 #endif // Have Standard Span
 
 #endif // ZTD_TEXT_DETAIL_SPAN_HPP
