@@ -35,6 +35,13 @@ This is where the status and progress of the library will be kept up to date. Yo
 
 
 
+Document Conversion
+-------------------
+
+Conversion routines need to be documented, alongside their extension points. They're not yet documented because it's currently a toss up between plain ol' ADL vs. tag-invoke. We'll probably invent a tag-invoke based solution, to prevent random functions from catching on. This also means we wouldn't need to prefix all extension points with C-style naming (currently, it's ``text_foo`` or ``ztd_text_foo``).
+
+
+
 Copyable State
 --------------
 
@@ -49,6 +56,10 @@ Normalization
 
 ``ztd::text::nfkd/nfk/nfc/nfkc/fcc`` are all skeletons right now that need to be filled out for the purposes of giving this library normalization views.
 
+- ☐ nfkc
+- ☐ nfc
+- ☐ nfkd
+- ☐ nfd
 - ☐ Hook up to ``basic_text_view`` and ``basic_text`` when finished
 
 
@@ -76,3 +87,17 @@ Normalization
 - ☐ Insertion (Fast normalization-preserving splicing/inserting algorithm)
 - ☐ Deletion
 - ☐ Converting Constructors between compatible types (errors the same way :doc:`lossy conversion protection </design/error handling/lossy protection>` describes if they are not compatible, forcing a user to pass in an error handler.)
+
+
+
+``iconv``
+---------
+
+There should be an encoding that loads ``iconv`` dynamically from the system, if it is present, before using it to do conversions.
+
+
+
+``cuneicode``
+-------------
+
+There should be a cuneicode-based encoding, for the update C implementation of all of these things.
