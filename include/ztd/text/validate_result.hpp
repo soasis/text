@@ -53,7 +53,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief The result of valdation operations (such as ztd_text_validate_code_units and 
+	/// @brief The result of valdation operations (such as ztd_text_validate_code_units and
 	/// ztd_text_validate_code_points) that specifically do not include a reference to the state.
 	//////
 	template <typename _Input>
@@ -70,7 +70,7 @@ namespace ztd { namespace text {
 		bool valid;
 
 		//////
-		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to 
+		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -92,7 +92,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of validation operations (such as ztd_text_validate_code_units and 
+	/// @brief The result of validation operations (such as ztd_text_validate_code_units and
 	/// ztd_text_validate_code_points).
 	///
 	//////
@@ -106,10 +106,10 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		_State& state;
+		::std::reference_wrapper<_State> state;
 
 		//////
-		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to 
+		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.

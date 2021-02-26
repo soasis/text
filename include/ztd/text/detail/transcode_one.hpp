@@ -66,7 +66,8 @@ namespace ztd { namespace text {
 
 		template <typename _Iterator0, typename _Sentinel0, typename _Iterator1, typename _Sentinel1>
 		constexpr bool __ce_equal(_Iterator0 __first0, _Sentinel0 __last0, _Iterator1 __first1, _Sentinel1 __last1) {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_)
+			// std lib does not take differing sentinels, which is kind of shitty tbh
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && 0
 			return ::std::equal(
 				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
 #else
@@ -152,7 +153,8 @@ namespace ztd { namespace text {
 					return __encoding.decode_one(
 						::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 				}
-				else if constexpr (__is_decode_one_callable_v<_UEncoding, _UInput, _Span, _ErrorHandler, _State>) {
+				else if constexpr (__is_decode_one_callable_v<_UEncoding, _UInput, _UOutput, _ErrorHandler,
+					                   _State>) {
 					return __encoding.decode_one(::std::forward<_Input>(__input),
 						::std::forward<_Output>(__output), __error_handler, __state);
 				}
@@ -178,7 +180,8 @@ namespace ztd { namespace text {
 			using _Blackhole = unbounded_view<__blackhole_iterator>;
 
 			if constexpr (_ConsumeIntoTheNothingness == __consume::__embrace_the_void
-				&& __is_encode_one_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler, _State>) {
+				&& __is_encode_error_handler_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler,
+				     _State> && __is_encode_one_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler, _State>) {
 				(void)__output;
 				_Blackhole __output_range(__blackhole_iterator {});
 				return __encoding.encode_one(
@@ -197,22 +200,25 @@ namespace ztd { namespace text {
 				using _OutRange                    = subrange<_Iterator, _Sentinel>;
 				constexpr ::std::size_t _MaxValues = max_code_units_v<_UEncoding>;
 				if constexpr (_ConsumeIntoTheNothingness == __consume::__embrace_the_void
-					&& __is_encode_one_callable_v<_UEncoding, _UInput, _UnboundedSpan, _ErrorHandler, _State>) {
+					&& __is_encode_error_handler_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler,
+					     _State> && __is_encode_one_callable_v<_UEncoding, _UInput, _UnboundedSpan, _ErrorHandler, _State>) {
 					_ValueType __fake[_MaxValues] {};
 					_ValueType* __first = __fake;
 					_UnboundedSpan __output_range(__first);
 					return __encoding.encode_one(
 						::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 				}
-				else if constexpr (__is_encode_one_callable_v<_UEncoding, _UInput, _Unbounded, _ErrorHandler,
-					                   _State>) {
+				else if constexpr (
+					__is_encode_error_handler_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler,
+					     _State> && __is_encode_one_callable_v<_UEncoding, _UInput, _Unbounded, _ErrorHandler, _State>) {
 					auto __first = __adl::__adl_begin(::std::forward<_Output>(__output));
 					_Unbounded __output_range(::std::move(__first));
 					return __encoding.encode_one(
 						::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 				}
 				else if constexpr (_ConsumeIntoTheNothingness == __consume::__embrace_the_void
-					&& __is_encode_one_callable_v<_UEncoding, _UInput, _Span, _ErrorHandler, _State>) {
+					&& __is_encode_error_handler_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler,
+					     _State> && __is_encode_one_callable_v<_UEncoding, _UInput, _Span, _ErrorHandler, _State>) {
 					_ValueType __fake[_MaxValues] {};
 					_ValueType* __first = __fake;
 					_ValueType* __last  = __first + _MaxValues;
@@ -222,15 +228,16 @@ namespace ztd { namespace text {
 				}
 				else if constexpr (
 					__is_iterator_concept_or_better_v<contiguous_iterator_tag,
-					     _Iterator> && __is_encode_one_callable_v<_UEncoding, _UInput, _Span, _ErrorHandler, _State>) {
+					     _Iterator> && __is_encode_error_handler_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler, _State> && __is_encode_one_callable_v<_UEncoding, _UInput, _Span, _ErrorHandler, _State>) {
 					auto __first = __adl::__adl_begin(::std::forward<_Output>(__output));
 					auto __last  = __adl::__adl_end(::std::forward<_Output>(__output));
 					_Span __output_range(::std::move(__first), ::std::move(__last));
 					return __encoding.encode_one(
 						::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 				}
-				else if constexpr (__is_encode_one_callable_v<_UEncoding, _UInput, _UOutput, _ErrorHandler,
-					                   _State>) {
+				else if constexpr (
+					__is_encode_error_handler_callable_v<_UEncoding, _UInput, _Blackhole, _ErrorHandler,
+					     _State> && __is_encode_one_callable_v<_UEncoding, _UInput, _UOutput, _ErrorHandler, _State>) {
 					return __encoding.encode_one(::std::forward<_Input>(__input),
 						::std::forward<_Output>(__output), __error_handler, __state);
 				}
@@ -423,6 +430,41 @@ namespace ztd { namespace text {
 				__from_error_handler, __to_error_handler, __from_state, __to_state);
 		}
 
+		template <typename _Input, typename _Encoding, typename _CodePointContainer, typename _CodeUnitContainer,
+			typename _DecodeState, typename _EncodeState>
+		constexpr auto __basic_validate_code_units_one(_Input&& __input, _Encoding&& __encoding,
+			_CodeUnitContainer& __code_unit_output, _CodePointContainer& __code_point_output,
+			_DecodeState& __decode_state, _EncodeState& __encode_state) {
+
+			using _UInput      = __remove_cvref_t<_Input>;
+			using _UOutput     = __remove_cvref_t<_CodeUnitContainer>;
+			using _Result      = validate_result<__reconstruct_t<_UInput>, _DecodeState>;
+			using _InSubRange  = subrange<__range_iterator_t<_UInput>, __range_sentinel_t<_UInput>>;
+			using _OutSubRange = subrange<__range_iterator_t<_UOutput>, __range_sentinel_t<_UOutput>>;
+
+			_InSubRange __working_input(::std::forward<_Input>(__input));
+			_OutSubRange __working_output(__code_unit_output);
+			__pass_through_handler __error_handler {};
+
+			auto __transcode_result = __basic_transcode_one<__consume::__no>(__working_input, __encoding,
+				__code_point_output, __code_unit_output, __encoding, __error_handler, __error_handler,
+				__decode_state, __encode_state);
+			if (__transcode_result.error_code != encoding_error::ok) {
+				return _Result(__reconstruct(::std::in_place_type<_UInput>, ::std::move(__transcode_result.input)),
+					false, __decode_state);
+			}
+
+			const bool __is_equal_transcode
+				= __ce_equal(__adl::__adl_cbegin(__working_input), __adl::__adl_cbegin(__transcode_result.input),
+				     __adl::__adl_cbegin(__code_unit_output), __adl::__adl_cbegin(__transcode_result.output));
+			if (!__is_equal_transcode) {
+				return _Result(__reconstruct(::std::in_place_type<_UInput>, ::std::move(__transcode_result.input)),
+					false, __decode_state);
+			}
+			return _Result(__reconstruct(::std::in_place_type<_UInput>, ::std::move(__transcode_result.input)), true,
+				__decode_state);
+		}
+
 		template <typename _Input, typename _Encoding, typename _CodeUnitContainer, typename _DecodeState,
 			typename _EncodeState>
 		constexpr auto __basic_validate_code_units_one(_Input&& __input, _Encoding&& __encoding,
@@ -529,37 +571,8 @@ namespace ztd { namespace text {
 
 		template <typename _Input, typename _Encoding, typename _OutputContainer, typename _ErrorHandler,
 			typename _State>
-		auto __basic_count_code_points_one(_Input&& __input, _Encoding&& __encoding, _OutputContainer& __output,
-			_ErrorHandler&& __error_handler, _State& __state) {
-			using _UInput = __remove_cvref_t<_Input>;
-			using _Result = count_result<__reconstruct_t<_UInput>, _State>;
-
-			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
-				__state);
-			::std::size_t __written    = static_cast<::std::size_t>(
-                    __adl::__adl_cbegin(__intermediate_result.output) - __adl::__adl_cbegin(__output));
-
-			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state);
-		}
-
-		template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
-		auto __basic_count_code_points_one(
-			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UEncoding                                   = __remove_cvref_t<_Encoding>;
-			using _IntermediateCodePoint                       = code_point_t<_UEncoding>;
-			constexpr ::std::size_t _IntermediateMaxCodePoints = max_code_points_v<_UEncoding>;
-
-			_IntermediateCodePoint __intermediate_buffer[_IntermediateMaxCodePoints] {};
-			return __basic_count_code_points_one(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __intermediate_buffer,
-				::std::forward<_ErrorHandler>(__error_handler), __state);
-		}
-
-		template <typename _Input, typename _Encoding, typename _OutputContainer, typename _ErrorHandler,
-			typename _State>
-		auto __basic_count_code_units_one(_Input&& __input, _Encoding&& __encoding, _OutputContainer& __output,
-			_ErrorHandler&& __error_handler, _State& __state) {
+		constexpr auto __basic_count_code_points_one(_Input&& __input, _Encoding&& __encoding,
+			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
 			using _UInput = __remove_cvref_t<_Input>;
 			using _Result = count_result<__reconstruct_t<_UInput>, _State>;
 
@@ -573,13 +586,42 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
-		auto __basic_count_code_units_one(
+		constexpr auto __basic_count_code_points_one(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			using _UEncoding                                  = __remove_cvref_t<_Encoding>;
 			using _IntermediateCodeUnit                       = code_unit_t<_UEncoding>;
 			constexpr ::std::size_t _IntermediateMaxCodeUnits = max_code_units_v<_UEncoding>;
 
 			_IntermediateCodeUnit __intermediate_buffer[_IntermediateMaxCodeUnits] {};
+			return __basic_count_code_points_one(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), __intermediate_buffer,
+				::std::forward<_ErrorHandler>(__error_handler), __state);
+		}
+
+		template <typename _Input, typename _Encoding, typename _OutputCodePointContainer, typename _ErrorHandler,
+			typename _State>
+		constexpr auto __basic_count_code_units_one(_Input&& __input, _Encoding&& __encoding,
+			_OutputCodePointContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
+			using _UInput = __remove_cvref_t<_Input>;
+			using _Result = count_result<__reconstruct_t<_UInput>, _State>;
+
+			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
+				__state);
+			::std::size_t __written    = static_cast<::std::size_t>(
+                    __adl::__adl_cbegin(__intermediate_result.output) - __adl::__adl_cbegin(__output));
+
+			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state);
+		}
+
+		template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
+		constexpr auto __basic_count_code_units_one(
+			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
+			using _UEncoding                                   = __remove_cvref_t<_Encoding>;
+			using _IntermediateCodePoint                       = code_point_t<_UEncoding>;
+			constexpr ::std::size_t _IntermediateMaxCodePoints = max_code_points_v<_UEncoding>;
+
+			_IntermediateCodePoint __intermediate_buffer[_IntermediateMaxCodePoints] {};
 			return __basic_count_code_units_one(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), __intermediate_buffer,
 				::std::forward<_ErrorHandler>(__error_handler), __state);

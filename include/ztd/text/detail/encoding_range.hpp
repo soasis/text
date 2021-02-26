@@ -77,6 +77,19 @@ namespace ztd { namespace text {
 
 		// counting: decode
 		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
+		using __detect_object_count_code_units_one = decltype(::std::declval<_Encoding>().count_code_units_one(
+			::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+
+		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
+		using __detect_adl_text_count_code_units = decltype(text_count_code_units(::std::declval<_Input>(),
+			::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+
+		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
+		using __detect_adl_internal_text_count_code_units = decltype(__text_count_code_units(::std::declval<_Input>(),
+			::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+
+		// counting: encode
+		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
 		using __detect_object_count_code_points_one = decltype(::std::declval<_Encoding>().count_code_points_one(
 			::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
@@ -88,19 +101,6 @@ namespace ztd { namespace text {
 		using __detect_adl_internal_text_count_code_points
 			= decltype(__text_count_code_points(::std::declval<_Input>(), ::std::declval<_Encoding>(),
 			     ::std::declval<_Handler>(), ::std::declval<_State&>()));
-
-		// counting: encode
-		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
-		using __detect_object_count_code_units_one = decltype(::std::declval<_Encoding>().count_code_units_one(
-			::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
-
-		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_text_count_code_units = decltype(text_count_code_units(::std::declval<_Input>(),
-			::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
-
-		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_internal_text_count_code_units = decltype(__text_count_code_units(::std::declval<_Input>(),
-			::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 
 		// decode
@@ -189,12 +189,12 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
 		inline constexpr bool __is_counting_decode_encoding_for_v
-			= __is_detected_v<__detect_object_count_code_points_one, _Encoding, _CodeUnits, _CodePoints, _Handler,
+			= __is_detected_v<__detect_object_count_code_units_one, _Encoding, _CodeUnits, _CodePoints, _Handler,
 			     _State>;
 
 		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
 		inline constexpr bool __is_counting_encode_encoding_for_v
-			= __is_detected_v<__detect_object_count_code_units_one, _Encoding, _CodePoints, _CodeUnits, _Handler,
+			= __is_detected_v<__detect_object_count_code_points_one, _Encoding, _CodePoints, _CodeUnits, _Handler,
 			     _State>;
 
 		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>

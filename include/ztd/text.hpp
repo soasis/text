@@ -43,7 +43,7 @@
 #include <ztd/text/encode.hpp>
 #include <ztd/text/decode.hpp>
 #include <ztd/text/transcode.hpp>
-#include <ztd/text/count_code_units.hpp>
+#include <ztd/text/count_code_points.hpp>
 #include <ztd/text/count_code_points.hpp>
 #include <ztd/text/validate_code_units.hpp>
 #include <ztd/text/validate_code_points.hpp>

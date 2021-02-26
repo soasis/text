@@ -121,7 +121,12 @@ string(CONCAT ztd-use-cuneicode $<
 >)
 
 string(CONCAT --warn-pedantic $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_PEDANTIC}>:-Wpedantic>)
-string(CONCAT --warn-default $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_DEFAULTS}>:-Wall>)
+string(CONCAT --warn-default $<
+	$<AND:
+		$<BOOL:${ZTD_TEXT_DIAGNOSTIC_DEFAULTS}>,
+		$<NOT:$<BOOL:${MSVC}>>,
+	>:-Wall
+>)
 string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)
 
 add_library(ztd.text INTERFACE)

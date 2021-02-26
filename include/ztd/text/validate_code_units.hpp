@@ -100,13 +100,12 @@ namespace ztd { namespace text {
 			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
 			using _Result         = validate_result<_WorkingInput, _DecodeState>;
 
+			_WorkingInput __working_input(
+				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+
 			if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_units_one, _Encoding,
-				              _Input, _DecodeState>) {
+				              _WorkingInput, _DecodeState>) {
 				(void)__encode_state;
-
-				_WorkingInput __working_input(
-					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
-
 				for (;;) {
 					auto __result = __encoding.validate_code_units_one(__working_input, __decode_state);
 					if (!__result.valid) {
@@ -122,15 +121,15 @@ namespace ztd { namespace text {
 			else {
 				using _CodeUnit = code_unit_t<_UEncoding>;
 
-				_WorkingInput __working_input(
-					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+				using _CodeUnit  = code_unit_t<_UEncoding>;
+				using _CodePoint = code_point_t<_UEncoding>;
 
+				_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
 				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
-				::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
 
 				for (;;) {
-					auto __validate_result = __detail::__basic_validate_code_units_one(
-						__working_input, __encoding, __code_unit_view, __decode_state, __encode_state);
+					auto __validate_result = __detail::__basic_validate_code_units_one(__working_input, __encoding,
+						__code_unit_buf, __code_point_buf, __decode_state, __encode_state);
 					if (!__validate_result.valid) {
 						return _Result(__detail::__reconstruct(
 							               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
@@ -227,10 +226,13 @@ namespace ztd { namespace text {
 			_Encoding __encoding {};
 			return validate_code_units(::std::forward<_Input>(__input), __encoding);
 		}
+		else
 #endif
-		using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
-		_Encoding __encoding {};
-		return validate_code_units(::std::forward<_Input>(__input), __encoding);
+		{
+			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return validate_code_units(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////

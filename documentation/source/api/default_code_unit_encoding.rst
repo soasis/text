@@ -70,3 +70,8 @@ Picks the default encoding for the given code unit type. The default association
 
 .. doxygentypedef:: ztd::text::default_code_unit_encoding_t
 
+.. doxygenclass:: ztd::text::default_compile_time_code_unit_encoding
+	:members:
+
+.. doxygentypedef:: ztd::text::default_compile_time_code_unit_encoding_t
+

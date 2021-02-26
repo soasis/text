@@ -313,10 +313,22 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _Output>
 	constexpr auto encode_into(_Input&& __input, _Output&& __output) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_point_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		_Encoding __encoding {};
-		return encode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+		using _UInput    = __detail::__remove_cvref_t<_Input>;
+		using _CodePoint = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+		}
 	}
 
 	//////
@@ -446,10 +458,22 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer, typename _Input>
 	constexpr auto encode_to(_Input&& __input) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_point_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		_Encoding __encoding {};
-		return encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		using _UInput    = __detail::__remove_cvref_t<_Input>;
+		using _CodePoint = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////
@@ -493,15 +517,25 @@ namespace ztd { namespace text {
 				__output.reserve(__output_size_hint);
 			}
 		}
-		if constexpr (__detail::__is_encode_one_callable_v<_UEncoding, _IntermediateInput, _Unbounded, _ErrorHandler,
+		if constexpr (__detail::__is_encode_error_handler_callable_v<_Encoding, _Input, _Unbounded, _ErrorHandler,
 			              _State>) {
-			// We can use the unbounded stuff
-			_Unbounded __insert_view(::std::back_inserter(__output));
-			auto __stateful_result
-				= encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
-			(void)__stateful_result;
-			return __output;
+			if constexpr (__detail::__is_encode_one_callable_v<_Encoding, _Input, _Unbounded, _ErrorHandler,
+				              _State>) {
+				// We can use the unbounded stuff
+				_Unbounded __insert_view(::std::back_inserter(__output));
+				auto __stateful_result
+					= encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+					     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+				(void)__stateful_result;
+				return __output;
+			}
+			else {
+				auto __stateful_result = __detail::__intermediate_encode_to_storage(::std::forward<_Input>(__input),
+					::std::forward<_Encoding>(__encoding), __output,
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				(void)__stateful_result;
+				return __output;
+			}
 		}
 		else {
 			auto __stateful_result = __detail::__intermediate_encode_to_storage(::std::forward<_Input>(__input),
@@ -577,10 +611,22 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer, typename _Input>
 	constexpr auto encode(_Input&& __input) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_point_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		_Encoding __encoding {};
-		return encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		using _UInput    = __detail::__remove_cvref_t<_Input>;
+		using _CodePoint = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////
@@ -676,10 +722,22 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input>
 	constexpr auto encode(_Input&& __input) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_point_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		_Encoding __encoding {};
-		return encode(::std::forward<_Input>(__input), __encoding);
+		using _UInput    = __detail::__remove_cvref_t<_Input>;
+		using _CodePoint = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return encode(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////

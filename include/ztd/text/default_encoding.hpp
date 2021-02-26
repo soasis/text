@@ -120,7 +120,7 @@ namespace ztd { namespace text {
 			using type = _ChosenType;
 		};
 
-		template <typename _Type>
+		template <typename _Type, bool>
 		class __default_code_point_encoding {
 		private:
 			static_assert(is_unicode_code_point_v<_Type> || ::std::is_same_v<_Type, char32_t>,
@@ -186,7 +186,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_code_point_encoding : public __detail::__default_code_point_encoding<_Type> { };
+	class default_code_point_encoding : public __detail::__default_code_point_encoding<_Type, false> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_code_point_encoding.
@@ -195,6 +195,24 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Type>
 	using default_code_point_encoding_t = typename default_code_point_encoding<_Type>::type;
+
+	//////
+	/// @brief The default encoding associated with a given code point type, that serves as either input to an encode
+	/// operation or output from decode operation. This uses additional information that this is at compile time, not
+	/// run time, to help make a decision as to what to do.
+	///
+	/// @tparam _Type The code point type, with no cv-qualifiers
+	//////
+	template <typename _Type>
+	class default_compile_time_code_point_encoding : public __detail::__default_code_point_encoding<_Type, true> { };
+
+	//////
+	/// @brief A @c typename alias for ztd::text::default_compile_time_code_point_encoding.
+	///
+	/// @tparam _Type The code point type, with no cv-qualifiers
+	//////
+	template <typename _Type>
+	using default_compile_time_code_point_encoding_t = typename default_compile_time_code_point_encoding<_Type>::type;
 
 	//////
 	/// @}

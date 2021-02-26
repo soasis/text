@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Counts the number of code units that will result from attempting an encode operation.
 	///
-	/// @param[in] __input The input range (of code units) to count the code units with.
+	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	/// @param[in] __encoding The encoding to count the input with.
 	/// @param[in] __error_handler The error handler to invoke when an encode operation fails.
 	/// @param[in,out] __state The state that will be used to count code units.
@@ -71,13 +71,88 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler) and a reference
 	/// to the provided @p __state.
 	///
-	/// @remarks This method will first check if an ADL Extension Point @c text_count_code_units is callable with the
+	/// @remarks This method will not check any ADL extension points. A combination of implementation techniques will
+	/// be used to count code units, with a loop over the @c .encode call into an intermediate, unseen buffer being the
+	/// most basic choice.
+	//////
+	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
+	constexpr auto basic_count_code_points(
+		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
+		using _UInput         = __detail::__remove_cvref_t<_Input>;
+		using _InputValueType = __detail::__range_value_type_t<_UInput>;
+		using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+               ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
+                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+               _UInput>>;
+		using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
+		using _Result         = count_result<_WorkingInput, _State>;
+
+		_WorkingInput __working_input(
+			__detail::__reconstruct(std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+
+		if constexpr (__detail::__is_detected_v<__detail::__detect_object_count_code_points_one, _Encoding,
+			              _WorkingInput, _ErrorHandler, _State>) {
+
+			::std::size_t __code_unit_count = 0;
+
+			for (;;) {
+				auto __result
+					= __encoding.count_code_points_one(::std::move(__working_input), __error_handler, __state);
+				if (__result.error_code != encoding_error::ok) {
+					return _Result(
+						::std::move(__result.input), __code_unit_count, __state, __result.error_code, false);
+				}
+				__code_unit_count += __result.count;
+				__working_input = ::std::move(__result.input);
+				if (__detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), __code_unit_count, __state, encoding_error::ok, false);
+		}
+		else {
+			using _CodeUnit = code_unit_t<_UEncoding>;
+
+			::std::size_t __code_unit_count = 0;
+
+			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
+
+			for (;;) {
+				auto __result = __detail::__basic_count_code_points_one(
+					::std::move(__working_input), __encoding, __code_unit_buf, __error_handler, __state);
+				if (__result.error_code != encoding_error::ok) {
+					return _Result(
+						::std::move(__result.input), __code_unit_count, __state, __result.error_code, false);
+				}
+				__code_unit_count += __result.count;
+				__working_input = ::std::move(__result.input);
+				if (__detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), __code_unit_count, __state, encoding_error::ok, false);
+		}
+	}
+
+	//////
+	/// @brief Counts the number of code units that will result from attempting an encode operation.
+	///
+	/// @param[in] __input The input range (of code points) to find out how many code units there are.
+	/// @param[in] __encoding The encoding to count the input with.
+	/// @param[in] __error_handler The error handler to invoke when an encode operation fails.
+	/// @param[in,out] __state The state that will be used to count code units.
+	///
+	/// @returns A ztd::text::count_result that includes information about how many code units are present,
+	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler) and a reference
+	/// to the provided @p __state.
+	///
+	/// @remarks This method will first check if an ADL Extension Point @c text_count_code_points is callable with the
 	/// given arguments. If it is, then that method will be used to do the work after forwarding all four arguments to
 	/// that function call. Otherwise, a combination of implementation techniques will be used to count code units,
 	/// with a loop over the @c .encode call into an intermediate, unseen buffer being the most basic choice.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
-	auto count_code_points(
+	constexpr auto count_code_points(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_count_code_points, _Input, _Encoding,
 			              _ErrorHandler, _State>) {
@@ -90,69 +165,15 @@ namespace ztd { namespace text {
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
-			using _UInput         = __detail::__remove_cvref_t<_Input>;
-			using _InputValueType = __detail::__range_value_type_t<_UInput>;
-			using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-                    ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-                    _UInput>>;
-			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
-			using _Result         = count_result<_WorkingInput, _State>;
-
-			_WorkingInput __working_input(
-				__detail::__reconstruct(std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
-
-			if constexpr (__detail::__is_detected_v<__detail::__detect_object_count_code_points_one, _Encoding,
-				              _Input, _ErrorHandler, _State>) {
-
-				::std::size_t __code_point_count = 0;
-
-				for (;;) {
-					auto __result = __encoding.count_code_points_one(
-						::std::move(__working_input), __error_handler, __state);
-					if (__result.error_code != encoding_error::ok) {
-						return _Result(::std::move(__result.input), __code_point_count, __state,
-							__result.error_code, false);
-					}
-					__code_point_count += __result.count;
-					__working_input = ::std::move(__result.input);
-					if (__detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(
-					::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
-			}
-			else {
-				using _CodePoint = code_point_t<_UEncoding>;
-
-				::std::size_t __code_point_count = 0;
-
-				_CodePoint __code_point_buf[max_code_points_v<_UEncoding>];
-
-				for (;;) {
-					auto __result = __detail::__basic_count_code_points_one(
-						::std::move(__working_input), __encoding, __code_point_buf, __error_handler, __state);
-					if (__result.error_code != encoding_error::ok) {
-						return _Result(::std::move(__result.input), __code_point_count, __state,
-							__result.error_code, false);
-					}
-					__code_point_count += __result.count;
-					__working_input = ::std::move(__result.input);
-					if (__detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(
-					::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
-			}
+			return basic_count_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}
 
 	//////
 	/// @brief Counts the number of code units that will result from attempting an encode operation.
 	///
-	/// @param[in] __input The input range (of code units) to count the code units with.
+	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	/// @param[in] __encoding The encoding to count the input with.
 	/// @param[in] __error_handler The error handler to invoke when an encode operation fails.
 	///
@@ -160,14 +181,14 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler).
 	///
 	/// @remarks This method will call ztd::text::count_code_points(Input, Encoding, ErrorHandler, State) with an @c
-	/// state created by ztd::text::make_decode_state(Encoding).
+	/// state created by ztd::text::make_encode_state(Encoding).
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler>
-	auto count_code_points(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
+	constexpr auto count_code_points(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		using _State     = decode_state_t<_UEncoding>;
+		using _State     = encode_state_t<_UEncoding>;
 
-		_State __state = make_decode_state(__encoding);
+		_State __state = make_encode_state(__encoding);
 
 		return count_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			::std::forward<_ErrorHandler>(__error_handler), __state);
@@ -176,7 +197,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Counts the number of code units that will result from attempting an encode operation.
 	///
-	/// @param[in] __input The input range (of code units) to count the code units with.
+	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	/// @param[in] __encoding The encoding to count the input with.
 	///
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
@@ -186,7 +207,7 @@ namespace ztd { namespace text {
 	/// error_handler similar to ztd::text::default_handler.
 	//////
 	template <typename _Input, typename _Encoding>
-	auto count_code_points(_Input&& __input, _Encoding&& __encoding) {
+	constexpr auto count_code_points(_Input&& __input, _Encoding&& __encoding) {
 		default_handler __handler {};
 		return count_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
@@ -194,7 +215,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Counts the number of code units that will result from attempting an encode operation.
 	///
-	/// @param[in] __input The input range (of code units) to count the code units with.
+	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	///
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler).
@@ -203,10 +224,23 @@ namespace ztd { namespace text {
 	/// ztd::text::default_code_unit_encoding.
 	//////
 	template <typename _Input>
-	auto count_code_points(_Input&& __input) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_unit_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		return count_code_points(::std::forward<_Input>(__input), _Encoding {});
+	constexpr auto count_code_points(_Input&& __input) {
+		using _UInput    = __detail::__remove_cvref_t<_Input>;
+		using _CodePoint = __detail::__remove_cvref_t<__detail::__range_value_type_t<_UInput>>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return count_code_points(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return count_code_points(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////

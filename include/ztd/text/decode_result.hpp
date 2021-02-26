@@ -137,7 +137,7 @@ namespace ztd { namespace text {
 		/// @brief The state of the associated Encoding used for decoding input code units to code points.
 		///
 		//////
-		_State& state;
+		::std::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
@@ -231,9 +231,11 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
-		inline constexpr bool __is_decode_one_callable_v = __is_detected_v<__detect_object_decode_one, _Encoding,
-			_Input, _Output, _ErrorHandler>&& __is_detected_v<__detect_callable_handler, _ErrorHandler, _Encoding,
-			__reconstruct_decode_result_t<_Input, _Output, _State>, ::ztd::text::span<code_unit_t<_Encoding>>>;
+		inline constexpr bool __is_decode_one_callable_v
+			= __is_detected_v<__detect_object_decode_one, _Encoding, _Input, _Output, _ErrorHandler, _State>&&
+			     __is_detected_v<__detect_callable_handler, _ErrorHandler, _Encoding,
+			          __reconstruct_decode_result_t<__remove_cvref_t<_Input>, _Output, _State>,
+			          ::ztd::text::span<code_unit_t<_Encoding>>>;
 	} // namespace __detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

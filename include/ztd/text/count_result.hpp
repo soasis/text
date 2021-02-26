@@ -55,7 +55,7 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief The result of counting operations (such as ztd_text_count_code_units and
+	/// @brief The result of counting operations (such as ztd_text_count_code_points and
 	/// ztd_text_count_code_points) that specifically do not include a reference to the state.
 	//////
 	template <typename _Input>
@@ -122,7 +122,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The result of counting operations (such as ztd_text_count_code_points and
-	/// ztd_text_count_code_units).
+	/// ztd_text_count_code_points).
 	//////
 	template <typename _Input, typename _State>
 	class count_result : public stateless_count_result<_Input> {
@@ -133,7 +133,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting.
 		//////
-		_State& state;
+		::std::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::count_result, defaulting the error code to

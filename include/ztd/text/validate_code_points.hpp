@@ -99,12 +99,12 @@ namespace ztd { namespace text {
 			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
 			using _Result         = validate_result<_WorkingInput, _EncodeState>;
 
-			if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_points_one, _Encoding,
-				              _Input, _DecodeState>) {
-				(void)__decode_state;
-				_WorkingInput __working_input(
-					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+			_WorkingInput __working_input(
+				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
+			if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_points_one, _Encoding,
+				              _WorkingInput, _DecodeState>) {
+				(void)__decode_state;
 				for (;;) {
 					auto __result = __encoding.validate_code_points_one(__working_input, __encode_state);
 					if (!__result.valid) {
@@ -120,13 +120,9 @@ namespace ztd { namespace text {
 			else {
 				using _CodeUnit  = code_unit_t<_UEncoding>;
 				using _CodePoint = code_point_t<_UEncoding>;
-				using _SubRange
-					= subrange<__detail::__range_iterator_t<_UInput>, __detail::__range_sentinel_t<_UInput>>;
 
-				_SubRange __working_input(::std::forward<_Input>(__input));
-
-				_CodePoint __code_point_buf[max_code_points_v<_UEncoding>];
-				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>];
+				_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
+				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
 				::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_view(__code_point_buf);
 				::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
 
@@ -212,11 +208,22 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input>
 	constexpr auto validate_code_points(_Input&& __input) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __detail::__remove_cvref_t<__detail::__range_value_type_t<_UInput>>;
-		using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
-		_Encoding __encoding {};
-		return validate_code_points(::std::forward<_Input>(__input), __encoding);
+		using _UInput    = __detail::__remove_cvref_t<_Input>;
+		using _CodePoint = __detail::__remove_cvref_t<__detail::__range_value_type_t<_UInput>>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return validate_code_points(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_point_encoding_t<_CodePoint>;
+			_Encoding __encoding {};
+			return validate_code_points(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////

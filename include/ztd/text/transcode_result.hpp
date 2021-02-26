@@ -140,12 +140,12 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for decoding input code units to
 		/// intermediate code points.
 		//////
-		_FromState& from_state;
+		::std::reference_wrapper<_FromState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for encoding intermediate code points to
 		/// code units.
 		//////
-		_ToState& to_state;
+		::std::reference_wrapper<_ToState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to

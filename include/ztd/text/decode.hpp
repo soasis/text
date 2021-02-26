@@ -309,12 +309,26 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Output>
 	constexpr auto decode_into(_Input&& __input, _Output&& __output) {
 		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_unit_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		return decode_into(::std::forward<_Input>(__input), _Encoding {}, ::std::forward<_Output>(__output));
+		using _CodeUnit = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+		}
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -331,8 +345,8 @@ namespace ztd { namespace text {
 	/// _OutputContainer.
 	///
 	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
-	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to. The result is then
-	/// returned, with the @c .output value put into the container.
+	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to. The result is
+	/// then returned, with the @c .output value put into the container.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto decode_to(
@@ -375,7 +389,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -401,7 +416,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -423,7 +439,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -433,18 +450,32 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_decode_result object whose output is of type @p _OutputContainer.
 	///
-	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
-	/// through the ztd::text::default_code_point_encoding type to get the default desired encoding.
+	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
+	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _OutputContainer, typename _Input>
 	constexpr auto decode_to(_Input&& __input) {
 		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_unit_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		return decode_to<_OutputContainer>(::std::forward<_Input>(__input), _Encoding {});
+		using _CodeUnit = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -505,7 +536,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -532,7 +564,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -554,7 +587,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points the specified
+	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
+	/// specified
 	/// @p _OutputContainer type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
@@ -564,14 +598,27 @@ namespace ztd { namespace text {
 	///
 	/// @result An object of type @p _OutputContainer .
 	///
-	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
-	/// through the ztd::text::default_code_point_encoding type to get the default desired encoding.
+	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
+	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _OutputContainer, typename _Input>
 	constexpr auto decode(_Input&& __input) {
 		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_unit_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		return decode<_OutputContainer>(::std::forward<_Input>(__input), _Encoding {});
+		using _CodeUnit = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////
@@ -586,12 +633,13 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's decode step.
 	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
-	/// code unt type.
+	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
+	/// output code unt type.
 	///
-	/// @remarks This function detects creates a container of either @c std::Vector (when @c std::byte is involved) or
-	/// @c std::basic_string and uses a typical @c std::back_inserter or @c std::push_back_inserter to fill in elements
-	/// as it is written to.
+	/// @remarks This function detects creates a container of either @c std::Vector (when @c std::byte is
+	/// involved) or
+	/// @c std::basic_string and uses a typical @c std::back_inserter or @c std::push_back_inserter to fill in
+	/// elements as it is written to.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
@@ -616,8 +664,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
-	/// code unt type.
+	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
+	/// output code unt type.
 	///
 	/// @remarks This function creates a @c state using ztd::text::make_decode_state.
 	//////
@@ -640,8 +688,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
 	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
-	/// code unt type.
+	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
+	/// output code unt type.
 	///
 	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
 	//////
@@ -658,17 +706,30 @@ namespace ztd { namespace text {
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
 	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the output
-	/// code unt type.
+	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
+	/// output code unt type.
 	///
-	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then passed
-	/// through the ztd::text::default_code_point_encoding type to get the default desired encoding.
+	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
+	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _Input>
 	constexpr auto decode(_Input&& __input) {
 		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _Encoding = default_code_unit_encoding_t<__detail::__range_value_type_t<_UInput>>;
-		return decode(::std::forward<_Input>(__input), _Encoding {});
+		using _CodeUnit = __detail::__range_value_type_t<_UInput>;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		if (::std::is_constant_evaluated()) {
+			// Use literal encoding instead, if we meet the right criteria
+			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode(::std::forward<_Input>(__input), __encoding);
+		}
+		else
+#endif
+		{
+			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
+			_Encoding __encoding {};
+			return decode(::std::forward<_Input>(__input), __encoding);
+		}
 	}
 
 	//////

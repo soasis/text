@@ -80,8 +80,6 @@ namespace ztd { namespace text {
 		public:
 			::std::mbstate_t __narrow_state;
 			bool __output_pending;
-			unsigned char __padding_please_stop_warning_me_about_this_complete_nonsense_msvc
-				[sizeof(::std::mbstate_t) - sizeof(bool) < 1 ? 1 : sizeof(::std::mbstate_t) - sizeof(bool)];
 
 			__decode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char32_t __ghost_space[2];
@@ -96,8 +94,6 @@ namespace ztd { namespace text {
 		public:
 			::std::mbstate_t __narrow_state;
 			bool __output_pending;
-			unsigned char __padding_please_stop_warning_me_about_this_complete_nonsense_msvc
-				[sizeof(::std::mbstate_t) - sizeof(bool) < 1 ? 1 : sizeof(::std::mbstate_t) - sizeof(bool)];
 
 			__encode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char __ghost_space[MB_LEN_MAX];

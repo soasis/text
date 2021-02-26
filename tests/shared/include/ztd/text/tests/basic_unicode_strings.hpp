@@ -43,6 +43,11 @@
 
 #include <ztd/text/detail/span.hpp>
 
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_VCXX_I_)
+#pragma warning(push)
+#pragma warning(disable : 4310)
+#endif
+
 namespace ztd { namespace text { namespace tests {
 
 	template <typename Container>
@@ -1626,21 +1631,26 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_replacement_truth = L"?";
 	inline constexpr const std::basic_string_view<char> unicode_replacement_truth      = "?";
 
+	inline constexpr const std::size_t u32_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<char32_t> u32_basic_source_character_set(
 		U"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
-		97);
+		u32_basic_source_character_set_size);
+	inline constexpr const std::size_t u16_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<char16_t> u16_basic_source_character_set(
 		u"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
-		97);
+		u16_basic_source_character_set_size);
+	inline constexpr const std::size_t u8_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set(
 		u8"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
-		97);
+		u8_basic_source_character_set_size);
+	inline constexpr const std::size_t w_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<wchar_t> w_basic_source_character_set(
 		L"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
-		97);
+		w_basic_source_character_set_size);
+	inline constexpr const std::size_t basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<char> basic_source_character_set(
 		"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
-		97);
+		basic_source_character_set_size);
 
 	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_basic_source_character_set);
@@ -1750,5 +1760,9 @@ namespace ztd { namespace text { namespace tests {
 	}
 
 }}} // namespace ztd::text::tests
+
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_VCXX_I_)
+#pragma warning(pop)
+#endif
 
 #endif // ZTD_TEXT_TESTS_BASIC_UNICODE_STRINGS_HPP
