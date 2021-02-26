@@ -371,14 +371,23 @@ namespace ztd { namespace text {
 				__output.reserve(__output_size_hint);
 			}
 		}
-		if constexpr (__detail::__is_detected_v<__detail::__detect_object_decode_one, _UEncoding, _IntermediateInput,
-			              _Unbounded, _ErrorHandler, _State>) {
-			// We can use the unbounded stuff
-			_Unbounded __insert_view(::std::back_inserter(__output));
-			auto __stateful_result
-				= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
-			return __detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		if constexpr (__detail::__is_decode_error_handler_callable_v<_Encoding, _IntermediateInput, _Unbounded,
+			              _ErrorHandler, _State>) {
+			if constexpr (__detail::__is_decode_one_callable_v<_Encoding, _IntermediateInput, _Unbounded,
+				              _ErrorHandler, _State>) {
+				// We can use the unbounded stuff
+				_Unbounded __insert_view(::std::back_inserter(__output));
+				auto __stateful_result
+					= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+					     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+				return __detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+			}
+			else {
+				auto __stateful_result = __detail::__intermediate_decode_to_storage(::std::forward<_Input>(__input),
+					::std::forward<_Encoding>(__encoding), __output,
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				return __detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+			}
 		}
 		else {
 			auto __stateful_result = __detail::__intermediate_decode_to_storage(::std::forward<_Input>(__input),
@@ -515,16 +524,27 @@ namespace ztd { namespace text {
 				__output.reserve(__output_size_hint);
 			}
 		}
-		if constexpr (__detail::__is_detected_v<__detail::__detect_object_decode_one, _UEncoding, _IntermediateInput,
-			              _Unbounded, _ErrorHandler, _State>) {
-			// We can use the unbounded stuff
-			_Unbounded __insert_view(::std::back_inserter(__output));
-			auto __stateful_result
-				= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
-			// We are explicitly discarding this information with this function call.
-			(void)__stateful_result;
-			return __output;
+		if constexpr (__detail::__is_decode_error_handler_callable_v<_Encoding, _IntermediateInput, _Unbounded,
+			              _ErrorHandler, _State>) {
+			if constexpr (__detail::__is_decode_one_callable_v<_Encoding, _IntermediateInput, _Unbounded,
+				              _ErrorHandler, _State>) {
+				// We can use the unbounded stuff
+				// We can use the unbounded stuff
+				_Unbounded __insert_view(::std::back_inserter(__output));
+				auto __stateful_result
+					= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+					     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+				// We are explicitly discarding this information with this function call.
+				(void)__stateful_result;
+				return __output;
+			}
+			else {
+				auto __stateful_result = __detail::__intermediate_decode_to_storage(::std::forward<_Input>(__input),
+					::std::forward<_Encoding>(__encoding), __output,
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				(void)__stateful_result;
+				return __output;
+			}
 		}
 		else {
 			auto __stateful_result = __detail::__intermediate_decode_to_storage(::std::forward<_Input>(__input),

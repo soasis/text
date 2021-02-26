@@ -95,88 +95,122 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _Output, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+	constexpr auto basic_transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
+		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
+		_FromState& __from_state, _ToState& __to_state) {
+		using _UInput                = __detail::__remove_cvref_t<_Input>;
+		using _UOutput               = __detail::__remove_cvref_t<_Output>;
+		using _InputValueType        = __detail::__range_value_type_t<_UInput>;
+		using _WorkingInput          = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+               ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
+                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+               _UInput>>;
+		using _WorkingOutput         = __detail::__reconstruct_t<_UOutput>;
+		using _UFromEncoding         = __detail::__remove_cvref_t<_FromEncoding>;
+		using _IntermediateCodePoint = code_point_t<_UFromEncoding>;
+		using _Result
+			= __detail::__reconstruct_transcode_result_t<_WorkingInput, _WorkingOutput, _FromState, _ToState>;
+
+		_WorkingInput __working_input(
+			__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+		_WorkingOutput __working_output(
+			__detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
+
+		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_transcode_one, _Input, _FromEncoding,
+			              _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
+			bool __handled_error = false;
+			for (;;) {
+				auto __transcode_result = text_transcode_one(::std::forward<_Input>(__input), __from_encoding,
+					::std::forward<_Output>(__output), __to_encoding, __from_error_handler, __to_error_handler,
+					__from_state, __to_state);
+				if (__transcode_result.error_code != encoding_error::ok) {
+					return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
+						__to_state, __transcode_result.error_code, __transcode_result.handled_error);
+				}
+				__handled_error |= __transcode_result.handled_error;
+				__working_input  = ::std::move(__transcode_result.input);
+				__working_output = ::std::move(__transcode_result.output);
+				if (__detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state, __to_state,
+				encoding_error::ok, __handled_error);
+		}
+		else {
+			_IntermediateCodePoint __intermediate[max_code_points_v<_UFromEncoding>];
+			bool __handled_error = false;
+			for (;;) {
+				auto __transcode_result = __detail::__basic_transcode_one<__detail::__consume::__no>(
+					::std::move(__working_input), __from_encoding, __intermediate, ::std::move(__working_output),
+					__to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);
+				if (__transcode_result.error_code != encoding_error::ok) {
+					return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
+						__to_state, __transcode_result.error_code, __transcode_result.handled_error);
+				}
+				__handled_error |= __transcode_result.handled_error;
+				__working_input  = ::std::move(__transcode_result.input);
+				__working_output = ::std::move(__transcode_result.output);
+				if (__detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state, __to_state,
+				encoding_error::ok, __handled_error);
+		}
+	}
+
+	//////
+	/// @brief Converts the code units of the given input view through the from encoding to code units of the to
+	/// encoding into the output view.
+	///
+	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// produce intermediate code points.
+	/// @param[in]     __from_encoding The encoding that will be used to decode the input's code units into
+	/// intermediate code points.
+	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from the
+	/// intermediate code points.
+	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
+	/// final code units.
+	/// @param[in]     __from_error_handler The error handlers for the from and to encodings,
+	/// respectively.
+	/// @param[in]     __to_error_handler The error handlers for the from and to encodings,
+	/// respectively.
+	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	///
+	/// @result A ztd::text::transcode_result object that contains references to @p __from_state and @p __to_state.
+	///
+	/// @remark This function detects whether or not the ADL extension point @c text_transcode can be called with the
+	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
+	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
+	/// points, then encoding the intermediate code points to the desired, output code units.
+	//////
+	template <typename _Input, typename _Output, typename _FromEncoding, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state) {
 		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_transcode, _Input, _Output, _FromEncoding,
 			              _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
 			return text_transcode(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_Output>(__output), ::std::forward<_FromEncoding>(__to_encoding),
+				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), ::std::forward<_FromState>(__from_state),
-				::std::forward<_ToState>(__to_state));
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
 		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_internal_text_transcode, _Input,
 			                   _FromEncoding, _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
 			                   _ToState>) {
 			return __text_transcode(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_Output>(__output), ::std::forward<_FromEncoding>(__to_encoding),
+				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), ::std::forward<_FromState>(__from_state),
-				::std::forward<_ToState>(__to_state));
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
 		else {
-			using _UInput                = __detail::__remove_cvref_t<_Input>;
-			using _UOutput               = __detail::__remove_cvref_t<_Output>;
-			using _InputValueType        = __detail::__range_value_type_t<_UInput>;
-			using _WorkingInput          = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-                    ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-                    _UInput>>;
-			using _WorkingOutput         = __detail::__reconstruct_t<_UOutput>;
-			using _UFromEncoding         = __detail::__remove_cvref_t<_FromEncoding>;
-			using _IntermediateCodePoint = code_point_t<_UFromEncoding>;
-			using _Result
-				= __detail::__reconstruct_transcode_result_t<_WorkingInput, _WorkingOutput, _FromState, _ToState>;
-
-			_WorkingInput __working_input(
-				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
-			_WorkingOutput __working_output(
-				__detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
-
-			if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_transcode_one, _Input, _FromEncoding,
-				              _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
-				bool __handled_error = false;
-				for (;;) {
-					auto __transcode_result = text_transcode_one(::std::forward<_Input>(__input), __from_encoding,
-						::std::forward<_Output>(__output), __to_encoding, __from_error_handler,
-						__to_error_handler, __from_state, __to_state);
-					if (__transcode_result.error_code != encoding_error::ok) {
-						return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
-							__to_state, __transcode_result.error_code, __transcode_result.handled_error);
-					}
-					__handled_error |= __transcode_result.handled_error;
-					__working_input  = ::std::move(__transcode_result.input);
-					__working_output = ::std::move(__transcode_result.output);
-					if (__detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
-					__to_state, encoding_error::ok, __handled_error);
-			}
-			else {
-				_IntermediateCodePoint __intermediate[max_code_points_v<_UFromEncoding>];
-				bool __handled_error = false;
-				for (;;) {
-					auto __transcode_result
-						= __detail::__basic_transcode_one<__detail::__consume::__no>(::std::move(__working_input),
-						     __from_encoding, __intermediate, ::std::move(__working_output), __to_encoding,
-						     __from_error_handler, __to_error_handler, __from_state, __to_state);
-					if (__transcode_result.error_code != encoding_error::ok) {
-						return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
-							__to_state, __transcode_result.error_code, __transcode_result.handled_error);
-					}
-					__handled_error |= __transcode_result.handled_error;
-					__working_input  = ::std::move(__transcode_result.input);
-					__working_output = ::std::move(__transcode_result.output);
-					if (__detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
-					__to_state, encoding_error::ok, __handled_error);
-			}
+			return basic_transcode_into(::std::forward<_Input>(__input),
+				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
 	}
 

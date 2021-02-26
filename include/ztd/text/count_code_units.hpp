@@ -145,9 +145,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This method will first check if an ADL Extension Point @c text_count_code_units is callable with the
 	/// given arguments. If it is, then that method will be used to do the work after forwarding all four arguments to
-	/// that function call. Otherwise, a combination of implementation techniques will be used to count code units,
-	/// with a loop over the @c .decode call into an intermediate, unseen buffer being the most basic guaranteed
-	/// implementation attempt.
+	/// that function call. Otherwise, it defers to ztd::text::basic_count_code_units.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto count_code_units(

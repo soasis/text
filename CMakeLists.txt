@@ -124,7 +124,7 @@ string(CONCAT --warn-pedantic $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_PEDANTIC}>:-Wpedant
 string(CONCAT --warn-default $<
 	$<AND:
 		$<BOOL:${ZTD_TEXT_DIAGNOSTIC_DEFAULTS}>,
-		$<NOT:$<BOOL:${MSVC}>>,
+		$<NOT:$<BOOL:MSVC>>,
 	>:-Wall
 >)
 string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)

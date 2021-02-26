@@ -62,16 +62,22 @@ TEST_CASE("text/validate_code_units/basic", "basic usages of validate_code_units
 	}
 	SECTION("literal") {
 		ztd::text::literal encoding {};
-		validate_check(ztd::text::tests::basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_code_units(ztd::text::tests::basic_source_character_set, encoding);
+		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+			auto result1
+			     = ztd::text::validate_code_units(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+			REQUIRE(result1);
 		}
 	}
 	SECTION("wide_literal") {
 		ztd::text::wide_literal encoding {};
-		validate_check(ztd::text::tests::w_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_code_units(ztd::text::tests::w_basic_source_character_set, encoding);
+		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::validate_code_units(
+			     ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+			REQUIRE(result1);
 		}
 	}
 	SECTION("utf8") {

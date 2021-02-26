@@ -106,7 +106,7 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __input The input range to store.
 		/// @param[in] __output The output range to store.
-		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the decode
+		/// @param[in] __error_code The error code for the decode operation, taken as the first of either the decode
 		/// operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
@@ -162,7 +162,7 @@ namespace ztd { namespace text {
 		/// @param[in] __input The input range to store.
 		/// @param[in] __output The output range to store.
 		/// @param[in] __state The state related to the Encoding that performed the decode operation.
-		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the decode
+		/// @param[in] __error_code The error code for the decode operation, taken as the first of either the decode
 		/// operation that failed.
 		/// @param[in] __handled_error Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
@@ -231,11 +231,18 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
+		inline constexpr bool __is_decode_error_handler_callable_v = __is_detected_v<__detect_callable_handler,
+			_ErrorHandler, _Encoding, __reconstruct_decode_result_t<__remove_cvref_t<_Input>, _Output, _State>,
+			::ztd::text::span<code_unit_t<_Encoding>>>;
+
+		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
 		inline constexpr bool __is_decode_one_callable_v
-			= __is_detected_v<__detect_object_decode_one, _Encoding, _Input, _Output, _ErrorHandler, _State>&&
-			     __is_detected_v<__detect_callable_handler, _ErrorHandler, _Encoding,
-			          __reconstruct_decode_result_t<__remove_cvref_t<_Input>, _Output, _State>,
-			          ::ztd::text::span<code_unit_t<_Encoding>>>;
+			= __is_detected_v<__detect_object_decode_one, _Encoding, _Input, _Output, _ErrorHandler, _State>;
+
+		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
+		inline constexpr bool __is_decode_one_and_error_handler_callable_v
+			= __is_decode_one_callable_v<_Encoding, _Input, _Output, _ErrorHandler, _State>&&
+			     __is_decode_error_handler_callable_v<_Encoding, _Input, _Output, _ErrorHandler, _State>;
 	} // namespace __detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

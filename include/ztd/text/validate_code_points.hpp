@@ -70,6 +70,77 @@ namespace ztd { namespace text {
 	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
 	/// @param[in] __decode_state The state to use for the decoding portion of the validation check, if needed.
 	///
+	/// @remarks This function explicitly does not check any of the extension points. It defers to doing a typical loop
+	/// over the code points to verify it can be encoded into code units, and then decoded into code points, with no
+	/// errors.
+	//////
+	template <typename _Input, typename _Encoding, typename _EncodeState, typename _DecodeState>
+	constexpr auto basic_validate_code_points(
+		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
+		using _UInput         = __detail::__remove_cvref_t<_Input>;
+		using _InputValueType = __detail::__range_value_type_t<_UInput>;
+		using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+               ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
+                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+               _UInput>>;
+		using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
+		using _Result         = validate_result<_WorkingInput, _EncodeState>;
+
+		_WorkingInput __working_input(
+			__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+
+		if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_points_one, _Encoding,
+			              _WorkingInput, _DecodeState>) {
+			(void)__decode_state;
+			for (;;) {
+				auto __result = __encoding.validate_code_points_one(__working_input, __encode_state);
+				if (!__result.valid) {
+					return _Result(::std::move(__result.input), false, __encode_state);
+				}
+				__working_input = ::std::move(__result.input);
+				if (__detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), true, __encode_state);
+		}
+		else {
+			using _CodeUnit  = code_unit_t<_UEncoding>;
+			using _CodePoint = code_point_t<_UEncoding>;
+
+			_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
+			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
+			::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_view(__code_point_buf);
+			::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
+
+			for (;;) {
+				auto __validate_result = __detail::__basic_validate_code_points_one(__working_input, __encoding,
+					__code_point_view, __code_unit_view, __encode_state, __decode_state);
+				if (!__validate_result.valid) {
+					return _Result(__detail::__reconstruct(
+						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
+						false, __encode_state);
+				}
+				__working_input = ::std::move(__validate_result.input);
+				if (__detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(
+				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)), true,
+				__encode_state);
+		}
+	}
+
+	//////
+	/// @brief Validates the code points of the @p __input according to the @p __encoding with the given states @p
+	/// __encode_state and @p __decode_state.
+	///
+	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
+	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
+	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
+	/// @param[in] __decode_state The state to use for the decoding portion of the validation check, if needed.
+	///
 	/// @remarks This functions checks to see if extension points for @c text_validate_code_points is available taking
 	/// the available 4 parameters. If so, it calls this. Otherwise, it defers to doing a typical loop over the code
 	/// points to verify it can be encoded into code units, and then decoded into code points, with no errors.
@@ -77,72 +148,31 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _EncodeState, typename _DecodeState>
 	constexpr auto validate_code_points(
 		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
-		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_validate_code_points, _Input, _Encoding,
-			              _DecodeState>) {
+		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_validate_code_points, _Encoding, _Input,
+			              _EncodeState>) {
 			(void)__decode_state;
 			return text_validate_code_points(
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
 		}
+		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_validate_code_points, _Input,
+			                   _Encoding, _DecodeState>) {
+			return text_validate_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+				__encode_state, __decode_state);
+		}
 		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_internal_text_validate_code_points,
-			                   _Input, _Encoding, _DecodeState>) {
+			                   _Encoding, _Input, _EncodeState>) {
 			(void)__decode_state;
 			return __text_validate_code_points(
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
 		}
+		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_internal_text_validate_code_points,
+			                   _Input, _Encoding, _DecodeState>) {
+			return __text_validate_code_points(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), __encode_state, __decode_state);
+		}
 		else {
-			using _UInput         = __detail::__remove_cvref_t<_Input>;
-			using _InputValueType = __detail::__range_value_type_t<_UInput>;
-			using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-                    ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-                    _UInput>>;
-			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
-			using _Result         = validate_result<_WorkingInput, _EncodeState>;
-
-			_WorkingInput __working_input(
-				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
-
-			if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_points_one, _Encoding,
-				              _WorkingInput, _DecodeState>) {
-				(void)__decode_state;
-				for (;;) {
-					auto __result = __encoding.validate_code_points_one(__working_input, __encode_state);
-					if (!__result.valid) {
-						return _Result(::std::move(__result.input), false, __encode_state);
-					}
-					__working_input = ::std::move(__result.input);
-					if (__detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(::std::move(__working_input), true, __encode_state);
-			}
-			else {
-				using _CodeUnit  = code_unit_t<_UEncoding>;
-				using _CodePoint = code_point_t<_UEncoding>;
-
-				_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
-				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
-				::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_view(__code_point_buf);
-				::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
-
-				for (;;) {
-					auto __validate_result = __detail::__basic_validate_code_points_one(__working_input,
-						__encoding, __code_point_view, __code_unit_view, __encode_state, __decode_state);
-					if (!__validate_result.valid) {
-						return _Result(__detail::__reconstruct(
-							               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-							false, __encode_state);
-					}
-					__working_input = ::std::move(__validate_result.input);
-					if (__detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(
-					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-					true, __encode_state);
-			}
+			return basic_validate_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+				__encode_state, __decode_state);
 		}
 	}
 
@@ -155,9 +185,7 @@ namespace ztd { namespace text {
 	/// @param[in] __encode_state The state for encoding to use.
 	///
 	/// @remarks This functions checks to see if extension points for @c text_validate_code_points is available taking
-	/// the available 3 parameters. If so, it calls this. Otherwise, it defers to doing a typical loop over the code
-	/// points to verify it can be encoded into code units, and then decoded into code points by calling
-	/// ztd::text::validate_code_points.
+	/// the available 3 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_code_points.
 	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState>
 	constexpr auto validate_code_points(_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state) {
