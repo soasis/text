@@ -43,7 +43,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>
 		using __detect_encode_backward
 			= decltype(::std::declval<_Type>().encode_one_backward(::std::declval<_Input&>(),
@@ -53,13 +53,13 @@ namespace ztd { namespace text {
 		using __detect_decode_backward
 			= decltype(::std::declval<_Type&>().decode_one_backward(::std::declval<_Input&>(),
 			     ::std::declval<_Output&>(), ::std::declval<_ErrorHandler&>(), ::std::declval<_State&>()));
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>
 	class is_bidirectional_encoding
 	: public ::std::integral_constant<bool,
-		  __detail::__is_detected_v<__detail::__detect_decode_backward, _Type, _Input, _Output, _State,
-		       _ErrorHandler> && __detail::__is_detected_v<__detail::__detect_encode_backward, _Type, _Input, _Output, _State, _ErrorHandler>> {
+		  __txt_detail::__is_detected_v<__txt_detail::__detect_decode_backward, _Type, _Input, _Output, _State,
+		       _ErrorHandler> && __txt_detail::__is_detected_v<__txt_detail::__detect_encode_backward, _Type, _Input, _Output, _State, _ErrorHandler>> {
 	};
 
 	template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>

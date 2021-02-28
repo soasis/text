@@ -52,7 +52,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Ty, decltype(::ztd::text::dynamic_extent) _Extent, typename _It, typename _Sen>
 		constexpr ::ztd::text::span<_Ty> reconstruct(
@@ -253,7 +253,7 @@ namespace ztd { namespace text {
 		using __reconstruct_t = decltype(__reconstruct(::std::in_place_type<_Range>,
 			::std::declval<__remove_cvref_t<_It>>(), ::std::declval<__remove_cvref_t<_Sen>>()));
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

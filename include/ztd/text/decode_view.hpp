@@ -68,10 +68,10 @@ namespace ztd { namespace text {
 	/// interfaces.
 	//////
 	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_unit_t<_Encoding>>,
-		typename _ErrorHandler = __detail::__careless_handler, typename _State = decode_state_t<_Encoding>>
+		typename _ErrorHandler = __txt_detail::__careless_handler, typename _State = decode_state_t<_Encoding>>
 	class decode_view {
 	private:
-		using _StoredRange = __detail::__reconstruct_t<__detail::__remove_cvref_t<_Range>>;
+		using _StoredRange = __txt_detail::__reconstruct_t<__txt_detail::__remove_cvref_t<_Range>>;
 
 	public:
 		//////

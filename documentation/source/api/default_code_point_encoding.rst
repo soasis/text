@@ -35,7 +35,7 @@ Picks the default encoding for the given code point type. In all cases, this jus
 
 .. note::
 
-	|specializations_okay|
+	|specializations_okay_different_types|
 
 .. doxygenclass:: ztd::text::default_code_point_encoding
 	:members:

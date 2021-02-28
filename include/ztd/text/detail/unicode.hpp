@@ -39,7 +39,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		// codepoint related
 		inline constexpr char32_t __last_code_point = 0x10FFFF;
@@ -116,23 +116,23 @@ namespace ztd { namespace text {
 
 		template <bool __overlong_allowed = false>
 		inline constexpr int __decode_length(char32_t __value) noexcept {
-			if (__value <= __detail::__last_1byte_value) {
+			if (__value <= __txt_detail::__last_1byte_value) {
 				return 1;
 			}
-			if (__value <= __detail::__last_2byte_value) {
+			if (__value <= __txt_detail::__last_2byte_value) {
 				return 2;
 			}
-			if (__value <= __detail::__last_3byte_value) {
+			if (__value <= __txt_detail::__last_3byte_value) {
 				return 3;
 			}
-			if (__value <= __detail::__last_4byte_value) {
+			if (__value <= __txt_detail::__last_4byte_value) {
 				return 4;
 			}
 			if constexpr (__overlong_allowed) {
-				if (__value <= __detail::__last_5byte_value) {
+				if (__value <= __txt_detail::__last_5byte_value) {
 					return 5;
 				}
-				if (__value <= __detail::__last_6byte_value) {
+				if (__value <= __txt_detail::__last_6byte_value) {
 					return 6;
 				}
 			}
@@ -185,7 +185,7 @@ namespace ztd { namespace text {
 			return __normalizing_value + ((__hibits << __lead_shifted_bits) | __lobits);
 		}
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

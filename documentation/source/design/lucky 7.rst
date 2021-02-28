@@ -39,8 +39,9 @@ One of the core premises of this library is that any text in one encoding can be
 
 We leverage that, for text, `**Unicode Code Points** <https://en.wikipedia.org/wiki/Unicode#Code_point_planes_and_blocks>`_ are an agreed upon interchange format, giving rise to this general framework for encoding and decoding text:
 
+.. _design-lucky 7-transcoding loop:
 
-.. figure:: /img/encoding_path.png
+.. figure:: /img/transcoding-path.png
    :alt: The typical encoding path, from one encoding to another.
 
    The generic pathway from one encoding to another for most (all?) text Encodings.
@@ -153,9 +154,10 @@ These result structures are returned from the lowest level ``encode`` and ``deco
 - An ``output`` member;
 - A  ``state`` member, which is a reference to the ``state`` that was passed in to the ``decode_one`` or ``encode_one`` functions;
 - An ``error_code`` member, which is an enumeration value from :doc:`ztd::text::encoding_error </api/encoding_error>`; and
-- An ``handled_error`` member, which is a boolean value that says whether or not the given ``error_handler`` was invoked.
+- An ``handled_errors`` member, which is an unsigned integral (``std::size_t``) value that says whether or not the given ``error_handler`` was invoked and how many times
+- An ``errors_were_handled()`` member function, which returns a boolean value indicating whether ``handled_errors`` is greater than 0.
 
-These variables can be used to query what exactly happened during the operation (``error_code`` and ``handled_error``), inspect any state passed into encodings (not used for an encoding such as ``utf_ebcdic``), and how much input and output has been read/what is left (by checking the ``input`` and ``output`` ranges whose ``.begin()`` value has been incremented compared to the input values). Understanding the result types now, we move to the error handler:
+These variables can be used to query what exactly happened during the operation (``error_code`` and ``handled_errors``), inspect any state passed into encodings (not used for an encoding such as ``utf_ebcdic``), and how much input and output has been read/what is left (by checking the ``input`` and ``output`` ranges whose ``.begin()`` value has been incremented compared to the input values). Understanding the result types now, we move to the error handler:
 
 
 Error Handlers

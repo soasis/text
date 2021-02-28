@@ -43,7 +43,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 	// A more aggressive form of std::ignore,
 	// this form includes a constructor which takes everything
@@ -118,6 +118,6 @@ namespace ztd { namespace text {
 	};
 
 }ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text::__detail
+}} // namespace ztd::text::__txt_detail
 
 #endif // ZTD_TEXT_DETAIL_BLACKHOLE_ITERATOR_HPP

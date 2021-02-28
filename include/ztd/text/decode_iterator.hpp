@@ -52,7 +52,7 @@ namespace ztd { namespace text {
 	/// @brief The decode sentinel to use as the @c end value for a ztd::text::decode_iterator.
 	///
 	//////
-	class decode_sentinel : public __detail::__encoding_sentinel { };
+	class decode_sentinel : public __txt_detail::__encoding_sentinel { };
 
 	//////
 	/// @brief An iterator over a range of code points, presented as a range of code units, using the @p _Encoding
@@ -73,10 +73,10 @@ namespace ztd { namespace text {
 	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler,
 		typename _State = decode_state_t<_Encoding>>
 	class decode_iterator
-	: public __detail::__encoding_iterator<__detail::__transaction::__decode,
+	: public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__decode,
 		  decode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State> {
 	private:
-		using __it_base_t = __detail::__encoding_iterator<__detail::__transaction::__decode,
+		using __it_base_t = __txt_detail::__encoding_iterator<__txt_detail::__transaction::__decode,
 			decode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State>;
 
 	public:

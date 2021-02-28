@@ -47,7 +47,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		// clang-format off
 		template <typename _From, typename _To>
@@ -69,7 +69,7 @@ namespace ztd { namespace text {
 			= __is_bitwise_transcoding_compatible<_From, _To>::value;
 
 
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
@@ -86,7 +86,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _From, typename _To>
 	class is_bitwise_transcoding_compatible
-	: public ::std::integral_constant<bool, __detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
+	: public ::std::integral_constant<bool, __txt_detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
 
 	//////
 	/// @brief A @c "::value" alias for ztd::text::is_transcoding_compatible.
@@ -95,18 +95,18 @@ namespace ztd { namespace text {
 	template <typename _From, typename _To>
 	constexpr bool is_bitwise_transcoding_compatible_v = is_bitwise_transcoding_compatible<_From, _To>::value;
 
-	namespace __detail {
+	namespace __txt_detail {
 		// clang-format off
 		template <typename _From, typename _To>
 		inline constexpr bool __is_transcoding_compatible_v
 			= is_bitwise_transcoding_compatible_v<_From,_To>
-			|| ::std::is_same_v<__detail::__remove_cvref_t<_From>, __detail::__remove_cvref_t<_To>>
+			|| ::std::is_same_v<__txt_detail::__remove_cvref_t<_From>, __txt_detail::__remove_cvref_t<_To>>
 			|| ::std::is_same_v<code_point_t<_From>, code_point_t<_To>>
 			|| (is_unicode_scalar_value_v<code_point_t<_From>>
 				? (is_unicode_code_point_v<code_point_t<_To>>)
 				: (is_unicode_code_point_v<_From> && !is_unicode_scalar_value_v<_To>));
 		// clang-format on
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @brief Checks whether or not the specified @p _From encoding can be transcoded to the @p _To encoding without
@@ -123,7 +123,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _From, typename _To>
 	class is_transcoding_compatible
-	: public ::std::integral_constant<bool, __detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
+	: public ::std::integral_constant<bool, __txt_detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
 
 
 	//////

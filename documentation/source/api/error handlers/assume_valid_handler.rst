@@ -33,9 +33,9 @@ assume_valid_handler
 
 The ``assume_valid_handler`` is a Undefined-Behavior invoking error handler. If an error is encountered, the encoding can legally ignore and never, ever call the error handler at all. This can invoke |ub| on malformed input.
 
-.. warning
+.. warning::
 
-	This should **only ever be used on the most trusted of input, ever, and that input should never come from a source that is a user or connected to ANY external input sources such as the Network, Shared Pipe, Inter-Procedural Call, or similar**. 
+	⚠️ This should **only ever be used on the most trusted of input, ever, and that input should never come from a source that is a user or connected to ANY external input sources such as the Network, Shared Pipe, Inter-Procedural Call, or similar**. 
 
 .. doxygenclass:: ztd::text::assume_valid_handler
 	:members:

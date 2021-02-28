@@ -39,14 +39,14 @@ TEST_CASE("text/count_code_points/core", "basic usages of count_code_points func
 		ztd::text::execution encoding {};
 		auto result0 = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		std::size_t expected0 = std::size(ztd::text::tests::basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1 = ztd::text::count_code_points(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			std::size_t expected1 = std::size(ztd::text::tests::unicode_sequence_truth_native_endian);
-			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
@@ -54,14 +54,14 @@ TEST_CASE("text/count_code_points/core", "basic usages of count_code_points func
 		ztd::text::wide_execution encoding {};
 		auto result0 = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		std::size_t expected0 = std::size(ztd::text::tests::w_basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1 = ztd::text::count_code_points(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			std::size_t expected1 = std::size(ztd::text::tests::w_unicode_sequence_truth_native_endian);
-			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
@@ -69,14 +69,14 @@ TEST_CASE("text/count_code_points/core", "basic usages of count_code_points func
 		ztd::text::literal encoding {};
 		auto result0 = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		std::size_t expected0 = std::size(ztd::text::tests::basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1 = ztd::text::count_code_points(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			std::size_t expected1 = std::size(ztd::text::tests::unicode_sequence_truth_native_endian);
-			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
@@ -84,14 +84,14 @@ TEST_CASE("text/count_code_points/core", "basic usages of count_code_points func
 		ztd::text::wide_literal encoding {};
 		auto result0 = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
 		std::size_t expected0 = std::size(ztd::text::tests::w_basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1 = ztd::text::count_code_points(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			std::size_t expected1 = std::size(ztd::text::tests::w_unicode_sequence_truth_native_endian);
-			REQUIRE_FALSE(result1.handled_error);
+			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
@@ -99,39 +99,39 @@ TEST_CASE("text/count_code_points/core", "basic usages of count_code_points func
 		auto result0
 		     = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8 {});
 		std::size_t expected0 = std::size(ztd::text::tests::u8_basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		auto result1 = ztd::text::count_code_points(
 		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8 {});
 		std::size_t expected1 = std::size(ztd::text::tests::u8_unicode_sequence_truth_native_endian);
-		REQUIRE_FALSE(result1.handled_error);
+		REQUIRE_FALSE(result1.errors_were_handled());
 		REQUIRE(result1.count == expected1);
 	}
 	SECTION("utf16") {
 		auto result0
 		     = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16 {});
 		std::size_t expected0 = std::size(ztd::text::tests::u16_basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		auto result1 = ztd::text::count_code_points(
 		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16 {});
 		std::size_t expected1 = std::size(ztd::text::tests::u16_unicode_sequence_truth_native_endian);
-		REQUIRE_FALSE(result1.handled_error);
+		REQUIRE_FALSE(result1.errors_were_handled());
 		REQUIRE(result1.count == expected1);
 	}
 	SECTION("utf32") {
 		auto result0
 		     = ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
 		std::size_t expected0 = std::size(ztd::text::tests::u32_basic_source_character_set);
-		REQUIRE_FALSE(result0.handled_error);
+		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		auto result1 = ztd::text::count_code_points(
 		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32 {});
 		std::size_t expected1 = std::size(ztd::text::tests::u32_unicode_sequence_truth_native_endian);
-		REQUIRE_FALSE(result1.handled_error);
+		REQUIRE_FALSE(result1.errors_were_handled());
 		REQUIRE(result1.count == expected1);
 	}
 }

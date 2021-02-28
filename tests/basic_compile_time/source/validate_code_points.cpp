@@ -57,12 +57,12 @@ inline namespace ztd_text_tests_basic_compile_time_validate_code_points {
 		static_assert(ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian));
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
 			static_assert(ztd::text::validate_code_points(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal()));
 		}
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
 			static_assert(ztd::text::validate_code_points(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal()));

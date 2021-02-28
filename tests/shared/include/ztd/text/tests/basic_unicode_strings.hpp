@@ -1692,7 +1692,7 @@ namespace ztd { namespace text { namespace tests {
 				return u32_basic_source_character_set;
 			}
 			else {
-				static_assert(ztd::text::__detail::__always_false_v<Encoding>,
+				static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
 					"Cannot pick basic_source_character_set object for this Encoding");
 			}
 		}
@@ -1723,7 +1723,7 @@ namespace ztd { namespace text { namespace tests {
 			if constexpr (std::is_same_v<CodeUnit, char>) {
 				if constexpr (std::is_same_v<Encoding,
 						         ztd::text::literal> && !ztd::text::is_unicode_encoding_v<Encoding>) {
-					static_assert(ztd::text::__detail::__always_false_v<Encoding>,
+					static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
 						"The encoding ztd::text::literal is not a unicode encoding, and therefore doesn't "
 						"work here!");
 				}
@@ -1732,7 +1732,7 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, wchar_t>) {
 				if constexpr (std::is_same_v<Encoding,
 						         ztd::text::wide_literal> && !ztd::text::is_unicode_encoding_v<Encoding>) {
-					static_assert(ztd::text::__detail::__always_false_v<Encoding>,
+					static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
 						"The encoding ztd::text::literal is not a unicode encoding, and therefore doesn't "
 						"work here!");
 				}
@@ -1753,7 +1753,7 @@ namespace ztd { namespace text { namespace tests {
 				return u32_unicode_sequence_truth_native_endian;
 			}
 			else {
-				static_assert(ztd::text::__detail::__always_false_v<Encoding>,
+				static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
 					"Cannot pick basic_source_character_set object for this Encoding");
 			}
 		}

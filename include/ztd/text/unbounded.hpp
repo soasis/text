@@ -129,7 +129,7 @@ namespace ztd { namespace text {
 		/// @brief The pointer type related to the iterator.
 		///
 		//////
-		using pointer = __detail::__iterator_pointer_t<iterator>;
+		using pointer = __txt_detail::__iterator_pointer_t<iterator>;
 		//////
 		/// @brief The const pointer type related to the iterator.
 		///
@@ -140,7 +140,7 @@ namespace ztd { namespace text {
 		/// @brief The reference type for this range.
 		///
 		//////
-		using reference = __detail::__iterator_reference_t<iterator>;
+		using reference = __txt_detail::__iterator_reference_t<iterator>;
 		//////
 		/// @brief The const reference type for this range.
 		///
@@ -151,12 +151,12 @@ namespace ztd { namespace text {
 		/// @brief The value type for this range.
 		///
 		//////
-		using value_type = __detail::__iterator_value_type_t<iterator>;
+		using value_type = __txt_detail::__iterator_value_type_t<iterator>;
 		//////
 		/// @brief The difference type that results from iterator subtraction (not practical for this range).
 		///
 		//////
-		using difference_type = __detail::__iterator_pointer_t<iterator>;
+		using difference_type = __txt_detail::__iterator_pointer_t<iterator>;
 
 		//////
 		/// @brief Constructs a default-constructed iterator and an infinity sentinel as the range.

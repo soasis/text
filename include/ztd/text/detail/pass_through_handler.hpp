@@ -40,7 +40,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <bool _AssumeVailidity = false>
 		class __pass_through_handler_with {
@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 		};
 
 		using __pass_through_handler = __pass_through_handler_with<false>;
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

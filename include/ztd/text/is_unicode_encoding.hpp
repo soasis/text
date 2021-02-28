@@ -42,7 +42,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type>
 		using __detect_contains_unicode_encoding
 			= decltype(::std::declval<const _Type&>().contains_unicode_encoding());
@@ -57,7 +57,7 @@ namespace ztd { namespace text {
 		struct __is_unicode_encoding_sfinae<_Type,
 			::std::enable_if_t<__is_detected_v<__detect_is_unicode_encoding, _Type>>>
 		: ::std::integral_constant<bool, _Type::is_unicode_encoding::value> { };
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
@@ -74,7 +74,7 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_unicode_encoding : public __detail::__is_unicode_encoding_sfinae<_Type> { };
+	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<_Type> { };
 
 	//////
 	/// @brief A @c value alias for ztd::text::is_unicode_encoding.
@@ -95,7 +95,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding>
 	constexpr bool contains_unicode_encoding(const _Encoding& __encoding) noexcept {
-		if constexpr (__detail::__is_detected_v<__detail::__detect_contains_unicode_encoding, _Encoding>) {
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_contains_unicode_encoding, _Encoding>) {
 			return __encoding.contains_unicode_encoding();
 		}
 		else if constexpr (is_unicode_encoding_v<_Encoding>) {

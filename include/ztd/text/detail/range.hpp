@@ -51,7 +51,7 @@ namespace ztd { namespace text {
 #else
 	class contiguous_iterator_tag : public ::std::random_access_iterator_tag { };
 #endif
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _It>
 		constexpr auto __dereference(_It&& __it) noexcept(noexcept(*::std::forward<_It>(__it)))
@@ -165,7 +165,7 @@ namespace ztd { namespace text {
 			= decltype(::std::declval<_Range>().insert(__adl::__adl_cbegin(::std::declval<_Range>()),
 			     ::std::declval<_IterFirst>(), ::std::declval<_IterLast>()));
 
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

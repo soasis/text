@@ -45,7 +45,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 		enum class __match_alignment { no, yes };
 
 		template <typename _To, __match_alignment __require_aligned = __match_alignment::no, typename _From>
@@ -63,7 +63,7 @@ namespace ztd { namespace text {
 				return ::std::forward<_From>(__from);
 			}
 		}
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

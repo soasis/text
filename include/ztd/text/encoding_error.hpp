@@ -122,7 +122,7 @@ namespace ztd { namespace text {
 	inline constexpr std::string_view to_name(encoding_error __error_code) {
 		constexpr std::array<std::string_view, 4> __translation { { "ok", "invalid_sequence", "incomplete_sequence",
 			"insufficient_output_space" } };
-		return __translation[static_cast<::std::size_t>(__detail::__to_underlying(__error_code))];
+		return __translation[static_cast<::std::size_t>(__txt_detail::__to_underlying(__error_code))];
 	}
 
 	//////

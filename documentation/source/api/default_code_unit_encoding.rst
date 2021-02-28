@@ -29,13 +29,13 @@
 .. =============================================================================>
 
 default_code_unit_encoding
-===========================
+==========================
 
-Picks the default encoding for the given code unit type. The default association table is below. Errors if there is no default association.
+Picks the default encoding for the given code unit type (for both run time, and compile time with the appropriately selected version of this property). The default association table is below. Errors if there is no default association.
 
 .. note::
 
-	|specializations_okay|
+	|specializations_okay_different_types|
 
 
 .. list-table::

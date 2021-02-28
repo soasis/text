@@ -76,7 +76,7 @@ namespace ztd { namespace text {
 	/// subrange can be done in O(1) time and is available.
 	//////
 	template <typename _It, typename _Sen = _It,
-		subrange_kind _Kind = __detail::__is_iterator_concept_or_better_v<::std::random_access_iterator_tag,
+		subrange_kind _Kind = __txt_detail::__is_iterator_concept_or_better_v<::std::random_access_iterator_tag,
 		                           _It>&& ::std::is_same_v<_It, _Sen>
 		     ? subrange_kind::sized
 		     : subrange_kind::unsized>
@@ -106,17 +106,17 @@ namespace ztd { namespace text {
 		/// @brief The iterator category. Same as the iterator category for @p _It.
 		///
 		//////
-		using iterator_category = __detail::__iterator_category_t<iterator>;
+		using iterator_category = __txt_detail::__iterator_category_t<iterator>;
 		//////
 		/// @brief The iterator concept. Same as the iterator concept for @p _It.
 		///
 		//////
-		using iterator_concept = __detail::__iterator_concept_t<iterator>;
+		using iterator_concept = __txt_detail::__iterator_concept_t<iterator>;
 		//////
 		/// @brief The @c pointer type. Same as the @c pointer type for @p _It.
 		///
 		//////
-		using pointer = __detail::__iterator_pointer_t<iterator>;
+		using pointer = __txt_detail::__iterator_pointer_t<iterator>;
 		//////
 		/// @brief The @c const_pointer type. Same as the @c const_pointer type for @p _It.
 		///
@@ -126,7 +126,7 @@ namespace ztd { namespace text {
 		/// @brief The @c reference type. Same as the @c reference type for @p _It.
 		///
 		//////
-		using reference = __detail::__iterator_reference_t<iterator>;
+		using reference = __txt_detail::__iterator_reference_t<iterator>;
 		//////
 		/// @brief The @c const_reference type. Same as the @c const_reference type for @p _It.
 		///
@@ -136,13 +136,13 @@ namespace ztd { namespace text {
 		/// @brief The @c value_type. Same as the @c value_type for @p _It.
 		///
 		//////
-		using value_type = __detail::__iterator_value_type_t<iterator>;
+		using value_type = __txt_detail::__iterator_value_type_t<iterator>;
 		//////
 		/// @brief The @c difference_type. Same as the @c difference_type for @p _It.
 		///
 		//////
 		using difference_type = ::std::conditional_t<::std::is_same_v<iterator_concept, ::std::output_iterator_tag>,
-			ptrdiff_t, __detail::__iterator_difference_type_t<iterator>>;
+			ptrdiff_t, __txt_detail::__iterator_difference_type_t<iterator>>;
 		//////
 		/// @brief The @c size_type. Same as the @c size_type for @p _It.
 		///
@@ -163,9 +163,9 @@ namespace ztd { namespace text {
 		/// iterators.
 		//////
 		template <typename _Range,
-			::std::enable_if_t<!::std::is_same_v<__detail::__remove_cvref_t<_Range>, subrange>>* = nullptr>
+			::std::enable_if_t<!::std::is_same_v<__txt_detail::__remove_cvref_t<_Range>, subrange>>* = nullptr>
 		constexpr subrange(_Range&& __range) noexcept
-		: subrange(__detail::__adl::__adl_begin(__range), __detail::__adl::__adl_end(__range)) {
+		: subrange(__txt_detail::__adl::__adl_begin(__range), __txt_detail::__adl::__adl_end(__range)) {
 		}
 
 		//////
@@ -227,7 +227,7 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Dummy = _It,
 			::std::enable_if_t<
-			     __detail::__is_iterator_concept_or_better_v<contiguous_iterator_tag, _Dummy>>* = nullptr>
+			     __txt_detail::__is_iterator_concept_or_better_v<contiguous_iterator_tag, _Dummy>>* = nullptr>
 		constexpr pointer data() const noexcept {
 			return ::std::addressof(*this->_M_it);
 		}
@@ -237,19 +237,19 @@ namespace ztd { namespace text {
 		sentinel _M_sen;
 	};
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Range>
 		using __subrange_for_t = subrange<__range_iterator_t<_Range>, __range_sentinel_t<_Range>>;
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @brief Decomposes a range into its two iterators and returns it as a ztd::text::subrange.
 	///
 	//////
 	template <typename _Range>
-	constexpr __detail::__subrange_for_t<_Range> make_subrange(_Range&& __range) noexcept(
-		::std::is_nothrow_constructible_v<_Range, __detail::__subrange_for_t<_Range>>) {
-		return { __detail::__adl::__adl_begin(__range), __detail::__adl::__adl_end(__range) };
+	constexpr __txt_detail::__subrange_for_t<_Range> make_subrange(_Range&& __range) noexcept(
+		::std::is_nothrow_constructible_v<_Range, __txt_detail::__subrange_for_t<_Range>>) {
+		return { __txt_detail::__adl::__adl_begin(__range), __txt_detail::__adl::__adl_end(__range) };
 	}
 
 	//////

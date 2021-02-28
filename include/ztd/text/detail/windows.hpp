@@ -59,7 +59,7 @@ extern "C" {
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail { namespace __windows {
+	namespace __txt_detail { namespace __windows {
 
 		inline int __determine_active_code_page() noexcept {
 #if defined(_STL_LANG) || defined(_YVALS_CORE_H) || defined(_STDEXT)
@@ -93,7 +93,7 @@ namespace ztd { namespace text {
 			}
 		}
 
-	}} // namespace __detail::__windows
+	}} // namespace __txt_detail::__windows
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

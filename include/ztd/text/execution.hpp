@@ -184,14 +184,14 @@ namespace ztd { namespace text {
 		//////
 		static bool contains_unicode_encoding() noexcept {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-			int __codepage_id = __detail::__windows::__determine_active_code_page();
-			return __detail::__windows::__is_unicode_code_page(__codepage_id);
+			int __codepage_id = __txt_detail::__windows::__determine_active_code_page();
+			return __txt_detail::__windows::__is_unicode_code_page(__codepage_id);
 #elif ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_) || ZTD_TEXT_IS_ON(ZTD_TEXT_LANGINFO_I_)
 			const char* __ctype_name = nl_langinfo(CODESET);
-			return __detail::__is_unicode_encoding_name(__ctype_name);
+			return __txt_detail::__is_unicode_encoding_name(__ctype_name);
 #else
 				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
-				return __detail::__is_encoding_name_unicode(__ctype_name);
+				return __txt_detail::__is_encoding_name_unicode(__ctype_name);
 #endif
 		}
 
@@ -222,19 +222,19 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto encode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, encode_state& __s) {
-			using _UInputRange   = __detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __detail::__remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = __detail::__remove_cvref_t<_ErrorHandler>;
-			using _Result = __detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
+			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
+			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+			using _Result = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-			if (__detail::__windows::__determine_active_code_page() == CP_UTF8) {
+			if (__txt_detail::__windows::__determine_active_code_page() == CP_UTF8) {
 				// just go straight to UTF8
 				using __exec_utf8 = __impl::__utf8_with<void, code_unit, code_point>;
 				__exec_utf8 __u8enc {};
 				encode_state_t<__exec_utf8> __intermediate_s {};
-				__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
+				__txt_detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 				auto __intermediate_result = __u8enc.encode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
 				if constexpr (__call_error_handler) {
@@ -254,8 +254,8 @@ namespace ztd { namespace text {
 #endif // Windows Hell
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-			auto __outit   = __detail::__adl::__adl_begin(__output);
-			auto __outlast = __detail::__adl::__adl_end(__output);
+			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
@@ -271,7 +271,7 @@ namespace ztd { namespace text {
 
 			__u16e __u16enc {};
 			__intermediate_state __intermediate_s {};
-			__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
+			__txt_detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 			wchar_t __wide_intermediary[8] {};
 			::ztd::text::span<wchar_t> __wide_write_buffer(__wide_intermediary);
 			auto __intermediate_result = __u16enc.encode_one(::std::forward<_InputRange>(__input),
@@ -291,7 +291,7 @@ namespace ztd { namespace text {
 			int __used_default_char = false;
 			::ztd::text::span<const wchar_t> __wide_read_buffer(
 				__wide_intermediary, __intermediate_result.output.data());
-			int __res = ::WideCharToMultiByte(static_cast<UINT>(__detail::__windows::__determine_active_code_page()),
+			int __res = ::WideCharToMultiByte(static_cast<UINT>(__txt_detail::__windows::__determine_active_code_page()),
 				WC_ERR_INVALID_CHARS, __wide_read_buffer.data(), static_cast<int>(__wide_read_buffer.size()),
 				__intermediary_output, __state_count_max, ::std::addressof(replacement_code_units[0]),
 				::std::addressof(__used_default_char));
@@ -313,26 +313,26 @@ namespace ztd { namespace text {
 					if (__outit == __outlast) {
 						execution __self {};
 						return __error_handler(__self,
-							_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>,
-							             __detail::__adl::__adl_begin(__intermediate_result.input),
-							             __detail::__adl::__adl_end(__intermediate_result.input)),
-							     __detail::__reconstruct(
+							_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
+							             __txt_detail::__adl::__adl_begin(__intermediate_result.input),
+							             __txt_detail::__adl::__adl_end(__intermediate_result.input)),
+							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
 							::ztd::text::span<code_point>(__intermediate_handler._M_code_points.data(),
 							     __intermediate_handler._M_code_points_size));
 					}
 				}
-				__detail::__dereference(__outit) = __detail::__dereference(__intermediary_it);
-				__outit                          = __detail::__next(__outit);
+				__txt_detail::__dereference(__outit) = __txt_detail::__dereference(__intermediary_it);
+				__outit                          = __txt_detail::__next(__outit);
 			}
 			return _Result(::std::move(__intermediate_result.input),
-				__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 				__intermediate_result.error_code);
 #else
 
-			auto __init   = __detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __detail::__adl::__adl_cend(__input);
+			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
 
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
@@ -340,8 +340,8 @@ namespace ztd { namespace text {
 					encoding_error::ok);
 			}
 
-			auto __outit   = __detail::__adl::__adl_begin(__output);
-			auto __outlast = __detail::__adl::__adl_end(__output);
+			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
@@ -353,8 +353,8 @@ namespace ztd { namespace text {
 				}
 			}
 
-			code_point __codepoint = __detail::__dereference(__init);
-			__init                 = __detail::__next(__init);
+			code_point __codepoint = __txt_detail::__dereference(__init);
+			__init                 = __txt_detail::__next(__init);
 			code_unit __intermediary_output[MB_LEN_MAX] {};
 			::std::size_t __res
 				= ::std::c32rtomb(__intermediary_output, __codepoint, ::std::addressof(__s.__narrow_state));
@@ -362,8 +362,8 @@ namespace ztd { namespace text {
 				if (__res == static_cast<::std::size_t>(-1)) {
 					execution __self {};
 					return __error_handler(__self,
-						_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-						     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
+						_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+						     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast),
 						     __s, encoding_error::invalid_sequence),
 						::ztd::text::span<code_point, 1>(&__codepoint, 1));
 				}
@@ -375,19 +375,19 @@ namespace ztd { namespace text {
 						execution __self {};
 						return __error_handler(__self,
 							_Result(
-							     __detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-							     __detail::__reconstruct(
+							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::insufficient_output_space),
 							::ztd::text::span<code_point, 1>(&__codepoint, 1));
 					}
 				}
-				__detail::__dereference(__outit) = __detail::__dereference(__intermediary_it);
-				__outit                          = __detail::__next(__outit);
+				__txt_detail::__dereference(__outit) = __txt_detail::__dereference(__intermediary_it);
+				__outit                          = __txt_detail::__next(__outit);
 			}
 
-			return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-				__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 				encoding_error::ok);
 #endif // Windows is hell
 		}
@@ -419,20 +419,20 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto decode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, decode_state& __s) {
-			using _UInputRange   = __detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __detail::__remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = __detail::__remove_cvref_t<_ErrorHandler>;
-			using _Result = __detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
+			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
+			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+			using _Result = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
-			if (__detail::__windows::__determine_active_code_page() == CP_UTF8) {
+			if (__txt_detail::__windows::__determine_active_code_page() == CP_UTF8) {
 				// just use utf8 directly
 				// just go straight to UTF8
 				using __char_utf8 = __impl::__utf8_with<void, code_unit, code_point>;
 				__char_utf8 __u8enc {};
 				decode_state_t<__char_utf8> __intermediate_s {};
-				__detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
+				__txt_detail::__progress_handler<!__call_error_handler, execution> __intermediate_handler {};
 				auto __intermediate_result = __u8enc.decode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
 				if constexpr (__call_error_handler) {
@@ -451,8 +451,8 @@ namespace ztd { namespace text {
 			}
 #endif
 
-			auto __init   = __detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __detail::__adl::__adl_cend(__input);
+			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
 
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
@@ -460,8 +460,8 @@ namespace ztd { namespace text {
 					encoding_error::ok);
 			}
 
-			auto __outit   = __detail::__adl::__adl_begin(__output);
-			auto __outlast = __detail::__adl::__adl_end(__output);
+			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
@@ -475,8 +475,8 @@ namespace ztd { namespace text {
 
 			code_unit __intermediary_input[max_code_units] {};
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_) && ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILER_MINGW_I_)
-			__intermediary_input[0]     = __detail::__dereference(__init);
-			__init                      = __detail::__next(__init);
+			__intermediary_input[0]     = __txt_detail::__dereference(__init);
+			__init                      = __txt_detail::__next(__init);
 			::std::size_t __state_count = 1;
 			for (; __state_count < max_code_units; ++__state_count) {
 				using __u16e               = __impl::__utf16_with<void, wchar_t, code_point, false>;
@@ -485,7 +485,7 @@ namespace ztd { namespace text {
 				constexpr const int __wide_intermediary_size = 4;
 				wchar_t __wide_intermediary[__wide_intermediary_size] {};
 				int __res
-					= ::MultiByteToWideChar(static_cast<UINT>(__detail::__windows::__determine_active_code_page()),
+					= ::MultiByteToWideChar(static_cast<UINT>(__txt_detail::__windows::__determine_active_code_page()),
 					     MB_ERR_INVALID_CHARS, __intermediary_input, static_cast<int>(__state_count),
 					     __wide_intermediary, __wide_intermediary_size);
 				if (__res == 0) {
@@ -495,24 +495,24 @@ namespace ztd { namespace text {
 							if (__init == __inlast) {
 								execution __self {};
 								return __error_handler(__self,
-									_Result(__detail::__reconstruct(
+									_Result(__txt_detail::__reconstruct(
 									             ::std::in_place_type<_UInputRange>, __init, __inlast),
-									     __detail::__reconstruct(
+									     __txt_detail::__reconstruct(
 									          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 									     __s, encoding_error::incomplete_sequence),
 									::ztd::text::span<code_unit>(__intermediary_input, __state_count));
 							}
 						}
-						__intermediary_input[__state_count] = __detail::__dereference(__init);
-						__init                              = __detail::__next(__init);
+						__intermediary_input[__state_count] = __txt_detail::__dereference(__init);
+						__init                              = __txt_detail::__next(__init);
 						continue;
 					}
 					if constexpr (__call_error_handler) {
 						execution __self {};
 						return __error_handler(__self,
 							_Result(
-							     __detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-							     __detail::__reconstruct(
+							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
 							::ztd::text::span<code_unit>(__intermediary_input, __state_count));
@@ -521,7 +521,7 @@ namespace ztd { namespace text {
 
 				__u16e __u16enc {};
 				__intermediate_state __intermediate_s {};
-				__detail::__pass_through_handler_with<!__call_error_handler> __intermediate_handler {};
+				__txt_detail::__pass_through_handler_with<!__call_error_handler> __intermediate_handler {};
 				auto __intermediate_result
 					= __u16enc.encode_one(wc_string_view(__wide_intermediary, static_cast<::std::size_t>(__res)),
 					     ::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
@@ -529,13 +529,13 @@ namespace ztd { namespace text {
 					if (__intermediate_result.error_code != encoding_error::ok) {
 						return __error_handler(execution {},
 							_Result(
-							     __detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 							     ::std::move(__intermediate_result.output), __s,
 							     __intermediate_result.error_code),
 							::ztd::text::span<code_unit>(__intermediary_input, __state_count));
 					}
 				}
-				return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+				return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 					::std::move(__intermediate_result.output), __s, __intermediate_result.error_code);
 #else
 			if (__s.__output_pending) {
@@ -548,18 +548,18 @@ namespace ztd { namespace text {
 						execution __self {};
 						return __error_handler(__self,
 							_Result(
-							     __detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-							     __detail::__reconstruct(
+							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
 							::ztd::text::span<code_unit, 0>());
 					}
 				}
-				__detail::__dereference(__outit) = __intermediary_output[0];
-				__outit                          = __detail::__next(__outit);
+				__txt_detail::__dereference(__outit) = __intermediary_output[0];
+				__outit                          = __txt_detail::__next(__outit);
 				__s.__output_pending             = __res == static_cast<::std::size_t>(-3);
-				return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-					__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+				return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+					__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 					encoding_error::ok);
 			}
 
@@ -567,8 +567,8 @@ namespace ztd { namespace text {
 			::std::size_t __state_count  = 1;
 			for (; __state_offset < max_code_units; (void)++__state_offset, (void)++__state_count) {
 				::std::mbstate_t __preserved_state   = __s.__narrow_state;
-				__intermediary_input[__state_offset] = __detail::__dereference(__init);
-				__init                               = __detail::__next(__init);
+				__intermediary_input[__state_offset] = __txt_detail::__dereference(__init);
+				__init                               = __txt_detail::__next(__init);
 				char32_t __intermediary_output[1] {};
 				::std::size_t __res = ::std::mbrtoc32(::std::addressof(__intermediary_output[0]),
 					::std::addressof(__intermediary_input[0]), __state_count, ::std::addressof(__preserved_state));
@@ -580,9 +580,9 @@ namespace ztd { namespace text {
 						if (__init == __inlast) {
 							execution __self {};
 							return __error_handler(__self,
-								_Result(__detail::__reconstruct(
+								_Result(__txt_detail::__reconstruct(
 								             ::std::in_place_type<_UInputRange>, __init, __inlast),
-								     __detail::__reconstruct(
+								     __txt_detail::__reconstruct(
 								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 								     __s, encoding_error::incomplete_sequence),
 								::ztd::text::span<code_unit>(__intermediary_input, __state_count));
@@ -590,13 +590,13 @@ namespace ztd { namespace text {
 					}
 					break;
 				case static_cast<::std::size_t>(-3):
-					__detail::__dereference(__outit) = __intermediary_output[0];
-					__outit                          = __detail::__next(__outit);
+					__txt_detail::__dereference(__outit) = __intermediary_output[0];
+					__outit                          = __txt_detail::__next(__outit);
 					__s.__narrow_state               = __preserved_state;
 					__s.__output_pending             = true;
 					__state_offset                   = __state_count;
-					return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-						__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+					return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+						__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 						encoding_error::ok);
 				case static_cast<::std::size_t>(-1):
 					if constexpr (__call_error_handler) {
@@ -607,8 +607,8 @@ namespace ztd { namespace text {
 						execution __self {};
 						return __error_handler(__self,
 							_Result(
-							     __detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-							     __detail::__reconstruct(
+							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
 							::ztd::text::span<code_unit>(
@@ -619,17 +619,17 @@ namespace ztd { namespace text {
 					}
 				case static_cast<::std::size_t>(0):
 					// 0 means null character; ok
-					__detail::__dereference(__outit) = __intermediary_output[0];
-					__outit                          = __detail::__next(__outit);
-					return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-						__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+					__txt_detail::__dereference(__outit) = __intermediary_output[0];
+					__outit                          = __txt_detail::__next(__outit);
+					return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+						__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 						encoding_error::ok);
 				default:
-					__detail::__dereference(__outit) = __intermediary_output[0];
-					__outit                          = __detail::__next(__outit);
+					__txt_detail::__dereference(__outit) = __intermediary_output[0];
+					__outit                          = __txt_detail::__next(__outit);
 					__s.__narrow_state               = __preserved_state;
-					return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-						__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+					return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+						__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 						encoding_error::ok);
 				}
 #endif
@@ -639,16 +639,16 @@ namespace ztd { namespace text {
 				// this is for incomplete sequences only
 				execution __self {};
 				return __error_handler(__self,
-					_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-					     __detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+					_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+					     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 					     encoding_error::incomplete_sequence),
 					::ztd::text::span<code_unit>(::std::addressof(__intermediary_input[0]), __state_count));
 			}
 			else {
 				// ... I mean.
 				// You asked for it???
-				_Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-					__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
+				_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+					__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
 					encoding_error::ok);
 			}
 		}

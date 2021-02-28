@@ -50,7 +50,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 #if !defined(__cpp_lib_subviewible_ranges)
 
@@ -167,6 +167,6 @@ namespace ztd { namespace text {
 		::std::declval<_Range>(), ::std::declval<__remove_cvref_t<_It>>(), ::std::declval<__remove_cvref_t<_Sen>>()));
 
 }ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text::__detail
+}} // namespace ztd::text::__txt_detail
 
 #endif // ZTD_TEXT_DETAIL_SUBVIEW_HPP

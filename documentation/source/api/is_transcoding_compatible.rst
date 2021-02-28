@@ -28,8 +28,8 @@
 ..
 .. =============================================================================>
 
-is_transcoding_compatible/is_bitwise_transcoding_compatible
-===========================================================
+is_(bitwise\ _)transcoding_compatible
+=====================================
 
 This classification checks if two encodings are compatible, or bitwise compatible. The heuristic for normal compatibility is simple:
 
@@ -41,11 +41,11 @@ This type specifically uses the first type as the ``From`` encoding (e.g., the o
 
 .. note::
 
-	|specializations_okay|
+	|specializations_okay_true_false_type|
 
 .. warning::
 
-	Specializing this type for types which are not either transcoding compatible or bitwise compatible can result in |ub| within the library.
+	⚠️ Specializing this type for types which are not either transcoding compatible or bitwise compatible can result in |ub| within the library.
 
 .. doxygenclass:: ztd::text::is_transcoding_compatible
 	:members:

@@ -40,7 +40,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Type, ::std::size_t = 0, typename = void>
 		class __ebco {
@@ -162,7 +162,7 @@ namespace ztd { namespace text {
 				return ::std::move(*(this->_M_p_value));
 			}
 		};
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

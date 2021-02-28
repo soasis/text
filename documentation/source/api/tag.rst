@@ -28,20 +28,10 @@
 ..
 .. =============================================================================>
 
-is_unicode_code_point
-=======================
+tag
+===
 
-This checks if the provided type is a :doc:`unicode_code_point </api/unicode_code_point>`.
+A tag type used explicitly for :doc:`extension points </design/lucky 7 extensions/speed>`.
 
-.. note::
-
-	|specializations_okay_true_false_type|
-
-.. warning::
-
-	⚠️ Note there are some :term:`expectations of unicode code points <unicode code point>`. If your type violates these expectations then code depending on them is free to execute |ub|.
-
-.. doxygenclass:: ztd::text::is_unicode_code_point
+.. doxygenclass:: ztd::text::tag
 	:members:
-
-.. doxygenvariable:: ztd::text::is_unicode_code_point_v

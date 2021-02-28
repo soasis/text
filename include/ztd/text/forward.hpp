@@ -38,11 +38,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		class __empty_state;
 
 		class __careless_handler;
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	namespace __impl {
 		class __utf8_tag;

@@ -42,7 +42,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Type, typename = ::std::remove_cv_t<::std::remove_reference_t<_Type>>>
 		struct __unwrap_impl {
@@ -164,7 +164,7 @@ namespace ztd { namespace text {
 		using __detect_reserve_with_size_type
 			= decltype(::std::declval<_Type>().reserve(::std::declval<_SizeType>()));
 
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

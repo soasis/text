@@ -46,8 +46,9 @@
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/unbounded.hpp>
 #include <ztd/text/subrange.hpp>
-#include <ztd/text/detail/is_lossless.hpp>
+#include <ztd/text/tag.hpp>
 
+#include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/blackhole_iterator.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/adl.hpp>
@@ -59,7 +60,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		enum class __consume : unsigned char { __no = 0, __embrace_the_void = 1 };
 		enum class __transaction : unsigned char { __encode = 0, __decode = 1 };
@@ -284,7 +285,7 @@ namespace ztd { namespace text {
 				                .output);
 			using _Result = transcode_result<__reconstruct_t<_UInput>, _OutputView, _FromState, _ToState>;
 
-			static_assert(__detail::__is_decode_lossless_or_deliberate_v<__remove_cvref_t<_FromEncoding>,
+			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<__remove_cvref_t<_FromEncoding>,
 				              __remove_cvref_t<_FromErrorHandler>>,
 				"The decode (input) portion of this transcode is a lossy, non-injective operation. This means "
 				"you "
@@ -293,7 +294,7 @@ namespace ztd { namespace text {
 				"transcode[_to](in, in_encoding, out_encoding, in_handler, ...) or transcode_into(in, in_encoding, "
 				"out, "
 				"out_encoding, in_handler, ...) explicitly in order to bypass this.");
-			static_assert(__detail::__is_encode_lossless_or_deliberate_v<__remove_cvref_t<_ToEncoding>,
+			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<__remove_cvref_t<_ToEncoding>,
 				              __remove_cvref_t<_ToErrorHandler>>,
 				"The encode (output) portion of this transcode is a lossy, non-injective operation. This "
 				"means you "
@@ -313,20 +314,20 @@ namespace ztd { namespace text {
 				if constexpr (::std::is_same_v<__range_iterator_t<_OutputView>, __blackhole_iterator>) {
 					return _Result(::std::move(__intermediate_result.input), _OutputView {},
 						__intermediate_result.state, __to_state, __intermediate_result.error_code,
-						__intermediate_result.handled_error);
+						__intermediate_result.handled_errors);
 				}
 				else if constexpr (__is_specialization_of_v<_OutputView, unbounded_view>) {
 					return _Result(::std::move(__intermediate_result.input),
 						__reconstruct(::std::in_place_type<_OutputView>, __adl::__adl_begin(__output),
 						     __range_sentinel_t<_OutputView> {}),
 						__intermediate_result.state, __to_state, __intermediate_result.error_code,
-						__intermediate_result.handled_error);
+						__intermediate_result.handled_errors);
 				}
 				else {
 					return _Result(::std::move(__intermediate_result.input),
 						__reconstruct(::std::in_place_type<_OutputView>, ::std::forward<_Output>(__output)),
 						__intermediate_result.state, __to_state, __intermediate_result.error_code,
-						__intermediate_result.handled_error);
+						__intermediate_result.handled_errors);
 				}
 			}
 			_WorkingIntermediate __intermediate_view = __reconstruct(::std::in_place_type<_WorkingIntermediate>,
@@ -336,7 +337,7 @@ namespace ztd { namespace text {
 
 			return _Result(::std::move(__intermediate_result.input), ::std::move(__end_result.output),
 				__intermediate_result.state, __end_result.state, __end_result.error_code,
-				__end_result.handled_error);
+				__end_result.handled_errors);
 		}
 
 		template <__consume _ConsumeIntoTheNothingness, typename _Input, typename _FromEncoding, typename _Output,
@@ -368,18 +369,18 @@ namespace ztd { namespace text {
 			if constexpr (__is_detected_v<__detect_adl_text_transcode_one, _Input, _FromEncoding, _Output,
 				              _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
 				(void)__intermediate;
-				return text_transcode_one(::std::forward<_Input>(__input), __from_encoding,
-					::std::forward<_Output>(__output), __to_encoding, __from_error_handler, __to_error_handler,
-					__from_state, __to_state);
+				return text_transcode_one(tag<__remove_cvref_t<_FromEncoding>, __remove_cvref_t<_ToEncoding>> {},
+					::std::forward<_Input>(__input), __from_encoding, ::std::forward<_Output>(__output),
+					__to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);
 			}
 			else if constexpr (_ConsumeIntoTheNothingness == __consume::__embrace_the_void
 				&& __is_detected_v<__detect_adl_text_transcode_one, _Input, _FromEncoding, _Blackhole, _ToEncoding,
 				     _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
 				(void)__intermediate;
 				_Blackhole __output_range(__blackhole_iterator {});
-				return text_transcode_one(::std::forward<_Input>(__input), __from_encoding,
-					::std::move(__output_range), __to_encoding, __from_error_handler, __to_error_handler,
-					__from_state, __to_state);
+				return text_transcode_one(tag<__remove_cvref_t<_FromEncoding>, __remove_cvref_t<_ToEncoding>> {},
+					::std::forward<_Input>(__input), __from_encoding, ::std::move(__output_range), __to_encoding,
+					__from_error_handler, __to_error_handler, __from_state, __to_state);
 			}
 			else if constexpr (::std::is_void_v<_ValueType>) {
 				return __super_basic_transcode_one<_ConsumeIntoTheNothingness>(::std::forward<_Input>(__input),
@@ -394,18 +395,20 @@ namespace ztd { namespace text {
 					(void)__intermediate;
 					_Iterator __first = __adl::__adl_begin(::std::forward<_Output>(__output));
 					_ToUnbounded __output_range(::std::move(__first));
-					return text_transcode_one(::std::forward<_Input>(__input), __from_encoding,
-						::std::move(__output_range), __to_encoding, __from_error_handler, __to_error_handler,
-						__from_state, __to_state);
+					return text_transcode_one(
+						tag<__remove_cvref_t<_FromEncoding>, __remove_cvref_t<_ToEncoding>> {},
+						::std::forward<_Input>(__input), __from_encoding, ::std::move(__output_range),
+						__to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);
 				}
 				else if constexpr (
 					__is_iterator_concept_or_better_v<contiguous_iterator_tag,
 					     _Iterator> && __is_detected_v<__detect_adl_text_transcode_one, _Input, _FromEncoding, _ToSpan, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
 					(void)__intermediate;
 					_ToSpan __output_range(::std::forward<_Output>(__output));
-					return text_transcode_one(::std::forward<_Input>(__input), __from_encoding,
-						::std::move(__output_range), __to_encoding, __from_error_handler, __to_error_handler,
-						__from_state, __to_state);
+					return text_transcode_one(
+						tag<__remove_cvref_t<_FromEncoding>, __remove_cvref_t<_ToEncoding>> {},
+						::std::forward<_Input>(__input), __from_encoding, ::std::move(__output_range),
+						__to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);
 				}
 				else {
 					return __super_basic_transcode_one<_ConsumeIntoTheNothingness>(::std::forward<_Input>(__input),
@@ -626,7 +629,7 @@ namespace ztd { namespace text {
 				::std::forward<_Encoding>(__encoding), __intermediate_buffer,
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

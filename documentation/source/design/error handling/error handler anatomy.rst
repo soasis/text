@@ -52,11 +52,11 @@ This skeleton, by itself, works. It doesn't do anything: it just returns the ``r
 First Parameter
 ---------------
 
-The first parameter is simple enough: it is the encoding that is calling this error handler. If you invoke an ``encode_one`` or ``decode_one`` (or a higher-level conversion algorithm) on a :doc:`ztd::text::utf8 </api/encodings/utf8>` object, then you can expect the first parameter of type ``ztd::text::utf8``.
+The first parameter is simple enough: it is the encoding that is calling this error handler. If you invoke an ``encode_one`` or ``decode_one`` (or a higher-level conversion algorithm) on a :doc:`ztd::text::utf8 </api/encodings/utf8>` object, then you can expect a first parameter of type ``ztd::text::utf8`` to be passed to the error handler.
 
 .. note::
 
-	If the function call ``.encode_one`` or ``.decode_one`` is a static function that has no instance, then the encoding object will create a temporary instance to pass to the function. This happens with most encodings that do not contain any pertinent information on the encoding object itself, like all the Unicode encodings and the ASCII/locale/string literal encodings.
+	👉 If the function call ``.encode_one`` or ``.decode_one`` is a static function that has no instance, then the encoding object will create a temporary instance to pass to the function. This happens with most encodings that do not contain any pertinent information on the encoding object itself, like all the Unicode encodings and the ASCII/locale/string literal encodings.
 
 This can be handy if you need to access information about the encoding object or encoding type. You can get information about the encoding by using:
 

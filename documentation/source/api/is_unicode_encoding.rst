@@ -33,7 +33,7 @@ is_unicode_encoding
 
 .. note::
 
-	|specializations_okay|
+	|specializations_okay_true_false_type|
 
 .. doxygenclass:: ztd::text::is_unicode_encoding
 	:members:

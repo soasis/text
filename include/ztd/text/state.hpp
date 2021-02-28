@@ -40,7 +40,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type, typename = void>
 		struct __decode_state {
 			using type = typename _Type::state;
@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 		struct __encode_state<_Type, std::void_t<typename _Type::encode_state>> {
 			using type = typename _Type::encode_state;
 		};
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_state Encoding State Management
@@ -83,7 +83,7 @@ namespace ztd { namespace text {
 		/// @brief The @c decode_state type or @c state type on a given encoding type.
 		///
 		//////
-		using type = typename __detail::__decode_state<__detail::__remove_cvref_t<_Type>>::type;
+		using type = typename __txt_detail::__decode_state<__txt_detail::__remove_cvref_t<_Type>>::type;
 	};
 
 	//////
@@ -104,7 +104,7 @@ namespace ztd { namespace text {
 		/// @brief The @c encode_state type or @c state type on a given encoding type.
 		///
 		//////
-		using type = typename __detail::__encode_state<__detail::__remove_cvref_t<_Type>>::type;
+		using type = typename __txt_detail::__encode_state<__txt_detail::__remove_cvref_t<_Type>>::type;
 	};
 
 	//////
@@ -152,14 +152,14 @@ namespace ztd { namespace text {
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	//////
 	template <typename _Encoding>
-	constexpr decode_state_t<__detail::__remove_cvref_t<_Encoding>> make_decode_state(
+	constexpr decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_decode_state(
 		_Encoding& __encoding) noexcept {
-		if constexpr (is_decode_state_independent_v<__detail::__remove_cvref_t<_Encoding>>) {
+		if constexpr (is_decode_state_independent_v<__txt_detail::__remove_cvref_t<_Encoding>>) {
 			(void)__encoding;
-			return decode_state_t<__detail::__remove_cvref_t<_Encoding>>();
+			return decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>();
 		}
 		else {
-			return decode_state_t<__detail::__remove_cvref_t<_Encoding>>(__encoding);
+			return decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>(__encoding);
 		}
 	}
 
@@ -170,14 +170,14 @@ namespace ztd { namespace text {
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	//////
 	template <typename _Encoding>
-	constexpr encode_state_t<__detail::__remove_cvref_t<_Encoding>> make_encode_state(
+	constexpr encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_encode_state(
 		_Encoding& __encoding) noexcept {
-		if constexpr (is_encode_state_independent_v<__detail::__remove_cvref_t<_Encoding>>) {
+		if constexpr (is_encode_state_independent_v<__txt_detail::__remove_cvref_t<_Encoding>>) {
 			(void)__encoding;
-			return encode_state_t<__detail::__remove_cvref_t<_Encoding>>();
+			return encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>();
 		}
 		else {
-			return encode_state_t<__detail::__remove_cvref_t<_Encoding>>(__encoding);
+			return encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>(__encoding);
 		}
 	}
 

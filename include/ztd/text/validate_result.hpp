@@ -126,7 +126,7 @@ namespace ztd { namespace text {
 	/// @}
 	/////
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Input, typename _State>
 		constexpr stateless_validate_result<_Input> __slice_to_stateless(validate_result<_Input, _State>&& __result) {
 			return __result;
@@ -144,7 +144,7 @@ namespace ztd { namespace text {
 				               ::std::forward<_InLast>(__in_last)),
 				__is_valid, ::std::forward<_State>(__state));
 		}
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

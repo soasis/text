@@ -44,7 +44,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type>
 		using __detect_is_code_units_maybe_replaceable
 			= decltype(::std::declval<const _Type&>().maybe_replacement_code_units());
@@ -52,7 +52,7 @@ namespace ztd { namespace text {
 		template <typename _Type>
 		using __detect_is_code_units_replaceable = decltype(::std::declval<const _Type&>().replacement_code_units());
 
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @brief Checks whether the given encoding type returns a maybe-replacement range of code units.
@@ -65,7 +65,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Type>
 	class is_code_units_maybe_replaceable
-	: public __detail::__is_detected<__detail::__detect_is_code_units_maybe_replaceable, _Type> { };
+	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type> { };
 
 	//////
 	/// @brief A @c value alias for ztd::text::is_code_units_maybe_replaceable
@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Type>
 	class is_code_units_replaceable
-	: public __detail::__is_detected<__detail::__detect_is_code_units_replaceable, _Type> { };
+	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type> { };
 
 	//////
 	/// @brief A @c value alias for ztd::text::is_code_units_replaceable

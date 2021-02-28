@@ -59,7 +59,7 @@ namespace ztd { namespace text {
 		/// ztd::text::unicode_code_point is assumed.
 		///
 		//////
-		using type = typename __detail::__remove_cvref_t<_Type>::code_point;
+		using type = typename __txt_detail::__remove_cvref_t<_Type>::code_point;
 	};
 
 	//////

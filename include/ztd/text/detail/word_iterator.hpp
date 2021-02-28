@@ -50,7 +50,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _It, typename _Word, endian _Endian>
 		class __word_reference {
@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 		private:
 		private:
 			using __base_iterator              = _It;
-			using __maybe_void_base_value_type = __detail::__iterator_value_type_t<__base_iterator>;
+			using __maybe_void_base_value_type = __txt_detail::__iterator_value_type_t<__base_iterator>;
 			using __base_value_type            = ::std::conditional_t<::std::is_void_v<__maybe_void_base_value_type>,
                     ::std::byte, __maybe_void_base_value_type>;
 			using __underlying_base_value_type = decltype(__any_to_underlying(__base_value_type {}));
@@ -201,9 +201,9 @@ namespace ztd { namespace text {
 		private:
 			using __base_iterator   = _It;
 			using __sentinel        = __word_sentinel<_It>;
-			using __base_reference  = __detail::__iterator_reference_t<__base_iterator>;
-			using __base_value_type = __detail::__iterator_value_type_t<__base_iterator>;
-			using __difference_type = __detail::__iterator_difference_type_t<__base_iterator>;
+			using __base_reference  = __txt_detail::__iterator_reference_t<__base_iterator>;
+			using __base_value_type = __txt_detail::__iterator_value_type_t<__base_iterator>;
+			using __difference_type = __txt_detail::__iterator_difference_type_t<__base_iterator>;
 			using __size_type       = ::std::make_unsigned_t<__difference_type>;
 			using __value_type      = _Word;
 
@@ -374,7 +374,7 @@ namespace ztd { namespace text {
 			}
 
 			_Derived& operator++() {
-				__detail::__next(this->_M_base_it, __base_values_per_word);
+				__txt_detail::__next(this->_M_base_it, __base_values_per_word);
 				return this->_M_this();
 			}
 
@@ -408,16 +408,16 @@ namespace ztd { namespace text {
 
 		template <typename _Word, typename _It, endian _Endian = endian::native>
 		class __word_iterator
-		: public __detail::__category_word_iterator<__word_iterator<_Word, _It, _Endian>, _Word, _It, _Endian> {
+		: public __txt_detail::__category_word_iterator<__word_iterator<_Word, _It, _Endian>, _Word, _It, _Endian> {
 		private:
 			using __base_t
-				= __detail::__category_word_iterator<__word_iterator<_Word, _It, _Endian>, _Word, _It, _Endian>;
+				= __txt_detail::__category_word_iterator<__word_iterator<_Word, _It, _Endian>, _Word, _It, _Endian>;
 
 		public:
 			using __base_t::__base_t;
 		};
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

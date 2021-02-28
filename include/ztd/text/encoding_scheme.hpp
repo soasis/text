@@ -60,7 +60,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Byte, typename _UInputRange, typename _UOutputRange, typename _ErrorHandler>
 		class __scheme_decode_handler {
 		private:
@@ -79,12 +79,12 @@ namespace ztd { namespace text {
 					return this->_M_handler.get()(__encoding, ::std::move(__result), __progress);
 				}
 				else {
-					using _ProgressPointer = __detail::__range_pointer_t<_Progress>;
-					using _ProgressWord    = __detail::__range_value_type_t<_Progress>;
+					using _ProgressPointer = __txt_detail::__range_pointer_t<_Progress>;
+					using _ProgressWord    = __txt_detail::__range_value_type_t<_Progress>;
 					_Byte* __byte_progress_data
 						= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__progress.data()));
 					auto __byte_progress_size
-						= (__detail::__adl::__adl_size(__progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
+						= (__txt_detail::__adl::__adl_size(__progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
 					::ztd::text::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
 					return this->_M_handler.get()(__encoding, ::std::move(__result), __byte_progress);
 				}
@@ -252,7 +252,7 @@ namespace ztd { namespace text {
 				return this->_M_super().base().contains_unicode_encoding();
 			}
 		};
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
@@ -274,20 +274,20 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
 	class encoding_scheme
-	: public __detail::__replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_points_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
-	  public __detail::__replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_units_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
-	  public __detail::__maybe_replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_points_maybe_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
-	  public __detail::__maybe_replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_units_maybe_replaceable_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
-	  public __detail::__is_or_contains_unicode_encoding<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  __detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>,
-	  private __detail::__ebco<_Encoding> {
+	: public __txt_detail::__replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_points_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
+	  public __txt_detail::__replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_units_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
+	  public __txt_detail::__maybe_replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_points_maybe_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
+	  public __txt_detail::__maybe_replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  is_code_units_maybe_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
+	  public __txt_detail::__is_or_contains_unicode_encoding<encoding_scheme<_Encoding, _Endian, _Byte>,
+		  __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>,
+	  private __txt_detail::__ebco<_Encoding> {
 	private:
-		using __base_t       = __detail::__ebco<_Encoding>;
-		using _UBaseEncoding = __detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>;
+		using __base_t       = __txt_detail::__ebco<_Encoding>;
+		using _UBaseEncoding = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>;
 		using _BaseCodeUnit  = code_unit_t<_UBaseEncoding>;
 
 	public:
@@ -403,26 +403,26 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			decode_state& __s) const {
-			using _UInputRange   = __detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __detail::__remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = __detail::__remove_cvref_t<_ErrorHandler>;
-			using _Result = __detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
+			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
+			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+			using _Result = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
 			using _InByteIt
-				= __detail::__word_iterator<_BaseCodeUnit, __detail::__range_iterator_t<_UInputRange>, _Endian>;
-			using _InByteSen = __detail::__word_sentinel<__detail::__range_sentinel_t<_UInputRange>>;
+				= __txt_detail::__word_iterator<_BaseCodeUnit, __txt_detail::__range_iterator_t<_UInputRange>, _Endian>;
+			using _InByteSen = __txt_detail::__word_sentinel<__txt_detail::__range_sentinel_t<_UInputRange>>;
 
-			auto __init   = __detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __detail::__adl::__adl_cend(__input);
+			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
 			subrange<_InByteIt, _InByteSen> __inbytes(
 				_InByteIt(::std::move(__init)), _InByteSen(::std::move(__inlast)));
-			__detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler> __scheme_handler(
+			__txt_detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler> __scheme_handler(
 				__error_handler);
 			auto __result
 				= this->base().decode_one(__inbytes, ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
-			return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input.begin().base(),
+			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input.begin().base(),
 				               __result.input.end().base()),
-				__detail::__reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
-				__result.error_code, __result.handled_error);
+				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
+				__result.error_code, __result.handled_errors);
 		}
 
 		//////
@@ -446,23 +446,23 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			encode_state& __s) const {
-			using _UInputRange  = __detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange = __detail::__remove_cvref_t<_OutputRange>;
-			using _Result       = __detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
+			using _UInputRange  = __txt_detail::__remove_cvref_t<_InputRange>;
+			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
+			using _Result       = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
 			using _OutByteIt
-				= __detail::__word_iterator<_BaseCodeUnit, __detail::__range_iterator_t<_UOutputRange>, _Endian>;
-			using _OutByteSen = __detail::__word_sentinel<__detail::__range_sentinel_t<_UOutputRange>>;
+				= __txt_detail::__word_iterator<_BaseCodeUnit, __txt_detail::__range_iterator_t<_UOutputRange>, _Endian>;
+			using _OutByteSen = __txt_detail::__word_sentinel<__txt_detail::__range_sentinel_t<_UOutputRange>>;
 
-			auto __outit   = __detail::__adl::__adl_begin(__output);
-			auto __outlast = __detail::__adl::__adl_end(__output);
+			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 			subrange<_OutByteIt, _OutByteSen> __outwords(
 				_OutByteIt(::std::move(__outit)), _OutByteSen(::std::move(__outlast)));
 			auto __result = this->base().encode_one(::std::forward<_InputRange>(__input), __outwords,
 				::std::forward<_ErrorHandler>(__error_handler), __s);
-			return _Result(__detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input),
-				__detail::__reconstruct(::std::in_place_type<_UOutputRange>, __result.output.begin().base(),
+			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input),
+				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __result.output.begin().base(),
 				     __result.output.end().base()),
-				__s, __result.error_code, __result.handled_error);
+				__s, __result.error_code, __result.handled_errors);
 		}
 	};
 

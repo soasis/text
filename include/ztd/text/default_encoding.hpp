@@ -55,7 +55,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type, bool _CompileTime>
 		class __default_code_unit_encoding {
 		private:
@@ -98,7 +98,7 @@ namespace ztd { namespace text {
 				>;
 			// clang-format on
 
-			static_assert(!__detail::__is_specialization_of_v<_ChosenType, basic_no_encoding>,
+			static_assert(!__txt_detail::__is_specialization_of_v<_ChosenType, basic_no_encoding>,
 				"there is no default encoding for the given code unit type");
 
 		public:
@@ -137,7 +137,7 @@ namespace ztd { namespace text {
 			//////
 			using type = utf8;
 		};
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
@@ -151,7 +151,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_code_unit_encoding : public __detail::__default_code_unit_encoding<_Type, false> { };
+	class default_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, false> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_code_unit_encoding.
@@ -169,7 +169,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_compile_time_code_unit_encoding : public __detail::__default_code_unit_encoding<_Type, true> { };
+	class default_compile_time_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, true> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_compile_time_code_unit_encoding.
@@ -186,7 +186,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_code_point_encoding : public __detail::__default_code_point_encoding<_Type, false> { };
+	class default_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, false> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_code_point_encoding.
@@ -204,7 +204,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_compile_time_code_point_encoding : public __detail::__default_code_point_encoding<_Type, true> { };
+	class default_compile_time_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, true> { };
 
 	//////
 	/// @brief A @c typename alias for ztd::text::default_compile_time_code_point_encoding.

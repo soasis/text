@@ -42,7 +42,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Type>
 		using __detect_is_ignorable_error_handler = decltype(_Type::assume_valid);
@@ -52,9 +52,9 @@ namespace ztd { namespace text {
 
 		template <typename _Type>
 		struct __is_ignorable_error_handler_sfinae<_Type,
-			::std::enable_if_t<__detail::__is_detected_v<__detect_is_ignorable_error_handler, _Type>>>
+			::std::enable_if_t<__txt_detail::__is_detected_v<__detect_is_ignorable_error_handler, _Type>>>
 		: ::std::integral_constant<bool, _Type::assume_valid::value> { };
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
@@ -76,7 +76,7 @@ namespace ztd { namespace text {
 	/// encounters an error, then it is Undefined Behavior what occurs afterwards.
 	//////
 	template <typename _Type>
-	class is_ignorable_error_handler : public __detail::__is_ignorable_error_handler_sfinae<_Type> { };
+	class is_ignorable_error_handler : public __txt_detail::__is_ignorable_error_handler_sfinae<_Type> { };
 
 	//////
 	/// @brief A @c value alias for ztd::text::is_ignorable_error_handler.

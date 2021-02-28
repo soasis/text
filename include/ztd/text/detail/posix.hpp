@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail { namespace __posix {
+	namespace __txt_detail { namespace __posix {
 
 		inline __encoding_id __determine_active_code_page() noexcept {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_LANGINFO_I_) || ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_)
@@ -74,7 +74,7 @@ namespace ztd { namespace text {
 #endif
 		}
 
-	}} // namespace __detail::__posix
+	}} // namespace __txt_detail::__posix
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 

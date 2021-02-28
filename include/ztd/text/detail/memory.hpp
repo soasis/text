@@ -41,7 +41,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail { namespace __adl {
+	namespace __txt_detail { namespace __adl {
 
 		template <typename _Type>
 		using __detect_to_address = decltype(::std::pointer_traits<_Type>::to_address(::std::declval<_Type&>()));
@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 				return __adl_to_address(p.operator->());
 			}
 		}
-	}} // namespace __detail::__adl
+	}} // namespace __txt_detail::__adl
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

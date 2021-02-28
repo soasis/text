@@ -45,7 +45,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type>
 		using __detect_is_encode_injective = decltype(_Type::is_encode_injective::value);
 
@@ -67,7 +67,7 @@ namespace ztd { namespace text {
 		struct __is_decode_injective_sfinae<_Type,
 			::std::enable_if_t<__is_detected_v<__detect_is_decode_injective, _Type>>>
 		: ::std::integral_constant<bool, _Type::is_decode_injective::value> { };
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_decode_injective : public __detail::__is_decode_injective_sfinae<_Type> { };
+	class is_decode_injective : public __txt_detail::__is_decode_injective_sfinae<_Type> { };
 
 	//////
 	/// @brief A @c value alias for ztd::text::is_decode_injective.
@@ -104,7 +104,7 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_encode_injective : public __detail::__is_encode_injective_sfinae<_Type> { };
+	class is_encode_injective : public __txt_detail::__is_encode_injective_sfinae<_Type> { };
 
 	//////
 	/// @brief A @c value alias for ztd::text::is_encode_injective.
@@ -117,7 +117,7 @@ namespace ztd { namespace text {
 	class is_full_range_representable_between
 	: public ::std::integral_constant<bool,
 		  is_decode_injective_v<
-		       __detail::__remove_cvref_t<_From>> && is_encode_injective_v<__detail::__remove_cvref_t<_To>>> { };
+		       __txt_detail::__remove_cvref_t<_From>> && is_encode_injective_v<__txt_detail::__remove_cvref_t<_To>>> { };
 
 	//////
 	/// @brief Checks whether a decode operation with @p _From piped to a decode operation with @p _To is

@@ -66,14 +66,14 @@ inline namespace ztd_text_tests_basic_compile_time_count_code_points {
 		     == ztd::text::tests::u8_unicode_sequence_truth_native_endian.size());
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
 			static_assert(ztd::text::count_code_points(
 			                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal())
 			                   .count
 			     == ztd::text::tests::unicode_sequence_truth_native_endian.size());
 		}
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
 			static_assert(ztd::text::count_code_points(
 			                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal())

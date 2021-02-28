@@ -54,34 +54,34 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		class __encoding_sentinel { };
 
 		template <__transaction _EncodeOrDecode, typename _Derived, typename _Encoding, typename _Range,
 			typename _ErrorHandler, typename _State>
 		class __encoding_iterator
-		: private __detail::__ebco<__detail::__remove_cvref_t<_Encoding>, 0>,
-		  private __detail::__ebco<__detail::__remove_cvref_t<_ErrorHandler>, 1>,
-		  private __detail::__state_storage<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>,
-			  __detail::__remove_cvref_t<_State>>,
-		  private __detail::__cache_cursor<
-			  max_code_units_v<__detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>>>,
-		  private __detail::__ebco<_Range, 2> {
+		: private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_Encoding>, 0>,
+		  private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ErrorHandler>, 1>,
+		  private __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>,
+			  __txt_detail::__remove_cvref_t<_State>>,
+		  private __txt_detail::__cache_cursor<
+			  max_code_units_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
+		  private __txt_detail::__ebco<_Range, 2> {
 		private:
-			using _URange        = __detail::__remove_cvref_t<__detail::__unwrap_t<_Range>>;
-			using _UEncoding     = __detail::__remove_cvref_t<__detail::__unwrap_t<_Encoding>>;
-			using _UErrorHandler = __detail::__remove_cvref_t<__detail::__unwrap_t<_ErrorHandler>>;
-			using _UState        = __detail::__remove_cvref_t<__detail::__unwrap_t<_State>>;
-			using _BaseIterator  = __detail::__range_iterator_t<_URange>;
+			using _URange        = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Range>>;
+			using _UEncoding     = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>;
+			using _UErrorHandler = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ErrorHandler>>;
+			using _UState        = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_State>>;
+			using _BaseIterator  = __txt_detail::__range_iterator_t<_URange>;
 			static constexpr ::std::size_t _MaxValues = max_code_units_v<_UEncoding>;
 			static constexpr bool _IsSingleValueType  = _MaxValues == 1;
-			using __base_cursor_t                     = __detail::__cache_cursor<_MaxValues>;
-			using __base_encoding_t                   = __detail::__ebco<__detail::__remove_cvref_t<_Encoding>, 0>;
-			using __base_error_handler_t = __detail::__ebco<__detail::__remove_cvref_t<_ErrorHandler>, 1>;
-			using __base_range_t         = __detail::__ebco<_Range, 2>;
-			using __base_state_t         = __detail::__state_storage<__detail::__remove_cvref_t<_Encoding>,
-                    __detail::__remove_cvref_t<_State>>;
+			using __base_cursor_t                     = __txt_detail::__cache_cursor<_MaxValues>;
+			using __base_encoding_t                   = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_Encoding>, 0>;
+			using __base_error_handler_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ErrorHandler>, 1>;
+			using __base_range_t         = __txt_detail::__ebco<_Range, 2>;
+			using __base_state_t         = __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_Encoding>,
+                    __txt_detail::__remove_cvref_t<_State>>;
 
 		public:
 			//////
@@ -108,21 +108,21 @@ namespace ztd { namespace text {
 			/// @brief The state type used for encode operations.
 			///
 			//////
-			using state_type = __detail::__remove_cvref_t<_State>;
+			using state_type = __txt_detail::__remove_cvref_t<_State>;
 			//////
 			/// @brief The strength of the iterator category, as defined in relation to the base.
 			///
 			//////
 			using iterator_category = ::std::conditional_t<
-				__detail::__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
-				::std::bidirectional_iterator_tag, __detail::__iterator_category_t<_BaseIterator>>;
+				__txt_detail::__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
+				::std::bidirectional_iterator_tag, __txt_detail::__iterator_category_t<_BaseIterator>>;
 			//////
 			/// @brief The strength of the iterator concept, as defined in relation to the base.
 			///
 			//////
 			using iterator_concept = ::std::conditional_t<
-				__detail::__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
-				::std::bidirectional_iterator_tag, __detail::__iterator_concept_t<_BaseIterator>>;
+				__txt_detail::__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
+				::std::bidirectional_iterator_tag, __txt_detail::__iterator_concept_t<_BaseIterator>>;
 			//////
 			/// @brief The object type that gets output on every dereference.
 			///
@@ -145,7 +145,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks It's not a very useful type...
 			//////
-			using difference_type = __detail::__iterator_difference_type_t<_BaseIterator>;
+			using difference_type = __txt_detail::__iterator_difference_type_t<_BaseIterator>;
 
 			constexpr __encoding_iterator() = default;
 
@@ -377,7 +377,7 @@ namespace ztd { namespace text {
 					this->__base_range_t::get_value() = ::std::move(__result.input);
 				}
 				if constexpr (!_IsSingleValueType && _Consume != __consume::__embrace_the_void) {
-					this->_M_size     = __detail::__adl::__adl_begin(__result.output) - this->_M_cache.begin();
+					this->_M_size     = __txt_detail::__adl::__adl_begin(__result.output) - this->_M_cache.begin();
 					this->_M_position = 0;
 				}
 			}
@@ -410,7 +410,7 @@ namespace ztd { namespace text {
 			::std::array<value_type, _MaxValues> _M_cache;
 		};
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

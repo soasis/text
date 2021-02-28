@@ -64,11 +64,11 @@ inline namespace ztd_text_tests_basic_compile_time_validate_code_units {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		// Basic Source Character Set, using defaults
 		// Can only be done if we have constant evaluation inside to swap to the literal encoding
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
 			static_assert(ztd::text::validate_code_units(ztd::text::tests::unicode_sequence_truth_native_endian));
 		}
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
 			static_assert(ztd::text::validate_code_units(ztd::text::tests::w_unicode_sequence_truth_native_endian));
 		}
@@ -78,12 +78,12 @@ inline namespace ztd_text_tests_basic_compile_time_validate_code_units {
 		static_assert(ztd::text::validate_code_units(ztd::text::tests::u32_unicode_sequence_truth_native_endian));
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
 			static_assert(ztd::text::validate_code_units(
 			     ztd::text::tests::unicode_sequence_truth_native_endian, ztd::text::literal()));
 		}
-		if constexpr (ztd::text::__detail::__always_true_v<
+		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
 			static_assert(ztd::text::validate_code_units(
 			     ztd::text::tests::w_unicode_sequence_truth_native_endian, ztd::text::wide_literal()));

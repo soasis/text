@@ -47,7 +47,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		inline constexpr bool __is_encoding_name_equal(
 			::std::string_view __left, ::std::string_view __right) noexcept {
@@ -250,7 +250,7 @@ namespace ztd { namespace text {
 			}
 		}
 
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

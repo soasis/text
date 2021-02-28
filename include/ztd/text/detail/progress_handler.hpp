@@ -47,7 +47,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <bool _AssumeValid, typename _DesiredEncoding>
 		class __progress_handler {
@@ -98,7 +98,7 @@ namespace ztd { namespace text {
 				return __result;
 			}
 		};
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

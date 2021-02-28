@@ -47,7 +47,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type>
 		class __un_mask_type {
 		private:
@@ -110,9 +110,9 @@ namespace ztd { namespace text {
 		class __byte_iterator {
 		private:
 			using __base_iterator   = _It;
-			using __base_reference  = __detail::__iterator_reference_t<__base_iterator>;
-			using __base_value_type = __detail::__iterator_value_type_t<__base_iterator>;
-			using __difference_type = __detail::__iterator_difference_type_t<__base_iterator>;
+			using __base_reference  = __txt_detail::__iterator_reference_t<__base_iterator>;
+			using __base_value_type = __txt_detail::__iterator_value_type_t<__base_iterator>;
+			using __difference_type = __txt_detail::__iterator_difference_type_t<__base_iterator>;
 			using __size_type       = ::std::make_unsigned_t<__difference_type>;
 			using __value_type      = _Byte;
 
@@ -127,7 +127,7 @@ namespace ztd { namespace text {
 			using iterator_type   = __base_iterator;
 			using difference_type = __difference_type;
 			using value_type      = __value_type;
-			using reference       = __detail::__byte_reference<__base_reference, __base_value_type>;
+			using reference       = __txt_detail::__byte_reference<__base_reference, __base_value_type>;
 
 			__byte_iterator() = default;
 			__byte_iterator(iterator_type __it) : __byte_iterator(::std::move(__it), 0) {
@@ -217,7 +217,7 @@ namespace ztd { namespace text {
 			__size_type _M_progress;
 		};
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

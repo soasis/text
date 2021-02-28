@@ -39,7 +39,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 	constexpr uint_least64_t __ce_ipow_r(uint_least64_t base, uint_least64_t exp, uint_least64_t result) {
 		return exp < 1u ? result : __ce_ipow_r(base * base, exp / 2, (exp % 2) ? result * base : result);
@@ -50,6 +50,6 @@ namespace ztd { namespace text {
 	}
 
 }ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text::__detail
+}} // namespace ztd::text::__txt_detail
 
 #endif // ZTD_TEXT_DETAIL_MATH_HPP

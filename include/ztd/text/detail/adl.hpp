@@ -39,7 +39,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 		// Blessed Overload Overlord Xeo,
 		// may his name be praised.
 		namespace __adl {
@@ -132,7 +132,7 @@ namespace ztd { namespace text {
 		template <typename _Range>
 		using __detect_adl_empty
 			= decltype(__adl::__adl_empty(::std::declval<::std::add_lvalue_reference_t<_Range>>()));
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

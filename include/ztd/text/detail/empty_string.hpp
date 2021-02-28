@@ -41,7 +41,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 		using __uchar_one_t                           = unsigned char[1];
 		inline constexpr const __uchar_one_t __u_shim = {};
 
@@ -91,7 +91,7 @@ namespace ztd { namespace text {
 			return U"";
 		}
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

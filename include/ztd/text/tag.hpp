@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -30,17 +30,26 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_EMPTY_STATE_HPP
-#define ZTD_TEXT_EMPTY_STATE_HPP
+#ifndef ZTD_TEXT_TAG_HPP
+#define ZTD_TEXT_TAG_HPP
 
 #include <ztd/text/version.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __txt_detail {
-		class __empty_state { };
-	} // namespace __txt_detail
+
+	//////
+	/// @brief A tag type, useful in helping to constrain extension points and more.
+	///
+	/// @tparam _Args The types to be used as part of the tagging mechanism. As this is variadic, allows no classes to
+	/// be passed.
+	///
+	/// @remarks The tag type will always be used
+	//////
+	template <typename... _Args>
+	class tag { };
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#endif // ZTD_TEXT_EMPTY_STATE_HPP
+#endif // ZTD_TEXT_TAG_HPP

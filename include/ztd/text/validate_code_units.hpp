@@ -77,19 +77,19 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
 	constexpr auto basic_validate_code_units(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
-		using _UInput         = __detail::__remove_cvref_t<_Input>;
-		using _InputValueType = __detail::__range_value_type_t<_UInput>;
-		using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
+		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
+		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
+		using _WorkingInput   = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
                     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                _UInput>>;
-		using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
+		using _UEncoding      = __txt_detail::__remove_cvref_t<_Encoding>;
 		using _Result         = validate_result<_WorkingInput, _DecodeState>;
 
 		_WorkingInput __working_input(
-			__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
-		if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_units_one, _Encoding,
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_validate_code_units_one, _Encoding,
 			              _WorkingInput, _DecodeState>) {
 			(void)__encode_state;
 			for (;;) {
@@ -98,7 +98,7 @@ namespace ztd { namespace text {
 					return _Result(::std::move(__result.input), false, __decode_state);
 				}
 				__working_input = ::std::move(__result.input);
-				if (__detail::__adl::__adl_empty(__working_input)) {
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
 			}
@@ -114,21 +114,21 @@ namespace ztd { namespace text {
 			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
 
 			for (;;) {
-				auto __validate_result = __detail::__basic_validate_code_units_one(__working_input, __encoding,
+				auto __validate_result = __txt_detail::__basic_validate_code_units_one(__working_input, __encoding,
 					__code_unit_buf, __code_point_buf, __decode_state, __encode_state);
 				if (!__validate_result.valid) {
-					return _Result(__detail::__reconstruct(
+					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
 						false, __decode_state);
 				}
 				__working_input = ::std::move(__validate_result.input);
-				if (__detail::__adl::__adl_empty(__working_input)) {
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
 			}
 			return _Result(
-				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)), true,
-				__decode_state);
+				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
+				true, __decode_state);
 		}
 	}
 
@@ -147,43 +147,45 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
 	constexpr auto validate_code_units(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
-		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_validate_code_units, _Encoding, _Input,
-			              _DecodeState>) {
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_units, _Encoding,
+			              _Input, _DecodeState>) {
 			(void)__encode_state;
-			return text_validate_code_units(
+			return text_validate_code_units(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
-		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_validate_code_units, _Encoding,
-			                   _Input, _DecodeState>) {
-			return text_validate_code_units(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				__decode_state, __encode_state);
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_units,
+			                   _Encoding, _Input, _DecodeState>) {
+			return text_validate_code_units(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state,
+				__encode_state);
 		}
-		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_internal_text_validate_code_units,
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_validate_code_units,
 			                   _Encoding, _Input, _DecodeState>) {
 			(void)__encode_state;
-			return __text_validate_code_units(
+			return __text_validate_code_units(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
-		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_internal_text_validate_code_units,
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_validate_code_units,
 			                   _Encoding, _Input, _DecodeState>) {
-			return __text_validate_code_units(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				__decode_state, __encode_state);
+			return __text_validate_code_units(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state,
+				__encode_state);
 		}
 		else {
-			using _UInput         = __detail::__remove_cvref_t<_Input>;
-			using _InputValueType = __detail::__range_value_type_t<_UInput>;
-			using _WorkingInput   = __detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-                    ::std::conditional_t<__detail::__is_character_v<_InputValueType>,
+			using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
+			using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
+			using _WorkingInput   = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+                    ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
                          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                     _UInput>>;
-			using _UEncoding      = __detail::__remove_cvref_t<_Encoding>;
+			using _UEncoding      = __txt_detail::__remove_cvref_t<_Encoding>;
 			using _Result         = validate_result<_WorkingInput, _DecodeState>;
 
 			_WorkingInput __working_input(
-				__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
-			if constexpr (__detail::__is_detected_v<__detail::__detect_object_validate_code_units_one, _Encoding,
-				              _WorkingInput, _DecodeState>) {
+			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_validate_code_units_one,
+				              _Encoding, _WorkingInput, _DecodeState>) {
 				(void)__encode_state;
 				for (;;) {
 					auto __result = __encoding.validate_code_units_one(__working_input, __decode_state);
@@ -191,7 +193,7 @@ namespace ztd { namespace text {
 						return _Result(::std::move(__result.input), false, __decode_state);
 					}
 					__working_input = ::std::move(__result.input);
-					if (__detail::__adl::__adl_empty(__working_input)) {
+					if (__txt_detail::__adl::__adl_empty(__working_input)) {
 						break;
 					}
 				}
@@ -207,20 +209,20 @@ namespace ztd { namespace text {
 				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
 
 				for (;;) {
-					auto __validate_result = __detail::__basic_validate_code_units_one(__working_input, __encoding,
-						__code_unit_buf, __code_point_buf, __decode_state, __encode_state);
+					auto __validate_result = __txt_detail::__basic_validate_code_units_one(__working_input,
+						__encoding, __code_unit_buf, __code_point_buf, __decode_state, __encode_state);
 					if (!__validate_result.valid) {
-						return _Result(__detail::__reconstruct(
+						return _Result(__txt_detail::__reconstruct(
 							               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
 							false, __decode_state);
 					}
 					__working_input = ::std::move(__validate_result.input);
-					if (__detail::__adl::__adl_empty(__working_input)) {
+					if (__txt_detail::__adl::__adl_empty(__working_input)) {
 						break;
 					}
 				}
 				return _Result(
-					__detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
+					__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
 					true, __decode_state);
 			}
 		}
@@ -242,15 +244,15 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _Encoding, typename _DecodeState>
 	constexpr auto validate_code_units(_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state) {
-		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
-		if constexpr (__detail::__is_detected_v<__detail::__detect_adl_text_validate_code_units, _Encoding, _Input,
-			              _DecodeState>) {
-			return text_validate_code_units(
+		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_units, _Encoding,
+			              _Input, _DecodeState>) {
+			return text_validate_code_units(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
-		else if constexpr (__detail::__is_detected_v<__detail::__detect_adl_internal_text_validate_code_units,
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_validate_code_units,
 			                   _Encoding, _Input, _DecodeState>) {
-			return __text_validate_code_units(
+			return __text_validate_code_units(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else {
@@ -274,13 +276,13 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _Encoding>
 	constexpr auto validate_code_units(_Input&& __input, _Encoding&& __encoding) {
-		using _UEncoding = __detail::__remove_cvref_t<_Encoding>;
+		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
 
 		_State __state = make_decode_state(__encoding);
 		auto __stateful_result
 			= validate_code_units(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __state);
-		return __detail::__slice_to_stateless(::std::move(__stateful_result));
+		return __txt_detail::__slice_to_stateless(::std::move(__stateful_result));
 	}
 
 	//////
@@ -296,8 +298,8 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input>
 	constexpr auto validate_code_units(_Input&& __input) {
-		using _UInput   = __detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __detail::__remove_cvref_t<__detail::__range_value_type_t<_UInput>>;
+		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
+		using _CodeUnit = __txt_detail::__remove_cvref_t<__txt_detail::__range_value_type_t<_UInput>>;
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria

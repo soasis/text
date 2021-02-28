@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 		/// @brief The code unit type for the encoding type.
 		///
 		//////
-		using type = typename __detail::__remove_cvref_t<_Type>::code_unit;
+		using type = typename __txt_detail::__remove_cvref_t<_Type>::code_unit;
 	};
 
 	//////

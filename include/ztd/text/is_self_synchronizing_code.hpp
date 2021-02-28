@@ -42,7 +42,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Type>
 		using __detect_is_self_synchronizing_code = decltype(_Type::is_self_synchronizing_code::value);
 
@@ -54,11 +54,11 @@ namespace ztd { namespace text {
 		struct __is_self_synchronizing_code_sfinae<_Type,
 			::std::enable_if_t<__is_detected_v<__detect_is_self_synchronizing_code, _Type>>>
 		: ::std::integral_constant<bool, _Type::self_synchronizing_code::value> { };
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	template <typename _Type>
 	class is_self_synchronizing_code
-	: public __detail::__is_self_synchronizing_code_sfinae<__detail::__remove_cvref_t<_Type>> { };
+	: public __txt_detail::__is_self_synchronizing_code_sfinae<__txt_detail::__remove_cvref_t<_Type>> { };
 
 	template <typename _Type>
 	inline constexpr bool is_self_synchronizing_code_v = is_self_synchronizing_code<_Type>::value;

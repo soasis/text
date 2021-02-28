@@ -42,14 +42,14 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Encoding, typename _ErrorHandler>
-		class __forwarding_handler : private __detail::__ebco<_Encoding&, 0>,
-			                        private __detail::__ebco<_ErrorHandler&, 1> {
+		class __forwarding_handler : private __txt_detail::__ebco<_Encoding&, 0>,
+			                        private __txt_detail::__ebco<_ErrorHandler&, 1> {
 		private:
-			using __encoding_base_t      = __detail::__ebco<_Encoding&, 0>;
-			using __error_handler_base_t = __detail::__ebco<_ErrorHandler&, 1>;
+			using __encoding_base_t      = __txt_detail::__ebco<_Encoding&, 0>;
+			using __error_handler_base_t = __txt_detail::__ebco<_ErrorHandler&, 1>;
 
 		public:
 			constexpr __forwarding_handler(_Encoding& __encoding, _ErrorHandler& __error_handler) noexcept
@@ -65,7 +65,7 @@ namespace ztd { namespace text {
 			}
 		};
 
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

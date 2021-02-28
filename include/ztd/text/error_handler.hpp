@@ -63,20 +63,20 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Encoding, typename _Input, typename _Result>
 		constexpr _Result&& __write_direct(const _Encoding&, _Input&& __input, _Result&& __result) noexcept {
-			using _UOutputRange = __detail::__remove_cvref_t<decltype(__result.output)>;
+			using _UOutputRange = __txt_detail::__remove_cvref_t<decltype(__result.output)>;
 
-			auto __outit   = __detail::__adl::__adl_begin(__result.output);
-			auto __outlast = __detail::__adl::__adl_end(__result.output);
+			auto __outit   = __txt_detail::__adl::__adl_begin(__result.output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__result.output);
 			if (__outit == __outlast) {
 				// BAIL
 				return ::std::forward<_Result>(__result);
 			}
 
-			if (__detail::__adl::__adl_empty(__input)) {
+			if (__txt_detail::__adl::__adl_empty(__input)) {
 				// empty range, everything is okay
 				__result.error_code = encoding_error::ok;
 				return ::std::forward<_Result>(__result);
@@ -84,7 +84,7 @@ namespace ztd { namespace text {
 
 			for (const auto& __element : ::std::forward<_Input>(__input)) {
 				if (__outit == __outlast) {
-					__result.output = __detail::__reconstruct(
+					__result.output = __txt_detail::__reconstruct(
 						::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast));
 					return ::std::forward<_Result>(__result);
 				}
@@ -92,7 +92,7 @@ namespace ztd { namespace text {
 				++__outit;
 			}
 
-			__result.output = __detail::__reconstruct(
+			__result.output = __txt_detail::__reconstruct(
 				::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast));
 			__result.error_code = encoding_error::ok;
 			return ::std::forward<_Result>(__result);
@@ -103,13 +103,13 @@ namespace ztd { namespace text {
 			const _Encoding& __encoding, _Result&& __result) noexcept {
 			using _InputCodePoint = code_point_t<_Encoding>;
 			if constexpr (is_code_points_replaceable_v<_Encoding>) {
-				return __detail::__write_direct(
+				return __txt_detail::__write_direct(
 					__encoding, __encoding.replacement_code_points(), ::std::forward<_Result>(__result));
 			}
 			else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
 				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_points();
 				if (__maybe_code_points) {
-					return __detail::__write_direct(__encoding,
+					return __txt_detail::__write_direct(__encoding,
 						*::std::forward<decltype(__maybe_code_points)>(__maybe_code_points),
 						::std::forward<_Result>(__result));
 				}
@@ -119,11 +119,11 @@ namespace ztd { namespace text {
 			}
 			else if constexpr (is_unicode_code_point_v<_InputCodePoint>) {
 				constexpr _InputCodePoint __replacements[1]
-					= { static_cast<_InputCodePoint>(__detail::__replacement) };
-				return __detail::__write_direct(__encoding, __replacements, ::std::forward<_Result>(__result));
+					= { static_cast<_InputCodePoint>(__txt_detail::__replacement) };
+				return __txt_detail::__write_direct(__encoding, __replacements, ::std::forward<_Result>(__result));
 			}
 			else {
-				static_assert(__detail::__always_false_v<_Encoding>,
+				static_assert(__txt_detail::__always_false_v<_Encoding>,
 					"There is no logical replacement code points to insert into the stream on failure for the "
 					"specified encoding type.");
 			}
@@ -164,7 +164,7 @@ namespace ztd { namespace text {
 					"specified encoding type.");
 			}
 		}
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	//////
 	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
@@ -174,14 +174,14 @@ namespace ztd { namespace text {
 	/// encoding and decoding in a general sense. However: IT IS ALSO EXTREMELY DANGEROUS AND CAN INVOKE UNDEFINED
 	/// BEHAVIOR IF YOUR TEXT IS, IN FACT, MESSED UP. PLEASE DO NOT USE THIS WITHOUT A GOOD REASON!
 	//////
-	class assume_valid_handler : public __detail::__pass_through_handler_with<true> { };
+	class assume_valid_handler : public __txt_detail::__pass_through_handler_with<true> { };
 
 	//////
 	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
 	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler
 	/// which can invoke UB if an error occurs.
 	//////
-	class pass_handler : public __detail::__pass_through_handler_with<false> { };
+	class pass_handler : public __txt_detail::__pass_through_handler_with<false> { };
 
 	//////
 	/// @brief An error handler that replaces bad code points and code units with a chosen code point / code unit
@@ -218,15 +218,15 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			auto __outit   = __detail::__adl::__adl_begin(__result.output);
-			auto __outlast = __detail::__adl::__adl_end(__result.output);
+			auto __outit   = __txt_detail::__adl::__adl_begin(__result.output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__result.output);
 			if (__outit == __outlast) {
 				// BAIL
 				return __result;
 			}
 
 			if constexpr (is_code_units_replaceable_v<_Encoding>) {
-				return __detail::__write_direct(
+				return __txt_detail::__write_direct(
 					__encoding, __encoding.replacement_code_units(), ::std::move(__result));
 			}
 			else {
@@ -241,13 +241,13 @@ namespace ztd { namespace text {
 					}
 				}
 				else {
-					__replacement_size = __detail::__fill_replacement_code_point_static(__encoding, __replacement);
+					__replacement_size = __txt_detail::__fill_replacement_code_point_static(__encoding, __replacement);
 				}
 
 				const ::ztd::text::span<const _InputCodePoint> __replacement_range(
 					__replacement, __replacement_size);
 
-				__detail::__pass_through_handler __handler {};
+				__txt_detail::__pass_through_handler __handler {};
 				encode_state_t<_Encoding> __state = make_encode_state(__encoding);
 				auto __encresult
 					= __encoding.encode_one(__replacement_range, ::std::move(__result.output), __handler, __state);
@@ -282,7 +282,7 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			return __detail::__write_static_code_points_direct(__encoding, ::std::move(__result));
+			return __txt_detail::__write_static_code_points_direct(__encoding, ::std::move(__result));
 		}
 	};
 
@@ -331,9 +331,9 @@ namespace ztd { namespace text {
 	/// for I/O (e.g., Networking) operations.
 	//////
 	template <typename _Encoding, typename _ErrorHandler = default_handler>
-	class incomplete_handler : private __detail::__ebco<_ErrorHandler> {
+	class incomplete_handler : private __txt_detail::__ebco<_ErrorHandler> {
 	private:
-		using __error_handler_base_t = __detail::__ebco<_ErrorHandler>;
+		using __error_handler_base_t = __txt_detail::__ebco<_ErrorHandler>;
 		using _CodeUnit              = code_unit_t<_Encoding>;
 		using _CodePoint             = code_point_t<_Encoding>;
 
@@ -414,17 +414,17 @@ namespace ztd { namespace text {
 			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result, const _Progress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {
 				// it's incomplete and we are okay with that
-				if constexpr (__detail::__is_specialization_of_v<_Result, decode_result>) {
+				if constexpr (__txt_detail::__is_specialization_of_v<_Result, decode_result>) {
 					// save the read code units
-					::std::copy_n(__detail::__adl::__adl_cbegin(__progress),
-						__detail::__adl::__adl_cend(__progress), this->_M_code_units.data());
-					this->_M_code_units_size = __detail::__adl::__adl_size(__progress);
+					::std::copy_n(__txt_detail::__adl::__adl_cbegin(__progress),
+						__txt_detail::__adl::__adl_cend(__progress), this->_M_code_units.data());
+					this->_M_code_units_size = __txt_detail::__adl::__adl_size(__progress);
 				}
 				else {
 					// save the read code points
-					::std::copy_n(__detail::__adl::__adl_cbegin(__progress),
-						__detail::__adl::__adl_cend(__progress), this->_M_code_points.data());
-					this->_M_code_points_size = __detail::__adl::__adl_size(__progress);
+					::std::copy_n(__txt_detail::__adl::__adl_cbegin(__progress),
+						__txt_detail::__adl::__adl_cend(__progress), this->_M_code_points.data());
+					this->_M_code_points_size = __txt_detail::__adl::__adl_size(__progress);
 				}
 				return __result;
 			}
@@ -458,9 +458,16 @@ namespace ztd { namespace text {
 	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
 	/// time. Without configuration, it defaults to the ztd::text::replacement_handler .
 	//////
-	class default_handler : private replacement_handler {
+	class default_handler
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+	: private throw_handler {
+	private:
+		using __error_handler_base_t = throw_handler;
+#else
+	: private replacement_handler {
 	private:
 		using __error_handler_base_t = replacement_handler;
+#endif
 
 	public:
 		using __error_handler_base_t::__error_handler_base_t;
@@ -470,12 +477,20 @@ namespace ztd { namespace text {
 
 	using default_incomplete_handler = incomplete_handler<default_handler>;
 
-	namespace __detail {
-		class __careless_handler : public default_handler { };
+	namespace __txt_detail {
+		class __careless_handler : public default_handler {
+		private:
+			using __error_handler_base_t = default_handler;
+
+		public:
+			using __error_handler_base_t::__error_handler_base_t;
+
+			using __error_handler_base_t::operator();
+		};
 
 		template <typename _ErrorHandler>
 		inline constexpr bool __is_careless_error_handler_v
-			= ::std::is_same_v<__detail::__remove_cvref_t<_ErrorHandler>, __careless_handler>;
+			= ::std::is_same_v<__txt_detail::__remove_cvref_t<_ErrorHandler>, __careless_handler>;
 
 		template <typename _ErrorHandler>
 		constexpr auto __duplicate_or_be_careless(_ErrorHandler& __original) {
@@ -492,7 +507,7 @@ namespace ztd { namespace text {
 				return __careless_handler {};
 			}
 		}
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

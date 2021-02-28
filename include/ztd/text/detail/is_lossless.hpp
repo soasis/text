@@ -45,11 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __detail {
+	namespace __txt_detail {
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_encode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __detail::__is_careless_error_handler_v<_ErrorHandler> ? is_encode_injective_v<_Encoding> : true> { };
+			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_encode_injective_v<_Encoding> : true> { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		inline constexpr bool __is_encode_lossless_or_deliberate_v
@@ -58,7 +58,7 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_decode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __detail::__is_careless_error_handler_v<_ErrorHandler> ? is_decode_injective_v<_Encoding> : true> { };
+			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_decode_injective_v<_Encoding> : true> { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		inline constexpr bool __is_decode_lossless_or_deliberate_v
@@ -67,14 +67,14 @@ namespace ztd { namespace text {
 		template <typename _FromEncoding, typename _ToEncoding, typename _ErrorHandler>
 		class __is_transcode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __detail::__is_careless_error_handler_v<_ErrorHandler>
+			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler>
 			       ? is_decode_injective_v<_FromEncoding> && is_encode_injective_v<_ToEncoding>
 			       : true> { };
 
 		template <typename _FromEncoding, typename _ToEncoding, typename _ErrorHandler>
 		inline constexpr bool __is_transcode_lossless_or_deliberate_v
 			= __is_transcode_lossless_or_deliberate<_FromEncoding, _ToEncoding, _ErrorHandler>::value;
-	} // namespace __detail
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

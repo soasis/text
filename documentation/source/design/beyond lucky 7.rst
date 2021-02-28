@@ -42,3 +42,4 @@ While the given :doc:`Lucky 7 </design/lucky 7>` represents the simplest possibl
 	lucky 7 extensions/replacement characters
 	lucky 7 extensions/unicode encoding
 	lucky 7 extensions/dependent states
+	lucky 7 extensions/speed

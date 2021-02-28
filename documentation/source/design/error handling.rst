@@ -57,7 +57,7 @@ Clearly, the Korean characters present in the UTF-8 string just cannot fit in a 
 
 .. warning::
 
-	For the love of what little remains holy, PLEASE don't use ``ztd::text::assume_valid_handler`` unless you REALLY know you need it. It is a surefire way to open up vulnerabilities in your text processing algorithm. Not a single line of code using this type should pass code review if there is even the slightest thought that this will be used on any input that is not PERFECTLY under the DIRECT, PERSONAL control of the authors, auditors, and maintainers of the code.
+	⚠️ For the love of what little remains holy, PLEASE don't use ``ztd::text::assume_valid_handler`` unless you REALLY know you need it. It is a surefire way to open up vulnerabilities in your text processing algorithm. Not a single line of code using this type should pass code review if there is even the slightest thought that this will be used on any input that is not PERFECTLY under the DIRECT, PERSONAL control of the authors, auditors, and maintainers of the code.
 
 These are all the error handlers that you have at your disposal, but they are just pre-provided types you can instantiate yourself. Nothing stops you from making your own error handling type! In order to do that, however, you need to understand what an error handler is composed of, and what it's got inside of itself.
 

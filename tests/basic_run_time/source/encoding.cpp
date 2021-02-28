@@ -55,7 +55,7 @@ inline namespace ztd_text_tests_basic_run_time_encoding {
 		bool decode_output_equal = std::equal(
 		     decode_output.begin(), decode_output.end(), decoded.begin(), decoded.begin() + decode_output.size());
 		REQUIRE(decode_result.error_code == ztd::text::encoding_error::ok);
-		REQUIRE_FALSE(decode_result.handled_error);
+		REQUIRE_FALSE(decode_result.errors_were_handled());
 		REQUIRE(decode_output_equal);
 
 		CodeUnit encode_output_storage[encode_output_max] {};
@@ -67,7 +67,7 @@ inline namespace ztd_text_tests_basic_run_time_encoding {
 		bool encode_output_equal = std::equal(
 		     encode_output.begin(), encode_output.end(), encoded.begin(), encoded.begin() + encode_output.size());
 		REQUIRE(encode_result.error_code == ztd::text::encoding_error::ok);
-		REQUIRE_FALSE(encode_result.handled_error);
+		REQUIRE_FALSE(encode_result.errors_were_handled());
 		REQUIRE(encode_output_equal);
 
 		bool decode_result_input_okay = std::equal(decode_result.input.begin(), decode_result.input.end(),

@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
 		typename _Range        = ::std::basic_string_view<code_unit_t<_Encoding>>,
-		typename _ErrorHandler = __detail::__careless_handler>
+		typename _ErrorHandler = __txt_detail::__careless_handler>
 	class basic_text_view {
 	public:
 		//////
@@ -99,7 +99,7 @@ namespace ztd { namespace text {
 
 		template <typename _ViewErrorHandler = error_handler_type>
 		using _CodePointView
-			= decode_view<encoding_type, range_type, __detail::__remove_cvref_t<_ViewErrorHandler>, state_type>;
+			= decode_view<encoding_type, range_type, __txt_detail::__remove_cvref_t<_ViewErrorHandler>, state_type>;
 
 		range_type _M_storage;
 		encoding_type _M_encoding;

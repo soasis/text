@@ -46,7 +46,7 @@
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-	namespace __detail {
+	namespace __txt_detail {
 
 		template <typename _Encoding, typename _EncodingState, ::std::size_t _Id = 0>
 		class __state_storage : private __ebco<__remove_cvref_t<__unwrap_t<_EncodingState>>, _Id> {
@@ -109,7 +109,7 @@ namespace ztd { namespace text {
 		template <>
 		class __cache_cursor<1> { };
 
-	} // namespace __detail
+	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

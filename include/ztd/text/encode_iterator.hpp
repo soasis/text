@@ -47,7 +47,7 @@ namespace ztd { namespace text {
 	/// @brief The encode sentinel to use as the @c end value for a ztd::text::encode_iterator.
 	///
 	//////
-	class encode_sentinel : public __detail::__encoding_sentinel { };
+	class encode_sentinel : public __txt_detail::__encoding_sentinel { };
 
 	//////
 	/// @brief An iterator over an iterator of code points, presenting the code points as code units. Uses the @p
@@ -68,10 +68,10 @@ namespace ztd { namespace text {
 	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler,
 		typename _State = encode_state_t<_Encoding>>
 	class encode_iterator
-	: public __detail::__encoding_iterator<__detail::__transaction::__encode,
+	: public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__encode,
 		  encode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State> {
 	private:
-		using __base_t = __detail::__encoding_iterator<__detail::__transaction::__encode,
+		using __base_t = __txt_detail::__encoding_iterator<__txt_detail::__transaction::__encode,
 			encode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State>;
 
 	public:

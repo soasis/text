@@ -65,7 +65,7 @@ namespace ztd { namespace text { namespace tests {
 		}
 		else {
 			static_assert(
-				ztd::text::__detail::__always_false_v<Encoding>, "No appropriate source input for this type");
+				ztd::text::__txt_detail::__always_false_v<Encoding>, "No appropriate source input for this type");
 		}
 	}
 

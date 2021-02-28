@@ -69,14 +69,14 @@ namespace ztd { namespace text {
 			//////
 			constexpr __unicode_scalar_value(char32_t __code_point) noexcept : _M_scalar(__code_point) {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT_I_)
-				if (__detail::__is_surrogate(this->_M_scalar) || (this->_M_scalar > __detail::__last_code_point)) {
+				if (__txt_detail::__is_surrogate(this->_M_scalar) || (this->_M_scalar > __txt_detail::__last_code_point)) {
 					::std::abort();
 				}
 #else
 				ZTD_TEXT_ASSERT_MESSAGE_I_(
 					"The code point value must be a valid code point and must not be a surrogate value.",
-					!__detail::__is_surrogate(this->_M_scalar)
-					     && (this->_M_scalar <= __detail::__last_code_point));
+					!__txt_detail::__is_surrogate(this->_M_scalar)
+					     && (this->_M_scalar <= __txt_detail::__last_code_point));
 #endif
 			}
 

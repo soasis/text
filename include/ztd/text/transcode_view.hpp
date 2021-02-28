@@ -78,8 +78,8 @@ namespace ztd { namespace text {
 	//////
 	template <typename _FromEncoding, typename _ToEncoding = utf8,
 		typename _Range            = ::std::basic_string_view<code_unit_t<_FromEncoding>>,
-		typename _FromErrorHandler = __detail::__careless_handler,
-		typename _ToErrorHandler = __detail::__careless_handler, typename _FromState = decode_state_t<_FromEncoding>,
+		typename _FromErrorHandler = __txt_detail::__careless_handler,
+		typename _ToErrorHandler = __txt_detail::__careless_handler, typename _FromState = decode_state_t<_FromEncoding>,
 		typename _ToState = encode_state_t<_ToEncoding>>
 	class transcode_view {
 	public:
