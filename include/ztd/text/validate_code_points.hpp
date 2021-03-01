@@ -90,11 +90,29 @@ namespace ztd { namespace text {
 		_WorkingInput __working_input(
 			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_validate_code_points_one, _Encoding,
-			              _WorkingInput, _DecodeState>) {
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_points_one,
+			              _Encoding, _WorkingInput, _DecodeState>) {
 			(void)__decode_state;
 			for (;;) {
-				auto __result = __encoding.validate_code_points_one(__working_input, __encode_state);
+				auto __result = text_validate_code_points_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state);
+				if (!__result.valid) {
+					return _Result(::std::move(__result.input), false, __encode_state);
+				}
+				__working_input = ::std::move(__result.input);
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), true, __encode_state);
+		}
+		else if constexpr (__txt_detail::__is_detected_v<
+			                   __txt_detail::__detect_adl_internal_text_validate_code_points_one, _Encoding,
+			                   _WorkingInput, _DecodeState>) {
+			(void)__decode_state;
+			for (;;) {
+				auto __result = __text_validate_code_points_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __encode_state);
 				}

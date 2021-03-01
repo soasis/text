@@ -89,13 +89,31 @@ namespace ztd { namespace text {
 		_WorkingInput __working_input(
 			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_count_code_units_one, _Encoding,
+		::std::size_t __code_point_count = 0;
+
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_code_units_one, _Encoding,
 			              _WorkingInput, _ErrorHandler, _State>) {
-
-			::std::size_t __code_point_count = 0;
-
 			for (;;) {
-				auto __result = __encoding.count_code_units_one(__working_input, __error_handler, __state);
+				auto __result = text_count_code_units_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+				if (__result.error_code != encoding_error::ok) {
+					return _Result(
+						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
+				}
+				__code_point_count += __result.count;
+				__working_input = ::std::move(__result.input);
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
+		}
+		else if constexpr (__txt_detail::__is_detected_v<
+			                   __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
+			                   _WorkingInput, _ErrorHandler, _State>) {
+			for (;;) {
+				auto __result = __text_count_code_units_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
 				if (__result.error_code != encoding_error::ok) {
 					return _Result(
 						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
@@ -110,8 +128,6 @@ namespace ztd { namespace text {
 		}
 		else {
 			using _CodePoint = code_point_t<_UEncoding>;
-
-			::std::size_t __code_point_count = 0;
 
 			_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
 

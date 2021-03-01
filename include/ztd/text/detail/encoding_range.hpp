@@ -61,8 +61,14 @@ namespace ztd { namespace text {
 			     ::std::declval<_Encoding>(), ::std::declval<_State&>()));
 
 		template <typename _Encoding, typename _Input, typename _State>
-		using __detect_object_validate_code_units_one = decltype(::std::declval<_Encoding>().validate_code_units_one(
-			::std::declval<_Input>(), ::std::declval<_State&>()));
+		using __detect_adl_text_validate_code_units_one
+			= decltype(text_validate_code_units_one(tag<__remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
+			     ::std::declval<_Input>(), ::std::declval<_State&>()));
+
+		template <typename _Encoding, typename _Input, typename _State>
+		using __detect_adl_internal_text_validate_code_units_one
+			= decltype(__text_validate_code_units_one(tag<__remove_cvref_t<_Encoding>> {},
+			     ::std::declval<_Encoding>(), ::std::declval<_Input>(), ::std::declval<_State&>()));
 
 		// validation: code points
 		template <typename _Input, typename _Encoding, typename _State>
@@ -76,14 +82,25 @@ namespace ztd { namespace text {
 			     ::std::declval<_Encoding>(), ::std::declval<_State&>()));
 
 		template <typename _Encoding, typename _Input, typename _State>
-		using __detect_object_validate_code_points_one
-			= decltype(::std::declval<_Encoding>().validate_code_points_one(
-			     ::std::declval<_Input>(), ::std::declval<_State&>()));
+		using __detect_adl_internal_text_validate_code_points_one
+			= decltype(__text_validate_code_points_one(tag<__remove_cvref_t<_Encoding>> {},
+			     ::std::declval<_Encoding>(), ::std::declval<_Input>(), ::std::declval<_State&>()));
 
-		// counting: decode
+		template <typename _Encoding, typename _Input, typename _State>
+		using __detect_adl_text_validate_code_points_one
+			= decltype(text_validate_code_points_one(tag<__remove_cvref_t<_Encoding>> {},
+			     ::std::declval<_Encoding>(), ::std::declval<_Input>(), ::std::declval<_State&>()));
+
+		// counting: code units
 		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
-		using __detect_object_count_code_units_one = decltype(::std::declval<_Encoding>().count_code_units_one(
-			::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+		using __detect_adl_internal_text_count_code_units_one
+			= decltype(__text_count_code_units_one(tag<__remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
+			     ::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+
+		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
+		using __detect_adl_text_count_code_units_one
+			= decltype(text_count_code_units_one(tag<__remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
+			     ::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
 		using __detect_adl_text_count_code_units
@@ -95,10 +112,16 @@ namespace ztd { namespace text {
 			= decltype(__text_count_code_units(tag<__remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
 			     ::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
-		// counting: encode
+		// counting: code points
 		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
-		using __detect_object_count_code_points_one = decltype(::std::declval<_Encoding>().count_code_points_one(
-			::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+		using __detect_adl_internal_text_count_code_points_one
+			= decltype(__text_count_code_points_one(tag<__remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
+			     ::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
+
+		template <typename _Encoding, typename _Input, typename _Handler, typename _State>
+		using __detect_adl_text_count_code_points_one
+			= decltype(text_count_code_points_one(tag<__remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
+			     ::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
 		using __detect_adl_text_count_code_points
@@ -187,63 +210,6 @@ namespace ztd { namespace text {
 		template <typename _Handler, typename _Encoding, typename _Result, typename _Progress>
 		using __detect_callable_handler = decltype(::std::declval<_Handler>()(
 			::std::declval<const _Encoding&>(), ::std::declval<_Result>(), ::std::declval<_Progress>()));
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_decode_encoding_for_v
-			= __is_detected_v<__detect_object_decode_one, _Encoding, _CodeUnits, _CodePoints, _Handler, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_encode_encoding_for_v
-			= __is_detected_v<__detect_object_encode_one, _Encoding, _CodePoints, _CodeUnits, _Handler, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_encoding_for_v
-			= __is_decode_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>&&
-			     __is_encode_encoding_for_v<_Encoding, _CodePoints, _CodeUnits, _Handler, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_counting_decode_encoding_for_v
-			= __is_detected_v<__detect_object_count_code_units_one, _Encoding, _CodeUnits, _CodePoints, _Handler,
-			     _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_counting_encode_encoding_for_v
-			= __is_detected_v<__detect_object_count_code_points_one, _Encoding, _CodePoints, _CodeUnits, _Handler,
-			     _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_counting_encoding_for_v
-			= __is_counting_decode_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>&&
-			     __is_counting_encode_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _Handler, typename _State>
-		inline constexpr bool __is_validating_code_units_encoding_for_v
-			= __is_detected_v<__detect_object_validate_code_units_one, _Encoding, _CodeUnits, _State>;
-
-		template <typename _Encoding, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_validating_code_points_encoding_for_v
-			= __is_detected_v<__detect_object_validate_code_points_one, _Encoding, _CodePoints, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_validating_encoding_for_v
-			= __is_validating_code_units_encoding_for_v<_Encoding, _CodeUnits, _State>&&
-			     __is_validating_code_points_encoding_for_v<_Encoding, _CodePoints, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_decode_backwards_encoding_for_v
-			= __is_decode_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>&& __is_detected_v<
-			     __detect_object_decode_one_backwards, _Encoding, _CodeUnits, _CodePoints, _Handler, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_encode_backwards_encoding_for_v
-			= __is_encode_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>&& __is_detected_v<
-			     __detect_object_encode_one_backwards, _Encoding, _CodePoints, _CodeUnits, _Handler, _State>;
-
-		template <typename _Encoding, typename _CodeUnits, typename _CodePoints, typename _Handler, typename _State>
-		inline constexpr bool __is_backwards_encoding_for_v
-			= __is_encode_backwards_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>&&
-			     __is_decode_backwards_encoding_for_v<_Encoding, _CodeUnits, _CodePoints, _Handler, _State>;
-
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

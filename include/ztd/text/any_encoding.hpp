@@ -408,9 +408,18 @@ namespace ztd { namespace text {
 				_DecodeCodeUnits __input, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				auto& __encoding                    = this->__base_t::get_value();
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_validate_code_units_one,
+				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_units_one,
 					              _Encoding, _DecodeCodePoints, __real_decode_state>) {
-					auto __raw_result = __encoding.validate_code_units_one(::std::move(__input), __actual_state);
+					auto __raw_result
+						= text_validate_code_units_one(__encoding, ::std::move(__input), __actual_state);
+					return __validate_code_units_result(
+						::std::move(__raw_result.input), __raw_result.valid, __state);
+				}
+				else if constexpr (__txt_detail::__is_detected_v<
+					                   __txt_detail::__detect_adl_internal_text_validate_code_units_one, _Encoding,
+					                   _DecodeCodePoints, __real_decode_state>) {
+					auto __raw_result
+						= __text_validate_code_units_one(__encoding, ::std::move(__input), __actual_state);
 					return __validate_code_units_result(
 						::std::move(__raw_result.input), __raw_result.valid, __state);
 				}
@@ -427,9 +436,19 @@ namespace ztd { namespace text {
 				_EncodeCodePoints __input, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				auto& __encoding                    = this->__base_t::get_value();
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_validate_code_points_one,
-					              _Encoding, _EncodeCodePoints, __real_encode_state>) {
-					auto __raw_result = __encoding.validate_code_points_one(::std::move(__input), __actual_state);
+				if constexpr (__txt_detail::__is_detected_v<
+					              __txt_detail::__detect_adl_text_validate_code_points_one, _Encoding,
+					              _EncodeCodePoints, __real_encode_state>) {
+					auto __raw_result
+						= text_validate_code_points_one(__encoding, ::std::move(__input), __actual_state);
+					return __validate_code_points_result(
+						::std::move(__raw_result.input), __raw_result.valid, __state);
+				}
+				else if constexpr (__txt_detail::__is_detected_v<
+					                   __txt_detail::__detect_adl_internal_text_validate_code_points_one,
+					                   _Encoding, _EncodeCodePoints, __real_encode_state>) {
+					auto __raw_result
+						= __text_validate_code_points_one(__encoding, ::std::move(__input), __actual_state);
 					return __validate_code_points_result(
 						::std::move(__raw_result.input), __raw_result.valid, __state);
 				}
@@ -447,11 +466,20 @@ namespace ztd { namespace text {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
 				auto& __encoding = this->__base_t::get_value();
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_count_code_units_one,
-					              _Encoding, _DecodeCodeUnits, __txt_detail::__pass_through_handler,
-					              __real_decode_state>) {
-					auto __raw_result
-						= __encoding.count_code_units_one(::std::move(__input), __pass_handler, __actual_state);
+				if constexpr (__txt_detail::__is_detected_v<
+					              __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
+					              _DecodeCodeUnits, __txt_detail::__pass_through_handler, __real_decode_state>) {
+					auto __raw_result = text_count_code_units_one(
+						__encoding, ::std::move(__input), __pass_handler, __actual_state);
+					return __count_code_units_result(::std::move(__raw_result.input), __raw_result.count, __state,
+						__raw_result.error_code, __raw_result.handled_errors);
+				}
+				else if constexpr (__txt_detail::__is_detected_v<
+					                   __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
+					                   _DecodeCodeUnits, __txt_detail::__pass_through_handler,
+					                   __real_decode_state>) {
+					auto __raw_result = __text_count_code_units_one(
+						__encoding, ::std::move(__input), __pass_handler, __actual_state);
 					return __count_code_units_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
@@ -468,11 +496,20 @@ namespace ztd { namespace text {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
 				auto& __encoding = this->__base_t::get_value();
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_object_count_code_points_one,
+				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_code_points_one,
 					              _Encoding, _EncodeCodePoints, __txt_detail::__pass_through_handler,
 					              __real_encode_state>) {
-					auto __raw_result
-						= __encoding.count_code_points_one(::std::move(__input), __pass_handler, __actual_state);
+					auto __raw_result = text_count_code_points_one(
+						__encoding, ::std::move(__input), __pass_handler, __actual_state);
+					return __count_code_points_result(::std::move(__raw_result.input), __raw_result.count, __state,
+						__raw_result.error_code, __raw_result.handled_errors);
+				}
+				else if constexpr (__txt_detail::__is_detected_v<
+					                   __txt_detail::__detect_adl_internal_text_count_code_points_one, _Encoding,
+					                   _EncodeCodePoints, __txt_detail::__pass_through_handler,
+					                   __real_encode_state>) {
+					auto __raw_result = __text_count_code_points_one(
+						__encoding, ::std::move(__input), __pass_handler, __actual_state);
 					return __count_code_points_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
