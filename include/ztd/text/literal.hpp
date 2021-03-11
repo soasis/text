@@ -54,7 +54,7 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief The encoding of wide string literals (e.g. @c "L\"👍\"") at compile-time.
+	/// @brief The encoding of wide string literals ( e.g. @c "👍" ) at compile-time.
 	///
 	//////
 	class literal : private __txt_detail::__ebco<__txt_detail::__literal> {

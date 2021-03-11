@@ -207,7 +207,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The size of the range.
 		///
-		/// @returns @c "std::distance(begin(), end())".
+		/// @returns @code std::distance(begin(), end()) @endcode
 		///
 		/// @remarks This function call only works if the @p _Kind of this subrange is
 		/// ztd::text::subrange_kind::sized.

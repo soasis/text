@@ -38,21 +38,29 @@ The ``encoding_scheme`` template turns any encoding into a byte-based encoding c
 Aliases
 -------
 
-.. doxygentypedef:: ztd::text::utf16_le
-
 .. doxygentypedef:: ztd::text::basic_utf16_le
 
-.. doxygentypedef:: ztd::text::utf16_be
+.. doxygentypedef:: ztd::text::utf16_le
 
 .. doxygentypedef:: ztd::text::basic_utf16_be
 
-.. doxygentypedef:: ztd::text::utf32_le
+.. doxygentypedef:: ztd::text::utf16_be
+
+.. doxygentypedef:: ztd::text::basic_utf16_ne
+
+.. doxygentypedef:: ztd::text::utf16_ne
 
 .. doxygentypedef:: ztd::text::basic_utf32_le
 
-.. doxygentypedef:: ztd::text::utf32_be
+.. doxygentypedef:: ztd::text::utf32_le
 
 .. doxygentypedef:: ztd::text::basic_utf32_be
+
+.. doxygentypedef:: ztd::text::utf32_be
+
+.. doxygentypedef:: ztd::text::basic_utf32_ne
+
+.. doxygentypedef:: ztd::text::utf32_ne
 
 
 

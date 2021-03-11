@@ -61,15 +61,15 @@ namespace ztd { namespace text {
 	/// @tparam _Type The type to check for the proper function call.
 	///
 	/// @remarks The @c value boolean is true if the given @p _Type has a function named @c
-	/// maybe_replacement_code_points() on it that can be called from a const-qualified @c "const _Type" which returns
-	/// a @c std::optional containing a contiguous view of code points.
+	/// maybe_replacement_code_points() on it that can be called from a @c const -qualified @p _Type object which
+	/// returns a @c std::optional containing a contiguous view of code points.
 	//////
 	template <typename _Type>
 	class is_code_points_maybe_replaceable
 	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_points_maybe_replaceable, _Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_code_points_maybe_replaceable
+	/// @brief A @c \::value alias for ztd::text::is_code_points_maybe_replaceable
 	///
 	//////
 	template <typename _Type>
@@ -81,7 +81,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The type to check for the proper function call.
 	///
 	/// @remarks The @c value boolean is true if the given @p _Type has a function named @c
-	/// replacement_code_points() on it that can be called from a const-qualified @c "const _Type" which returns a
+	/// replacement_code_points() on it that can be called from a @c const -qualified @c _Type object which returns a
 	/// contiguous view of code points.
 	//////
 	template <typename _Type>
@@ -89,7 +89,7 @@ namespace ztd { namespace text {
 	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_points_replaceable, _Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_code_points_replaceable
+	/// @brief A @c \::value alias for ztd::text::is_code_points_replaceable
 	///
 	//////
 	template <typename _Type>

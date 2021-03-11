@@ -89,7 +89,7 @@ namespace ztd { namespace text {
 	: public ::std::integral_constant<bool, __txt_detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
 
 	//////
-	/// @brief A @c "::value" alias for ztd::text::is_transcoding_compatible.
+	/// @brief A @c \::value alias for ztd::text::is_transcoding_compatible.
 	///
 	//////
 	template <typename _From, typename _To>
@@ -127,7 +127,7 @@ namespace ztd { namespace text {
 
 
 	//////
-	/// @brief A @c "::value" alias for ztd::text::is_transcoding_compatible.
+	/// @brief A @c \::value alias for ztd::text::is_transcoding_compatible.
 	///
 	//////
 	template <typename _From, typename _To>

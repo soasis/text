@@ -29,7 +29,10 @@
 # ============================================================================>
 
 # # Tests
-file(GLOB_RECURSE ztd.text.tests.inclusion.sources source/*.cpp)
+file(GLOB_RECURSE ztd.text.tests.inclusion.sources
+	LIST_DIRECTORIES FALSE
+	CONFIGURE_DEPENDS
+	source/*.cpp)
 
 add_executable(ztd.text.tests.inclusion ${ztd.text.tests.inclusion.sources})
 if (MSVC)

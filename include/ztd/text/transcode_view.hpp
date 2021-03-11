@@ -68,19 +68,19 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This type produces proxies as their reference type, and are only readable, not writable iterators. The
 	/// type will also try many different shortcuts for decoding the input and encoding the intermediates,
-	/// respectively, including invoking a few customization points for either @c "decode_one". or @c "encode_one". It
-	/// may also call @c "transcode_one" to bypass having to do the round-trip through two encodings, which an encoding
-	/// pair that a developer is interested in can use to do the conversion more quickly. The view presents code units
-	/// one at a time, regardless of how many code units are output by one decode operation. This means if, for
-	/// example, one (1) UTF-16 code unit becomes two (2) UTF-8 code units, it will present each code unit one at a
-	/// time. If you are looking to explicitly know each collection of characters, you will have to use lower-level
-	/// interfaces.
+	/// respectively, including invoking a few customization points for either @c decode_one. or @c
+	/// encode_one . It may also call @c transcode_one to bypass having to do the round-trip through
+	/// two encodings, which an encoding pair that a developer is interested in can use to do the conversion more
+	/// quickly. The view presents code units one at a time, regardless of how many code units are output by one decode
+	/// operation. This means if, for example, one (1) UTF-16 code unit becomes two (2) UTF-8 code units, it will
+	/// present each code unit one at a time. If you are looking to explicitly know each collection of characters, you
+	/// will have to use lower-level interfaces.
 	//////
 	template <typename _FromEncoding, typename _ToEncoding = utf8,
 		typename _Range            = ::std::basic_string_view<code_unit_t<_FromEncoding>>,
 		typename _FromErrorHandler = __txt_detail::__careless_handler,
-		typename _ToErrorHandler = __txt_detail::__careless_handler, typename _FromState = decode_state_t<_FromEncoding>,
-		typename _ToState = encode_state_t<_ToEncoding>>
+		typename _ToErrorHandler   = __txt_detail::__careless_handler,
+		typename _FromState = decode_state_t<_FromEncoding>, typename _ToState = encode_state_t<_ToEncoding>>
 	class transcode_view {
 	public:
 		//////
@@ -143,7 +143,7 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_view from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		//////
 		constexpr transcode_view(range_type __range, to_encoding_type __to_encoding) noexcept
 		: transcode_view(::std::move(__range), from_encoding_type {}, ::std::move(__to_encoding)) {
@@ -153,8 +153,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_view from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c ".decode" or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		//////
 		constexpr transcode_view(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding) noexcept
@@ -166,8 +166,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_view from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c ".decode" or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		//////
@@ -182,8 +182,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_view from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c ".decode" or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		/// @param[in] __from_state The state to user for the decode operation.

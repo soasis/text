@@ -97,7 +97,7 @@ else()
 	set(ztd_text_has_cuneicode OFF)
 endif()
 
-file(GLOB ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
+file(GLOB_RECURSE ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
 
 # Check environment/prepare generator expressions
 check_cxx_compiler_flag(/permissive- ZTD_TEXT_MSVC_DISABLE_PERMISSIVE)
@@ -105,6 +105,7 @@ check_cxx_compiler_flag(/permissive- ZTD_TEXT_MSVC_DISABLE_PERMISSIVE)
 check_cxx_compiler_flag(-Wpedantic ZTD_TEXT_DIAGNOSTIC_PEDANTIC)
 check_cxx_compiler_flag(-Werror ZTD_TEXT_DIAGNOSTIC_ERRORS)
 check_cxx_compiler_flag(-Wall ZTD_TEXT_DIAGNOSTIC_DEFAULTS)
+check_cxx_compiler_flag(-W4 ZTD_TEXT_MSVC_DIAGNOSTIC_DEFAULTS)
 
 string(CONCAT ztd-text-is-top-level $<STREQUAL:${PROJECT_NAME},${CMAKE_PROJECT_NAME}>)
 string(CONCAT --disable-permissive $<
@@ -124,10 +125,17 @@ string(CONCAT --warn-pedantic $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_PEDANTIC}>:-Wpedant
 string(CONCAT --warn-default $<
 	$<AND:
 		$<BOOL:${ZTD_TEXT_DIAGNOSTIC_DEFAULTS}>,
-		$<NOT:$<BOOL:MSVC>>,
+		$<NOT:$<BOOL:MSVC>>
 	>:-Wall
 >)
+string(CONCAT --warn-default $<
+	$<AND:
+		$<BOOL:${ZTD_TEXT_MSVC_DIAGNOSTIC_DEFAULTS}>,
+		$<BOOL:MSVC>
+	>:-W4
+>)
 string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)
+
 
 add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
@@ -139,10 +147,8 @@ target_compile_features(ztd.text INTERFACE $<${ztd-text-is-top-level}:cxx_std_20
 target_compile_options(ztd.text INTERFACE ${--disable-permissive})
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_link_libraries(ztd.text INTERFACE ${ztd-use-cuneicode})
-
-set_target_properties(ztd.text
-	PROPERTIES
-	EXPORT_NAME ztd::text
+install(DIRECTORY include/
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 # # Config / Version packaging

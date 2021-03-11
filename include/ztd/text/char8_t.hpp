@@ -48,7 +48,7 @@ namespace ztd { namespace text {
 	/// @brief An alias to a unsigned representation of an 8-bit (or greater) code unit type.
 	///
 	/// @remarks This will be a type alias for the type given in @c ZTD_TEXT_CHAR8_T is defined by the user. Otherwise,
-	/// it will be a type alias for @c char8_t if present. If neither are available, it will alias @c unsigned @c char
+	/// it will be a type alias for @c char8_t if present. If neither are available, it will alias @c uchar
 	/// for the type.
 	//////
 	using uchar8_t = ZTD_TEXT_CHAR8_T_I_;

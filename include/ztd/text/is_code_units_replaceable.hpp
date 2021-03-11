@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 	/// @tparam _Type The type to check for the proper function call.
 	///
 	/// @remarks The @c value boolean is true if the given @p _Type has a function named @c
-	/// maybe_replacement_code_units() on it that can be called from a const-qualified @c "const _Type" which returns
+	/// maybe_replacement_code_units() on it that can be called from a @c const -qualified @c _Type which returns
 	/// a @c std::optional containing a contiguous view of code units.
 	//////
 	template <typename _Type>
@@ -68,7 +68,7 @@ namespace ztd { namespace text {
 	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_code_units_maybe_replaceable
+	/// @brief A @c \::value alias for ztd::text::is_code_units_maybe_replaceable
 	///
 	//////
 	template <typename _Type>
@@ -79,16 +79,16 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _Type The type to check for the proper function call.
 	///
-	/// @remarks The @c value boolean is true if the given @p _Type has a function named @c
-	/// replacement_code_units() on it that can be called from a const-qualified @c "const _Type" which returns a
-	/// contiguous view of code units.
+	/// @remarks The @c \::value boolean is true if the given @p _Type has a function named @c
+	/// replacement_code_units() on it that can be called from a @c const -qualified @c _Type which returns
+	/// a contiguous view of code units.
 	//////
 	template <typename _Type>
 	class is_code_units_replaceable
 	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_code_units_replaceable
+	/// @brief A @c \::value alias for ztd::text::is_code_units_replaceable
 	///
 	//////
 	template <typename _Type>

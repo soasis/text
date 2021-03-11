@@ -61,4 +61,4 @@ set_target_properties(ztd.text.single
 	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/include")
 add_dependencies(ztd.text.single ztd.text.single_header_generator)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp"
-	DESTINATION include/ztd/text/single/ztd/text)
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ztd/text/single)

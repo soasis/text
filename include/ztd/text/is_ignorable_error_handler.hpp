@@ -79,7 +79,7 @@ namespace ztd { namespace text {
 	class is_ignorable_error_handler : public __txt_detail::__is_ignorable_error_handler_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_ignorable_error_handler.
+	/// @brief A @c \::value alias for ztd::text::is_ignorable_error_handler.
 	///
 	//////
 	template <typename _Type>

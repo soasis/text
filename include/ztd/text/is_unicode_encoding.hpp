@@ -77,7 +77,7 @@ namespace ztd { namespace text {
 	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_unicode_encoding.
+	/// @brief A @c \::value alias for ztd::text::is_unicode_encoding.
 	///
 	//////
 	template <typename _Type>

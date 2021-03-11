@@ -411,9 +411,9 @@ namespace ztd { namespace text {
 	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
 	///
 	/// @returns A ztd::text::transcode_result object that contains references to @p __from_state and @p __to_state and
-	/// an @c ".output" parameter that contains the @p _OutputContainer specified. If the container has a @c ".reserve"
-	/// function, it is and some multiple of the input's size is used to pre-size the container, to aid with @c
-	/// "push_back"/@c "insert" reallocation pains.
+	/// an @c output parameter that contains the @p _OutputContainer specified. If the container has a @c
+	/// container.reserve function, it is and some multiple of the input's size is used to pre-size the container, to
+	/// aid with @c push_back / @c insert reallocation pains.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
@@ -457,8 +457,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
 	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c ".output" parameter
-	/// that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
+	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A default state for the encode step of the operation is create using ztd::text::make_encode_state. The
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
@@ -496,8 +496,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
 	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c ".output" parameter
-	/// that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
+	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A default state for the decode step of the operation is create using ztd::text::make_decode_state. The
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
@@ -534,8 +534,8 @@ namespace ztd { namespace text {
 	/// final code units.
 	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c ".output" parameter
-	/// that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
+	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A @c to_error_handler for the encode step of the operation is created using default construction of a
 	/// ztd::text::default_handler that is marked as careless. The return type is stateless since both states must be
@@ -568,8 +568,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c ".output" parameter
-	/// that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
+	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A @c from_error_handler for the encode step of the operation is created using default construction of
 	/// a ztd::text::default_handler that is marked as careless. The return type is stateless since both states must be
@@ -597,8 +597,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c ".output" parameter
-	/// that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
+	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A @c from_error_handler for the encode step of the operation is created using default construction of
 	/// a ztd::text::default_handler that is marked as careless. The return type is stateless since both states must be
@@ -1017,9 +1017,9 @@ namespace ztd { namespace text {
 	/// @remarks A @c from_encoding is created by looking at the @c value_type of the @p "__input". An object similar
 	/// to ztd::text::default_handler is created, but it is marked as careless.
 	///
-	/// @returns A @c "std::basic_string<ztd::text::default_code_unit_encoding_t<Encoding-From-_Input>>" with the
-	/// result, regardless of whether an error occurs or not. If you are looking for error information and not just a
-	/// quick one-off conversion function, please use ztd::text::transcode_to or ztd::text::transcode_into.
+	/// @returns A @c std::basic_string<ztd::text::default_code_unit_encoding_t<from_encoding>> with
+	/// the result, regardless of whether an error occurs or not. If you are looking for error information and not just
+	/// a quick one-off conversion function, please use ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
 	template <typename _Input, typename _ToEncoding>
 	constexpr auto transcode(_Input&& __input, _ToEncoding&& __to_encoding) {

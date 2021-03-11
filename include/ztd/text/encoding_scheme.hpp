@@ -406,21 +406,21 @@ namespace ztd { namespace text {
 			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
 			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
-			using _Result = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
-			using _InByteIt
-				= __txt_detail::__word_iterator<_BaseCodeUnit, __txt_detail::__range_iterator_t<_UInputRange>, _Endian>;
+			using _Result   = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
+			using _InByteIt = __txt_detail::__word_iterator<_BaseCodeUnit,
+				__txt_detail::__range_iterator_t<_UInputRange>, _Endian>;
 			using _InByteSen = __txt_detail::__word_sentinel<__txt_detail::__range_sentinel_t<_UInputRange>>;
 
 			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
 			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
 			subrange<_InByteIt, _InByteSen> __inbytes(
 				_InByteIt(::std::move(__init)), _InByteSen(::std::move(__inlast)));
-			__txt_detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler> __scheme_handler(
-				__error_handler);
+			__txt_detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler>
+				__scheme_handler(__error_handler);
 			auto __result
 				= this->base().decode_one(__inbytes, ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
-			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input.begin().base(),
-				               __result.input.end().base()),
+			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
+				               __result.input.begin().base(), __result.input.end().base()),
 				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
 				__result.error_code, __result.handled_errors);
 		}
@@ -448,9 +448,9 @@ namespace ztd { namespace text {
 			encode_state& __s) const {
 			using _UInputRange  = __txt_detail::__remove_cvref_t<_InputRange>;
 			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
-			using _Result       = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
-			using _OutByteIt
-				= __txt_detail::__word_iterator<_BaseCodeUnit, __txt_detail::__range_iterator_t<_UOutputRange>, _Endian>;
+			using _Result = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
+			using _OutByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit,
+                    __txt_detail::__range_iterator_t<_UOutputRange>, _Endian>;
 			using _OutByteSen = __txt_detail::__word_sentinel<__txt_detail::__range_sentinel_t<_UOutputRange>>;
 
 			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
@@ -469,7 +469,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c unsigned char.
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c uchar.
 	//////
 	template <typename _Byte>
 	using basic_utf16_le = encoding_scheme<utf16, endian::little, _Byte>;
@@ -477,7 +477,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt>.
 	//////
 	template <typename _Byte>
 	using basic_utf16_be = encoding_scheme<utf16, endian::big, _Byte>;
@@ -485,7 +485,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt>.
 	//////
 	template <typename _Byte>
 	using basic_utf16_ne = encoding_scheme<utf16, endian::native, _Byte>;
@@ -511,7 +511,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt> .
 	//////
 	template <typename _Byte>
 	using basic_utf32_le = encoding_scheme<utf32, endian::little, _Byte>;
@@ -519,7 +519,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt> .
 	//////
 	template <typename _Byte>
 	using basic_utf32_be = encoding_scheme<utf32, endian::big, _Byte>;
@@ -527,7 +527,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-32 encoding, in Native Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c "unsigned char" .
+	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt> .
 	//////
 	template <typename _Byte>
 	using basic_utf32_ne = encoding_scheme<utf32, endian::native, _Byte>;

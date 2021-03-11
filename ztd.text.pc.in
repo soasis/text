@@ -1,7 +1,7 @@
 includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
-Name: ztd.text
-Description: A StandardZero C++ library for handling encoded text in an efficient and scalable manner.
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESCRIPTION@
 URL: https://ztdtext.rtfd.io
-Version: @ZTD_TEXT_PROJECT_VERSION@
+Version: @PROJECT_VERSION@
 Cflags: -I${includedir}

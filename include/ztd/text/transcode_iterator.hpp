@@ -75,8 +75,8 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This type produces proxies as their reference type, and are only readable, not writable iterators. The
 	/// type will also try many different shortcuts for decoding the input and encoding the intermediates,
-	/// respectively, including invoking a few customization points for either @c "decode_one". or @c "encode_one". It
-	/// may also call @c "transcode_one" to bypass having to do the round-trip through two encodings, which an encoding
+	/// respectively, including invoking a few customization points for either @c decode_one or @c encode_one . It
+	/// may also call @c transcode_one to bypass having to do the round-trip through two encodings, which an encoding
 	/// pair that a developer is interested in can use to do the conversion more quickly. The view presents code units
 	/// one at a time, regardless of how many code units are output by one decode operation. This means if, for
 	/// example, one (1) UTF-16 code unit becomes two (2) UTF-8 code units, it will present each code unit one at a
@@ -85,17 +85,18 @@ namespace ztd { namespace text {
 	//////
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
-	class transcode_iterator : private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>,
-		                      private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>,
-		                      private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromErrorHandler>, 2>,
-		                      private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToErrorHandler>, 3>,
-		                      private __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_FromEncoding>,
-		                           __txt_detail::__remove_cvref_t<_FromState>, 0>,
-		                      private __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_ToEncoding>,
-		                           __txt_detail::__remove_cvref_t<_ToState>, 1>,
-		                      private __txt_detail::__cache_cursor<
-		                           max_code_units_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToEncoding>>>>,
-		                      private __txt_detail::__ebco<_Range, 4> {
+	class transcode_iterator
+	: private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>,
+	  private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>,
+	  private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromErrorHandler>, 2>,
+	  private __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToErrorHandler>, 3>,
+	  private __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_FromEncoding>,
+		  __txt_detail::__remove_cvref_t<_FromState>, 0>,
+	  private __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_ToEncoding>,
+		  __txt_detail::__remove_cvref_t<_ToState>, 1>,
+	  private __txt_detail::__cache_cursor<
+		  max_code_units_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToEncoding>>>>,
+	  private __txt_detail::__ebco<_Range, 4> {
 	private:
 		using _URange                = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Range>>;
 		using _UFromEncoding         = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_FromEncoding>>;
@@ -109,15 +110,16 @@ namespace ztd { namespace text {
 		static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;
 		static constexpr bool _IsSingleValueType  = _MaxValues == 1;
 		using __base_cursor_t                     = __txt_detail::__cache_cursor<_MaxValues>;
-		using __base_from_encoding_t              = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>;
-		using __base_to_encoding_t                = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>;
-		using __base_from_error_handler_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromErrorHandler>, 2>;
-		using __base_to_error_handler_t   = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToErrorHandler>, 3>;
-		using __base_from_state_t         = __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_FromEncoding>,
+		using __base_from_encoding_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>;
+		using __base_to_encoding_t   = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>;
+		using __base_from_error_handler_t
+			= __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromErrorHandler>, 2>;
+		using __base_to_error_handler_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToErrorHandler>, 3>;
+		using __base_from_state_t       = __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_FromEncoding>,
                __txt_detail::__remove_cvref_t<_FromState>, 0>;
-		using __base_to_state_t           = __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_ToEncoding>,
+		using __base_to_state_t         = __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_ToEncoding>,
                __txt_detail::__remove_cvref_t<_ToState>, 1>;
-		using __base_range_t              = __txt_detail::__ebco<_Range, 4>;
+		using __base_range_t            = __txt_detail::__ebco<_Range, 4>;
 
 	public:
 		//////
@@ -228,7 +230,7 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		//////
 		constexpr transcode_iterator(range_type __range, to_encoding_type __to_encoding)
 		: transcode_iterator(::std::move(__range), from_encoding_type {}, ::std::move(__to_encoding)) {
@@ -238,8 +240,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c ".decode" or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		//////
 		constexpr transcode_iterator(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding)
@@ -251,8 +253,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c ".decode" or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		//////
@@ -268,8 +270,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c ".decode" or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c ".encode" or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		/// @param[in] __from_state The state to user for the decode operation.

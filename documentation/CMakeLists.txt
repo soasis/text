@@ -28,14 +28,18 @@
 #
 # ============================================================================>
 
+# Dependencies
 find_package(Doxygen REQUIRED)
 find_package(Python3 REQUIRED)
 find_package(Sphinx QUIET)
 
+# For the install target and related directories
+include(GNUInstallDirs)
+
 # Find all the public headers
 file(GLOB_RECURSE ztd_text_public_headers
-  LIST_DIRECTORIES NO
-  CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/**.*)
+	LIST_DIRECTORIES NO
+	CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/**.*)
 # make a list copy for use with dependency tracking later down below
 set(ztd_text_doxygen_public_headers ${ztd_text_public_headers})
 # Remove every single public header
@@ -59,8 +63,8 @@ set(ZTD_TEXT_SPHINX_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
 
 # Get all Sphinx source files
 file(GLOB_RECURSE ztd_text_sphinx_sources
-  LIST_DIRECTORIES NO
-  CONFIGURE_DEPENDS ${ZTD_TEXT_SPHINX_SOURCE_DIR}/**.*)
+	LIST_DIRECTORIES NO
+	CONFIGURE_DEPENDS ${ZTD_TEXT_SPHINX_SOURCE_DIR}/**.*)
 
 #Replace variables inside @@ with the current values
 configure_file(${ZTD_TEXT_DOXYFILE_IN} ${ZTD_TEXT_DOXYFILE_OUT} @ONLY)
@@ -72,10 +76,10 @@ file(MAKE_DIRECTORY ${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR})
 file(MAKE_DIRECTORY ${ZTD_TEXT_SPHINX_BUILD_DIR})
 
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES
-  ${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
-  ${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR}
-  ${ZTD_TEXT_DOXYGEN_OUTPUT_DIR}
-  ${ZTD_TEXT_SPHINX_BUILD_DIR})
+	${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
+	${ZTD_TEXT_DOXYGEN_HTML_OUTPUT_DIR}
+	${ZTD_TEXT_DOXYGEN_OUTPUT_DIR}
+	${ZTD_TEXT_SPHINX_BUILD_DIR})
 
 add_custom_command(OUTPUT ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 	COMMAND ${DOXYGEN_EXECUTABLE} ${ZTD_TEXT_DOXYFILE_OUT}
@@ -87,22 +91,19 @@ add_custom_target(ztd.text.documentation.doxygen ALL DEPENDS ${ZTD_TEXT_DOXYGEN_
 
 if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
 	add_custom_target(ztd.text.documentation.sphinx ALL
-    COMMAND Sphinx::Build
-      -b html
-      -Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
-      ${ZTD_TEXT_SPHINX_SOURCE_DIR}
-      ${ZTD_TEXT_SPHINX_BUILD_DIR}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_sphinx_sources}
-    COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."
-    COMMAND_EXPAND_LISTS
-    VERBATIM)
+		COMMAND Sphinx::Build
+			-b html
+			-Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
+			${ZTD_TEXT_SPHINX_SOURCE_DIR}
+			${ZTD_TEXT_SPHINX_BUILD_DIR}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_sphinx_sources}
+		COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."
+		COMMAND_EXPAND_LISTS
+		VERBATIM)
 
 	add_dependencies(ztd.text.documentation.sphinx ztd.text.documentation.doxygen)
-endif()
 
-# For the install target
-include(GNUInstallDirs)
-install(DIRECTORY ${ZTD_TEXT_SPHINX_BUILD_DIR}
-	DESTINATION ${CMAKE_INSTALL_DOCDIR}
-)
+	install(DIRECTORY ${ZTD_TEXT_SPHINX_BUILD_DIR}
+		DESTINATION ${CMAKE_INSTALL_DOCDIR})
+endif()

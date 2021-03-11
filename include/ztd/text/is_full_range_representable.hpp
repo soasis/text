@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -88,7 +88,7 @@ namespace ztd { namespace text {
 	class is_decode_injective : public __txt_detail::__is_decode_injective_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_decode_injective.
+	/// @brief A @c \::value alias for ztd::text::is_decode_injective.
 	///
 	//////
 	template <typename _Type>
@@ -107,20 +107,25 @@ namespace ztd { namespace text {
 	class is_encode_injective : public __txt_detail::__is_encode_injective_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_encode_injective.
+	/// @brief A @c \::value alias for ztd::text::is_encode_injective.
 	///
 	//////
 	template <typename _Type>
 	inline constexpr bool is_encode_injective_v = is_encode_injective<_Type>::value;
 
+	//////
+	/// @brief Checks whether a decode operation with @p _From piped to a decode operation with @p _To is
+	///
+	//////
 	template <typename _From, typename _To>
 	class is_full_range_representable_between
 	: public ::std::integral_constant<bool,
 		  is_decode_injective_v<
-		       __txt_detail::__remove_cvref_t<_From>> && is_encode_injective_v<__txt_detail::__remove_cvref_t<_To>>> { };
+		       __txt_detail::__remove_cvref_t<_From>> && is_encode_injective_v<__txt_detail::__remove_cvref_t<_To>>> {
+	};
 
 	//////
-	/// @brief Checks whether a decode operation with @p _From piped to a decode operation with @p _To is
+	/// @brief A @c \::value alias for ztd::text::is_full_range_representable_between.
 	///
 	//////
 	template <typename _From, typename _To>
@@ -135,7 +140,7 @@ namespace ztd { namespace text {
 	using is_full_range_representable = is_full_range_representable_between<_Type, _Type>;
 
 	//////
-	/// @brief A @c value alias for ztd::text::is_full_range_representable_between<_Type, _Type>.
+	/// @brief A @c \::value alias for ztd::text::is_full_range_representable_between<_Type, _Type>.
 	///
 	//////
 	template <typename _Type>

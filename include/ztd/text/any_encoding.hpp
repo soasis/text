@@ -962,11 +962,11 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An encoding type that wraps up other encodings to specifically traffic in the given @p _Byte type
-	/// provided, which is typically set to @c "std::byte".
+	/// provided, which is typically set to @c std::byte .
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is either @c "unsigned char" or @c "std::byte".
+	/// @tparam _Byte The byte type to use. Typically, this is either <tt>unsigned char</tt> or @c std::byte .
 	///
-	/// @remarks This type traffics solely in @c "std::span"s, which for most people is fine. Others may want to
+	/// @remarks This type traffics solely in @c std::span s, which for most people is fine. Others may want to
 	/// interface with different iterator types (e.g., from a custom Rope implementation or other). For those, one must
 	/// first create ranges that can operate with those iterators, then use them themselves. (It's not an ideal process
 	/// at the moment, and we are looking to make this experience better.) It is recommended to use the provided

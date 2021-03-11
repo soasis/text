@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -44,11 +44,10 @@ namespace ztd { namespace text {
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
 	///
-	/// @brief Type-trait like properties and helpers, with @c _t (@c "typename ... ::type") and @c _v (@c "inline
-	/// constexpr bool ... ::value").
+	/// @brief Type-trait like properties and helpers, with @c _t ( @c \::type ) and @c _v ( @c \::value ).
 	///
 	/// @remarks These should be the go-to way to reference necessary type and constant static data out of encoding
-	/// objects when not interfacing with the well-defined, guaranteed members. For example, accessing the @c
+	/// objects when not interfacing with the well-defined, guaranteed members. For example, directly accessing the @c
 	/// obj::code_unit type is not viable for many encoding types and it is best to go through here.
 	/// @{
 	/////
