@@ -35,19 +35,24 @@ This is where the status and progress of the library will be kept up to date. Yo
 
 
 
-Document Conversion
--------------------
-
-Conversion routines need to be documented, alongside their extension points. They're not yet documented because it's currently a toss up between plain ol' ADL vs. tag-invoke. We'll probably invent a tag-invoke based solution, to prevent random functions from catching on. This also means we wouldn't need to prefix all extension points with C-style naming (currently, it's ``text_foo`` or ``ztd_text_foo``).
-
-
-
 Copyable State
 --------------
 
 Right now, all state parameters are assumed to be move-only. This is detrimental to creating cheap views like ``.code_points()`` on ``basic_text_view``, and harms other types as well. Work should be done either to make copyable state, or allow passing state in more effectively (we currently do the passing technique at the moment).
 
 - ☐ Do all states need to be copyable? Can it be done selectively? (At the moment: ``basic_text_view`` and ``text_view`` very well may need it, and as more Shift-State encodings become a part of the library, even more need…)
+
+
+
+Transcoding Iterators/Transcode View
+------------------------------------
+
+Right now these types would not work especially well for input and output ranges. They should be modified just like the internal ``ztd::text::__txt_detail::__encoding_iterator`` class types, so that they work with ``input_iterator`` and ``output_iterator`` types.
+
+- ☐ Improve constructor delegation and make sure to explicitly implement default construction vs. letting it happen with ``=default`` (which does not work for some of the base types present).
+- ☐ Modify implementation to cache data and position when an input or output iterator is detected.
+- ☐ Return ``const value_type&`` for ``reference`` to enable C++20 ranges to work properly.
+- ☐ Mark as ``enable_borrowed_range`` when C++20 is detected.
 
 
 
