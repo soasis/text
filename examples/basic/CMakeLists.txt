@@ -28,6 +28,27 @@
 #
 # ============================================================================>
 
+set(ztd-text-examples-data-source ${CMAKE_CURRENT_SOURCE_DIR}/data)
+set(ztd-text-examples-data-destination ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
+
+file(GLOB_RECURSE ztd-text-examples-data-source-files LIST_DIRECTORIES false 
+	RELATIVE ${ztd-text-examples-data-source} CONFIGURE_DEPENDS 
+	./data/*.*)
+
+list(SUBLIST ztd-text-examples-data-source-files 0 -1 ztd-text-examples-data-destination-files)
+list(TRANSFORM ztd-text-examples-data-source-files PREPEND "${ztd-text-examples-data-source}/")
+list(TRANSFORM ztd-text-examples-data-destination-files PREPEND "${ztd-text-examples-data-destination}/")
+
+add_custom_command(OUTPUT ${ztd-text-examples-data-destination-files}
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${ztd-text-examples-data-source} ${ztd-text-examples-data-destination}
+	COMMENT "[ztd.text/examples] Copying data files from \"${ztd-text-examples-data-source}\" used in examples over to \"${ztd-text-examples-data-destination}\"..."
+	DEPENDS ${ztd-text-examples-data-source-files}
+)
+
+add_custom_target(ztd.text.examples.basic.data
+	DEPENDS ${ztd-text-examples-data-destination-files}
+)
+
 file(GLOB_RECURSE ztd.text.examples.basic.sources LIST_DIRECTORIES false 
 	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/source CONFIGURE_DEPENDS 
 	source/*.cpp)
@@ -50,7 +71,8 @@ foreach (example_source_name ${ztd.text.examples.basic.sources})
 	)
 	target_include_directories(${example_target}
 		PRIVATE ../include/)
+	add_dependencies(${example_target} ztd.text.examples.basic.data)
 	if (ZTD_TEXT_TESTS)
-		add_test(NAME ${example_target} COMMAND ${example_target})
+		add_test(NAME ${example_target} COMMAND ${example_target} WORKING_DIRECTORY ${ztd-text-examples-data-destination})
 	endif()
 endforeach()

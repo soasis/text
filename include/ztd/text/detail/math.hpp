@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -37,19 +37,24 @@
 
 #include <cstdint>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __txt_detail {
 
-	constexpr uint_least64_t __ce_ipow_r(uint_least64_t base, uint_least64_t exp, uint_least64_t result) {
-		return exp < 1u ? result : __ce_ipow_r(base * base, exp / 2, (exp % 2) ? result * base : result);
-	}
+		constexpr uint_least64_t __ce_ipow_r(uint_least64_t base, uint_least64_t exp, uint_least64_t result) {
+			return exp < 1u ? result : __ce_ipow_r(base * base, exp / 2, (exp % 2) ? result * base : result);
+		}
 
-	constexpr uint_least64_t __ce_ipow(uint_least64_t base, uint_least64_t exp) {
-		return __ce_ipow_r(base, exp, 1);
-	}
+		constexpr uint_least64_t __ce_ipow(uint_least64_t base, uint_least64_t exp) {
+			return __ce_ipow_r(base, exp, 1);
+		}
 
-}ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text::__txt_detail
+	} // namespace __txt_detail
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_MATH_HPP

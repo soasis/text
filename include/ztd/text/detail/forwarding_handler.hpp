@@ -39,6 +39,8 @@
 
 #include <utility>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -58,9 +60,9 @@ namespace ztd { namespace text {
 
 			template <typename _UnderlyingEncoding, typename _Result, typename _Progress>
 			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _Progress&& __progress) const
-				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
+				noexcept(noexcept(this->__error_handler_base_t::__get_value()(this->__encoding_base_t::__get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_Progress>(__progress)))) {
-				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
+				return this->__error_handler_base_t::__get_value()(this->__encoding_base_t::__get_value(),
 					::std::forward<_Result>(__result), ::std::forward<_Progress>(__progress));
 			}
 		};
@@ -70,5 +72,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_FORWARDING_HANDLER_HPP

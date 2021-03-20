@@ -46,6 +46,8 @@
 #include <exception>
 #include <array>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -119,9 +121,9 @@ namespace ztd { namespace text {
 	///
 	/// @remarks If a value outside of the allowed encoding_error is passed, then undefined behavior happens.
 	//////
-	inline constexpr std::string_view to_name(encoding_error __error_code) {
-		constexpr std::array<std::string_view, 4> __translation { { "ok", "invalid_sequence", "incomplete_sequence",
-			"insufficient_output_space" } };
+	inline constexpr ::std::string_view to_name(encoding_error __error_code) {
+		constexpr ::std::array<::std::string_view, 4> __translation { { "ok", "invalid_sequence",
+			"incomplete_sequence", "insufficient_output_space" } };
 		return __translation[static_cast<::std::size_t>(__txt_detail::__to_underlying(__error_code))];
 	}
 
@@ -132,5 +134,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ENCODING_ERROR_HPP

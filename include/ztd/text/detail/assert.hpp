@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_DETAIL_ASSERT_HPP
 #define ZTD_TEXT_DETAIL_ASSERT_HPP
 
+#include <ztd/text/version.hpp>
+
 // clang-format off
 #if defined(ZTD_TEXT_ASSERT)
 	#define ZTD_TEXT_ASSERT_I_(...) ZTD_TEXT_ASSERT(__VA_ARGS__)
@@ -45,8 +47,8 @@
 		#define ZTD_TEXT_ASSERT_I_(...)                                                                                         \
 			do {                                                                                                               \
 				if (!(__VA_ARGS__)) {                                                                                         \
-					std::cerr << "Assertion `" #__VA_ARGS__ "` failed in " << __FILE__ << " line " << __LINE__ << std::endl; \
-					std::terminate();                                                                                        \
+					::std::cerr << "Assertion `" #__VA_ARGS__ "` failed in " << __FILE__ << " line " << __LINE__ << ::std::endl; \
+					::std::terminate();                                                                                        \
 				}                                                                                                             \
 			} while (false)
 	#else
@@ -69,9 +71,9 @@
 		#define ZTD_TEXT_ASSERT_MESSAGE_I_(__message, ...)                                                                \
 			do {                                                                                                         \
 				if (!(__VA_ARGS__)) {                                                                                   \
-					std::cerr << "Assertion `" #__VA_ARGS__ "` failed in " << __FILE__ << " line " << __LINE__ << ": " \
-							<< __message << std::endl;                                                               \
-					std::terminate();                                                                                  \
+					::std::cerr << "Assertion `" #__VA_ARGS__ "` failed in " << __FILE__ << " line " << __LINE__ << ": " \
+							<< __message << ::std::endl;                                                               \
+					::std::terminate();                                                                                  \
 				}                                                                                                       \
 			} while (false)
 	#else
@@ -86,5 +88,7 @@
 #endif
 
 // clang-format on
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_ASSERT_HPP

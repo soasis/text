@@ -48,6 +48,8 @@
 
 #include <array>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -150,8 +152,8 @@ namespace ztd { namespace text {
 			using _Result        = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
+			auto __init   = __txt_detail::__adl::__adl_begin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_end(__input);
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
 				return _Result(::std::forward<_InputRange>(__input), ::std::forward<_OutputRange>(__output), __s,
@@ -177,7 +179,7 @@ namespace ztd { namespace text {
 			code_unit __units[1] {};
 			__units[0]              = __txt_detail::__dereference(__init);
 			const code_unit& __unit = __units[0];
-			__init                  = __txt_detail::__next(__init);
+			__txt_detail::__advance(__init);
 
 			if constexpr (__call_error_handler) {
 				if (static_cast<signed char>(__unit) < static_cast<signed char>(0)) {
@@ -190,7 +192,7 @@ namespace ztd { namespace text {
 			}
 
 			__txt_detail::__dereference(__outit) = __unit;
-			__outit                          = __txt_detail::__next(__outit);
+			__txt_detail::__advance(__outit);
 
 			return _Result(::std::move(__init), ::std::move(__inlast), ::std::move(__outit), ::std::move(__outlast),
 				__s, encoding_error::ok);
@@ -223,8 +225,8 @@ namespace ztd { namespace text {
 			using _Result        = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
+			auto __init   = __txt_detail::__adl::__adl_begin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_end(__input);
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
 				return _Result(::std::forward<_InputRange>(__input), ::std::forward<_OutputRange>(__output), __s,
@@ -250,7 +252,7 @@ namespace ztd { namespace text {
 			code_point __points[1] {};
 			__points[0]               = __txt_detail::__dereference(__init);
 			const code_point& __point = __points[0];
-			__init                    = __txt_detail::__next(__init);
+			__txt_detail::__advance(__init);
 
 			if constexpr (__call_error_handler) {
 				if (__point > __txt_detail::__last_ascii_value) {
@@ -264,7 +266,7 @@ namespace ztd { namespace text {
 			}
 
 			__txt_detail::__dereference(__outit) = static_cast<code_unit>(__point);
-			__outit                          = __txt_detail::__next(__outit);
+			__txt_detail::__advance(__outit);
 
 			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
 				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
@@ -288,5 +290,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ASCII_HPP

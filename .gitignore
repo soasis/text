@@ -1,7 +1,11 @@
 build/
 install/
-.vscode/
 .mypy_cache/
-/main.cpp
-.vs
+
+.vscode/
+
+.vs/
 CMakeSettings.json
+
+/main.cpp
+/*.hex

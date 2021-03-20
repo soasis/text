@@ -35,25 +35,84 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/error_handler.hpp>
+#include <ztd/text/is_code_units_replaceable.hpp>
+#include <ztd/text/is_code_points_replaceable.hpp>
+#include <ztd/text/is_unicode_code_point.hpp>
+
 #include <ztd/text/detail/type_traits.hpp>
 
 #include <type_traits>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
+		template <typename _Type>
+		using __detect_decode_always_ok = decltype(_Type::decode_always_ok);
 
 		template <typename _Type>
-		using __detect_is_ignorable_error_handler = decltype(_Type::assume_valid);
+		using __detect_encode_always_ok = decltype(_Type::encode_always_ok);
 
 		template <typename, typename = void>
 		struct __is_ignorable_error_handler_sfinae : ::std::false_type { };
 
 		template <typename _Type>
-		struct __is_ignorable_error_handler_sfinae<_Type,
-			::std::enable_if_t<__txt_detail::__is_detected_v<__detect_is_ignorable_error_handler, _Type>>>
+		struct __is_ignorable_error_handler_sfinae<_Type, ::std::void_t<decltype(_Type::assume_valid)>>
 		: ::std::integral_constant<bool, _Type::assume_valid::value> { };
+
+		template <typename _Encoding, typename _ErrorHandler>
+		struct __decode_error_handler_always_returns_ok
+		: ::std::integral_constant<bool, __is_detected_v<__detect_decode_always_ok, _ErrorHandler>> { };
+
+		template <typename _Encoding>
+		struct __decode_error_handler_always_returns_ok<_Encoding, replacement_handler>
+		: ::std::integral_constant<bool,
+			  (is_code_points_replaceable_v<_Encoding> && !is_code_points_maybe_replaceable_v<_Encoding>)
+			       || is_unicode_code_point_v<code_point_t<_Encoding>>> { };
+
+		template <typename _Encoding>
+		struct __decode_error_handler_always_returns_ok<_Encoding, throw_handler> : ::std::true_type { };
+
+		template <typename _Encoding, typename _ErrorHandler>
+		struct __decode_error_handler_always_returns_ok<_Encoding, incomplete_handler<_Encoding, _ErrorHandler>>
+		: __decode_error_handler_always_returns_ok<_Encoding,
+			  typename incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
+
+		template <typename _Encoding>
+		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler>
+		: __decode_error_handler_always_returns_ok<_Encoding, typename default_handler::error_handler> { };
+
+		template <typename _Encoding>
+		struct __decode_error_handler_always_returns_ok<_Encoding, assume_valid_handler> : ::std::true_type { };
+
+		template <typename _Encoding, typename _ErrorHandler>
+		struct __encode_error_handler_always_returns_ok
+		: ::std::integral_constant<bool, __is_detected_v<__detect_encode_always_ok, _ErrorHandler>> { };
+
+		template <typename _Encoding>
+		struct __encode_error_handler_always_returns_ok<_Encoding, replacement_handler>
+		: ::std::integral_constant<bool,
+			  (is_code_units_replaceable_v<_Encoding> && !is_code_units_maybe_replaceable_v<_Encoding>)
+			       || is_unicode_code_point_v<code_unit_t<_Encoding>>> { };
+
+		template <typename _Encoding>
+		struct __encode_error_handler_always_returns_ok<_Encoding, throw_handler> : ::std::true_type { };
+
+		template <typename _Encoding, typename _ErrorHandler>
+		struct __encode_error_handler_always_returns_ok<_Encoding, incomplete_handler<_Encoding, _ErrorHandler>>
+		: __encode_error_handler_always_returns_ok<_Encoding,
+			  typename incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
+
+		template <typename _Encoding>
+		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler>
+		: __encode_error_handler_always_returns_ok<_Encoding, typename default_handler::error_handler> { };
+
+		template <typename _Encoding>
+		struct __encode_error_handler_always_returns_ok<_Encoding, assume_valid_handler> : ::std::true_type { };
+
 	} // namespace __txt_detail
 
 	//////
@@ -70,7 +129,7 @@ namespace ztd { namespace text {
 	/// @remarks An error handler type can mark itself as ignorable by using a @c using @c assume_valid @c =
 	/// @c std::integral_constant<bool, @c value> where @c value determines if the type's error handling callback can
 	/// be ignored. This is what ztd::text::assume_valid does. Being configurable means templated error handlers can
-	/// select whether or not they should be ignorable based on compile-time, safe conditions that you can make up
+	/// select whether or not they should be ignorable based on compile time, safe conditions that you can make up
 	/// (including checking Macros or other environment data as a means of determining whether or not validity should
 	/// be ignored.) If this results in a type derived from @c std::true_type and the encoder object using it
 	/// encounters an error, then it is Undefined Behavior what occurs afterwards.
@@ -86,10 +145,56 @@ namespace ztd { namespace text {
 	inline constexpr bool is_ignorable_error_handler_v = is_ignorable_error_handler<_Type>::value;
 
 	//////
+	/// @brief Whether or not the given @p _Encoding and @p _Input with the provided @p _ErrorHandler will always
+	/// return ztd::text::encoding_error::ok for any failure that is not related to an output being too small
+	/// (ztd::text::encoding_error::insufficient_output_space).
+	///
+	/// @tparam _Encoding The encoding type whose @c decode_one function will be used with the error handler.
+	/// @tparam _Input The input range that will be used with the @c decode_one function of the encoding.
+	/// @tparam _ErrorHandler The error handler that will be called with the given @p _Encoding object and @p _Input
+	/// range.
+	///
+	/// @remarks This is a compile time assertion. If the encoding may exhibit different behavior at runtime based on
+	/// runtime conditions, then this should return false. This is meant for cases where it is provable at compile
+	/// time, this should return true. For example, if the ztd::text::replacement_handler is used in conjunction with
+	/// ztd::text::utf8, then this will return true as
+	//////
+	template <typename _Encoding, typename _ErrorHandler>
+	class decode_error_handler_always_returns_ok
+	: public __txt_detail::__decode_error_handler_always_returns_ok<_Encoding, _ErrorHandler> { };
+
+	//////
+	/// @brief A @c \::value alias for ztd::text::decode_error_handler_always_returns_ok_v
+	///
+	//////
+	template <typename _Encoding, typename _ErrorHandler>
+	inline constexpr bool decode_error_handler_always_returns_ok_v
+		= decode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;
+
+	//////
+	/// @brief Whether or not the given @p _Type is an error handler that can be ignored.
+	///
+	///
+	//////
+	template <typename _Encoding, typename _ErrorHandler>
+	class encode_error_handler_always_returns_ok
+	: public __txt_detail::__encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler> { };
+
+	//////
+	/// @brief A @c \::value alias for ztd::text::decode_error_handler_always_returns_ok_v
+	///
+	//////
+	template <typename _Encoding, typename _ErrorHandler>
+	inline constexpr bool encode_error_handler_always_returns_ok_v
+		= encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;
+
+	//////
 	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_IGNORABLE_ERROR_HANDLER_HPP

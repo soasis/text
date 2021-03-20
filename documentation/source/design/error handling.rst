@@ -49,7 +49,7 @@ Clearly, the Korean characters present in the UTF-8 string just cannot fit in a 
 
 - :doc:`replacement_handler </api/error handlers/default_handler>`, which inserts a substitution character specified by either the encoding object or some form using the default replacement character ``"U+FFFD"``;
 - :doc:`pass_handler </api/error handlers/pass_handler>`, which simply returns the error result as it and, if there is an error, halts higher-level operations from proceeding forward;
-- :doc:`default_handler </api/error handlers/default_handler>`, which is just a name for the ``replacement_handler`` or ``throw_handler`` or some other type based on compile-time configuration of the library;
+- :doc:`default_handler </api/error handlers/default_handler>`, which is just a name for the ``replacement_handler`` or ``throw_handler`` or some other type based on compile time configuration of the library;
 - :doc:`throw_handler </api/error handlers/throw_handler>`, for throwing an exception on any failed operation;
 - :doc:`incomplete_handler </api/error handlers/incomplete_handler>`, for throwing an exception on any failed encode/decode operation; and,
 - :doc:`assume_valid_handler </api/error handlers/throw_handler>`, which triggers no checking for many error conditions and can leads to |ub| if used on malformed input.

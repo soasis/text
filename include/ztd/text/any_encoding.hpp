@@ -68,6 +68,8 @@
 #include <cassert>
 #include <optional>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -217,8 +219,8 @@ namespace ztd { namespace text {
 			virtual __count_code_units_result __count_code_units(_DecodeCodeUnits __input,
 				__count_code_units_error_handler __error_handler, decode_state& __state) const  = 0;
 
-			virtual std::unique_ptr<__erased_state> __create_encode_state() const = 0;
-			virtual std::unique_ptr<__erased_state> __create_decode_state() const = 0;
+			virtual ::std::unique_ptr<__erased_state> __create_encode_state() const = 0;
+			virtual ::std::unique_ptr<__erased_state> __create_decode_state() const = 0;
 
 			virtual ~__erased() {
 			}
@@ -271,7 +273,7 @@ namespace ztd { namespace text {
 			template <typename>
 			friend struct __typed;
 
-			std::unique_ptr<__erased_state> _M_state;
+			::std::unique_ptr<__erased_state> _M_state;
 		};
 
 		//////
@@ -321,7 +323,7 @@ namespace ztd { namespace text {
 			template <typename>
 			friend struct __typed;
 
-			std::unique_ptr<__erased_state> _M_state;
+			::std::unique_ptr<__erased_state> _M_state;
 		};
 
 	private:
@@ -352,10 +354,10 @@ namespace ztd { namespace text {
 			virtual ::std::optional<::ztd::text::span<const code_point>>
 			__maybe_replacement_code_points() const noexcept override {
 				if constexpr (is_code_points_replaceable_v<_Encoding>) {
-					return this->__base_t::get_value().replacement_code_points();
+					return this->__base_t::__get_value().replacement_code_points();
 				}
 				else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
-					return this->__base_t::get_value().maybe_replacement_code_points();
+					return this->__base_t::__get_value().maybe_replacement_code_points();
 				}
 				else {
 					return ::std::nullopt;
@@ -365,10 +367,10 @@ namespace ztd { namespace text {
 			virtual ::std::optional<::ztd::text::span<const code_unit>>
 			__maybe_replacement_code_units() const noexcept override {
 				if constexpr (is_code_units_replaceable_v<_Encoding>) {
-					return this->__base_t::get_value().replacement_code_units();
+					return this->__base_t::__get_value().replacement_code_units();
 				}
 				else if constexpr (is_code_units_maybe_replaceable_v<_Encoding>) {
-					return this->__base_t::get_value().maybe_replacement_code_units();
+					return this->__base_t::__get_value().maybe_replacement_code_units();
 				}
 				else {
 					return {};
@@ -376,7 +378,7 @@ namespace ztd { namespace text {
 			}
 
 			virtual bool __contains_unicode_encoding() const noexcept override {
-				const auto& __real_encoding = this->__base_t::get_value();
+				const auto& __real_encoding = this->__base_t::__get_value();
 				return ::ztd::text::contains_unicode_encoding(__real_encoding);
 			}
 
@@ -388,7 +390,7 @@ namespace ztd { namespace text {
 				__decode_error_handler __error_handler, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto __raw_result = this->__base_t::get_value().decode_one(
+				auto __raw_result = this->__base_t::__get_value().decode_one(
 					::std::move(__input), ::std::move(__output), __pass_handler, __actual_state);
 				return __decode_result(::std::move(__raw_result.input), ::std::move(__raw_result.output), __state,
 					__raw_result.error_code, __raw_result.handled_errors);
@@ -398,7 +400,7 @@ namespace ztd { namespace text {
 				__encode_error_handler __error_handler, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto __raw_result = this->__base_t::get_value().encode_one(
+				auto __raw_result = this->__base_t::__get_value().encode_one(
 					::std::move(__input), ::std::move(__output), __pass_handler, __actual_state);
 				return __encode_result(::std::move(__raw_result.input), ::std::move(__raw_result.output), __state,
 					__raw_result.error_code, __raw_result.handled_errors);
@@ -407,7 +409,7 @@ namespace ztd { namespace text {
 			virtual __validate_code_units_result __validate_code_units_one(
 				_DecodeCodeUnits __input, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
-				auto& __encoding                    = this->__base_t::get_value();
+				auto& __encoding                    = this->__base_t::__get_value();
 				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_units_one,
 					              _Encoding, _DecodeCodePoints, __real_decode_state>) {
 					auto __raw_result
@@ -435,7 +437,7 @@ namespace ztd { namespace text {
 			virtual __validate_code_points_result __validate_code_points_one(
 				_EncodeCodePoints __input, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
-				auto& __encoding                    = this->__base_t::get_value();
+				auto& __encoding                    = this->__base_t::__get_value();
 				if constexpr (__txt_detail::__is_detected_v<
 					              __txt_detail::__detect_adl_text_validate_code_points_one, _Encoding,
 					              _EncodeCodePoints, __real_encode_state>) {
@@ -465,7 +467,7 @@ namespace ztd { namespace text {
 				__count_code_units_error_handler __error_handler, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto& __encoding = this->__base_t::get_value();
+				auto& __encoding = this->__base_t::__get_value();
 				if constexpr (__txt_detail::__is_detected_v<
 					              __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
 					              _DecodeCodeUnits, __txt_detail::__pass_through_handler, __real_decode_state>) {
@@ -495,7 +497,7 @@ namespace ztd { namespace text {
 				__count_code_points_error_handler __error_handler, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto& __encoding = this->__base_t::get_value();
+				auto& __encoding = this->__base_t::__get_value();
 				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_code_points_one,
 					              _Encoding, _EncodeCodePoints, __txt_detail::__pass_through_handler,
 					              __real_encode_state>) {
@@ -526,7 +528,7 @@ namespace ztd { namespace text {
 				__decode_error_handler __error_handler, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto __raw_result = ::ztd::text::decode_into(::std::move(__input), this->__base_t::get_value(),
+				auto __raw_result = ::ztd::text::decode_into(::std::move(__input), this->__base_t::__get_value(),
 					::std::move(__output), __pass_handler, __actual_state);
 				return __decode_result(::std::move(__raw_result.input), ::std::move(__raw_result.output), __state,
 					__raw_result.error_code, __raw_result.handled_errors);
@@ -536,7 +538,7 @@ namespace ztd { namespace text {
 				__encode_error_handler __error_handler, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto __raw_result = ::ztd::text::encode_into(::std::move(__input), this->__base_t::get_value(),
+				auto __raw_result = ::ztd::text::encode_into(::std::move(__input), this->__base_t::__get_value(),
 					::std::move(__output), __pass_handler, __actual_state);
 				return __encode_result(::std::move(__raw_result.input), ::std::move(__raw_result.output), __state,
 					__raw_result.error_code, __raw_result.handled_errors);
@@ -546,7 +548,7 @@ namespace ztd { namespace text {
 				_DecodeCodeUnits __input, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				auto __raw_result                   = ::ztd::text::validate_code_units(
-                         ::std::move(__input), this->__base_t::get_value(), __actual_state);
+                         ::std::move(__input), this->__base_t::__get_value(), __actual_state);
 				return __validate_code_units_result(::std::move(__raw_result.input), __raw_result.valid, __state);
 			}
 
@@ -554,14 +556,14 @@ namespace ztd { namespace text {
 				_EncodeCodePoints __input, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				auto __raw_result                   = ::ztd::text::validate_code_points(
-                         ::std::move(__input), this->__base_t::get_value(), __actual_state);
+                         ::std::move(__input), this->__base_t::__get_value(), __actual_state);
 				return __validate_code_points_result(::std::move(__raw_result.input), __raw_result.valid, __state);
 			}
 
 			virtual __count_code_units_result __count_code_units(_DecodeCodeUnits __input,
 				__count_code_units_error_handler __error_handler, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
-				auto& __encoding                    = this->__base_t::get_value();
+				auto& __encoding                    = this->__base_t::__get_value();
 				__txt_detail::__pass_through_handler __pass_handler;
 				auto __raw_result = ::ztd::text::count_code_units(
 					::std::move(__input), __encoding, __pass_handler, __actual_state);
@@ -574,19 +576,19 @@ namespace ztd { namespace text {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
 				auto __raw_result = ::ztd::text::count_code_points(
-					::std::move(__input), this->__base_t::get_value(), __pass_handler, __actual_state);
+					::std::move(__input), this->__base_t::__get_value(), __pass_handler, __actual_state);
 				return __count_code_points_result(::std::move(__raw_result.input), __raw_result.count, __state,
 					__raw_result.error_code, __raw_result.handled_errors);
 			}
 
-			virtual std::unique_ptr<__erased_state> __create_encode_state() const override {
-				auto& __encoding = this->__base_t::get_value();
-				return std::make_unique<__typed_state<__real_encode_state>>(make_encode_state(__encoding));
+			virtual ::std::unique_ptr<__erased_state> __create_encode_state() const override {
+				auto& __encoding = this->__base_t::__get_value();
+				return ::std::make_unique<__typed_state<__real_encode_state>>(make_encode_state(__encoding));
 			}
 
-			virtual std::unique_ptr<__erased_state> __create_decode_state() const override {
-				auto& __encoding = this->__base_t::get_value();
-				return std::make_unique<__typed_state<__real_decode_state>>(make_decode_state(__encoding));
+			virtual ::std::unique_ptr<__erased_state> __create_decode_state() const override {
+				auto& __encoding = this->__base_t::__get_value();
+				return ::std::make_unique<__typed_state<__real_decode_state>>(make_decode_state(__encoding));
 			}
 
 		private:
@@ -594,14 +596,14 @@ namespace ztd { namespace text {
 				__erased_state* __erased_ptr = __state._M_get_erased_state();
 				__typed_state<__real_encode_state>* __typed_ptr
 					= static_cast<__typed_state<__real_encode_state>*>(__erased_ptr);
-				return __typed_ptr->get_value();
+				return __typed_ptr->__get_value();
 			}
 
 			__real_decode_state& _M_get_state(decode_state& __state) const {
 				__erased_state* __erased_ptr = __state._M_get_erased_state();
 				__typed_state<__real_decode_state>* __typed_ptr
 					= static_cast<__typed_state<__real_decode_state>*>(__erased_ptr);
-				return __typed_ptr->get_value();
+				return __typed_ptr->__get_value();
 			}
 		};
 
@@ -629,7 +631,7 @@ namespace ztd { namespace text {
 			          any_encoding_with> && !__txt_detail::__is_specialization_of_v<__txt_detail::__remove_cvref_t<_Encoding>, ::std::in_place_type_t>>* = nullptr>
 		any_encoding_with(_Encoding&& __encoding, _Args&&... __args)
 		: any_encoding_with(::std::in_place_type<__txt_detail::__remove_cvref_t<_Encoding>>,
-			::std::forward<_Encoding>(__encoding), std::forward<_Args>(__args)...) {
+			::std::forward<_Encoding>(__encoding), ::std::forward<_Args>(__args)...) {
 		}
 
 		//////
@@ -1001,7 +1003,7 @@ namespace ztd { namespace text {
 			          any_byte_encoding> && !::std::is_same_v<_Encoding, __base_t> && !__txt_detail::__is_specialization_of_v<__txt_detail::__remove_cvref_t<_Encoding>, ::std::in_place_type_t>>* = nullptr>
 		any_byte_encoding(_Encoding&& __encoding, _Args&&... __args)
 		: any_byte_encoding(::std::in_place_type<__txt_detail::__remove_cvref_t<_Encoding>>,
-			::std::forward<_Encoding>(__encoding), std::forward<_Args>(__args)...) {
+			::std::forward<_Encoding>(__encoding), ::std::forward<_Args>(__args)...) {
 		}
 
 		//////
@@ -1087,5 +1089,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ANY_ENCODING_HPP

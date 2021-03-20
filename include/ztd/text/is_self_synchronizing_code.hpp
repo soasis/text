@@ -39,6 +39,8 @@
 
 #include <type_traits>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -48,7 +50,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename = void>
 		struct __is_self_synchronizing_code_sfinae
-		: std::integral_constant<bool, ::std::is_empty_v<decode_state_t<_Encoding>>> { };
+		: ::std::integral_constant<bool, ::std::is_empty_v<decode_state_t<_Encoding>>> { };
 
 		template <typename _Type>
 		struct __is_self_synchronizing_code_sfinae<_Type,
@@ -66,5 +68,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_SELF_SYNCHRONIZING_HPP

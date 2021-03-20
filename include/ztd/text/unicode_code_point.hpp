@@ -42,6 +42,8 @@
 #include <string>
 #include <cstdint>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -66,7 +68,8 @@ namespace ztd { namespace text {
 			//////
 			constexpr __unicode_code_point(char32_t __code_point) noexcept : _M_scalar(__code_point) {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_INVARIANT_ABORT_I_)
-				if (__txt_detail::__is_surrogate(this->_M_scalar) || (this->_M_scalar > __txt_detail::__last_code_point)) {
+				if (__txt_detail::__is_surrogate(this->_M_scalar)
+					|| (this->_M_scalar > __txt_detail::__last_code_point)) {
 					::std::abort();
 				}
 #else
@@ -174,14 +177,14 @@ namespace std {
 		}
 
 		static /*constexpr*/ char_type* move(
-		     char_type* __destination, const char_type* __source, std::size_t __count) noexcept {
+		     char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
 			// TODO: constexpr. right now illegal cast
 			return reinterpret_cast<char_type*>(::std::char_traits<char32_t>::move(
 			     reinterpret_cast<char32_t*>(__destination), reinterpret_cast<const char32_t*>(__source), __count));
 		}
 
 		ZTD_TEXT_NODISCARD_I_ static /*constexpr*/ int compare(
-		     const char_type* __left, const char_type* __right, std::size_t __count) noexcept {
+		     const char_type* __left, const char_type* __right, ::std::size_t __count) noexcept {
 			// TODO: constexpr. right now illegal cast
 			return ::std::char_traits<char32_t>::compare(
 			     reinterpret_cast<const char32_t*>(__left), reinterpret_cast<const char32_t*>(__right), __count);
@@ -248,5 +251,7 @@ namespace std {
 		}
 	};
 } // namespace std
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_UNICODE_CODE_POINT_HPP

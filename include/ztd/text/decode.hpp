@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_DECODE_HPP
 #define ZTD_TEXT_DECODE_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/default_encoding.hpp>
 #include <ztd/text/decode_result.hpp>
@@ -51,6 +53,8 @@
 #include <string>
 #include <vector>
 #include <string_view>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -95,8 +99,8 @@ namespace ztd { namespace text {
 		using _IntermediateOutput = __txt_detail::__reconstruct_t<_UOutput>;
 		using _Result             = decltype(__encoding.decode_one(
                ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
-		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(std::declval<_Result>().input)>;
-		using _WorkingOutput      = __txt_detail::__remove_cvref_t<decltype(std::declval<_Result>().output)>;
+		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
+		using _WorkingOutput      = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().output)>;
 		using _UEncoding          = __txt_detail::__remove_cvref_t<_Encoding>;
 		using _UErrorHandler      = __txt_detail::__remove_cvref_t<_ErrorHandler>;
 
@@ -195,7 +199,7 @@ namespace ztd { namespace text {
 			using _Output            = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
 			using _Result            = decltype(__encoding.decode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
-			using _WorkingInput      = __txt_detail::__remove_cvref_t<decltype(std::declval<_Result>().input)>;
+			using _WorkingInput      = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			_WorkingInput __working_input(
 				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
@@ -761,5 +765,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_HPP

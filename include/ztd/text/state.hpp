@@ -37,6 +37,8 @@
 
 #include <ztd/text/detail/type_traits.hpp>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -47,7 +49,7 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _Type>
-		struct __decode_state<_Type, std::void_t<typename _Type::decode_state>> {
+		struct __decode_state<_Type, ::std::void_t<typename _Type::decode_state>> {
 			using type = typename _Type::decode_state;
 		};
 
@@ -57,7 +59,7 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _Type>
-		struct __encode_state<_Type, std::void_t<typename _Type::encode_state>> {
+		struct __encode_state<_Type, ::std::void_t<typename _Type::encode_state>> {
 			using type = typename _Type::encode_state;
 		};
 	} // namespace __txt_detail
@@ -121,7 +123,7 @@ namespace ztd { namespace text {
 	/// @tparam _Encoding The encoding that may contain necessary information.
 	/// @tparam _Type The state type that may need information from the encoding to be successfully constructed.
 	///
-	/// @remarks This value tells users at compile-time whether or not they need to be careful with the state. Rather
+	/// @remarks This value tells users at compile time whether or not they need to be careful with the state. Rather
 	/// than let users have to work this independently, two functions — ztd::text::make_encode_state(_Encoding) and
 	/// ztd::text::make_encode_state(_Encoding) — handle the details here.
 	//////
@@ -134,16 +136,14 @@ namespace ztd { namespace text {
 	/// encoding itself.
 	//////
 	template <typename _Encoding>
-	inline constexpr bool is_decode_state_independent_v
-		= is_state_independent_v<_Encoding, decode_state_t<_Encoding>>;
+	inline constexpr bool is_decode_state_independent_v = is_state_independent_v<_Encoding, decode_state_t<_Encoding>>;
 
 	//////
 	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the
 	/// encoding itself.
 	//////
 	template <typename _Encoding>
-	inline constexpr bool is_encode_state_independent_v
-		= is_state_independent_v<_Encoding, encode_state_t<_Encoding>>;
+	inline constexpr bool is_encode_state_independent_v = is_state_independent_v<_Encoding, encode_state_t<_Encoding>>;
 
 	//////
 	/// @brief Constructs the @c decode_state of the given encoding, based on whether or not the encoding and state
@@ -187,5 +187,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_STATE_HPP

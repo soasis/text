@@ -36,6 +36,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <climits>
+#include <type_traits>
+
+#include <ztd/text/detail/prologue.hpp>
 
 #define ZTD_TEXT_VERSION_MAJOR 0
 #define ZTD_TEXT_VERSION_MINOR 0
@@ -446,6 +449,54 @@
 	#define ZTD_TEXT_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_ ZTD_TEXT_DEFAULT_OFF
 #endif
 
+#if defined(ZTD_TEXT_STD_LIBRARY_RANGES)
+	#if (ZTD_TEXT_STD_LIBRARY_RANGES != 0)
+		#define ZTD_TEXT_STD_LIBRARY_RANGES_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_STD_LIBRARY_RANGES_I_ ZTD_TEXT_OFF
+	#endif
+#elif defined(__cpp_lib_ranges)
+	#define ZTD_TEXT_STD_LIBRARY_RANGES_I_ ZTD_TEXT_DEFAULT_ON
+#else
+	#define ZTD_TEXT_STD_LIBRARY_RANGES_I_ ZTD_TEXT_DEFAULT_OFF
+#endif
+
+#if defined(ZTD_TEXT_STD_LIBRARY_ENDIAN)
+	#if (ZTD_TEXT_STD_LIBRARY_ENDIAN != 0)
+		#define ZTD_TEXT_STD_LIBRARY_ENDIAN_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_STD_LIBRARY_ENDIAN_I_ ZTD_TEXT_OFF
+	#endif
+#elif defined(__cpp_lib_endian)
+	#define ZTD_TEXT_STD_LIBRARY_ENDIAN_I_ ZTD_TEXT_DEFAULT_ON
+#else
+	#define ZTD_TEXT_STD_LIBRARY_ENDIAN_I_ ZTD_TEXT_DEFAULT_OFF
+#endif
+
+#if defined(ZTD_TEXT_STD_LIBRARY_CONCEPTS)
+	#if (ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_ != 0)
+		#define ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_ ZTD_TEXT_OFF
+	#endif
+#elif defined(__cpp_lib_concepts)
+	#define ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_ ZTD_TEXT_DEFAULT_ON
+#else
+	#define ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_ ZTD_TEXT_DEFAULT_OFF
+#endif
+
+#if defined(ZTD_TEXT_CONCEPTS)
+	#if (ZTD_TEXT_CONCEPTS_I_ != 0)
+		#define ZTD_TEXT_CONCEPTS_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_CONCEPTS_I_ ZTD_TEXT_OFF
+	#endif
+#elif defined(__cpp_concepts)
+	#define ZTD_TEXT_CONCEPTS_I_ ZTD_TEXT_DEFAULT_ON
+#else
+	#define ZTD_TEXT_CONCEPTS_I_ ZTD_TEXT_DEFAULT_OFF
+#endif
+
 #if defined(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME)
 	#define ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() ZTD_TEXT_COMPILE_TIME_ENCODING_NAME
 	#define ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_       ZTD_TEXT_DEFAULT_ON
@@ -528,6 +579,18 @@
 	#define ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_ ZTD_TEXT_DEFAULT_ON
 #else
 	#define ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_ ZTD_TEXT_DEFAULT_OFF
+#endif
+
+#if defined(ZTD_TEXT_STD_LIBRARY_TO_ADDRESS)
+	#if (ZTD_TEXT_STD_LIBRARY_TO_ADDRESS != 0)
+		#define ZTD_TEXT_STD_LIBRARY_TO_ADDRESS_I_ ZTD_TEXT_ON
+	#else
+		#define ZTD_TEXT_STD_LIBRARY_TO_ADDRESS_I_ ZTD_TEXT_OFF
+	#endif
+#elif defined(__cpp_lib_to_address)
+	#define ZTD_TEXT_STD_LIBRARY_TO_ADDRESS_I_ ZTD_TEXT_DEFAULT_ON
+#else
+	#define ZTD_TEXT_STD_LIBRARY_TO_ADDRESS_I_ ZTD_TEXT_DEFAULT_OFF
 #endif
 
 #if defined (ZTD_TEXT_CONSTEXPR_IF_CONSTANT_EVALUATED)
@@ -631,6 +694,23 @@
 	#define ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT_I_ ZTD_TEXT_OFF
 #endif
 
+#if defined(ZTD_TEXT_FWD)
+	#define ZTD_TEXT_FWD_I_(__val) ZTD_TEXT_FWD(__val)
+#else
+	#define ZTD_TEXT_FWD_I_(__val) static_cast<decltype(__val)&&>(__val)
+#endif
+
+#if defined(ZTD_TEXT_MOVE)
+	#define ZTD_TEXT_MOVE_I_(__val) ZTD_TEXT_MOVE(__val)
+#else
+	#if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_GCC_I_) || ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_CLANG_I_)
+		// C's "typeof" never returns a reference
+		#define ZTD_TEXT_MOVE_I_(__val) static_cast<__typeof(__val)&&>(__val)
+	#else
+		#define ZTD_TEXT_MOVE_I_(__val) static_cast<::std::remove_reference_t<decltype(__val)>&&>(__val)
+	#endif
+#endif
+
 #if defined(ZTD_TEXT_ABI_NAMESPACE)
 	#define ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_ inline namespace ZTD_TEXT_ABI_NAMESPACE {
 	#define ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_ }
@@ -638,5 +718,7 @@
 	#define ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_ inline namespace __v0 {
 	#define ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_ }
 #endif
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_VERSION_HPP

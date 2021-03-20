@@ -44,6 +44,8 @@
 
 #include <string_view>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -51,16 +53,16 @@ namespace ztd { namespace text {
 
 		inline constexpr bool __is_encoding_name_equal(
 			::std::string_view __left, ::std::string_view __right) noexcept {
-			constexpr std::string_view __readable_characters
+			constexpr ::std::string_view __readable_characters
 				= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuuvwxyz1234567890";
-			constexpr std::string_view __uncased_characters = "abcdefghijklmnopqrstuuvwxyz";
-			constexpr std::string_view __cased_characters   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			::std::size_t __left_size                       = __left.size();
-			::std::size_t __right_size                      = __right.size();
-			const char* __left_ptr                          = __left.data();
-			const char* __right_ptr                         = __right.data();
-			::std::size_t __left_index                      = 0;
-			::std::size_t __right_index                     = 0;
+			constexpr ::std::string_view __uncased_characters = "abcdefghijklmnopqrstuuvwxyz";
+			constexpr ::std::string_view __cased_characters   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			::std::size_t __left_size                         = __left.size();
+			::std::size_t __right_size                        = __right.size();
+			const char* __left_ptr                            = __left.data();
+			const char* __right_ptr                           = __right.data();
+			::std::size_t __left_index                        = 0;
+			::std::size_t __right_index                       = 0;
 			for (; __left_index < __left_size && __right_index < __right_size;) {
 				// find the first non-ignorable character we can read
 				::std::size_t __left_first_index = __left.find_first_of(__readable_characters, __left_index);
@@ -93,13 +95,13 @@ namespace ztd { namespace text {
 			return true;
 		}
 
-		inline constexpr bool __is_unicode_encoding_name(std::string_view __encoding_name) noexcept {
+		inline constexpr bool __is_unicode_encoding_name(::std::string_view __encoding_name) noexcept {
 			constexpr const char* __unicode_names[]
 				= { "UTF-7", "UTF-7-IMAP", "UTF-8", "UTF-16", "UTF-32", "UTF-16LE", "UTF-16BE", "UTF-32LE",
 					  "UTF-32BE", "UTF-EBCDIC", "UTF-8-EBCDIC", "MUTF-8", "WTF-8", "GB18030", "CESU-8", "UTF-1" };
 			constexpr ::std::size_t __unicode_names_count = sizeof(__unicode_names) / sizeof(__unicode_names[0]);
 			for (::std::size_t __index = 0; __index < __unicode_names_count; ++__index) {
-				std::string_view __unicode_name = __unicode_names[__index];
+				::std::string_view __unicode_name = __unicode_names[__index];
 				if (__is_encoding_name_equal(__encoding_name, __unicode_name)) {
 					return true;
 				}
@@ -254,5 +256,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_ENCODING_NAME_HPP

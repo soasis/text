@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_ENCODE_HPP
 #define ZTD_TEXT_ENCODE_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/error_handler.hpp>
@@ -50,6 +52,8 @@
 #include <string>
 #include <vector>
 #include <string_view>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -156,14 +160,14 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_encode, _Input, _Encoding, _Output,
-			              _ErrorHandler, _State>) {
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_encode, _Input, _Encoding,
+			              _Output, _ErrorHandler, _State>) {
 			return text_encode(tag<__txt_detail::__remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
-		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_encode, _Input, _Encoding,
-			                   _Output, _ErrorHandler, _State>) {
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_encode, _Input,
+			                   _Encoding, _Output, _ErrorHandler, _State>) {
 			return __text_encode(tag<__txt_detail::__remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
@@ -189,14 +193,14 @@ namespace ztd { namespace text {
 			using _UInput                = __txt_detail::__remove_cvref_t<_Input>;
 			using _InputValueType        = __txt_detail::__range_value_type_t<_UInput>;
 			using _IntermediateValueType = code_unit_t<_UEncoding>;
-			using _IntermediateInput     = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-                    ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-                    _UInput>>;
-			using _Output                = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
-			using _Result                = decltype(__encoding.encode_one(
+			using _IntermediateInput = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+				::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+				     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+				_UInput>>;
+			using _Output            = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _Result            = decltype(__encoding.encode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
-			using _WorkingInput          = __txt_detail::__remove_cvref_t<decltype(std::declval<_Result>().input)>;
+			using _WorkingInput      = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			_WorkingInput __working_input(
 				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
@@ -219,8 +223,8 @@ namespace ztd { namespace text {
 				else {
 					// O O F! we have to insert one at a time.
 					for (auto&& __intermediate_code_unit : __intermediate_output) {
-						if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_push_back, _OutputContainer,
-							              _IntermediateValueType>) {
+						if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_push_back,
+							              _OutputContainer, _IntermediateValueType>) {
 							__output.push_back(__intermediate_code_unit);
 						}
 						else {
@@ -230,7 +234,7 @@ namespace ztd { namespace text {
 				}
 				if (__result.error_code == encoding_error::insufficient_output_space) {
 					// loop around, we've got S P A C E for more
-					__working_input = std::move(__result.input);
+					__working_input = ::std::move(__result.input);
 					continue;
 				}
 				if (__result.error_code != encoding_error::ok) {
@@ -370,8 +374,8 @@ namespace ztd { namespace text {
 		_OutputContainer __output {};
 		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
 			using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type, _OutputContainer,
-				              _SizeType>) {
+			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
+				              _OutputContainer, _SizeType>) {
 				auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
 				__output_size_hint *= max_code_points_v<_UEncoding>;
 				__output.reserve(__output_size_hint);
@@ -389,8 +393,8 @@ namespace ztd { namespace text {
 				return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
 			}
 			else {
-				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(::std::forward<_Input>(__input),
-					::std::forward<_Encoding>(__encoding), __output,
+				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
+					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
 					::std::forward<_ErrorHandler>(__error_handler), __state);
 				return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
 			}
@@ -521,8 +525,8 @@ namespace ztd { namespace text {
 		_OutputContainer __output {};
 		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
 			using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type, _OutputContainer,
-				              _SizeType>) {
+			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
+				              _OutputContainer, _SizeType>) {
 				auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
 				__output_size_hint *= max_code_points_v<_UEncoding>;
 				__output.reserve(__output_size_hint);
@@ -541,8 +545,8 @@ namespace ztd { namespace text {
 				return __output;
 			}
 			else {
-				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(::std::forward<_Input>(__input),
-					::std::forward<_Encoding>(__encoding), __output,
+				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
+					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
 					::std::forward<_ErrorHandler>(__error_handler), __state);
 				(void)__stateful_result;
 				return __output;
@@ -757,5 +761,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ENCODE_HPP

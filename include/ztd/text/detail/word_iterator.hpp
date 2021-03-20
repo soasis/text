@@ -41,171 +41,89 @@
 #include <ztd/text/detail/type_traits.hpp>
 #include <ztd/text/detail/memory.hpp>
 #include <ztd/text/detail/to_underlying.hpp>
+#include <ztd/text/detail/algorithm.hpp>
+#include <ztd/text/detail/math.hpp>
+#include <ztd/text/detail/ebco.hpp>
+#include <ztd/text/detail/reconstruct.hpp>
 
 #include <cstddef>
 #include <limits>
 #include <climits>
 #include <cstring>
 #include <memory>
+#include <optional>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __txt_detail {
 
-		template <typename _It, typename _Word, endian _Endian>
-		class __word_reference {
-		public:
-			using value_type = _Word;
+		template <typename _Word, typename _Range, bool>
+		class __word_iterator_storage : private __ebco<_Range> {
+		private:
+			using __base_t = __ebco<_Range>;
 
+		public:
+			constexpr __word_iterator_storage() noexcept(::std::is_nothrow_default_constructible_v<_Range>)
+			: __base_t() {
+			}
+			constexpr __word_iterator_storage(_Range&& __range) noexcept(
+				::std::is_nothrow_move_constructible_v<_Range>)
+			: __base_t(::std::move(__range)) {
+			}
+			constexpr __word_iterator_storage(const _Range& __range) noexcept(
+				::std::is_nothrow_copy_constructible_v<_Range>)
+			: __base_t(__range) {
+			}
+
+			using __base_t::__get_value;
+		};
+
+		template <typename _Word, typename _Range>
+		class __word_iterator_storage<_Word, _Range, true> : private __ebco<_Range> {
 		private:
+			using __base_t = __ebco<_Range>;
+
+		public:
+			::std::optional<_Word> _M_val;
+
+			constexpr __word_iterator_storage() noexcept(::std::is_nothrow_default_constructible_v<_Range>)
+			: __base_t() {
+			}
+			constexpr __word_iterator_storage(_Range&& __range) noexcept(
+				::std::is_nothrow_move_constructible_v<_Range>&& ::std::is_nothrow_default_constructible_v<_Word>)
+			: __base_t(::std::move(__range)), _M_val(::std::nullopt) {
+			}
+			constexpr __word_iterator_storage(const _Range& __range) noexcept(
+				::std::is_nothrow_copy_constructible_v<_Range>&& ::std::is_nothrow_default_constructible_v<_Word>)
+			: __base_t(__range), _M_val(::std::nullopt) {
+			}
+
+			using __base_t::__get_value;
+		};
+
+		using __word_sentinel = default_sentinel_t;
+
+		template <typename _Word, typename _Range, endian _Endian>
+		class __word_iterator
+		: private __word_iterator_storage<_Word, __reconstruct_t<__remove_cvref_t<_Range>>,
+			  __is_iterator_input_iterator_v<__range_iterator_t<__reconstruct_t<__remove_cvref_t<_Range>>>>> {
 		private:
-			using __base_iterator              = _It;
-			using __maybe_void_base_value_type = __txt_detail::__iterator_value_type_t<__base_iterator>;
-			using __base_value_type            = ::std::conditional_t<::std::is_void_v<__maybe_void_base_value_type>,
+			using _URange                      = __reconstruct_t<__remove_cvref_t<_Range>>;
+			using __base_iterator              = __range_iterator_t<_URange>;
+			using __base_sentinel              = __range_sentinel_t<_URange>;
+			using __base_reference             = __iterator_reference_t<__base_iterator>;
+			using __maybe_void_base_value_type = __iterator_value_type_t<__base_iterator>;
+			using __base_value_type            = ::std::conditional_t<
+                    ::std::is_void_v<
+                         __maybe_void_base_value_type> || !::std::is_arithmetic_v<__maybe_void_base_value_type>,
                     ::std::byte, __maybe_void_base_value_type>;
-			using __underlying_base_value_type = decltype(__any_to_underlying(__base_value_type {}));
-			using __underlying_value_type      = decltype(__any_to_underlying(value_type {}));
-			inline static constexpr ::std::size_t __base_values_per_word
-				= sizeof(value_type) / sizeof(__base_value_type);
-
-		public:
-			constexpr __word_reference(__base_iterator __it) : _M_base_it(::std::move(__it)) {
-			}
-
-			constexpr __word_reference& operator=(value_type __val) noexcept {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
-				if (::std::is_constant_evaluated()) {
-					// God's given, handwritten, bit-splittin'
-					// one-way """memcpy""". 😵
-					__underlying_value_type __bit_value = __any_to_underlying(__val);
-					auto __base_it                      = this->_M_base_it;
-					for (::std::size_t __index = 0; __index < __base_values_per_word; ++__index) {
-						__underlying_value_type __bit_position = static_cast<__underlying_value_type>(
-							__index * (sizeof(__underlying_base_value_type) * CHAR_BIT));
-						__underlying_base_value_type __shifted_bit_value
-							= static_cast<__underlying_base_value_type>(__bit_value >> __bit_position);
-						*__base_it = static_cast<__base_value_type>(__shifted_bit_value);
-						++__base_it;
-					}
-				}
-				else
-#endif
-				{
-					if constexpr (_Endian == endian::native) {
-						__base_value_type __storage[__base_values_per_word];
-						::std::memcpy(__storage, ::std::addressof(__val), sizeof(value_type));
-						::std::copy_n(__storage, __adl::__adl_size(__storage), this->_M_base_it);
-					}
-					else if (_Endian == endian::little) {
-						__base_value_type __storage[__base_values_per_word];
-						::std::memcpy(__storage, ::std::addressof(__val), sizeof(value_type));
-						::std::copy_n(__storage, __adl::__adl_size(__storage), this->_M_base_it);
-					}
-					else {
-						// copy... as-is, I guess?
-						__base_value_type __storage[__base_values_per_word];
-						auto __first_it = __storage + 0;
-						auto __last_it  = __storage + __base_values_per_word;
-						::std::memcpy(__storage, ::std::addressof(__val), sizeof(value_type));
-						::std::copy_backward(__first_it, __last_it, this->_M_base_it);
-					}
-				}
-				return *this;
-			}
-
-			constexpr value_type value() const noexcept {
-				if constexpr (_Endian == endian::native
-					&& (endian::native != endian::big && endian::native != endian::little)) {
-					static_assert(__always_false_constant_v<endian, _Endian>,
-						"read value from byte stream to native endianness that is neither little nor big (byte "
-						"order is impossible to infer from the standard)");
-				}
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
-				if (::std::is_constant_evaluated()) {
-					__base_value_type __storage[__base_values_per_word] {};
-					__underlying_value_type __val = __any_to_underlying(value_type {});
-					if constexpr (_Endian == endian::little) {
-						::std::copy_n(this->_M_base_it, __adl::__adl_size(__storage), __storage);
-					}
-					else {
-						static_assert(_Endian == endian::big);
-						auto __last_it = ::std::next(this->_M_base_it, __adl::__adl_size(__storage));
-						::std::copy_backward(this->_M_base_it, __last_it, __storage);
-					}
-					// God's given, handwritten, bit-fusin'
-					// one-way """memcpy""". 😵
-					for (::std::size_t __index = 0; __index < __base_values_per_word; ++__index) {
-						__underlying_value_type __bit_value
-							= static_cast<__underlying_value_type>(__any_to_underlying(__storage[__index]));
-						__underlying_value_type __bit_position = static_cast<__underlying_value_type>(
-							__index * (sizeof(__underlying_base_value_type) * CHAR_BIT));
-						__underlying_value_type __shifted_bit_value = (__bit_value << __bit_position);
-						__val |= __shifted_bit_value;
-					}
-					return static_cast<value_type>(__val);
-				}
-				else
-#endif
-				{
-					__base_value_type __storage[__base_values_per_word];
-					value_type __val;
-					if constexpr (_Endian == endian::big) {
-						auto __last_it = ::std::next(this->_M_base_it, __adl::__adl_size(__storage));
-						::std::copy_backward(this->_M_base_it, __last_it, __storage);
-					}
-					else {
-						static_assert(_Endian == endian::little);
-						::std::copy_n(this->_M_base_it, __adl::__adl_size(__storage), __storage);
-					}
-					::std::memcpy(
-						::std::addressof(__val), ::std::addressof(__storage), __adl::__adl_size(__storage));
-					return __val;
-				}
-			}
-
-			constexpr operator value_type() const {
-				return this->value();
-			}
-
-		private:
-			__base_iterator _M_base_it;
-		};
-
-		template <typename _It>
-		class __word_sentinel {
-		public:
-			using sentinel_type = _It;
-
-			__word_sentinel() = default;
-			constexpr __word_sentinel(sentinel_type __sen) : _M_base_sen(::std::move(__sen)) {
-			}
-
-			constexpr sentinel_type& base() & {
-				return this->_M_base_sen;
-			}
-
-			constexpr const sentinel_type& base() const& {
-				return this->_M_base_sen;
-			}
-
-			constexpr sentinel_type&& base() && {
-				return ::std::move(this->_M_base_sen);
-			}
-
-		private:
-			sentinel_type _M_base_sen;
-		};
-
-		template <typename _Derived, typename _Word, typename _It, endian _Endian, typename = void>
-		class __category_word_iterator {
-		private:
-			using __base_iterator   = _It;
-			using __sentinel        = __word_sentinel<_It>;
-			using __base_reference  = __txt_detail::__iterator_reference_t<__base_iterator>;
-			using __base_value_type = __txt_detail::__iterator_value_type_t<__base_iterator>;
-			using __difference_type = __txt_detail::__iterator_difference_type_t<__base_iterator>;
-			using __size_type       = ::std::make_unsigned_t<__difference_type>;
-			using __value_type      = _Word;
+			using __difference_type               = __iterator_difference_type_t<__base_iterator>;
+			using __size_type                     = __iterator_size_type_t<__base_iterator>;
+			using __value_type                    = _Word;
+			inline constexpr static bool _IsInput = __is_iterator_input_iterator_v<__base_iterator>;
+			using __base_storage_t                = __word_iterator_storage<_Word, _URange, _IsInput>;
 
 			static_assert(sizeof(__value_type) >= sizeof(__base_value_type),
 				"the 'byte' type selected for the word_iterator must not be larger than the value_type of the "
@@ -217,208 +135,403 @@ namespace ztd { namespace text {
 			static inline constexpr __size_type __base_values_per_word
 				= sizeof(__value_type) / sizeof(__base_value_type);
 
+			class __word_reference {
+			public:
+				using value_type = _Word;
+
+			private:
+				using __underlying_base_value_type = decltype(__any_to_underlying(__base_value_type {}));
+				using __underlying_value_type      = decltype(__any_to_underlying(value_type {}));
+				inline static constexpr __underlying_value_type __base_bits_per_element
+					= static_cast<__underlying_value_type>(sizeof(__underlying_base_value_type) * CHAR_BIT);
+				inline static constexpr __underlying_value_type __base_lowest_bit_mask
+					= static_cast<__underlying_value_type>(__ce_ipow(2, __base_bits_per_element) - 1);
+
+			public:
+				constexpr __word_reference(_URange& __range) noexcept : _M_base_range_ref(__range) {
+				}
+
+				template <typename _Value,
+					::std::enable_if_t<::std::is_convertible_v<_Value,
+					                        value_type> && !::std::is_const_v<__base_iterator>>* = nullptr>
+				constexpr __word_reference& operator=(_Value __maybe_val) noexcept {
+					value_type __val = static_cast<value_type>(__maybe_val);
+					__base_value_type __storage[__base_values_per_word] {};
+					auto __storage_first = __storage + 0;
+					auto __storage_last  = __storage + __base_values_per_word;
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+					if (!::std::is_constant_evaluated()) {
+						// just memcpy the data
+						::std::memcpy(__storage, ::std::addressof(__val), sizeof(value_type));
+					}
+					else
+#endif
+					{
+						// God's given, handwritten, bit-splittin'
+						// one-way """memcpy""". 😵
+						__underlying_value_type __bit_value = __any_to_underlying(static_cast<value_type>(__val));
+						auto __storage_it                   = __storage + 0;
+						for (::std::size_t __index = 0; __index < __base_values_per_word; ++__index) {
+							__underlying_value_type __bit_position
+								= static_cast<__underlying_value_type>(__index * __base_bits_per_element);
+							__underlying_base_value_type __shifted_bit_value
+								= static_cast<__underlying_base_value_type>(__bit_value >> __bit_position);
+							*__storage_it
+								= static_cast<__base_value_type>(__shifted_bit_value & __base_lowest_bit_mask);
+							++__storage_it;
+						}
+					}
+					if constexpr (_Endian != endian::native) {
+						if constexpr (_Endian == endian::big) {
+							__reverse(__storage_first, __storage_last);
+						}
+						else {
+							// TODO: what about middle endian or some such??
+						}
+					}
+					auto& __base_range = this->_M_base_range();
+					if constexpr (_IsInput) {
+						auto __result = __copy(__storage_first, __storage_last,
+							__adl::__adl_begin(::std::move(__base_range)),
+							__adl::__adl_end(::std::move(__base_range)));
+						this->_M_base_range()
+							= __reconstruct(::std::in_place_type<_URange>, ::std::move(__result.out));
+					}
+					else {
+						__copy(__storage_first, __storage_last, __adl::__adl_begin(__base_range),
+							__adl::__adl_end(__base_range));
+					}
+					return *this;
+				}
+
+				constexpr value_type value() const noexcept {
+					if constexpr (_Endian == endian::native
+						&& (endian::native != endian::big && endian::native != endian::little)) {
+						static_assert(__always_false_constant_v<endian, _Endian>,
+							"read value from byte stream to native endianness that is neither little nor big "
+							"(byte "
+							"order is impossible to infer from the standard)");
+					}
+					__base_value_type __storage[__base_values_per_word] {};
+					auto __storage_first = __storage + 0;
+					value_type __val {};
+					if constexpr (_IsInput) {
+						// input iterator here (output iterstors cannot be used)
+						// to do this kind of work
+						// use iterator directly, re-update it when we are done
+						// to prevent failure
+						auto& __base_range    = this->_M_base_range();
+						auto __result         = __copy_n_unsafe(__adl::__adl_begin(::std::move(__base_range)),
+                                   __adl::__adl_size(__storage), __storage_first);
+						this->_M_base_range() = __reconstruct(::std::in_place_type<_URange>,
+							::std::move(__result.in).begin().base(), ::std::move(__base_range).end());
+					}
+					else {
+						// prevent feed-updating iterator through usage here
+						// just copy-and-use
+						auto __base_it_copy            = this->_M_base_range().begin();
+						[[maybe_unused]] auto __result = __copy_n_unsafe(
+							::std::move(__base_it_copy), __adl::__adl_size(__storage), __storage_first);
+					}
+					if constexpr (_Endian == endian::big) {
+						__reverse(__adl::__adl_begin(__storage), __adl::__adl_end(__storage));
+					}
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+					if (!::std::is_constant_evaluated())
+#else
+					if (false)
+#endif
+					{
+						::std::memcpy(::std::addressof(__val), __storage_first, __adl::__adl_size(__storage));
+					}
+					else {
+						// God's given, handwritten, bit-fusin'
+						// one-way """memcpy""". 😵
+						for (::std::size_t __index = 0; __index < __base_values_per_word; ++__index) {
+							__underlying_value_type __bit_value
+								= static_cast<__underlying_value_type>(__any_to_underlying(__storage[__index]));
+							__underlying_value_type __bit_position
+								= static_cast<__underlying_value_type>(__index * __base_bits_per_element);
+							__underlying_value_type __shifted_bit_value = (__bit_value << __bit_position);
+							__val |= __shifted_bit_value;
+						}
+					}
+					return static_cast<value_type>(__val);
+				}
+
+				constexpr operator value_type() const noexcept {
+					return this->value();
+				}
+
+			private:
+				_URange& _M_base_range() const noexcept {
+					return this->_M_base_range_ref.get();
+				}
+
+				::std::reference_wrapper<_URange> _M_base_range_ref;
+			};
+
 		public:
-			using iterator_type     = __base_iterator;
+			using range_type        = _URange;
+			using iterator          = __base_iterator;
+			using sentinel          = __base_sentinel;
 			using iterator_category = __iterator_category_t<__base_iterator>;
+			using iterator_concept  = __iterator_concept_t<__base_iterator>;
 			using difference_type   = __difference_type;
 			using pointer           = _Word*;
 			using value_type        = __value_type;
-			using reference         = __word_reference<__base_iterator, _Word, _Endian>;
+			using reference         = ::std::conditional_t<_IsInput, value_type&, __word_reference>;
+			using const_reference   = ::std::conditional_t<_IsInput, const value_type&, __word_reference>;
 
-			__category_word_iterator() = default;
-			constexpr __category_word_iterator(iterator_type __it) : _M_base_it(::std::move(__it)) {
+		private:
+			static constexpr bool _S_deref_noexcept() noexcept {
+				if constexpr (_IsInput) {
+					return true;
+				}
+				else {
+					return noexcept(reference(::std::declval<range_type&>()));
+				}
 			}
 
-			constexpr iterator_type& base() & {
-				return this->_M_base_it;
+			static constexpr bool _S_const_deref_noexcept() noexcept {
+				if constexpr (_IsInput) {
+					return true;
+				}
+				else {
+					return noexcept(const_reference(::std::declval<range_type&>()));
+				}
 			}
 
-			constexpr const iterator_type& base() const& {
-				return this->_M_base_it;
-			}
-			constexpr iterator_type&& base() && {
-				return ::std::move(this->_M_base_it);
+			static constexpr bool _S_copy_noexcept() noexcept {
+				return ::std::is_nothrow_copy_constructible_v<iterator>;
 			}
 
-			constexpr _Derived operator++(int) const {
-				auto __copy = this->_M_this();
+			static constexpr bool _S_recede_noexcept() noexcept {
+				return noexcept(--::std::declval<iterator&>());
+			}
+
+			static constexpr bool _S_advance_noexcept() noexcept {
+				return noexcept(++::std::declval<iterator&>());
+			}
+
+		public:
+			constexpr __word_iterator() = default;
+			constexpr __word_iterator(const range_type& __base_range) noexcept(
+				::std::is_nothrow_constructible_v<__base_storage_t, const range_type&>)
+			: __base_storage_t(__base_range) {
+			}
+			constexpr __word_iterator(range_type&& __base_range) noexcept(
+				::std::is_nothrow_constructible_v<__base_storage_t, range_type&&>)
+			: __base_storage_t(::std::move(__base_range)) {
+			}
+
+			__word_iterator(const __word_iterator&) = default;
+			__word_iterator(__word_iterator&&)      = default;
+			__word_iterator& operator=(const __word_iterator&) = default;
+			__word_iterator& operator=(__word_iterator&&) = default;
+
+			constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
+				     ? ::std::is_nothrow_copy_constructible_v<range_type>
+				     : ::std::is_nothrow_move_constructible_v<range_type>) {
+				if constexpr (::std::is_copy_constructible_v<range_type>) {
+					return this->__base_storage_t::__get_value();
+				}
+				else {
+					return ::std::move(this->__base_storage_t::__get_value());
+				}
+			}
+
+			constexpr range_type range() const& noexcept(::std::is_nothrow_copy_constructible_v<range_type>) {
+				return this->__base_storage_t::__get_value();
+			}
+
+			constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
+				return ::std::move(this->__base_storage_t::__get_value());
+			}
+
+			constexpr __word_iterator operator++(int) const noexcept(_S_copy_noexcept() && _S_advance_noexcept()) {
+				auto __copy = *this;
 				++__copy;
 				return __copy;
 			}
 
-			constexpr _Derived& operator++() {
-				this->_M_base_it += __base_values_per_word;
-				return this->_M_this();
+			constexpr __word_iterator& operator++() noexcept(_S_advance_noexcept()) {
+				if constexpr (_IsInput) {
+					// force read on next dereference
+					this->__base_storage_t::_M_val = ::std::nullopt;
+				}
+				else {
+					auto __first_it = __adl::__adl_begin(::std::move(this->__base_storage_t::__get_value()));
+					auto __last_it  = __adl::__adl_end(::std::move(this->__base_storage_t::__get_value()));
+					__advance(__first_it, __base_values_per_word);
+					this->__base_storage_t::__get_value() = __reconstruct(
+						::std::in_place_type<_URange>, ::std::move(__first_it), ::std::move(__last_it));
+				}
+				return *this;
 			}
 
-			constexpr _Derived operator--(int) const {
-				auto __copy = this->_M_this();
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _Dummy>, __word_iterator>
+			operator--(int) const noexcept(_S_copy_noexcept() && _S_recede_noexcept()) {
+				auto __copy = *this;
 				--__copy;
 				return __copy;
 			}
 
-			constexpr _Derived& operator--() {
-				this->_M_base_it -= __base_values_per_word;
-				return this->_M_this();
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _Dummy>,
+				__word_iterator&>
+			operator--() noexcept {
+				__recede(this->__base_storage_t::__get_value(), __base_values_per_word);
+				return *this;
 			}
 
-			constexpr _Derived operator+(difference_type __by) const {
-				auto __copy = this->_M_this();
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>, __word_iterator>
+			operator+(difference_type __by) const noexcept(_S_copy_noexcept() && _S_advance_noexcept()) {
+				auto __copy = *this;
 				__copy += __by;
 				return __copy;
 			}
 
-			constexpr _Derived& operator+=(difference_type __by) {
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>,
+				__word_iterator&>
+			operator+=(difference_type __by) noexcept(_S_advance_noexcept()) {
 				if (__by < static_cast<difference_type>(0)) {
 					return this->operator+=(-__by);
 				}
-				this->_M_base_it += __base_values_per_word * __by;
-				return this->_M_this();
+				auto __first_it = __adl::__adl_begin(::std::move(this->__base_storage_t::__get_value()));
+				auto __last_it  = __adl::__adl_end(::std::move(this->__base_storage_t::__get_value()));
+				__advance(__first_it, __base_values_per_word * __by);
+				this->__base_storage_t::__get_value() = __reconstruct(
+					::std::in_place_type<_URange>, ::std::move(__first_it), ::std::move(__last_it));
+				return *this;
 			}
 
-			constexpr difference_type operator-(const __category_word_iterator& __right) const {
-				difference_type __dist = this->_M_base_it - __right._M_base_it;
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>, difference_type>
+			operator-(const __word_iterator& __right) const noexcept {
+				difference_type __dist
+					= this->__base_storage_t::__get_value() - __right.__base_storage_t::__get_value();
 				return static_cast<difference_type>(__dist * __base_values_per_word);
 			}
 
-			constexpr _Derived operator-(difference_type __by) const {
-				auto __copy = this->_M_this();
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>, __word_iterator>
+			operator-(difference_type __by) const noexcept(_S_copy_noexcept() && _S_recede_noexcept()) {
+				auto __copy = *this;
 				__copy -= __by;
 				return __copy;
 			}
 
-			constexpr _Derived& operator-=(difference_type __by) {
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>,
+				__word_iterator&>
+			operator-=(difference_type __by) noexcept(_S_recede_noexcept()) {
 				if (__by < static_cast<difference_type>(0)) {
 					return this->operator+=(-__by);
 				}
-				this->_M_base_it -= __base_values_per_word * __by;
-				return this->_M_this();
+				auto __first_it = __adl::__adl_begin(::std::move(this->__base_storage_t::__get_value()));
+				auto __last_it  = __adl::__adl_end(::std::move(this->__base_storage_t::__get_value()));
+				__recede(__first_it, __base_values_per_word * __by);
+				this->__base_storage_t::__get_value() = __reconstruct(
+					::std::in_place_type<_URange>, ::std::move(__first_it), ::std::move(__last_it));
+				return *this;
 			}
 
-			constexpr reference operator[](difference_type __index) {
-				auto __copy = this->_M_this();
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>, reference>
+			operator[](difference_type __index) noexcept(_S_copy_noexcept() && _S_advance_noexcept()) {
+				auto __copy = *this;
 				__copy += __index;
 				return *__copy;
 			}
 
-			constexpr reference operator*() const {
-				return reference(this->_M_base_it);
+			template <typename _Dummy = range_type>
+			constexpr ::std::enable_if_t<
+				__is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, _Dummy>, const_reference>
+			operator[](difference_type __index) const noexcept(_S_copy_noexcept() && _S_advance_noexcept()) {
+				auto __copy = *this;
+				__copy += __index;
+				return *__copy;
+			}
+
+			constexpr reference operator*() noexcept(_S_deref_noexcept()) {
+				if constexpr (_IsInput) {
+					if (this->__base_storage_t::_M_val == ::std::nullopt) {
+						this->_M_read_one();
+					}
+					return *this->__base_storage_t::_M_val;
+				}
+				else {
+					return reference(this->__base_storage_t::__get_value());
+				}
+			}
+
+			constexpr const_reference operator*() const noexcept(_S_const_deref_noexcept()) {
+				if constexpr (_IsInput) {
+					if (this->__base_storage_t::_M_val == ::std::nullopt) {
+						const_cast<__word_iterator*>(this)->_M_read_one();
+					}
+					return *this->__base_storage_t::_M_val;
+				}
+				else {
+					return const_reference(this->__base_storage_t::__get_value());
+				}
+			}
+
+			friend constexpr bool operator==(const __word_iterator& __left, const __word_sentinel&) noexcept(
+				noexcept(__left._M_base_is_empty())) {
+				return __left._M_base_is_empty();
+			}
+
+			friend constexpr bool operator!=(const __word_iterator& __left, const __word_sentinel&) noexcept(
+				noexcept(!__left._M_base_is_empty())) {
+				return !__left._M_base_is_empty();
+			}
+
+			friend constexpr bool operator==(const __word_sentinel& __sen, const __word_iterator& __left) noexcept(
+				noexcept(__left == __sen)) {
+				return __left == __sen;
+			}
+
+			friend constexpr bool operator!=(const __word_sentinel& __sen, const __word_iterator& __left) noexcept(
+				noexcept(__left != __sen)) {
+				return __left != __sen;
 			}
 
 		private:
-			constexpr _Derived& _M_this() & {
-				return static_cast<_Derived&>(*this);
+			constexpr void _M_read_one() noexcept(_S_deref_noexcept()) {
+				if constexpr (_IsInput) {
+					_Word __read_word              = __word_reference(this->__base_storage_t::__get_value());
+					this->__base_storage_t::_M_val = ::std::optional<_Word>(__read_word);
+				}
 			}
 
-			constexpr const _Derived& _M_this() const& {
-				return static_cast<const _Derived&>(*this);
+			constexpr bool _M_base_is_empty() const noexcept {
+				if constexpr (__is_detected_v<__detect_adl_empty, range_type>) {
+					return __adl::__adl_empty(this->__base_storage_t::__get_value());
+				}
+				else {
+					return __adl::__adl_begin(this->__base_storage_t::__get_value())
+						== __adl::__adl_end(this->__base_storage_t::__get_value());
+				}
 			}
-
-			constexpr _Derived&& _M_this() && {
-				return static_cast<_Derived&&>(*this);
-			}
-
-			iterator_type _M_base_it;
-		};
-
-		template <typename _Derived, typename _Word, typename _It, endian _Endian>
-		class __category_word_iterator<_Derived, _Word, _It, _Endian,
-			::std::enable_if_t<::std::is_same_v<__iterator_category_t<_It>, ::std::output_iterator_tag>>> {
-		private:
-			using __base_iterator   = _It;
-			using __base_reference  = ::std::byte;
-			using __base_value_type = ::std::byte;
-			using __difference_type = ::std::ptrdiff_t;
-			using __size_type       = ::std::make_unsigned_t<__difference_type>;
-			using __value_type      = _Word;
-
-			static_assert(sizeof(__value_type) >= sizeof(__base_value_type),
-				"The 'byte' type selected for the word_iterator shall not be larger than the value_type of the "
-				"iterator that it is meant to view.");
-
-			static_assert((sizeof(__value_type) % sizeof(__base_value_type)) == 0,
-				"The 'byte' type selected for the word_iterator shall equally divide the value_type of the "
-				"iterator that it is meant to view.");
-
-			static inline constexpr __size_type __base_values_per_word
-				= sizeof(__value_type) / sizeof(__base_value_type);
-
-		public:
-			using iterator_type     = __base_iterator;
-			using iterator_category = __iterator_category_t<__base_iterator>;
-			using difference_type   = __difference_type;
-			using pointer           = _Word*;
-			using value_type        = __value_type;
-			using reference         = __word_reference<__base_iterator, _Word, _Endian>;
-
-			__category_word_iterator() = default;
-			__category_word_iterator(iterator_type __it) : _M_base_it(::std::move(__it)) {
-			}
-
-			iterator_type& base() & {
-				return this->_M_base_it;
-			}
-
-			const iterator_type& base() const& {
-				return this->_M_base_it;
-			}
-
-			iterator_type&& base() && {
-				return ::std::move(this->_M_base_it);
-			}
-
-			_Derived operator++(int) const {
-				auto __copy = this->_M_this();
-				++__copy;
-				return __copy;
-			}
-
-			_Derived& operator++() {
-				__txt_detail::__next(this->_M_base_it, __base_values_per_word);
-				return this->_M_this();
-			}
-
-			reference operator*() const {
-				return reference(this->_M_base_it);
-			}
-
-		private:
-			iterator_type _M_base_it;
-
-			_Derived& _M_this() {
-				return static_cast<_Derived&>(*this);
-			}
-
-			const _Derived& _M_this() const {
-				return static_cast<const _Derived&>(*this);
-			}
-		};
-
-		template <typename _LeftDerived, typename _LeftWord, typename _LeftIt, endian _LeftEndian, typename _RightIt>
-		bool operator==(const __category_word_iterator<_LeftDerived, _LeftWord, _LeftIt, _LeftEndian>& __left,
-			const __word_sentinel<_RightIt>& __right) {
-			return __left.base() == __right.base();
-		}
-
-		template <typename _LeftDerived, typename _LeftWord, typename _LeftIt, endian _LeftEndian, typename _RightIt>
-		bool operator!=(const __category_word_iterator<_LeftDerived, _LeftWord, _LeftIt, _LeftEndian>& __left,
-			const __word_sentinel<_RightIt>& __right) {
-			return __left.base() != __right.base();
-		}
-
-		template <typename _Word, typename _It, endian _Endian = endian::native>
-		class __word_iterator
-		: public __txt_detail::__category_word_iterator<__word_iterator<_Word, _It, _Endian>, _Word, _It, _Endian> {
-		private:
-			using __base_t
-				= __txt_detail::__category_word_iterator<__word_iterator<_Word, _It, _Endian>, _Word, _It, _Endian>;
-
-		public:
-			using __base_t::__base_t;
 		};
 
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_WORD_ITERATOR_HPP

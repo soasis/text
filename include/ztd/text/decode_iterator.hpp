@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -40,6 +40,8 @@
 
 #include <ztd/text/detail/encoding_iterator.hpp>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -52,7 +54,7 @@ namespace ztd { namespace text {
 	/// @brief The decode sentinel to use as the @c end value for a ztd::text::decode_iterator.
 	///
 	//////
-	class decode_sentinel : public __txt_detail::__encoding_sentinel { };
+	using decode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
 	//////
 	/// @brief An iterator over a range of code points, presented as a range of code units, using the @p _Encoding
@@ -76,11 +78,172 @@ namespace ztd { namespace text {
 	: public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__decode,
 		  decode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State> {
 	private:
-		using __it_base_t = __txt_detail::__encoding_iterator<__txt_detail::__transaction::__decode,
+		using __iterator_base_it = __txt_detail::__encoding_iterator<__txt_detail::__transaction::__decode,
 			decode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State>;
 
 	public:
-		using __it_base_t::__it_base_t;
+		//////
+		/// @brief The underlying range type.
+		///
+		//////
+		using range_type = typename __iterator_base_it::range_type;
+		//////
+		/// @brief The base iterator type.
+		///
+		//////
+		using iterator = typename __iterator_base_it::iterator;
+		//////
+		/// @brief The encoding type used for transformations.
+		///
+		//////
+		using encoding_type = typename __iterator_base_it::encoding_type;
+		//////
+		/// @brief The error handler when an encode operation fails.
+		///
+		//////
+		using error_handler_type = typename __iterator_base_it::error_handler_type;
+		//////
+		/// @brief The state type used for encode operations.
+		///
+		//////
+		using state_type = typename __iterator_base_it::state_type;
+		//////
+		/// @brief The strength of the iterator category, as defined in relation to the base.
+		///
+		//////
+		using iterator_category = typename __iterator_base_it::iterator_category;
+		//////
+		/// @brief The strength of the iterator concept, as defined in relation to the base.
+		///
+		//////
+		using iterator_concept = typename __iterator_base_it::iterator_concept;
+		//////
+		/// @brief The object type that gets output on every dereference.
+		///
+		//////
+		using value_type = typename __iterator_base_it::value_type;
+		//////
+		/// @brief A pointer type to the value_type.
+		///
+		//////
+		using pointer = typename __iterator_base_it::pointer;
+		//////
+		/// @brief The value returned from derefencing the iterator.
+		///
+		/// @remarks This is a proxy iterator, so the @c reference is a non-reference @c value_type.
+		//////
+		using reference = typename __iterator_base_it::value_type;
+		//////
+		/// @brief The type returned when two of these pointers are subtracted from one another.
+		///
+		/// @remarks It's not a very useful type...
+		//////
+		using difference_type = typename __iterator_base_it::difference_type;
+
+		//////
+		/// @brief Default constructor. Defaulted.
+		///
+		//////
+		constexpr decode_iterator() = default;
+
+		//////
+		/// @brief Copy constructor. Defaulted.
+		///
+		//////
+		constexpr decode_iterator(const decode_iterator&) = default;
+
+		//////
+		/// @brief Move constructor. Defaulted.
+		///
+		//////
+		constexpr decode_iterator(decode_iterator&&) = default;
+
+		//////
+		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given @p __range.
+		///
+		/// @param[in] __range The range value that will be read from.
+		///
+		/// @remarks Each argument is moved/forwarded in.
+		//////
+		template <typename _ArgRange,
+			::std::enable_if_t<
+			     !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>, decode_iterator>>* = nullptr>
+		constexpr decode_iterator(_ArgRange&& __range) noexcept(
+			::std::is_nothrow_constructible_v<__iterator_base_it, range_type>)
+		: __iterator_base_it(::std::forward<_ArgRange>(__range)) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given @p __range, and @p __encoding.
+		///
+		/// @param[in] __range The range value that will be read from.
+		/// @param[in] __encoding The encoding object to use.
+		///
+		/// @remarks Each argument is moved in.
+		//////
+		constexpr decode_iterator(range_type __range, encoding_type __encoding) noexcept(
+			::std::is_nothrow_constructible_v<__iterator_base_it, range_type, encoding_type>)
+		: __iterator_base_it(::std::move(__range), ::std::move(__encoding)) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given @p __range, and @p
+		/// __error_handler.
+		///
+		/// @param[in] __range The range value that will be read from.
+		/// @param[in] __error_handler The error handler to use for reporting errors.
+		///
+		/// @remarks Each argument is moved in.
+		//////
+		constexpr decode_iterator(range_type __range, error_handler_type __error_handler) noexcept(
+			::std::is_nothrow_constructible_v<__iterator_base_it, range_type, error_handler_type>)
+		: __iterator_base_it(::std::move(__range), ::std::move(__error_handler)) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given @p __range, @p __encoding, and
+		/// @p __error_handler.
+		///
+		/// @param[in] __range The range value that will be read from.
+		/// @param[in] __encoding The encoding object to use.
+		/// @param[in] __error_handler The error handler to use for reporting errors.
+		///
+		/// @remarks Each argument is moved in.
+		//////
+		constexpr decode_iterator(range_type __range, encoding_type __encoding,
+			error_handler_type __error_handler) noexcept(::std::is_nothrow_constructible_v<__iterator_base_it,
+			range_type, encoding_type, error_handler_type>)
+		: __iterator_base_it(::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler)) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given @p __range, @p __encoding, @p
+		/// __error_handler and @p __state.
+		///
+		/// @param[in] __range The range value that will be read from.
+		/// @param[in] __encoding The encoding object to use.
+		/// @param[in] __error_handler The error handler to use for reporting errors.
+		/// @param[in] __state The current state.
+		///
+		/// @remarks Each argument is moved in.
+		//////
+		constexpr decode_iterator(range_type __range, encoding_type __encoding, error_handler_type __error_handler,
+			state_type __state) noexcept(::std::is_nothrow_constructible_v<__iterator_base_it, range_type,
+			encoding_type, error_handler_type, state_type>)
+		: __iterator_base_it(
+			::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state)) {
+		}
+
+		//////
+		/// @brief Copy assignment operator. Defaulted.
+		///
+		//////
+		constexpr decode_iterator& operator=(const decode_iterator&) = default;
+		//////
+		/// @brief Move assignment operator. Defaulted.
+		///
+		//////
+		constexpr decode_iterator& operator=(decode_iterator&&) = default;
 	};
 
 	//////
@@ -89,5 +252,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_ITERATOR_HPP

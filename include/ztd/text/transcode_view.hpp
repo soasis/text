@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_TRANSCODE_VIEW_HPP
 #define ZTD_TEXT_TRANSCODE_VIEW_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/transcode_iterator.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/encoding.hpp>
@@ -44,6 +46,8 @@
 #include <ztd/text/subrange.hpp>
 
 #include <string_view>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -202,6 +206,19 @@ namespace ztd { namespace text {
 		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
 		///
 		//////
+		constexpr iterator begin() & noexcept {
+			if constexpr (::std::is_copy_constructible_v<iterator>) {
+				return this->_M_it;
+			}
+			else {
+				return ::std::move(this->_M_it);
+			}
+		}
+
+		//////
+		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
+		///
+		//////
 		constexpr iterator begin() const& noexcept {
 			return this->_M_it;
 		}
@@ -232,5 +249,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_TRANSCODE_VIEW_HPP

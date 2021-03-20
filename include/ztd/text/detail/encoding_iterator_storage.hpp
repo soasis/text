@@ -36,6 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/state.hpp>
+#include <ztd/text/encoding_error.hpp>
 
 #include <ztd/text/detail/range.hpp>
 #include <ztd/text/detail/ebco.hpp>
@@ -43,6 +44,8 @@
 
 #include <cstddef>
 #include <climits>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -56,19 +59,19 @@ namespace ztd { namespace text {
 			using __state_base_t  = __ebco<__remove_cvref_t<__unwrap_t<_EncodingState>>, _Id>;
 
 		public:
-			template <typename _ArgEncoding = _UEncodingState,
+			template <typename _ArgEncoding = _UEncoding,
 				::std::enable_if_t<
 				     !is_state_independent_v<__remove_cvref_t<_ArgEncoding>,
 				          _UEncodingState> && !::std::is_same_v<__remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding& __encoding) noexcept(
 				::std::is_nothrow_constructible_v<__state_base_t, _Encoding&>)
-			: __state_base_t(__encoding) {
+			: __state_base_t(::std::forward<_ArgEncoding>(__encoding)) {
 			}
-			template <typename _ArgEncoding = _UEncodingState,
+			template <typename _ArgEncoding = _UEncoding,
 				::std::enable_if_t<
 				     is_state_independent_v<__remove_cvref_t<_ArgEncoding>,
 				          _UEncodingState> && !::std::is_same_v<__remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
-			constexpr __state_storage(_ArgEncoding& __encoding) noexcept(
+			constexpr __state_storage(_ArgEncoding&) noexcept(
 				::std::is_nothrow_default_constructible_v<__state_base_t>)
 			: __state_base_t() {
 			}
@@ -86,31 +89,55 @@ namespace ztd { namespace text {
 			constexpr __state_storage& operator=(__state_storage&&) = default;
 
 			constexpr ::std::add_lvalue_reference_t<_UEncodingState> _M_get_state() noexcept {
-				return this->__state_base_t::get_value();
+				return this->__state_base_t::__get_value();
 			}
 
 			constexpr ::std::add_const_t<::std::add_lvalue_reference_t<_UEncodingState>>
 			_M_get_state() const noexcept {
-				return this->__state_base_t::get_value();
+				return this->__state_base_t::__get_value();
 			}
 		};
 
-		template <::std::size_t _MaxN>
-		class __cache_cursor {
-		private:
-			using _SizeType = ::std::conditional_t<(_MaxN < __ce_ipow(2, sizeof(unsigned char) * CHAR_BIT)),
-				unsigned char, ::std::size_t>;
-
+		template <::std::size_t _MaxN, bool __is_input_or_output_iterator>
+		class __cursor_cache {
 		public:
-			_SizeType _M_size;
-			_SizeType _M_position;
+			// clang-format off
+			using _SizeType = ::std::conditional_t<(_MaxN <= UCHAR_MAX), unsigned char,
+				::std::conditional_t<(_MaxN <= USHRT_MAX), unsigned short, 
+					::std::conditional_t<(_MaxN <= UINT_MAX), unsigned int,
+						::std::conditional_t<(_MaxN <= ULONG_MAX), unsigned long,
+							::std::conditional_t<(_MaxN <= ULLONG_MAX), unsigned long long, ::std::size_t>
+						>
+					>
+				>
+			>;
+			// clang-format on
+
+			_SizeType _M_size     = static_cast<_SizeType>(0);
+			_SizeType _M_position = static_cast<_SizeType>(0);
 		};
 
 		template <>
-		class __cache_cursor<1> { };
+		class __cursor_cache<1, false> {
+		public:
+			using _SizeType = unsigned char;
+
+			_SizeType _M_size = static_cast<_SizeType>(0);
+		};
+
+		template <bool>
+		class __error_cache {
+		public:
+			encoding_error _M_error_code = encoding_error::ok;
+		};
+
+		template <>
+		class __error_cache<true> { };
 
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_ENCODING_ITERATOR_STORAGE_HPP

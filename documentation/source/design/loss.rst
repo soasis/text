@@ -100,7 +100,7 @@ So, what do we do from here?
 Fighting Code Rot
 -----------------
 
-We need ways to fight bit rot and issues of function invariants -- like expected encoding on string objects -- from infesting code. While we can't rewrite every function declaration or wrap every function declaration, one of the core mechanisms this library provides is a way of tracking and tagging this kind of invariant information, particularly at compile-time.
+We need ways to fight bit rot and issues of function invariants -- like expected encoding on string objects -- from infesting code. While we can't rewrite every function declaration or wrap every function declaration, one of the core mechanisms this library provides is a way of tracking and tagging this kind of invariant information, particularly at compile time.
 
 We know we can't solve interchange on a global level (e.g., demanding everyone use UTF-8) because, at some point, there is always going to be some small holdout of legacy data that has not yet been fixed or ported. The start of solving this is by having views and containers that keep encoding information with them after they are first constructed. This makes it possible to not "lose" that information as it flows through your program:
 

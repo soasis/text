@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -39,6 +39,8 @@
 #include <ztd/text/char8_t.hpp>
 
 #include <type_traits>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -164,9 +166,14 @@ namespace ztd { namespace text {
 		using __detect_reserve_with_size_type
 			= decltype(::std::declval<_Type>().reserve(::std::declval<_SizeType>()));
 
+		template <typename _Left, typename _Right>
+		using __detect_equality_comparable = decltype(::std::declval<_Left>() == ::std::declval<_Right>());
+
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_TYPE_TRAITS_HPP

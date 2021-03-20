@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_ENCODING_HPP
 #define ZTD_TEXT_ENCODING_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/execution.hpp>
 #include <ztd/text/wide_execution.hpp>
 #include <ztd/text/ascii.hpp>
@@ -44,10 +46,14 @@
 #include <ztd/text/wide_literal.hpp>
 #include <ztd/text/any_encoding.hpp>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ENCODING_HPP

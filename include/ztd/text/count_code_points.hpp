@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_COUNT_CODE_POINTS_HPP
 #define ZTD_TEXT_COUNT_CODE_POINTS_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/default_encoding.hpp>
 #include <ztd/text/count_result.hpp>
@@ -49,6 +51,8 @@
 #include <ztd/text/detail/span.hpp>
 
 #include <string_view>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -89,7 +93,7 @@ namespace ztd { namespace text {
 		using _Result         = count_result<_WorkingInput, _State>;
 
 		_WorkingInput __working_input(
-			__txt_detail::__reconstruct(std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
 		::std::size_t __code_unit_count = 0;
 
@@ -264,5 +268,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_COUNT_CODE_POINTS_HPP

@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_TRANSCODE_HPP
 #define ZTD_TEXT_TRANSCODE_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/error_handler.hpp>
@@ -52,6 +54,8 @@
 #include <string>
 #include <vector>
 #include <string_view>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -1039,5 +1043,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_TRANSCODE_HPP

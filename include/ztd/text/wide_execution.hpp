@@ -55,6 +55,8 @@
 #include <iterator>
 #include <utility>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -62,6 +64,47 @@ namespace ztd { namespace text {
 	/// @addtogroup ztd_text_encodings Encodings
 	/// @{
 	//////
+
+	namespace __txt_detail {
+
+		class __wide_execution_decode_state {
+		public:
+			::std::mbstate_t __wide_state;
+			decode_state_t<execution> __narrow_state;
+
+			// TODO: states need to be split into 2
+			// different states, optionally...
+			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {
+				char __ghost_space[MB_LEN_MAX];
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBVCXX_I_)
+				::std::size_t __init_result {};
+				errno_t err = wcrtomb_s(&__init_result, __ghost_space, MB_LEN_MAX, L'\0', &__wide_state);
+				ZTD_TEXT_ASSERT_I_(err == 0);
+#else
+				::std::size_t __init_result = ::std::wcrtomb(__ghost_space, L'\0', &__wide_state);
+#endif
+				// make sure it is initialized
+				ZTD_TEXT_ASSERT_I_(__init_result == 1 && __ghost_space[0] == '\0');
+				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
+			}
+		};
+
+		class __wide_execution_encode_state {
+		public:
+			::std::mbstate_t __wide_state;
+			encode_state_t<execution> __narrow_state;
+
+			// TODO: states need to be split into 2
+			// different states, optionally...
+			__wide_execution_encode_state() noexcept : __wide_state(), __narrow_state() {
+				wchar_t __ghost_space[2];
+				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
+				// make sure it is initialized
+				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == L'\0');
+				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
+			}
+		};
+	} // namespace __txt_detail
 
 	//////
 	/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. The wide execution
@@ -93,37 +136,8 @@ namespace ztd { namespace text {
 		using __wide_decode_state = decode_state_t<__impl::__utf16_with<void, wchar_t, code_point, false>>;
 		using __wide_encode_state = encode_state_t<__impl::__utf16_with<void, wchar_t, code_point, false>>;
 #else
-		class __wide_decode_state {
-		public:
-			::std::mbstate_t __wide_state;
-			decode_state_t<execution> __narrow_state;
-
-			// TODO: states need to be split into 2
-			// different states, optionally...
-			__wide_decode_state() noexcept : __wide_state(), __narrow_state() {
-				char __ghost_space[MB_LEN_MAX];
-				::std::size_t __init_result = ::std::wcrtomb(__ghost_space, L'\0', &__wide_state);
-				// make sure it is initialized
-				ZTD_TEXT_ASSERT_I_(__init_result == 1 && __ghost_space[0] == '\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
-			}
-		};
-
-		class __wide_encode_state {
-		public:
-			::std::mbstate_t __wide_state;
-			encode_state_t<execution> __narrow_state;
-
-			// TODO: states need to be split into 2
-			// different states, optionally...
-			__wide_encode_state() noexcept : __wide_state(), __narrow_state() {
-				wchar_t __ghost_space[2];
-				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
-				// make sure it is initialized
-				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == L'\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
-			}
-		};
+		using __wide_decode_state = __txt_detail::__wide_execution_decode_state;
+		using __wide_encode_state = __txt_detail::__wide_execution_encode_state;
 #endif // Windows
 
 	public:
@@ -242,8 +256,8 @@ namespace ztd { namespace text {
 			}
 			return _Result(::std::move(__result.input), ::std::move(__result.output), __s, __result.error_code);
 #else
-			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
+			auto __init = __txt_detail::__adl::__adl_begin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_end(__input);
 
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
@@ -251,7 +265,7 @@ namespace ztd { namespace text {
 					encoding_error::ok);
 			}
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
+			auto __outit = __txt_detail::__adl::__adl_begin(__output);
 			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 
 			constexpr const ::std::size_t __state_max = 32;
@@ -304,7 +318,7 @@ namespace ztd { namespace text {
 				}
 			}
 			__txt_detail::__dereference(__outit) = __units[0];
-			__outit                          = __txt_detail::__next(__outit);
+			__txt_detail::__advance(__outit);
 
 			return _Result(::std::move(__result.input),
 				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
@@ -368,8 +382,8 @@ namespace ztd { namespace text {
 				__result.handled_errors);
 #else
 
-			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
+			auto __init = __txt_detail::__adl::__adl_begin(__input);
+			auto __inlast = __txt_detail::__adl::__adl_end(__input);
 
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
@@ -377,7 +391,7 @@ namespace ztd { namespace text {
 					encoding_error::ok);
 			}
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
+			auto __outit = __txt_detail::__adl::__adl_begin(__output);
 			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 
 			if constexpr (__call_error_handler) {
@@ -396,10 +410,10 @@ namespace ztd { namespace text {
 			code_unit __units[__state_max] {};
 			::std::size_t __units_count = 0;
 			for (; __state_count < __state_max;) {
-				__units[__units_count]  = __txt_detail::__dereference(__init);
+				__units[__units_count] = __txt_detail::__dereference(__init);
 				const code_unit& __unit = __units[__units_count];
 				++__units_count;
-				__init = __txt_detail::__next(__init);
+				__txt_detail::__advance(__init);
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBVCXX_I_)
 				::std::size_t __res;
 				errno_t __err = wcrtomb_s(::std::addressof(__res), __pray_for_state, __state_max, __unit,
@@ -409,8 +423,8 @@ namespace ztd { namespace text {
 						// error: cry about it
 						wide_execution __self {};
 						return __error_handler(__self,
-							_Result(
-							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							_Result(__txt_detail::__reconstruct(
+							             ::std::in_place_type<_UInputRange>, __init, __inlast),
 							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
@@ -428,8 +442,8 @@ namespace ztd { namespace text {
 					if constexpr (__call_error_handler) {
 						// error: cry about it
 						return __error_handler(wide_execution {},
-							_Result(
-							     __txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
+							_Result(__txt_detail::__reconstruct(
+							             ::std::in_place_type<_UInputRange>, __init, __inlast),
 							     __txt_detail::__reconstruct(
 							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
 							     __s, encoding_error::invalid_sequence),
@@ -491,5 +505,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_WIDE_EXECUTION_HPP

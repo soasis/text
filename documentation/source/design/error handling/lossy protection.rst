@@ -39,13 +39,13 @@ Occasionally, you will end up in a situation where you want to convert some text
 	:emphasize-lines: 6-7
 	:start-after: // ============================================================================>
 
-This will produce a compile-time error (with this error number for MSVC as an example):
+This will produce a compile time error (with this error number for MSVC as an example):
 
 .. epigraph::
 
 	*error C2338: The encode (output) portion of this transcode is a lossy, non-injective operation. This means you may lose data that you did not intend to lose; specify an 'out_handler' error handler parameter to transcode[_to](in, in_encoding, out_encoding, in_handler, out_handler, ...) or transcode_into(in, in_encoding, out, out_encoding, in_handler, out_handler, ...) explicitly in order to bypass this.*
 
-The reason this happens is because we can detect, at compile-time, that the conversion from Unicode Code Points to ASCII is a lossy transformation. When this happens, we realize the conversion will be a lossy one: therefore, it makes sense that the user cannot perform the encoding or decoding operation without being explicit about how they are going to handle errors because there is such a gigantically enormous possibility that they will mangle incoming text.
+The reason this happens is because we can detect, at compile time, that the conversion from Unicode Code Points to ASCII is a lossy transformation. When this happens, we realize the conversion will be a lossy one: therefore, it makes sense that the user cannot perform the encoding or decoding operation without being explicit about how they are going to handle errors because there is such a gigantically enormous possibility that they will mangle incoming text.
 
 Since this library is trying to prevent :term:`Mojibake <mojibake>` and other encoding problems, you are required to tag any potentially-lossy encoding with an error handler, to be explicit and acknowledge that you may or may not be ruining someone's day:
 

@@ -31,11 +31,11 @@
 Marking an encoding as Unicode-Capable
 ======================================
 
-Sometimes, you need to make your own encodings. Whether for legacy reasons or for interoperation reasons, you need the ability to write an encoding that can losslessly handle all :math:`2^21` code points. Whether it's writing a variant of `UTF-7 <https://en.wikipedia.org/wiki/UTF-7>`_, or dealing with a very specific legacy set like Unicode v6.0 with the Softbank Private Use Area, you are going to need to be able to say "hey, my encoding can handle all of the code points and therefore deserves to be treated like a Unicode encoding". There are 2 ways to do this, one for decisions that can be made at compile-time, and one for decisions that can be made at runtime (e.g., over a ``variant_encoding<X, Y, Z>``).
+Sometimes, you need to make your own encodings. Whether for legacy reasons or for interoperation reasons, you need the ability to write an encoding that can losslessly handle all :math:`2^21` code points. Whether it's writing a variant of `UTF-7 <https://en.wikipedia.org/wiki/UTF-7>`_, or dealing with a very specific legacy set like Unicode v6.0 with the Softbank Private Use Area, you are going to need to be able to say "hey, my encoding can handle all of the code points and therefore deserves to be treated like a Unicode encoding". There are 2 ways to do this, one for decisions that can be made at compile time, and one for decisions that can be made at runtime (e.g., over a ``variant_encoding<X, Y, Z>``).
 
 
 
-Compile-Time
+compile time
 ------------
 
 The cheapest way to tag an encoding as Unicode Capable and have the library recognize it as such when :doc:`ztd::text::is_unicode_encoding </api/is_unicode_encoding>` is used is to just define a member type definition:
@@ -56,7 +56,7 @@ That is all you have to write. Both :doc:`ztd::text::is_unicode_encoding </api/i
 Run-time
 --------
 
-If your encoding cannot know at compile-time whether or not it is a unicode encoding (e.g., for type-erased encodings, complex wrapping encodings, or encodings which rely on external operating system resources), you can define a method instead. When applicable, this will be picked up by the :doc:`ztd::text::contains_unicode_encoding </api/contains_unicode_encoding>` function. Here is an example of a runtime, locale-based encoding using platform-knowledge to pick up what the encoding might be, and determine if it can handle working in Unicode:
+If your encoding cannot know at compile time whether or not it is a unicode encoding (e.g., for type-erased encodings, complex wrapping encodings, or encodings which rely on external operating system resources), you can define a method instead. When applicable, this will be picked up by the :doc:`ztd::text::contains_unicode_encoding </api/contains_unicode_encoding>` function. Here is an example of a runtime, locale-based encoding using platform-knowledge to pick up what the encoding might be, and determine if it can handle working in Unicode:
 
 .. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
 	:language: cpp
@@ -64,4 +64,4 @@ If your encoding cannot know at compile-time whether or not it is a unicode enco
 	:lines: 46-47,75-99,233
 	
 
-That is it. :doc:`ztd::text::contains_unicode_encoding </api/contains_unicode_encoding>` will detect this and use your function call, so you should never be calling this or accessing the above compile-time classification if necessary and always delegating to the ``ztd::text::contains_unicode_encoding`` function call.
+That is it. :doc:`ztd::text::contains_unicode_encoding </api/contains_unicode_encoding>` will detect this and use your function call, so you should never be calling this or accessing the above compile time classification if necessary and always delegating to the ``ztd::text::contains_unicode_encoding`` function call.

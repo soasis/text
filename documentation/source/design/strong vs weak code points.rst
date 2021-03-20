@@ -112,7 +112,7 @@ There is room in Sivonen's world, even with perfectly-consistent and fully-Unico
 
 That's why encodings can still define their own ``code_unit`` and ``code_point`` types; even if this library — or the Standard Library — traffics in strictly ``unicode_code_point``\ s, it doesn't mean the user should be forced to do that if they are willing to put in the effort for a more type-safe world.
 
-Being able to know, at compile-time, without any objects or markup, that a particular pointer + size pairing is meant for a specific encoding is a powerful way to maintain invariants and track the flow of data without runtime cost through a program. It can also make it easy to find places where external, non-Unicode data is making it "too far" into the system, and try to push a conversion closer to the edges of the program.
+Being able to know, at compile time, without any objects or markup, that a particular pointer + size pairing is meant for a specific encoding is a powerful way to maintain invariants and track the flow of data without runtime cost through a program. It can also make it easy to find places where external, non-Unicode data is making it "too far" into the system, and try to push a conversion closer to the edges of the program.
 
 While ztd.text will traffic and work with ``char32_t`` and consider it a ``unicode_code_point`` value :doc:`under most circumstances </api/is_unicode_code_point>`, users are free to define and extend this classification for their own types and generally create as strict (or loose) as taxonomy as they desire.
 

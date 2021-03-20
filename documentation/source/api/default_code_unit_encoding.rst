@@ -47,11 +47,11 @@ Picks the default encoding for the given code unit type (for both run time, and 
 	  - :doc:`ztd::text::basic_ascii\<signed char\> </api/encodings/ascii>`
 	* - ``char``
 	  - :doc:`ztd::text::execution </api/encodings/execution>`
-	* - ``char`` (compile-time)
+	* - ``char`` (compile time)
 	  - :doc:`ztd::text::literal </api/encodings/literal>`
 	* - ``wchar_t``
 	  - :doc:`ztd::text::wide_execution </api/encodings/wide_execution>`
-	* - ``wchar_t`` (compile-time)
+	* - ``wchar_t`` (compile time)
 	  - :doc:`ztd::text::wide_literal </api/encodings/wide_literal>`
 	* - ``char8_t``
 	  - :doc:`ztd::text::basic_utf8\<char8_t\> </api/encodings/utf8>`

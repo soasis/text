@@ -60,6 +60,8 @@
 #include <utility>
 #include <array>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -114,7 +116,7 @@ namespace ztd { namespace text {
 						::std::forward<_Result>(__result));
 				}
 				else {
-					return std::forward<_Result>(__result);
+					return ::std::forward<_Result>(__result);
 				}
 			}
 			else if constexpr (is_unicode_code_point_v<_InputCodePoint>) {
@@ -241,7 +243,8 @@ namespace ztd { namespace text {
 					}
 				}
 				else {
-					__replacement_size = __txt_detail::__fill_replacement_code_point_static(__encoding, __replacement);
+					__replacement_size
+						= __txt_detail::__fill_replacement_code_point_static(__encoding, __replacement);
 				}
 
 				const ::ztd::text::span<const _InputCodePoint> __replacement_range(
@@ -339,6 +342,12 @@ namespace ztd { namespace text {
 
 	public:
 		//////
+		/// @brief The underlying error handler type.
+		///
+		//////
+		using error_handler = _ErrorHandler;
+
+		//////
 		/// @brief Constructs a ztd::text::incomplete_handler with a default-constructed internal error handler.
 		//////
 		constexpr incomplete_handler() noexcept(::std::is_nothrow_default_constructible_v<__error_handler_base_t>)
@@ -380,7 +389,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr _ErrorHandler& base() & noexcept {
-			return this->__error_handler_base_t::get_value();
+			return this->__error_handler_base_t::__get_value();
 		}
 
 		//////
@@ -388,7 +397,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr const _ErrorHandler& base() const& noexcept {
-			return this->__error_handler_base_t::get_value();
+			return this->__error_handler_base_t::__get_value();
 		}
 
 		//////
@@ -396,7 +405,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr _ErrorHandler&& base() && noexcept {
-			return this->__error_handler_base_t::get_value();
+			return this->__error_handler_base_t::__get_value();
 		}
 
 		//////
@@ -448,9 +457,9 @@ namespace ztd { namespace text {
 		}
 
 	private:
-		std::array<_CodeUnit, max_code_units_v<_Encoding>> _M_code_units;
+		::std::array<_CodeUnit, max_code_units_v<_Encoding>> _M_code_units;
 		::std::size_t _M_code_units_size;
-		std::array<_CodePoint, max_code_points_v<_Encoding>> _M_code_points;
+		::std::array<_CodePoint, max_code_points_v<_Encoding>> _M_code_points;
 		::std::size_t _M_code_points_size;
 	};
 
@@ -470,6 +479,12 @@ namespace ztd { namespace text {
 #endif
 
 	public:
+		//////
+		/// @brief The underlying error handler type.
+		///
+		//////
+		using error_handler = __error_handler_base_t;
+
 		using __error_handler_base_t::__error_handler_base_t;
 
 		using __error_handler_base_t::operator();
@@ -483,6 +498,8 @@ namespace ztd { namespace text {
 			using __error_handler_base_t = default_handler;
 
 		public:
+			using error_handler = __error_handler_base_t;
+
 			using __error_handler_base_t::__error_handler_base_t;
 
 			using __error_handler_base_t::operator();
@@ -512,5 +529,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ERROR_HANDLER_HPP

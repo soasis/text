@@ -31,7 +31,7 @@
 Injective: Promoting Safety in Encodings
 ========================================
 
-As detailed in the :doc:`/design/error handling/lossy protection` section, ``is_encode_injective`` and ``is_decode_injective`` help the library understand when a conversion you are doing cannot be guaranteed at compile-time to be lossless. :term:`Injectivity <injective>` is a high-brow mathematical term:
+As detailed in the :doc:`/design/error handling/lossy protection` section, ``is_encode_injective`` and ``is_decode_injective`` help the library understand when a conversion you are doing cannot be guaranteed at compile time to be lossless. :term:`Injectivity <injective>` is a high-brow mathematical term:
 
 .. epigraph::
 

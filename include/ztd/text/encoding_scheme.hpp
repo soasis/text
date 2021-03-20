@@ -57,6 +57,8 @@
 #include <optional>
 #include <cstddef>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -106,7 +108,7 @@ namespace ztd { namespace text {
 				using _OriginalCodeUnit   = code_unit_t<typename _Super::encoding_type>;
 				using _CodeUnit           = typename _Super::code_unit;
 				decltype(auto) __original = this->_M_super().base().replacement_code_units();
-				if constexpr (std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
+				if constexpr (::std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
 					return __original;
 				}
 				else {
@@ -138,7 +140,7 @@ namespace ztd { namespace text {
 				using _OriginalCodePoint  = code_point_t<typename _Super::encoding_type>;
 				using _CodePoint          = typename _Super::code_point;
 				decltype(auto) __original = this->_M_super().base().replacement_code_points();
-				if constexpr (std::is_same_v<_OriginalCodePoint, _CodePoint>) {
+				if constexpr (::std::is_same_v<_OriginalCodePoint, _CodePoint>) {
 					return __original;
 				}
 				else {
@@ -170,7 +172,7 @@ namespace ztd { namespace text {
 				using _OriginalCodeUnit         = code_unit_t<typename _Super::encoding_type>;
 				using _CodeUnit                 = typename _Super::code_unit;
 				decltype(auto) __maybe_original = this->_M_super().base().maybe_replacement_code_units();
-				if constexpr (std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
+				if constexpr (::std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
 					return __maybe_original;
 				}
 				else {
@@ -187,7 +189,7 @@ namespace ztd { namespace text {
 						= reinterpret_cast<const _CodeUnit*>(__guaranteed_code_unit_view.data());
 					auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
 						/ sizeof(const _CodeUnit);
-					return _MaybeTransformedSpan(std::in_place, __transformed_ptr, __transformed_size);
+					return _MaybeTransformedSpan(::std::in_place, __transformed_ptr, __transformed_size);
 				}
 			}
 		};
@@ -207,7 +209,7 @@ namespace ztd { namespace text {
 				using _OriginalCodePoint        = code_point_t<typename _Super::encoding_type>;
 				using _CodePoint                = typename _Super::code_point;
 				decltype(auto) __maybe_original = this->_M_super().base().maybe_replacement_code_points();
-				if constexpr (std::is_same_v<_OriginalCodePoint, _CodePoint>) {
+				if constexpr (::std::is_same_v<_OriginalCodePoint, _CodePoint>) {
 					return __maybe_original;
 				}
 				else {
@@ -224,7 +226,7 @@ namespace ztd { namespace text {
 						= reinterpret_cast<const _CodePoint*>(__guaranteed_code_point_view.data());
 					auto __transformed_size = (__guaranteed_code_point_view.size() * sizeof(_OriginalCodePoint))
 						/ sizeof(const _CodePoint);
-					return _MaybeTransformedSpan(std::in_place, __transformed_ptr, __transformed_size);
+					return _MaybeTransformedSpan(::std::in_place, __transformed_ptr, __transformed_size);
 				}
 			}
 		};
@@ -361,7 +363,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object.
 		//////
 		constexpr encoding_type& base() & noexcept {
-			return this->__base_t::get_value();
+			return this->__base_t::__get_value();
 		}
 
 		//////
@@ -370,7 +372,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object.
 		//////
 		constexpr const encoding_type& base() const& noexcept {
-			return this->__base_t::get_value();
+			return this->__base_t::__get_value();
 		}
 
 		//////
@@ -379,7 +381,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object.
 		//////
 		constexpr encoding_type&& base() && noexcept {
-			return this->__base_t::get_value();
+			return this->__base_t::__get_value();
 		}
 
 		//////
@@ -407,20 +409,16 @@ namespace ztd { namespace text {
 			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
 			using _Result   = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
-			using _InByteIt = __txt_detail::__word_iterator<_BaseCodeUnit,
-				__txt_detail::__range_iterator_t<_UInputRange>, _Endian>;
-			using _InByteSen = __txt_detail::__word_sentinel<__txt_detail::__range_sentinel_t<_UInputRange>>;
+			using _InByteIt = __txt_detail::__word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
+			using _InByteSen = __txt_detail::__word_sentinel;
 
-			auto __init   = __txt_detail::__adl::__adl_cbegin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_cend(__input);
-			subrange<_InByteIt, _InByteSen> __inbytes(
-				_InByteIt(::std::move(__init)), _InByteSen(::std::move(__inlast)));
+			subrange<_InByteIt, _InByteSen> __inbytes(_InByteIt(::std::forward<_InputRange>(__input)), _InByteSen());
 			__txt_detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler>
 				__scheme_handler(__error_handler);
-			auto __result
-				= this->base().decode_one(__inbytes, ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
-			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
-				               __result.input.begin().base(), __result.input.end().base()),
+			auto __result = this->base().decode_one(
+				::std::move(__inbytes), ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
+			return _Result(__txt_detail::__reconstruct(
+				               ::std::in_place_type<_UInputRange>, ::std::move(__result.input).begin().range()),
 				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
 				__result.error_code, __result.handled_errors);
 		}
@@ -449,19 +447,17 @@ namespace ztd { namespace text {
 			using _UInputRange  = __txt_detail::__remove_cvref_t<_InputRange>;
 			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
 			using _Result = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
-			using _OutByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit,
-                    __txt_detail::__range_iterator_t<_UOutputRange>, _Endian>;
-			using _OutByteSen = __txt_detail::__word_sentinel<__txt_detail::__range_sentinel_t<_UOutputRange>>;
+			using _OutByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
+			using _OutByteSen = __txt_detail::__word_sentinel;
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
-			auto __outlast = __txt_detail::__adl::__adl_end(__output);
 			subrange<_OutByteIt, _OutByteSen> __outwords(
-				_OutByteIt(::std::move(__outit)), _OutByteSen(::std::move(__outlast)));
+				_OutByteIt(::std::forward<_OutputRange>(__output)), _OutByteSen());
 			auto __result = this->base().encode_one(::std::forward<_InputRange>(__input), __outwords,
 				::std::forward<_ErrorHandler>(__error_handler), __s);
-			return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __result.input),
-				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __result.output.begin().base(),
-				     __result.output.end().base()),
+			return _Result(
+				__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__result.input)),
+				__txt_detail::__reconstruct(
+				     ::std::in_place_type<_UOutputRange>, ::std::move(__result.output).begin().range()),
 				__s, __result.error_code, __result.handled_errors);
 		}
 	};
@@ -556,5 +552,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_ENCODING_SCHEME_HPP

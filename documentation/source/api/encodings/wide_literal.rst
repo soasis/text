@@ -31,7 +31,7 @@
 Wide Literal
 ============
 
-The ``wide_literal`` encoding handles C and C++ wide string literals (``L"🐶"``) used at compile-time and stored in the binary. The library uses a number of heuristics to determine with any degree of certainty what the encoding of string literals are, but in some cases it is not explicitly possible to achieve this goal.
+The ``wide_literal`` encoding handles C and C++ wide string literals (``L"🐶"``) used at compile time and stored in the binary. The library uses a number of heuristics to determine with any degree of certainty what the encoding of string literals are, but in some cases it is not explicitly possible to achieve this goal.
 
 If the library cannot figure out the wide literal encoding, the code will typically error with a ``static_assert``, loudly, that it cannot use the functions on the type when you attempt to do anything with them because it may mangle whatever input or output you are expecting.
 

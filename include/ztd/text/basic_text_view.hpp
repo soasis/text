@@ -44,6 +44,8 @@
 
 #include <string_view>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -60,7 +62,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks The default type for this is a basic_string_view templated on the code unit type from the encoding.
 	/// The error handler is also the default careless error handler, meaning that any lossy conversions will
-	/// automatically cause a compile-time error.
+	/// automatically cause a compile time error.
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
 		typename _Range        = ::std::basic_string_view<code_unit_t<_Encoding>>,
@@ -111,27 +113,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
 		///
-		/// @remarks Copies the stored @c state within the ztd::text::basic_text_view to perform the code point
-		/// iteration process.
-		//////
-		constexpr _CodePointView<> code_points() const noexcept {
-			return _CodePointView<>(this->_M_storage, this->_M_encoding, this->_M_error_handler, this->_M_state);
-		}
-
-		//////
-		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
-		///
-		/// @param[in] __state The state to use for this code point view.
-		///
-		/// @remarks Moves the provided @c __state in as the "starting point".
-		//////
-		constexpr _CodePointView<> code_points(state_type __state) const noexcept {
-			return _CodePointView<>(
-				this->_M_storage, this->_M_encoding, this->_M_error_handler, ::std::move(__state));
-		}
-
-		//////
-		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
+		/// @overload
 		///
 		/// @tparam _ViewErrorHandler The type of the passed-in error handler to use for these operations.
 		///
@@ -145,6 +127,32 @@ namespace ztd { namespace text {
 			state_type __state, _ViewErrorHandler&& __error_handler) const noexcept {
 			return _CodePointView<_ViewErrorHandler>(this->_M_storage, this->_M_encoding,
 				::std::forward<_ViewErrorHandler>(__error_handler), ::std::move(__state));
+		}
+
+		//////
+		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
+		///
+		/// @overload
+		///
+		/// @param[in] __state The state to use for this code point view.
+		///
+		/// @remarks Moves the provided @c __state in as the "starting point".
+		//////
+		constexpr _CodePointView<> code_points(state_type __state) const noexcept {
+			return _CodePointView<>(
+				this->_M_storage, this->_M_encoding, this->_M_error_handler, ::std::move(__state));
+		}
+
+		//////
+		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
+		///
+		/// @overload
+		///
+		/// @remarks Copies the stored @c state within the ztd::text::basic_text_view to perform the code point
+		/// iteration process.
+		//////
+		constexpr _CodePointView<> code_points() const noexcept {
+			return _CodePointView<>(this->_M_storage, this->_M_encoding, this->_M_error_handler, this->_M_state);
 		}
 
 		//////
@@ -174,5 +182,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_BASIC_TEXT_VIEW_HPP

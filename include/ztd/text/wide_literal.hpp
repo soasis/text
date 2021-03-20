@@ -50,6 +50,8 @@
 #include <ztd/text/detail/encoding_name.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -60,7 +62,7 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief The encoding of wide string literals ( e.g. @c "👍" ) at compile-time.
+	/// @brief The encoding of wide string literals ( e.g. @c "👍" ) at compile time.
 	///
 	//////
 	class wide_literal : private __txt_detail::__ebco<__txt_detail::__wide_literal, 0> {
@@ -73,8 +75,8 @@ namespace ztd { namespace text {
 		/// @brief Whether or not this wide_literal encoding is a Unicode Transformation Format, such as UTF-GB18030,
 		/// UTF-16, or UTF-32.
 		//////
-		using is_unicode_encoding
-			= std::integral_constant<bool, __txt_detail::__is_unicode_encoding_id(__txt_detail::__wide_literal_id)>;
+		using is_unicode_encoding = ::std::integral_constant<bool,
+			__txt_detail::__is_unicode_encoding_id(__txt_detail::__wide_literal_id)>;
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
@@ -174,7 +176,7 @@ namespace ztd { namespace text {
 			static_assert(__txt_detail::__always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
 				"wide_literal "
-				"encoding from the machine at compile-time and you are trying to use the wide_literal encoding "
+				"encoding from the machine at compile time and you are trying to use the wide_literal encoding "
 				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
 				"here (https://developercommunity.visualstudio.com/content/idea/1160821/"
 				"-compiler-feature-macro-for-narrow-wide_literal-foo-enc.html) and leave a (strong, but very "
@@ -187,7 +189,7 @@ namespace ztd { namespace text {
 
 				"God's Speed.\n\n"
 
-				"This could mangle all of your compile-time wide_literal string conversions you are performing. To "
+				"This could mangle all of your compile time wide_literal string conversions you are performing. To "
 				"prevent that from happening, this error is being printed out and to go ahead with the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
@@ -201,7 +203,7 @@ namespace ztd { namespace text {
 #endif
 			__txt_detail::__forwarding_handler<const wide_literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
-			return this->__base_t::get_value().decode_one(
+			return this->__base_t::__get_value().decode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 
@@ -232,7 +234,7 @@ namespace ztd { namespace text {
 			static_assert(__txt_detail::__always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
 				"wide_literal "
-				"encoding from the machine at compile-time and you are trying to use the wide_literal encoding "
+				"encoding from the machine at compile time and you are trying to use the wide_literal encoding "
 				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
 				"here (https://developercommunity.visualstudio.com/content/idea/1160821/"
 				"-compiler-feature-macro-for-narrow-wide_literal-foo-enc.html) and leave a (strong, but very "
@@ -245,7 +247,7 @@ namespace ztd { namespace text {
 
 				"God's Speed.\n\n"
 
-				"This could mangle all of your compile-time wide_literal string conversions you are performing. To "
+				"This could mangle all of your compile time wide_literal string conversions you are performing. To "
 				"prevent that from happening, this error is being printed out and to go ahead with the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
@@ -259,12 +261,14 @@ namespace ztd { namespace text {
 #endif
 			__txt_detail::__forwarding_handler<const wide_literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
-			return this->__base_t::get_value().encode_one(
+			return this->__base_t::__get_value().encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 	};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_WIDE_LITERAL_HPP

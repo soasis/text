@@ -44,6 +44,8 @@
 #include <string_view>
 #include <utility>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -395,5 +397,7 @@ namespace std {
 	};
 
 } // namespace std
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_BASIC_C_STRING_VIEW_HPP

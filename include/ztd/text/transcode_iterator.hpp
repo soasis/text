@@ -37,6 +37,7 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/unbounded.hpp>
 #include <ztd/text/subrange.hpp>
+#include <ztd/text/is_ignorable_error_handler.hpp>
 
 #include <ztd/text/detail/encoding_iterator.hpp>
 #include <ztd/text/detail/blackhole_iterator.hpp>
@@ -44,7 +45,10 @@
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/ebco.hpp>
 #include <ztd/text/detail/adl.hpp>
+#include <ztd/text/detail/range.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -94,8 +98,10 @@ namespace ztd { namespace text {
 		  __txt_detail::__remove_cvref_t<_FromState>, 0>,
 	  private __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_ToEncoding>,
 		  __txt_detail::__remove_cvref_t<_ToState>, 1>,
-	  private __txt_detail::__cache_cursor<
-		  max_code_units_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToEncoding>>>>,
+	  private __txt_detail::__cursor_cache<
+		  max_code_units_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToEncoding>>>,
+		  __txt_detail::__is_range_input_or_output_range_v<
+		       __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Range>>>>,
 	  private __txt_detail::__ebco<_Range, 4> {
 	private:
 		using _URange                = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Range>>;
@@ -107,9 +113,14 @@ namespace ztd { namespace text {
 		using _UToState              = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToState>>;
 		using _BaseIterator          = __txt_detail::__range_iterator_t<_URange>;
 		using _IntermediateCodePoint = code_point_t<_UToEncoding>;
-		static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;
-		static constexpr bool _IsSingleValueType  = _MaxValues == 1;
-		using __base_cursor_t                     = __txt_detail::__cache_cursor<_MaxValues>;
+		inline static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;
+		inline static constexpr bool _IsSingleValueType  = _MaxValues == 1;
+		inline static constexpr bool _IsInputOrOutput    = __txt_detail::__is_range_input_or_output_range_v<_URange>;
+		inline static constexpr bool _IsCursorless       = _IsSingleValueType && !_IsInputOrOutput;
+		inline static constexpr bool _IsErrorless
+			= decode_error_handler_always_returns_ok_v<_UFromEncoding,
+			       _UFromErrorHandler> && encode_error_handler_always_returns_ok_v<_UToEncoding, _UToErrorHandler>;
+		using __base_cursor_t        = __txt_detail::__cursor_cache<_MaxValues, _IsInputOrOutput>;
 		using __base_from_encoding_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>;
 		using __base_to_encoding_t   = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>;
 		using __base_from_error_handler_t
@@ -311,7 +322,7 @@ namespace ztd { namespace text {
 		/// @returns A const l-value reference to the encoding object used to construct this iterator.
 		//////
 		constexpr const from_encoding_type& from_encoding() const {
-			return this->__base_from_encoding_t::get_value();
+			return this->__base_from_encoding_t::__get_value();
 		}
 
 		//////
@@ -320,7 +331,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object used to construct this iterator.
 		//////
 		constexpr from_encoding_type& from_encoding() {
-			return this->__base_from_encoding_t::get_value();
+			return this->__base_from_encoding_t::__get_value();
 		}
 
 		//////
@@ -329,7 +340,7 @@ namespace ztd { namespace text {
 		/// @returns A const l-value reference to the encoding object used to construct this iterator.
 		//////
 		constexpr const to_encoding_type& to_encoding() const {
-			return this->__base_to_encoding_t::get_value();
+			return this->__base_to_encoding_t::__get_value();
 		}
 
 		//////
@@ -338,7 +349,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object used to construct this iterator.
 		//////
 		constexpr to_encoding_type& to_encoding() {
-			return this->__base_to_encoding_t::get_value();
+			return this->__base_to_encoding_t::__get_value();
 		}
 
 		//////
@@ -378,7 +389,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr const from_error_handler_type& from_handler() const {
-			return this->__base_from_error_handler_t::get_value();
+			return this->__base_from_error_handler_t::__get_value();
 		}
 
 		//////
@@ -386,39 +397,62 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr from_error_handler_type& from_handler() {
-			return this->__base_from_error_handler_t::get_value();
+			return this->__base_from_error_handler_t::__get_value();
 		}
 
 		//////
 		/// @brief The error handler object.
 		///
 		//////
-		constexpr const to_error_handler_type& to_handler() const {
-			return this->__base_to_error_handler_t::get_value();
+		constexpr const to_error_handler_type& to_handler() const& noexcept {
+			return this->__base_to_error_handler_t::__get_value();
 		}
 
 		//////
 		/// @brief The error handler object.
 		///
 		//////
-		constexpr to_error_handler_type& to_handler() {
-			return this->__base_to_error_handler_t::get_value();
+		constexpr to_error_handler_type& to_handler() & noexcept {
+			return this->__base_to_error_handler_t::__get_value();
+		}
+
+		//////
+		/// @brief The error handler object.
+		///
+		//////
+		constexpr to_error_handler_type&& to_handler() && noexcept {
+			return ::std::move(this->__base_to_error_handler_t::__get_value());
 		}
 
 		//////
 		/// @brief The input range used to construct this object.
 		///
 		//////
-		constexpr range_type base() const& {
-			return this->__base_range_t::get_value();
+		constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
+			     ? ::std::is_nothrow_copy_constructible_v<range_type>
+			     : ::std::is_nothrow_move_constructible_v<range_type>) {
+			if constexpr (::std::is_copy_constructible_v<range_type>) {
+				return this->__base_range_t::__get_value();
+			}
+			else {
+				return ::std::move(this->__base_range_t::__get_value());
+			}
 		}
 
 		//////
 		/// @brief The input range used to construct this object.
 		///
 		//////
-		constexpr range_type&& base() && {
-			return ::std::move(this->__base_range_t::get_value());
+		constexpr range_type range() const& noexcept(::std::is_nothrow_copy_constructible_v<range_type>) {
+			return this->__base_range_t::__get_value();
+		}
+
+		//////
+		/// @brief The input range used to construct this object.
+		///
+		//////
+		constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
+			return ::std::move(this->__base_range_t::__get_value());
 		}
 
 		//////
@@ -427,11 +461,11 @@ namespace ztd { namespace text {
 		//////
 		constexpr bool empty() const noexcept {
 			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_empty, _Range>) {
-				return __txt_detail::__adl::__adl_empty(this->__base_range_t::get_value());
+				return __txt_detail::__adl::__adl_empty(this->__base_range_t::__get_value());
 			}
 			else {
-				return __txt_detail::__adl::__adl_cbegin(this->__base_range_t::get_value())
-					== __txt_detail::__adl::__adl_cend(this->__base_range_t::get_value());
+				return __txt_detail::__adl::__adl_begin(this->__base_range_t::__get_value())
+					== __txt_detail::__adl::__adl_end(this->__base_range_t::__get_value());
 			}
 		}
 
@@ -455,12 +489,12 @@ namespace ztd { namespace text {
 		//////
 		constexpr transcode_iterator& operator++() {
 			if constexpr (_IsSingleValueType) {
-				this->_M_next_one();
+				this->_M_advance_one();
 			}
 			else {
 				++this->_M_position;
 				if (this->_M_position == this->_M_size) {
-					this->_M_next_one();
+					this->_M_advance_one();
 					this->_M_position = 0;
 				}
 			}
@@ -523,19 +557,19 @@ namespace ztd { namespace text {
 			this->_M_consume_one<__txt_detail::__consume::__no>();
 		}
 
-		constexpr void _M_next_one() noexcept {
+		constexpr void _M_advance_one() noexcept {
 			this->_M_consume_one<__txt_detail::__consume::__embrace_the_void>();
 			this->_M_read_one();
 		}
 
 		template <__txt_detail::__consume _Consume>
 		constexpr void _M_consume_one() noexcept {
-			auto __result = __txt_detail::__basic_transcode_one<_Consume>(this->__base_range_t::get_value(),
+			auto __result = __txt_detail::__basic_transcode_one<_Consume>(this->__base_range_t::__get_value(),
 				this->from_encoding(), this->_M_cache, this->to_encoding(), this->from_handler(),
 				this->to_handler(), this->from_state(), this->to_state());
-			assert(__result.error_code == encoding_error::ok);
+			// assert(__result.error_code == encoding_error::ok);
 			if constexpr (_Consume == __txt_detail::__consume::__no) {
-				this->__base_range_t::get_value() = ::std::move(__result.input);
+				this->__base_range_t::__get_value() = ::std::move(__result.input);
 				if constexpr (!_IsSingleValueType) {
 					this->_M_size     = __txt_detail::__adl::__adl_begin(__result.output) - this->_M_cache.begin();
 					this->_M_position = 0;
@@ -552,5 +586,7 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_TRANSCODE_ITERATOR_HPP

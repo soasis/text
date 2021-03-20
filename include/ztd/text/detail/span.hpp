@@ -39,6 +39,8 @@
 
 #include <span>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -60,6 +62,8 @@ namespace ztd { namespace text {
 // Use home-grown span from Martin Moene
 #include <ztd/text/detail/span.implementation.hpp>
 
+#include <ztd/text/detail/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -77,5 +81,7 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 #endif
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_SPAN_HPP

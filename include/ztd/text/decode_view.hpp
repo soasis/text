@@ -33,6 +33,8 @@
 #ifndef ZTD_TEXT_DECODE_VIEW_HPP
 #define ZTD_TEXT_DECODE_VIEW_HPP
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/decode_iterator.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/encoding.hpp>
@@ -43,6 +45,8 @@
 #include <ztd/text/detail/reconstruct.hpp>
 
 #include <string_view>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -83,7 +87,7 @@ namespace ztd { namespace text {
 		/// @brief The sentinel type for this view.
 		///
 		//////
-		using sentinel = decode_sentinel;
+		using sentinel = decode_sentinel_t;
 		//////
 		/// @brief The underlying range type.
 		///
@@ -112,7 +116,12 @@ namespace ztd { namespace text {
 		///
 		/// @remarks The stored encoding, error handler, and state type are default-constructed.
 		//////
-		constexpr decode_view(range_type __range) noexcept : _M_it(::std::move(__range)) {
+		template <typename _ArgRange,
+			::std::enable_if_t<
+			     !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>,
+			          decode_view> && !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>, iterator>>* = nullptr>
+		constexpr decode_view(_ArgRange&& __range) noexcept(::std::is_nothrow_constructible_v<iterator, _ArgRange>)
+		: _M_it(::std::forward<_ArgRange>(__range)) {
 		}
 
 		//////
@@ -121,7 +130,8 @@ namespace ztd { namespace text {
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __encoding The encoding object to call `.decode` or equivalent functionality on.
 		//////
-		constexpr decode_view(range_type __range, encoding_type __encoding) noexcept
+		constexpr decode_view(range_type __range, encoding_type __encoding) noexcept(
+			::std::is_nothrow_constructible_v<iterator, range_type, encoding_type>)
 		: _M_it(::std::move(__range), ::std::move(__encoding)) {
 		}
 
@@ -132,8 +142,9 @@ namespace ztd { namespace text {
 		/// @param[in] __encoding The encoding object to call `.decode` or equivalent functionality on.
 		/// @param[in] __error_handler The error handler to store in this view.
 		//////
-		constexpr decode_view(
-			range_type __range, encoding_type __encoding, error_handler_type __error_handler) noexcept
+		constexpr decode_view(range_type __range, encoding_type __encoding,
+			error_handler_type __error_handler) noexcept(::std::is_nothrow_constructible_v<iterator, range_type,
+			encoding_type, error_handler_type>)
 		: _M_it(::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler)) {
 		}
 
@@ -146,7 +157,8 @@ namespace ztd { namespace text {
 		/// @param[in] __state The state to user for the decode operation.
 		//////
 		constexpr decode_view(range_type __range, encoding_type __encoding, error_handler_type __error_handler,
-			state_type __state) noexcept
+			state_type __state) noexcept(::std::is_nothrow_constructible_v<iterator, range_type, encoding_type,
+			error_handler_type, state_type>)
 		: _M_it(::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state)) {
 		}
 
@@ -155,11 +167,55 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __it A previously-made decode_view iterator.
 		//////
-		constexpr decode_view(iterator __it) noexcept : _M_it(::std::move(__it)) {
+		constexpr decode_view(iterator __it) noexcept(::std::is_nothrow_move_constructible_v<iterator>)
+		: _M_it(::std::move(__it)) {
+		}
+
+		//////
+		/// @brief Default constructor. Defaulted.
+		///
+		//////
+		constexpr decode_view() = default;
+
+		//////
+		/// @brief Copy constructor. Defaulted.
+		///
+		//////
+		constexpr decode_view(const decode_view&) = default;
+
+		//////
+		/// @brief Move constructor. Defaulted.
+		///
+		//////
+		constexpr decode_view(decode_view&&) = default;
+
+		//////
+		/// @brief Copy assignment operator. Defaulted.
+		///
+		//////
+		constexpr decode_view& operator=(const decode_view&) = default;
+		//////
+		/// @brief Move assignment operator. Defaulted.
+		///
+		//////
+		constexpr decode_view& operator=(decode_view&&) = default;
+
+		//////
+		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
+		///
+		//////
+		constexpr iterator begin() & noexcept {
+			if constexpr (::std::is_copy_constructible_v<iterator>) {
+				return this->_M_it;
+			}
+			else {
+				return ::std::move(this->_M_it);
+			}
 		}
 
 		//////
 		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
+		///
 		//////
 		constexpr iterator begin() const& noexcept {
 			return this->_M_it;
@@ -199,5 +255,17 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
+namespace std { namespace ranges {
+
+	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
+	inline constexpr bool enable_borrowed_range<::ztd::text::decode_view<_Encoding, _Range, _ErrorHandler,
+		_State>> = ::std::ranges::enable_borrowed_range<_Range>;
+
+}} // namespace std::ranges
+#endif
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_VIEW_HPP

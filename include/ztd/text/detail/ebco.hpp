@@ -31,12 +31,14 @@
 #pragma once
 
 #ifndef ZTD_TEXT_DETAIL_EBCO_HPP
-#define ZTD_TEXT_DETAIL_EBCO_HPP 1
+#define ZTD_TEXT_DETAIL_EBCO_HPP
 
 #include <ztd/text/version.hpp>
 
 #include <utility>
 #include <type_traits>
+
+#include <ztd/text/detail/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -74,15 +76,15 @@ namespace ztd { namespace text {
 			: _M_value(::std::forward<_Arg>(__arg), ::std::forward<_Args>(__args)...) {
 			}
 
-			constexpr _Type& get_value() & noexcept {
+			constexpr _Type& __get_value() & noexcept {
 				return static_cast<_Type&>(this->_M_value);
 			}
 
-			constexpr _Type const& get_value() const& noexcept {
+			constexpr _Type const& __get_value() const& noexcept {
 				return static_cast<_Type const&>(this->_M_value);
 			}
 
-			constexpr _Type&& get_value() && noexcept {
+			constexpr _Type&& __get_value() && noexcept {
 				return static_cast<_Type&&>(this->_M_value);
 			}
 		};
@@ -120,15 +122,15 @@ namespace ztd { namespace text {
 				return *this;
 			}
 
-			constexpr _Type& get_value() & noexcept {
+			constexpr _Type& __get_value() & noexcept {
 				return static_cast<_Type&>(*this);
 			}
 
-			constexpr _Type const& get_value() const& noexcept {
+			constexpr _Type const& __get_value() const& noexcept {
 				return static_cast<_Type const&>(*this);
 			}
 
-			constexpr _Type&& get_value() && noexcept {
+			constexpr _Type&& __get_value() && noexcept {
 				return static_cast<_Type&&>(*this);
 			}
 		};
@@ -150,15 +152,15 @@ namespace ztd { namespace text {
 				return *this;
 			}
 
-			constexpr _Type& get_value() & noexcept {
+			constexpr _Type& __get_value() & noexcept {
 				return *(this->_M_p_value);
 			}
 
-			constexpr _Type const& get_value() const& noexcept {
+			constexpr _Type const& __get_value() const& noexcept {
 				return *(this->_M_p_value);
 			}
 
-			constexpr _Type&& get_value() && noexcept {
+			constexpr _Type&& __get_value() && noexcept {
 				return ::std::move(*(this->_M_p_value));
 			}
 		};
@@ -166,5 +168,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
+
+#include <ztd/text/detail/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_EBCO_HPP

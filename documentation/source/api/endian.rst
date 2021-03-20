@@ -33,4 +33,4 @@ endian
 
 The endian enumeration is a very simple enum used to communicate what kind of byte ordering certain parts of the library should use to interpret incoming byte sequences, like :doc:`ztd::text::encoding_scheme </api/encodings/encoding_scheme>`.
 
-.. doxygenenum:: ztd::text::endian
+.. doxygentypedef:: ztd::text::endian
