@@ -5,8 +5,8 @@
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
-// Licensees holding valid commercial ztd.text licenses may use this file in
-// accordance with the commercial license agreement provided with the
+// Licensees holding valid commercial ztd.text licenses may use this file
+// in accordance with the commercial license agreement provided with the
 // Software or, alternatively, in accordance with the terms contained in
 // a written agreement between you and Shepherd's Oasis, LLC.
 // For licensing terms and conditions see your agreement. For
@@ -31,8 +31,6 @@
 #include <ztd/text/encode.hpp>
 #include <ztd/text/encoding.hpp>
 
-#include <ztd/text/examples/assert.hpp>
-
 #include <iostream>
 
 using ascii_encode_result = ztd::text::encode_result<
@@ -43,13 +41,17 @@ using ascii_encode_result = ztd::text::encode_result<
      // the state type for encode operations
      ztd::text::encode_state_t<ztd::text::ascii>>;
 
-ascii_encode_result my_printing_handler(const ztd::text::ascii& encoding, ascii_encode_result result,
+ascii_encode_result my_printing_handler(const ztd::text::ascii& encoding,
+     ascii_encode_result result,
      ztd::text::span<const char32_t> unused_read_characters) noexcept {
 	// just printing some information
 	std::cout << "An error occurred.\n"
-	          << "\tError code value: " << ztd::text::to_name(result.error_code) << "\n"
-	          << "\t# of code unit spaces left: " << result.output.size() << "\n"
-	          << "\t# of unused code points: " << unused_read_characters.size() << "\n"
+	          << "\tError code value: "
+	          << ztd::text::to_name(result.error_code) << "\n"
+	          << "\t# of code unit spaces left: " << result.output.size()
+	          << "\n"
+	          << "\t# of unused code points: "
+	          << unused_read_characters.size() << "\n"
 	          << "\tInput units left: " << result.input.size() << "\n";
 	// setting the error to "ok"
 	// tells the algorithm to keep spinning,
@@ -67,7 +69,7 @@ int main(int, char*[]) {
 	     // handled with our function
 	     &my_printing_handler);
 
-	example_assert(my_ascii_string == "");
+	ZTD_TEXT_ASSERT(my_ascii_string == "");
 
 	return 0;
 }

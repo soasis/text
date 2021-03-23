@@ -5,8 +5,8 @@
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
-// Licensees holding valid commercial ztd.text licenses may use this file
-// in accordance with the commercial license agreement provided with the
+// Licensees holding valid commercial ztd.text licenses may use this file in
+// accordance with the commercial license agreement provided with the
 // Software or, alternatively, in accordance with the terms contained in
 // a written agreement between you and Shepherd's Oasis, LLC.
 // For licensing terms and conditions see your agreement. For
@@ -28,24 +28,28 @@
 //
 // ============================================================================>
 
-#include <ztd/text/transcode.hpp>
+#include <ztd/text/decode_view.hpp>
+#include <ztd/text/encoding.hpp>
 
-#include <iostream>
+#include "gap_buffer.hpp"
+
+#include <algorithm>
 
 int main(int, char*[]) {
-	std::string my_ascii_string = ztd::text::transcode(
-	     // input
-	     u8"안녕",
-	     // from this encoding
-	     ztd::text::utf8 {},
-	     // to this encoding
-	     ztd::text::ascii {},
-	     // (1) error handler
-	     ztd::text::replacement_handler {});
+	using u16_gap_buffer  = gap::gap_vector<char16_t>;
+	using iterator        = typename u16_gap_buffer::iterator;
+	using buffer_subrange = ztd::text::subrange<iterator, iterator>;
 
-	std::cout << my_ascii_string << std::endl; // (2)
+	u16_gap_buffer buffer;
+	std::u16string_view data = u"⛲ Très beau !";
+	buffer.insert(buffer.begin(), data.begin(), data.end());
 
-	ZTD_TEXT_ASSERT(my_ascii_string == "??");
+	buffer_subrange u16_buffer_view(buffer.begin(), buffer.end());
+
+	ztd::text::decode_view<ztd::text::utf16, buffer_subrange> decoded_buffer_view(u16_buffer_view);
+
+	std::u32string_view expected_data = U"⛲ Très beau !";
+	ZTD_TEXT_ASSERT(std::equal(expected_data.cbegin(), expected_data.cend(), decoded_buffer_view.begin()));
 
 	return 0;
 }

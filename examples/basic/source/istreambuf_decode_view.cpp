@@ -41,22 +41,21 @@ int main(int, char*[]) {
 	std::string file_name = "utf16-le.hex";
 	// open the desired file
 	std::ifstream input_file(file_name, std::ios_base::binary);
-	// if opening the file failed, or setting the
-	// "do not skip whitespace" option failed,
+	// if opening the file failed,
 	// then leave with an exit code of 1
-	if (!input_file || !(input_file >> std::noskipws)) {
+	if (!input_file) {
 		std::cerr << "Could not initialize the input stream with the file " << file_name << std::endl;
 		return 1;
 	}
 
 	// We create a subrange of "istream iterators", which allow us to walk
 	// over a sequence of data as if it was just a normal, regular range
-	using istream_view = ztd::text::subrange<std::istream_iterator<char>, std::istream_iterator<char>>;
-	istream_view input_file_view(std::istream_iterator<char> { input_file }, std::istream_iterator<char> {});
+	using istreambuf_view = ztd::text::subrange<std::istreambuf_iterator<char>, std::istreambuf_iterator<char>>;
+	istreambuf_view input_file_view(std::istreambuf_iterator<char> { input_file }, std::istreambuf_iterator<char> {});
 
 	// View the desired input file as UTF-16, in Little Endian format,
 	// where the source is given to us as `char`
-	ztd::text::decode_view<ztd::text::basic_utf16_le<char>, istream_view> decode_view(input_file_view);
+	ztd::text::decode_view<ztd::text::basic_utf16_le<char>, istreambuf_view> decode_view(input_file_view);
 
 	// Iterate over all the code points
 	// And print them out!
@@ -66,9 +65,6 @@ int main(int, char*[]) {
 		std::cout << std::hex << (int)code_point << " ";
 		if (code_point == U'\n') {
 			std::cout << std::endl;
-		}
-		else {
-			std::cout << std::flush;
 		}
 	}
 

@@ -28,27 +28,38 @@
 #
 # ============================================================================>
 
-file(GLOB_RECURSE ztd.text.examples.documentation.sources LIST_DIRECTORIES false 
-	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/source CONFIGURE_DEPENDS 
-	source/*.cpp)
+# # Boost.Text barely builds on Windows or MinGW, and you can't even
+# # include <boost/text/unencoded_rope.hpp> without graphemes somehow getting involved...
+# # So! We will do this later.
 
-foreach (example_source_name ${ztd.text.examples.documentation.sources})
-	set(example_source_file source/${example_source_name})
-	set(example_target ztd.text.examples.documentation.${example_source_name})
-	add_executable(${example_target} ${example_source_file})
-	if (MSVC)
-		target_compile_options(${example_target}
-			PRIVATE /std:c++latest /utf-8 /permissive-)
-	else()
-		target_compile_options(${example_target}
-			PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-	endif()
-	target_link_libraries(${example_target}
-		PRIVATE
-		ztd::text
-		${CMAKE_DL_LIBS}
-	)
-	if (ZTD_TEXT_TESTS)
-		add_test(NAME ${example_target} COMMAND ${example_target})
-	endif()
-endforeach()
+#[[
+file(GLOB ztd.text.examples.boost_text.sources source/*.cpp)
+
+add_executable(ztd.text.examples.boost_text ${ztd.text.examples.boost_text.sources})
+target_compile_definitions(ztd.text.examples.boost_text
+	PRIVATE
+	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
+)
+if (MSVC)
+	target_compile_options(ztd.text.examples.boost_text
+		PRIVATE /std:c++latest /utf-8 /permissive-)
+else()
+	target_compile_options(ztd.text.examples.boost_text
+		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
+endif()
+target_include_directories(ztd.text.examples.boost_text
+	PRIVATE
+	${Boost_INCLUDE_DIRS}
+	${CMAKE_CURRENT_BINARY_DIR}/Boost.Text-prefix/src/Boost.Text/include/
+)
+add_dependencies(ztd.text.examples.boost_text
+	Boost.Text
+)
+target_link_libraries(ztd.text.examples.boost_text
+	PRIVATE
+	ztd::text
+	${CMAKE_DL_LIBS}
+)
+add_test(NAME ztd.text.examples.boost_text COMMAND ztd.text.examples.boost_text)
+
+]]

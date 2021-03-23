@@ -30,8 +30,6 @@
 
 #include <ztd/text.hpp>
 
-#include <ztd/text/examples/assert.hpp>
-
 #include <cuchar>
 #include <cstddef>
 
@@ -242,7 +240,7 @@ int main(int argc, char* argv[]) {
 
 	// the first argument is (usually!!) the executable name,
 	// so we'll see if we decoded that part nicely!
-	example_assert(decoded_first_arg.find(U"runtime_locale_encoding")
+	ZTD_TEXT_ASSERT(decoded_first_arg.find(U"runtime_locale_encoding")
 	     != std::u32string::npos);
 
 	return 0;

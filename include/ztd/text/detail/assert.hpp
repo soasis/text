@@ -36,8 +36,8 @@
 #include <ztd/text/version.hpp>
 
 // clang-format off
-#if defined(ZTD_TEXT_ASSERT)
-	#define ZTD_TEXT_ASSERT_I_(...) ZTD_TEXT_ASSERT(__VA_ARGS__)
+#if defined(ZTD_TEXT_ASSERT_USER)
+	#define ZTD_TEXT_ASSERT_I_(...) ZTD_TEXT_ASSERT_USER(__VA_ARGS__)
 #else
 	#ifndef NDEBUG
 		#include <exception>
@@ -61,8 +61,8 @@
 	#endif
 #endif
 
-#if defined(ZTD_TEXT_ASSERT_MESSAGE)
-	#define ZTD_TEXT_ASSERT_MESSAGE_I_(...) ZTD_TEXT_ASSERT_MESSAGE(__VA_ARGS__)
+#if defined(ZTD_TEXT_ASSERT_MESSAGE_USER)
+	#define ZTD_TEXT_ASSERT_MESSAGE_I_(...) ZTD_TEXT_ASSERT_MESSAGE_USER(__VA_ARGS__)
 #else
 	#ifndef NDEBUG
 		#include <exception>
@@ -88,6 +88,9 @@
 #endif
 
 // clang-format on
+
+#define ZTD_TEXT_ASSERT(...) ZTD_TEXT_ASSERT_I_(__VA_ARGS__)
+#define ZTD_TEXT_ASSERT_MESSAGE(...) ZTD_TEXT_ASSERT_MESSAGE_I_(__VA_ARGS__)
 
 #include <ztd/text/detail/epilogue.hpp>
 

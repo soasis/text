@@ -49,8 +49,8 @@ Transcoding Iterators/Transcode View
 
 Right now these types would not work especially well for input and output ranges. They should be modified just like the internal ``ztd::text::__txt_detail::__encoding_iterator`` class types, so that they work with ``input_iterator`` and ``output_iterator`` types.
 
-- ☐ Improve constructor delegation and make sure to explicitly implement default construction vs. letting it happen with ``=default`` (which does not work for some of the base types present).
-- ☐ Modify implementation to cache data and position when an input or output iterator is detected.
+- ☑ Improve constructor delegation and make sure to explicitly implement default construction vs. letting it happen with ``=default`` (which does not work for some of the base types present).
+- ☑ Modify implementation to cache data and position when an input or output iterator is detected.
 - ☐ Return ``const value_type&`` for ``reference`` to enable C++20 ranges to work properly.
 - ☐ Mark as ``enable_borrowed_range`` when C++20 is detected.
 

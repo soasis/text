@@ -102,6 +102,11 @@ namespace ztd { namespace text {
 		  max_code_units_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToEncoding>>>,
 		  __txt_detail::__is_range_input_or_output_range_v<
 		       __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Range>>>>,
+	  private __txt_detail::__error_cache<
+		  decode_error_handler_always_returns_ok_v<
+		       __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_FromEncoding>>,
+		       __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<
+		            _FromErrorHandler>>> && encode_error_handler_always_returns_ok_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToEncoding>>, __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_ToErrorHandler>>>>,
 	  private __txt_detail::__ebco<_Range, 4> {
 	private:
 		using _URange                = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Range>>;
@@ -120,9 +125,11 @@ namespace ztd { namespace text {
 		inline static constexpr bool _IsErrorless
 			= decode_error_handler_always_returns_ok_v<_UFromEncoding,
 			       _UFromErrorHandler> && encode_error_handler_always_returns_ok_v<_UToEncoding, _UToErrorHandler>;
-		using __base_cursor_t        = __txt_detail::__cursor_cache<_MaxValues, _IsInputOrOutput>;
-		using __base_from_encoding_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>;
-		using __base_to_encoding_t   = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>;
+		using __base_cursor_cache_t      = __txt_detail::__cursor_cache<_MaxValues, _IsInputOrOutput>;
+		using __base_cursor_cache_size_t = typename __base_cursor_cache_t::_SizeType;
+		using __base_error_cache_t       = __txt_detail::__error_cache<_IsErrorless>;
+		using __base_from_encoding_t     = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromEncoding>, 0>;
+		using __base_to_encoding_t       = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToEncoding>, 1>;
 		using __base_from_error_handler_t
 			= __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_FromErrorHandler>, 2>;
 		using __base_to_error_handler_t = __txt_detail::__ebco<__txt_detail::__remove_cvref_t<_ToErrorHandler>, 3>;
@@ -131,6 +138,10 @@ namespace ztd { namespace text {
 		using __base_to_state_t         = __txt_detail::__state_storage<__txt_detail::__remove_cvref_t<_ToEncoding>,
                __txt_detail::__remove_cvref_t<_ToState>, 1>;
 		using __base_range_t            = __txt_detail::__ebco<_Range, 4>;
+
+		inline static constexpr bool _IsBackwards
+			= __txt_detail::__is_detected_v<__txt_detail::__detect_object_encode_one_backwards, _UFromEncoding,
+			     _URange, _UFromErrorHandler, _UFromState>;
 
 	public:
 		//////
@@ -167,26 +178,28 @@ namespace ztd { namespace text {
 		/// @brief The state type used for decode operations.
 		///
 		//////
-		using from_state_type = _FromState;
+		using from_state_type = __txt_detail::__remove_cvref_t<_FromState>;
 		//////
 		/// @brief The state type used for encode operations.
 		///
 		//////
-		using to_state_type = _ToState;
+		using to_state_type = __txt_detail::__remove_cvref_t<_ToState>;
 		//////
 		/// @brief The strength of the iterator category, as defined in relation to the base.
 		///
 		//////
 		using iterator_category = ::std::conditional_t<
 			__txt_detail::__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
-			::std::bidirectional_iterator_tag, __txt_detail::__iterator_category_t<_BaseIterator>>;
+			::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
+			__txt_detail::__iterator_category_t<_BaseIterator>>;
 		//////
 		/// @brief The strength of the iterator concept, as defined in relation to the base.
 		///
 		//////
 		using iterator_concept = ::std::conditional_t<
 			__txt_detail::__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
-			::std::bidirectional_iterator_tag, __txt_detail::__iterator_concept_t<_BaseIterator>>;
+			::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
+			__txt_detail::__iterator_concept_t<_BaseIterator>>;
 		//////
 		/// @brief The object type that gets output on every dereference.
 		///
@@ -297,7 +310,7 @@ namespace ztd { namespace text {
 		, __base_to_error_handler_t(::std::move(__to_error_handler))
 		, __base_from_state_t(this->from_encoding(), ::std::move(__from_state))
 		, __base_to_state_t(this->to_encoding(), ::std::move(__to_state))
-		, __base_cursor_t()
+		, __base_cursor_cache_t()
 		, __base_range_t(::std::move(__range))
 		, _M_cache() {
 			this->_M_read_one();
@@ -488,14 +501,13 @@ namespace ztd { namespace text {
 		/// @returns A reference to *this, after incrementing the iterator.
 		//////
 		constexpr transcode_iterator& operator++() {
-			if constexpr (_IsSingleValueType) {
-				this->_M_advance_one();
+			if constexpr (_IsCursorless) {
+				this->_M_read_one();
 			}
 			else {
 				++this->_M_position;
-				if (this->_M_position == this->_M_size) {
-					this->_M_advance_one();
-					this->_M_position = 0;
+				if (this->_M_position == this->__base_cursor_cache_t::_M_size) {
+					this->_M_read_one();
 				}
 			}
 			return *this;
@@ -514,7 +526,7 @@ namespace ztd { namespace text {
 				return this->_M_cache[0];
 			}
 			else {
-				return this->_M_cache[this->_M_position];
+				return this->_M_cache[this->__base_cursor_cache_t::_M_position];
 			}
 		}
 
@@ -554,27 +566,47 @@ namespace ztd { namespace text {
 
 	private:
 		constexpr void _M_read_one() noexcept {
-			this->_M_consume_one<__txt_detail::__consume::__no>();
-		}
-
-		constexpr void _M_advance_one() noexcept {
-			this->_M_consume_one<__txt_detail::__consume::__embrace_the_void>();
-			this->_M_read_one();
-		}
-
-		template <__txt_detail::__consume _Consume>
-		constexpr void _M_consume_one() noexcept {
-			auto __result = __txt_detail::__basic_transcode_one<_Consume>(this->__base_range_t::__get_value(),
-				this->from_encoding(), this->_M_cache, this->to_encoding(), this->from_handler(),
-				this->to_handler(), this->from_state(), this->to_state());
-			// assert(__result.error_code == encoding_error::ok);
-			if constexpr (_Consume == __txt_detail::__consume::__no) {
-				this->__base_range_t::__get_value() = ::std::move(__result.input);
-				if constexpr (!_IsSingleValueType) {
-					this->_M_size     = __txt_detail::__adl::__adl_begin(__result.output) - this->_M_cache.begin();
-					this->_M_position = 0;
+			auto& __this_input_range = this->_M_range();
+			auto __this_cache_begin  = this->_M_cache.data();
+			decltype(__this_cache_begin) __this_cache_end {};
+			if constexpr (_IsInputOrOutput) {
+				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
+					::std::move(__this_input_range), this->from_encoding(), this->_M_cache, this->to_encoding(),
+					this->from_handler(), this->to_handler(), this->from_state(), this->to_state());
+				__this_cache_end
+					= __txt_detail::__adl::__adl_to_address(__txt_detail::__adl::__adl_begin(__result.output));
+				if constexpr (!_IsErrorless) {
+					this->__base_error_cache_t::_M_error_code = __result.error_code;
 				}
+				this->__base_range_t::__get_value() = ::std::move(__result.input);
 			}
+			else {
+				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
+					__this_input_range, this->from_encoding(), this->_M_cache, this->to_encoding(),
+					this->from_handler(), this->to_handler(), this->from_state(), this->to_state());
+				__this_cache_end
+					= __txt_detail::__adl::__adl_to_address(__txt_detail::__adl::__adl_begin(__result.output));
+				if constexpr (!_IsErrorless) {
+					this->__base_error_cache_t::_M_error_code = __result.error_code;
+				}
+				this->__base_range_t::__get_value() = ::std::move(__result.input);
+			}
+			if constexpr (!_IsCursorless) {
+				__base_cursor_cache_size_t __data_size
+					= static_cast<__base_cursor_cache_size_t>(__this_cache_end - __this_cache_begin);
+				ZTD_TEXT_ASSERT_MESSAGE_I_("size of produced value can never be bigger thanthe cache",
+					static_cast<::std::size_t>(__data_size) <= this->_M_cache.size());
+				this->__base_cursor_cache_t::_M_position = static_cast<__base_cursor_cache_size_t>(0);
+				this->__base_cursor_cache_t::_M_size     = __data_size;
+			}
+		}
+
+		constexpr _URange& _M_range() noexcept {
+			return this->__base_range_t::__get_value();
+		}
+
+		constexpr const _URange& _M_range() const noexcept {
+			return this->__base_range_t::__get_value();
 		}
 
 		::std::array<value_type, _MaxValues> _M_cache;
