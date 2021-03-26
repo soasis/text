@@ -731,7 +731,7 @@ namespace gap {
 	private:
 		// 2倍伸長ルールで、新しい領域の大きさを決める
 		size_type m_next_size() const {
-			return bend - bbegin ? ((bend - bbegin) << 1) : 1;
+			return (bend - bbegin) ? ((bend - bbegin) << 1) : 1;
 		}
 
 		// 新しいバッファへ全要素を転送する

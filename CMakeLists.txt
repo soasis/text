@@ -193,7 +193,6 @@ if (ZTD_TEXT_SCRATCH)
 	target_link_libraries(scratch PRIVATE ztd::text)
 	target_compile_options(scratch
 		PRIVATE
-		-fconcepts-diagnostics-depth=32
 		${--warn-pedantic}
 		${--warn-default}
 		${--deny-errors})

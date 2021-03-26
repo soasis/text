@@ -166,7 +166,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks This is a proxy iterator, so the @c reference is a non-reference @c value_type.
 			//////
-			using reference = const value_type&;
+			using reference = value_type;
 			//////
 			/// @brief The type returned when two of these pointers are subtracted from one another.
 			///
