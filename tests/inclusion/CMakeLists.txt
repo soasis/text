@@ -35,17 +35,14 @@ file(GLOB_RECURSE ztd.text.tests.inclusion.sources
 	source/*.cpp)
 
 add_executable(ztd.text.tests.inclusion ${ztd.text.tests.inclusion.sources})
-if (MSVC)
-	target_compile_options(ztd.text.tests.inclusion
-		PRIVATE /std:c++latest /utf-8 /permissive-)
-else()
-	target_compile_options(ztd.text.tests.inclusion
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-	if (MINGW)
-		target_compile_options(ztd.text.tests.inclusion
-			PRIVATE -fexec-charset=UTF-8)
-	endif()
-endif()
+target_compile_options(ztd.text.tests.inclusion
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-default}
+	${--deny-errors})
 target_link_libraries(ztd.text.tests.inclusion
 	PRIVATE
 	ztd::text

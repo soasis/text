@@ -97,7 +97,7 @@ namespace ztd { namespace text {
 		/// @brief The sentinel type for this view.
 		///
 		//////
-		using sentinel = transcode_sentinel;
+		using sentinel = transcode_sentinel_t;
 		//////
 		/// @brief The underlying range type.
 		///
@@ -249,6 +249,17 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
+namespace std { namespace ranges {
+
+	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
+		typename _ToErrorHandler, typename _FromState, typename _ToState>
+	inline constexpr bool enable_borrowed_range<::ztd::text::transcode_view<_FromEncoding, _ToEncoding, _Range,
+		_FromErrorHandler, _ToErrorHandler, _FromState, _ToState>> = ::std::ranges::enable_borrowed_range<_Range>;
+
+}} // namespace std::ranges
+#endif
 
 #include <ztd/text/detail/epilogue.hpp>
 

@@ -114,6 +114,27 @@ string(CONCAT --disable-permissive $<
 		${ztd-text-is-top-level}
 	>:/permissive-
 >)
+string(CONCAT --utf8-literal-encoding
+	$<IF:$<BOOL:${MSVC}>,
+		/execution-charset:utf-8,
+		-fexec-charset=utf-8
+	>
+)
+string(CONCAT --utf8-source-encoding
+	$<IF:$<BOOL:${MSVC}>,
+		/source-charset:utf-8,
+		-finput-charset=utf-8
+	>
+)
+string(CONCAT --extra-constexpr-power
+	$<IF:$<BOOL:${MSVC}>,
+		/constexpr:steps2147483647,
+		$<IF:$<BOOL:${CLANG}>,
+			-fconstexpr-steps=2147483647,
+			-fconstexpr-depth=2147483647
+		>
+	>
+)
 string(CONCAT ztd-use-cuneicode $<
 	$<AND:
 		$<BOOL:${ZTD_TEXT_USE_CUNEICODE}>,
@@ -137,6 +158,7 @@ string(CONCAT --warn-default $<
 string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)
 
 
+# Main library declarations
 add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
 target_include_directories(ztd.text

@@ -36,17 +36,15 @@ target_compile_definitions(ztd.text.tests.basic_compile_time
 	PRIVATE
 	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
 )
-if (MSVC)
-	target_compile_options(ztd.text.tests.basic_compile_time
-		PRIVATE /std:c++latest /utf-8 /permissive- /constexpr:steps2097152)
-else()
-	target_compile_options(ztd.text.tests.basic_compile_time
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
-	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-		target_compile_options(ztd.text.tests.basic_compile_time
-			PRIVATE -fconstexpr-steps=2097152)
-	endif()
-endif()
+target_compile_options(ztd.text.tests.basic_compile_time
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-default}
+	${--deny-errors}
+	${--extra-constexpr-power})
 target_include_directories(ztd.text.tests.basic_compile_time
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/../shared/include")

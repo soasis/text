@@ -103,7 +103,9 @@ namespace ztd { namespace text {
 		else if constexpr (is_unicode_encoding_v<_Encoding>) {
 			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
 	}
 
 	//////

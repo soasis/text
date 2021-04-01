@@ -113,7 +113,7 @@ TEST_CASE("text/count_code_units/core", "basic usages of count_code_units functi
 	}
 	SECTION("utf32") {
 		auto result0
-		     = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16 {});
+		     = ztd::text::count_code_units(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 

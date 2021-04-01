@@ -62,8 +62,6 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _Input, typename _ErrorHandler>
 		inline constexpr bool __is_encoding_with_error_handler_never_returns_error_v = false;
 
-		inline constexpr ::std::size_t _CursorlessSizeSentinel = 1;
-
 		using __encoding_sentinel_t = default_sentinel_t;
 
 		template <__transaction _EncodeOrDecode, typename _Derived, typename _Encoding, typename _Range,
@@ -378,12 +376,12 @@ namespace ztd { namespace text {
 			/// @returns A reference to *this, after incrementing the iterator.
 			//////
 			constexpr _Derived& operator++() {
-				if constexpr (_IsCursorless) {
+				if constexpr (_IsSingleValueType) {
 					this->_M_read_one();
 				}
 				else {
-					++this->_M_position;
-					if (this->_M_position == this->__base_cursor_cache_t::_M_size) {
+					++this->__base_cursor_cache_t::_M_position;
+					if (this->__base_cursor_cache_t::_M_position == this->__base_cursor_cache_t::_M_size) {
 						this->_M_read_one();
 					}
 				}
@@ -399,11 +397,11 @@ namespace ztd { namespace text {
 			/// writable.
 			//////
 			constexpr reference operator*() const noexcept {
-				if constexpr (_IsCursorless) {
+				if constexpr (_IsSingleValueType) {
 					return this->_M_cache[0];
 				}
 				else {
-					return this->_M_cache[this->_M_position];
+					return this->_M_cache[this->__base_cursor_cache_t::_M_position];
 				}
 			}
 
@@ -413,15 +411,10 @@ namespace ztd { namespace text {
 			/// @brief Compares whether or not this iterator has truly reached the end.
 			///
 			//////
-			friend constexpr bool operator==(const _Derived& __it, const __encoding_sentinel_t&) noexcept {
-				if constexpr (!_IsErrorless) {
-					if (__it.__base_error_cache_t::_M_error_code == encoding_error::ok) {
-						return false;
-					}
-				}
-				if constexpr (__it._IsCursorless) {
+			friend constexpr bool operator==(const _Derived& __it, const __encoding_sentinel_t&) {
+				if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
 					return __it._M_base_is_empty()
-						&& static_cast<__base_cursor_cache_size_t>(_CursorlessSizeSentinel)
+						&& static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel)
 						== __it.__base_cursor_cache_t::_M_size;
 				}
 				else {
@@ -434,7 +427,7 @@ namespace ztd { namespace text {
 			/// @brief Compares whether or not this iterator has truly reached the end.
 			///
 			//////
-			friend constexpr bool operator==(const __encoding_sentinel_t& __sen, const _Derived& __it) noexcept {
+			friend constexpr bool operator==(const __encoding_sentinel_t& __sen, const _Derived& __it) {
 				return __it == __sen;
 			}
 
@@ -442,15 +435,10 @@ namespace ztd { namespace text {
 			/// @brief Compares whether or not this iterator has truly reached the end.
 			///
 			//////
-			friend constexpr bool operator!=(const _Derived& __it, const __encoding_sentinel_t&) noexcept {
-				if constexpr (!_IsErrorless) {
-					if (__it.__base_error_cache_t::_M_error_code != encoding_error::ok) {
-						return true;
-					}
-				}
-				if constexpr (__it._IsCursorless) {
+			friend constexpr bool operator!=(const _Derived& __it, const __encoding_sentinel_t&) {
+				if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
 					return !__it._M_base_is_empty()
-						|| static_cast<__base_cursor_cache_size_t>(_CursorlessSizeSentinel)
+						|| static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel)
 						!= __it.__base_cursor_cache_t::_M_size;
 				}
 				else {
@@ -478,9 +466,9 @@ namespace ztd { namespace text {
 				}
 			}
 
-			constexpr bool _M_read_one() noexcept {
+			constexpr void _M_read_one() {
 				if (this->_M_base_is_empty()) {
-					if constexpr (_IsCursorless) {
+					if constexpr (_IsCursorless || (_IsSingleValueType && _IsInputOrOutput)) {
 						this->__base_cursor_cache_t::_M_size
 							= static_cast<__base_cursor_cache_size_t>(_CursorlessSizeSentinel);
 					}
@@ -490,11 +478,11 @@ namespace ztd { namespace text {
 						this->__base_cursor_cache_t::_M_position
 							= static_cast<__base_cursor_cache_size_t>(this->_M_cache.size());
 					}
-					return false;
+					return;
 				}
 				auto& __this_input_range = this->_M_range();
 				auto __this_cache_begin  = this->_M_cache.data();
-				decltype(__this_cache_begin) __this_cache_end {};
+				[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
 				if constexpr (_IsInputOrOutput) {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
 						::std::move(__this_input_range), this->encoding(), this->_M_cache, this->handler(),
@@ -515,7 +503,7 @@ namespace ztd { namespace text {
 					}
 					this->__base_range_t::__get_value() = ::std::move(__result.input);
 				}
-				if constexpr (!_IsCursorless) {
+				if constexpr (!_IsSingleValueType) {
 					__base_cursor_cache_size_t __data_size
 						= static_cast<__base_cursor_cache_size_t>(__this_cache_end - __this_cache_begin);
 					ZTD_TEXT_ASSERT_MESSAGE_I_("size of produced value can never be bigger thanthe cache",
@@ -523,7 +511,6 @@ namespace ztd { namespace text {
 					this->__base_cursor_cache_t::_M_position = static_cast<__base_cursor_cache_size_t>(0);
 					this->__base_cursor_cache_t::_M_size     = __data_size;
 				}
-				return true;
 			}
 
 			constexpr _Derived& _M_derived() noexcept {

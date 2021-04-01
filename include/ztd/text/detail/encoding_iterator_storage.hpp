@@ -51,6 +51,8 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __txt_detail {
 
+		inline constexpr ::std::size_t _CursorlessSizeSentinel = 1;
+
 		template <typename _Encoding, typename _EncodingState, ::std::size_t _Id = 0>
 		class __state_storage : private __ebco<__remove_cvref_t<__unwrap_t<_EncodingState>>, _Id> {
 		private:
@@ -75,11 +77,11 @@ namespace ztd { namespace text {
 				::std::is_nothrow_default_constructible_v<__state_base_t>)
 			: __state_base_t() {
 			}
-			constexpr __state_storage(_Encoding& __encoding, const _UEncodingState& __state) noexcept(
+			constexpr __state_storage(_Encoding&, const _UEncodingState& __state) noexcept(
 				::std::is_nothrow_constructible_v<__state_base_t, const _UEncodingState&>)
 			: __state_base_t(__state) {
 			}
-			constexpr __state_storage(_Encoding& __encoding, _UEncodingState&& __state) noexcept(
+			constexpr __state_storage(_Encoding&, _UEncodingState&& __state) noexcept(
 				::std::is_nothrow_constructible_v<__state_base_t, _UEncodingState&&>)
 			: __state_base_t(::std::move(__state)) {
 			}
@@ -115,6 +117,14 @@ namespace ztd { namespace text {
 
 			_SizeType _M_size     = static_cast<_SizeType>(0);
 			_SizeType _M_position = static_cast<_SizeType>(0);
+		};
+
+		template <>
+		class __cursor_cache<1, true> {
+		public:
+			using _SizeType = unsigned char;
+
+			_SizeType _M_size = static_cast<_SizeType>(0);
 		};
 
 		template <>

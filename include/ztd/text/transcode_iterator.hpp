@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 	/// @brief A sentinel type that can be used to compare with a ztd::text::transcode_iterator.
 	///
 	//////
-	class transcode_sentinel { };
+	using transcode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
 	//////
 	/// @brief A transcoding iterator that takes an input of code units and provides an output over the code units of
@@ -225,10 +225,29 @@ namespace ztd { namespace text {
 		using difference_type = __txt_detail::__iterator_difference_type_t<_BaseIterator>;
 
 		//////
-		/// @brief Does not allow for default construction of the transcode_iterator.
+		/// @brief Default constructs a ztd::text::transcode_iterator.
 		///
+		/// @remarks This can only work if the underlying encodings, error handlers, and states can handle default
+		/// construction.
 		//////
-		transcode_iterator() = delete;
+		constexpr transcode_iterator() noexcept(::std::is_nothrow_default_constructible_v<
+			__base_from_encoding_t>&& ::std::is_nothrow_default_constructible_v<__base_to_encoding_t>&& ::std::
+			     is_nothrow_default_constructible_v<__base_from_error_handler_t>&& ::std::
+			          is_nothrow_default_constructible_v<
+			               __base_to_error_handler_t>&& ::std::is_nothrow_constructible_v<__base_from_state_t,
+			               _FromEncoding>&& ::std::is_nothrow_constructible_v<__base_to_state_t,
+			               _ToEncoding>&& ::std::is_default_constructible_v<__base_range_t>)
+		: __base_from_encoding_t()
+		, __base_to_encoding_t()
+		, __base_from_error_handler_t()
+		, __base_to_error_handler_t()
+		, __base_from_state_t(this->from_encoding())
+		, __base_to_state_t(this->to_encoding())
+		, __base_cursor_cache_t()
+		, __base_range_t()
+		, _M_cache() {
+			this->_M_read_one();
+		}
 
 		//////
 		/// @brief Copy constructs a transcode_iterator.
@@ -246,7 +265,8 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
 		//////
-		constexpr transcode_iterator(range_type __range)
+		constexpr transcode_iterator(range_type __range) noexcept(
+			noexcept(transcode_iterator(::std::move(__range), to_encoding_type {})))
 		: transcode_iterator(::std::move(__range), to_encoding_type {}) {
 		}
 
@@ -468,20 +488,6 @@ namespace ztd { namespace text {
 			return ::std::move(this->__base_range_t::__get_value());
 		}
 
-		//////
-		/// @brief Whether or not the contained range is empty.
-		///
-		//////
-		constexpr bool empty() const noexcept {
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_empty, _Range>) {
-				return __txt_detail::__adl::__adl_empty(this->__base_range_t::__get_value());
-			}
-			else {
-				return __txt_detail::__adl::__adl_begin(this->__base_range_t::__get_value())
-					== __txt_detail::__adl::__adl_end(this->__base_range_t::__get_value());
-			}
-		}
-
 		// observers and modifiers: iteration
 
 		//////
@@ -501,7 +507,7 @@ namespace ztd { namespace text {
 		/// @returns A reference to *this, after incrementing the iterator.
 		//////
 		constexpr transcode_iterator& operator++() {
-			if constexpr (_IsCursorless) {
+			if constexpr (_IsSingleValueType) {
 				this->_M_read_one();
 			}
 			else {
@@ -536,15 +542,23 @@ namespace ztd { namespace text {
 		/// @brief Compares whether or not this iterator has truly reached the end.
 		///
 		//////
-		friend constexpr bool operator==(const transcode_iterator& __it, const transcode_sentinel&) {
-			return __it.empty();
+		friend constexpr bool operator==(const transcode_iterator& __it, const transcode_sentinel_t&) {
+			if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
+				return __it._M_base_is_empty()
+					&& static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel)
+					== __it.__base_cursor_cache_t::_M_size;
+			}
+			else {
+				return __it._M_base_is_empty()
+					&& __it.__base_cursor_cache_t::_M_position == __it.__base_cursor_cache_t::_M_size;
+			}
 		}
 
 		//////
 		/// @brief Compares whether or not this iterator has truly reached the end.
 		///
 		//////
-		friend constexpr bool operator==(const transcode_sentinel& __sen, const transcode_iterator& __it) {
+		friend constexpr bool operator==(const transcode_sentinel_t& __sen, const transcode_iterator& __it) {
 			return __it == __sen;
 		}
 
@@ -552,23 +566,55 @@ namespace ztd { namespace text {
 		/// @brief Compares whether or not this iterator has truly reached the end.
 		///
 		//////
-		friend constexpr bool operator!=(const transcode_iterator& __it, const transcode_sentinel& __sen) {
-			return !(__it == __sen);
+		friend constexpr bool operator!=(const transcode_iterator& __it, const transcode_sentinel_t&) {
+			if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
+				return !__it._M_base_is_empty()
+					|| static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel)
+					!= __it.__base_cursor_cache_t::_M_size;
+			}
+			else {
+				return !__it._M_base_is_empty()
+					|| __it.__base_cursor_cache_t::_M_position != __it.__base_cursor_cache_t::_M_size;
+			}
 		}
 
 		//////
 		/// @brief Compares whether or not this iterator has truly reached the end.
 		///
 		//////
-		friend constexpr bool operator!=(const transcode_sentinel& __sen, const transcode_iterator& __it) {
+		friend constexpr bool operator!=(const transcode_sentinel_t& __sen, const transcode_iterator& __it) {
 			return !(__sen == __it);
 		}
 
 	private:
+		constexpr bool _M_base_is_empty() const noexcept {
+			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_empty, _Range>) {
+				return __txt_detail::__adl::__adl_empty(this->__base_range_t::__get_value());
+			}
+			else {
+				return __txt_detail::__adl::__adl_begin(this->__base_range_t::__get_value())
+					== __txt_detail::__adl::__adl_end(this->__base_range_t::__get_value());
+			}
+		}
+
 		constexpr void _M_read_one() noexcept {
+			if (this->_M_base_is_empty()) {
+				if constexpr (_IsCursorless || (_IsSingleValueType && _IsInputOrOutput)) {
+					this->__base_cursor_cache_t::_M_size
+						= static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel);
+				}
+				else {
+					this->__base_cursor_cache_t::_M_size
+						= static_cast<__base_cursor_cache_size_t>(this->_M_cache.size());
+					this->__base_cursor_cache_t::_M_position
+						= static_cast<__base_cursor_cache_size_t>(this->_M_cache.size());
+				}
+				return;
+			}
+
 			auto& __this_input_range = this->_M_range();
 			auto __this_cache_begin  = this->_M_cache.data();
-			decltype(__this_cache_begin) __this_cache_end {};
+			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
 			if constexpr (_IsInputOrOutput) {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
 					::std::move(__this_input_range), this->from_encoding(), this->_M_cache, this->to_encoding(),
@@ -591,7 +637,7 @@ namespace ztd { namespace text {
 				}
 				this->__base_range_t::__get_value() = ::std::move(__result.input);
 			}
-			if constexpr (!_IsCursorless) {
+			if constexpr (!_IsSingleValueType) {
 				__base_cursor_cache_size_t __data_size
 					= static_cast<__base_cursor_cache_size_t>(__this_cache_end - __this_cache_begin);
 				ZTD_TEXT_ASSERT_MESSAGE_I_("size of produced value can never be bigger thanthe cache",
