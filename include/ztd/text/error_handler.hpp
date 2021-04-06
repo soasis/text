@@ -306,7 +306,7 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _Progress>
 		constexpr auto operator()(const _Encoding&, encode_result<_InputRange, _OutputRange, _State> __result,
-			const _Progress&) const noexcept(false) {
+			const _Progress&) const noexcept(false) -> encode_result<_InputRange, _OutputRange, _State> {
 			throw __result.error_code;
 		}
 
@@ -317,7 +317,7 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _Progress>
 		constexpr auto operator()(const _Encoding&, decode_result<_InputRange, _OutputRange, _State> __result,
-			const _Progress&) const noexcept(false) {
+			const _Progress&) const noexcept(false) -> decode_result<_InputRange, _OutputRange, _State> {
 			throw __result.error_code;
 		}
 	};
