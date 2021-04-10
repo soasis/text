@@ -1617,7 +1617,7 @@ namespace ztd { namespace text { namespace tests {
 		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
 
 	inline constexpr const char32_t u32_unicode_invalid_input_arr[]                   = { 0xFFFFFFFF, 0 };
-	inline constexpr const char16_t u16_unicode_invalid_input_arr[]                   = { 0xD800, 0 };
+	inline constexpr const char16_t u16_unicode_invalid_input_arr[]                   = { 0xD801, 0xFFFF, 0 };
 	inline constexpr const uchar8_t u8_unicode_invalid_input_arr[]                    = { 0xC0, 0 };
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_invalid_input = u32_unicode_invalid_input_arr;
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_invalid_input = u16_unicode_invalid_input_arr;

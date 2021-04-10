@@ -59,6 +59,7 @@
 #include <string_view>
 #include <utility>
 #include <array>
+#include <system_error>
 
 #include <ztd/text/detail/prologue.hpp>
 
@@ -305,9 +306,9 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _Progress>
-		constexpr auto operator()(const _Encoding&, encode_result<_InputRange, _OutputRange, _State> __result,
-			const _Progress&) const noexcept(false) {
-			throw __result.error_code;
+		constexpr encode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
+			encode_result<_InputRange, _OutputRange, _State> __result, const _Progress&) const noexcept(false) {
+			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
 		}
 
 		//////
@@ -316,9 +317,9 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _Progress>
-		constexpr auto operator()(const _Encoding&, decode_result<_InputRange, _OutputRange, _State> __result,
-			const _Progress&) const noexcept(false) {
-			throw __result.error_code;
+		constexpr decode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
+			decode_result<_InputRange, _OutputRange, _State> __result, const _Progress&) const noexcept(false) {
+			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
 		}
 	};
 
@@ -465,7 +466,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
-	/// time. Without configuration, it defaults to the ztd::text::replacement_handler .
+	/// time. Without configuration, it defaults to the ztd::text::replacement_handler.
 	//////
 	class default_handler
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)

@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief The encoding of wide string literals ( e.g. @c "👍" ) at compile time.
+	/// @brief The encoding of string literals ( e.g. @c "👍" ) at compile time.
 	///
 	//////
 	class literal : private __txt_detail::__ebco<__txt_detail::__literal> {
@@ -94,15 +94,15 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
-		/// @remarks The decode step is always injective because every encoding used for literals in C++ needs to be
-		/// capable of being represented by UCNs.
+		/// @remarks The decode step should always be injective because every encoding used for literals in C++
+		/// needs to be capable of being represented by UCNs. Whether or not a platform is a jerk, who knows?
 		//////
 		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__underlying_t>>;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values.
 		///
 		/// @remarks This is absolutely not guaranteed to be the case, and as such we must check the provided encoding
-		/// name for wide to be sure.
+		/// name for us to be sure.
 		//////
 		using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__underlying_t>>;
 
@@ -182,16 +182,24 @@ namespace ztd { namespace text {
 				"God's Speed.\n\n"
 
 				"This could mangle all of your compile time literal string conversions you are performing. To "
-				"prevent that from happening, this error is being printed out and to go ahead with the explicit "
+				"prevent that from happening, this error is being printed out, so that you have the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
 				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
-				"ignore "
-				"this "
-				"error and we will get right on doing exactly that for you.");
+				"ignore this error and we will get right on doing exactly that for you.");
 #endif
 #if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(__txt_detail::__always_true_v<_Input> && !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
+			static_assert(__txt_detail::__always_true_v<_Input>
+				&& !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>,
+			"[[ Please read! ]] This text encoding ("
+			ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+			"supported because it hasn't yet been implemented! You can see all the encodings we have "
+			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
+			
+			"If you need this to be implemented, please reach out at the repository or to the contact "
+			"addresses in the repository. If you absolutely don't give a damn, specify please add "
+			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
+			"ignore this error and we will get right on doing exactly that for you.");
 #endif
 			__txt_detail::__forwarding_handler<const literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
@@ -238,16 +246,23 @@ namespace ztd { namespace text {
 				"God's Speed.\n\n"
 
 				"This could mangle all of your compile time literal string conversions you are performing. To "
-				"prevent that from happening, this error is being printed out and to go ahead with the explicit "
+				"prevent that from happening, this error is being printed out, so that you have the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
 				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
-				"ignore "
-				"this "
-				"error and we will get right on doing exactly that for you.");
+				"ignore this error and we will get right on doing exactly that for you.");
 #endif
 #if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(__txt_detail::__always_true_v<_Input> && !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>, "[[Please read!]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_() "), while recognized, is not supported because it hasn't yet been implemented! You can see all the encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\nIf you need this to be implemented, please reach out at the repository or to the contact addresses in the repository. If you absolutely don't give a damn, specify please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly that for you.");
+			static_assert(__txt_detail::__always_true_v<_Input> && !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>,
+			"[[ Please read! ]] This text encoding ("
+			ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+			"supported because it hasn't yet been implemented! You can see all the encodings we have "
+			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
+			
+			"If you need this to be implemented, please reach out at the repository or to the contact "
+			"addresses in the repository. If you absolutely don't give a damn, specify please add "
+			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
+			"ignore this error and we will get right on doing exactly that for you.");
 #endif
 			__txt_detail::__forwarding_handler<const literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);

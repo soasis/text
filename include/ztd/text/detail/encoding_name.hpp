@@ -51,6 +51,72 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 
+		inline constexpr ::std::string_view __msvc_encoding_name_from_id(int __msc_id) noexcept {
+			switch (__msc_id) {
+			case 37:
+				return "IBM-037"; // EBCDIC US-Canada
+			case 437:
+				return "IMB-437"; // OEM United States
+			case 500:
+				return "IBM-500"; // EBCDIC Internatinal
+			case 708:
+				return "ASMO-708"; // Arabic
+			case 709:
+				return "ASMO-449"; // Arabic
+			case 710:
+				return "Arabic";
+			case 720:
+				return "DOS-720"; // Arabic
+			case 737:
+				return "IBM-737"; // Greek
+			case 775:
+				return "IBM 775";
+			case 850:
+				return "IBM-850";
+			case 874:
+				return "Windows-874"; // Thai, Windows
+			case 855:
+				return "CP-875"; // EBCDIC Greek, Modern
+			case 932:
+				return "SHIT-JIS";
+			case 1200:
+				return "UTF-16-LE";
+			case 1201:
+				return "UTF-16-BE";
+			case 1251:
+				return "Windows-1251"; // Cyrllic
+			case 1252:
+				return "Windows-1252"; // Latin-1, West Europe
+			case 12000:
+				return "UTF-32-LE";
+			case 12001:
+				return "UTF-32-BE";
+			case 20127:
+				return "ASCII";
+			case 50222:
+				return "ISO-2022-JP";
+			case 50225:
+				return "ISO-2022-KR";
+			case 51932:
+				return "EUC-JP";
+			case 51936:
+				return "EUC-CN";
+			case 51949:
+				return "EUC-KR";
+			case 51950:
+				return "EUC-CN-Traditional";
+			case 54936:
+				return "GB18030";
+			case 65000:
+				return "UTF-7";
+			case 65001:
+				return "UTF-8";
+			default:
+				break;
+			}
+			return "UTF-8";
+		}
+
 		inline constexpr bool __is_encoding_name_equal(
 			::std::string_view __left, ::std::string_view __right) noexcept {
 			constexpr ::std::string_view __readable_characters

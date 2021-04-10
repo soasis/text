@@ -43,6 +43,7 @@
 #include <system_error>
 #include <type_traits>
 #include <string>
+#include <string_view>
 #include <exception>
 #include <array>
 
@@ -97,6 +98,10 @@ namespace ztd { namespace text {
 		//////
 		insufficient_output_space = 0x03,
 #if 0
+		/* These error types are not used because they are too specific to Unicode. I suspect that some people will
+		   find them useful for error reporting cases, but it does result in more checking for higher-level APIs. It's
+		   best to leave them off, for now. */
+
 		//////
 		/// Input contains overlong encoding sequence. This is specific to certain encodings, such as Unicode
 		/// Transformation Formats like UTF-8 where different sequences can end up encoding the same character but are
@@ -127,6 +132,41 @@ namespace ztd { namespace text {
 		return __translation[static_cast<::std::size_t>(__txt_detail::__to_underlying(__error_code))];
 	}
 
+	namespace __txt_detail {
+		//////
+		/// @brief The encoding category for system_error-style exceptions and errors.
+		///
+		/// @remarks This type is generally paired with a std::error_condition.
+		/////
+		class __encoding_category : public ::std::error_category {
+			virtual const char* name() const noexcept override {
+				return "encoding_error";
+			}
+			virtual ::std::string message(int __untyped_error_code) const override {
+				encoding_error __error_code = static_cast<encoding_error>(__untyped_error_code);
+				switch (__error_code) {
+				case encoding_error::ok:
+				case encoding_error::incomplete_sequence:
+				case encoding_error::insufficient_output_space:
+				case encoding_error::invalid_sequence: {
+					::std::string_view __name = ::ztd::text::to_name(__error_code);
+					return ::std::string(__name.data(), __name.size());
+				}
+				}
+				return "unrecognized untyped error code";
+			}
+
+			virtual ::std::error_condition default_error_condition(int __untyped_error_code) const noexcept {
+				return ::std::error_condition(__untyped_error_code, *this);
+			}
+		};
+	} // namespace __txt_detail
+
+	inline const ::std::error_category& encoding_category() {
+		static const __txt_detail::__encoding_category __category = __txt_detail::__encoding_category();
+		return __category;
+	}
+
 	//////
 	/// @}
 	//////
@@ -136,5 +176,24 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 #include <ztd/text/detail/epilogue.hpp>
+
+namespace std {
+	template <>
+	struct is_error_condition_enum<::ztd::text::encoding_error> : public ::std::true_type { };
+
+	template <>
+	class hash<::ztd::text::encoding_error> {
+	private:
+		using _UnderlyingErrorType = ::std::underlying_type_t<::ztd::text::encoding_error>;
+
+	public:
+		::std::size_t operator()(::ztd::text::encoding_error __error_code) const noexcept(
+		     noexcept(::std::hash<_UnderlyingErrorType> {}(static_cast<_UnderlyingErrorType>(__error_code)))) {
+			using _UnderlyingErrorType = ::std::underlying_type_t<::ztd::text::encoding_error>;
+			::std::hash<_UnderlyingErrorType> __hasher {};
+			return __hasher(static_cast<_UnderlyingErrorType>(__error_code));
+		}
+	};
+} // namespace std
 
 #endif // ZTD_TEXT_ENCODING_ERROR_HPP
