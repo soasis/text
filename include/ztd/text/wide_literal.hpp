@@ -189,7 +189,7 @@ namespace ztd { namespace text {
 
 				"God's Speed.\n\n"
 
-				"This could mangle all of your compile time literal string conversions you are performing. To "
+				"This could mangle all of your compile time wide string literal conversions you are performing. To "
 				"prevent that from happening, this error is being printed out, so that you have the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
@@ -255,7 +255,7 @@ namespace ztd { namespace text {
 
 				"God's Speed.\n\n"
 
-				"This could mangle all of your compile time literal string conversions you are performing. To "
+				"This could mangle all of your compile time wide string literal conversions you are performing. To "
 				"prevent that from happening, this error is being printed out, so that you have the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
