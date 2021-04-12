@@ -262,8 +262,9 @@ namespace ztd { namespace text {
 
 		auto __stateful_result
 			= transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			     ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-			     ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), 
+				::std::forward<_FromErrorHandler>(__from_error_handler),
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 
 		return __txt_detail::__slice_to_stateless(::std::move(__stateful_result));
 	}
@@ -299,7 +300,8 @@ namespace ztd { namespace text {
 		_FromState __from_state = make_decode_state(__from_encoding);
 
 		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), 
+			::std::forward<_FromErrorHandler>(__from_error_handler), 
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state);
 	}
 
