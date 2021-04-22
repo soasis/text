@@ -113,22 +113,28 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
 			return ::std::ranges::reverse(::std::move(__first), ::std::move(__last));
 #else
-			if (__first != __last) {
-				// we have to start bringing them closer
-				for (;;) {
-					// we know these are different, so
-					// do a swap
-					__adl::__adl_iter_swap(__first, __last);
-					++__first;
-					if (__first == __last) {
-						break;
-					}
-					--__last;
-					if (__first == __last) {
-						break;
-					}
-					// otherwise, keep going
+			if (__first == __last) {
+				return __first;
+			}
+			--__last;
+			if (__first == __last) {
+				return __first;
+			}
+
+			// we have to start bringing them closer
+			for (;;) {
+				// we know these are different, so
+				// do a swap
+				__adl::__adl_iter_swap(__first, __last);
+				--__last;
+				if (__first == __last) {
+					break;
 				}
+				++__first;
+				if (__first == __last) {
+					break;
+				}
+				// otherwise, keep going
 			}
 			return __first;
 #endif
@@ -236,7 +242,7 @@ namespace ztd { namespace text {
 				if constexpr (__is_iterator_concept_or_better_v<::std::random_access_iterator_tag, _OutFirst>) {
 					if (__size <= __out_size) {
 						auto __result = __copy_n_unsafe(::std::move(__first), __size, ::std::move(__out_first));
-						return __in_out_result { ::std::move(__result.in),
+						return _Result { ::std::move(__result.in),
 							_OutRange(__result.out.begin(), __result.out.begin() + __size) };
 					}
 					else {

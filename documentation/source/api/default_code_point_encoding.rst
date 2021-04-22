@@ -42,7 +42,7 @@ Picks the default encoding for the given code point type. In all cases, this jus
 
 .. doxygentypedef:: ztd::text::default_code_point_encoding_t
 
-.. doxygenclass:: ztd::text::default_compile_time_code_point_encoding
+.. doxygenclass:: ztd::text::default_consteval_code_point_encoding
 	:members:
 
-.. doxygentypedef:: ztd::text::default_compile_time_code_point_encoding_t
+.. doxygentypedef:: ztd::text::default_consteval_code_point_encoding_t

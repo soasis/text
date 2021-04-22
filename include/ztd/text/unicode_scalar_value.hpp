@@ -116,42 +116,39 @@ namespace ztd { namespace text {
 				return ::std::move(this->_M_scalar);
 			}
 
-			//////
-			/// @brief Check if two unicode scalar values are equal.
-			///
-			/// @param[in] __left Left hand value of equality operator.
-			/// @param[in] __right Right hand value of equality operator.
-			//////
-			friend constexpr bool operator==(
-				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
-				return __left._M_scalar == __right._M_scalar;
-			}
-
-			//////
-			/// @brief Check if two unicode code points are not equal.
-			///
-			/// @param[in] __left Left hand value of inequality operator.
-			/// @param[in] __right Right hand value of inequality operator.
-			//////
-			friend constexpr bool operator!=(
-				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
-				return __left._M_scalar != __right._M_scalar;
-			}
-
-			//////
-			/// @brief Check if one unicode scalar value is less than the other.
-			///
-			/// @param[in] __left Left hand value of less than operator.
-			/// @param[in] __right Right hand value of less than operator.
-			//////
-			friend constexpr bool operator<(
-				const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
-				return __left._M_scalar < __right._M_scalar;
-			}
-
 		private:
 			char32_t _M_scalar;
 		};
+
+		//////
+		/// @brief Check if two unicode scalar values are equal.
+		///
+		/// @param[in] __left Left hand value of equality operator.
+		/// @param[in] __right Right hand value of equality operator.
+		//////
+		constexpr bool operator==(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
+			return __left.value() == __right.value();
+		}
+
+		//////
+		/// @brief Check if two unicode code points are not equal.
+		///
+		/// @param[in] __left Left hand value of inequality operator.
+		/// @param[in] __right Right hand value of inequality operator.
+		//////
+		constexpr bool operator!=(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
+			return __left.value() != __right.value();
+		}
+
+		//////
+		/// @brief Check if one unicode scalar value is less than the other.
+		///
+		/// @param[in] __left Left hand value of less than operator.
+		/// @param[in] __right Right hand value of less than operator.
+		//////
+		constexpr bool operator<(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
+			return __left.value() < __right.value();
+		}
 	} // namespace __impl
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)

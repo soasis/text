@@ -95,8 +95,8 @@ namespace ztd { namespace text {
 
 		::std::size_t __code_point_count = 0;
 
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_code_units_one, _Encoding,
-			              _WorkingInput, _ErrorHandler, _State>) {
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_code_units_one,
+			              _WorkingInput, _Encoding, _ErrorHandler, _State>) {
 			for (;;) {
 				auto __result = text_count_code_units_one(
 					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
@@ -113,8 +113,8 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<
-			                   __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
-			                   _WorkingInput, _ErrorHandler, _State>) {
+			                   __txt_detail::__detect_adl_internal_text_count_code_units_one, _WorkingInput,
+			                   _Encoding, _ErrorHandler, _State>) {
 			for (;;) {
 				auto __result = __text_count_code_units_one(
 					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
@@ -249,7 +249,7 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
 			return count_code_units(::std::forward<_Input>(__input), __encoding);
 		}

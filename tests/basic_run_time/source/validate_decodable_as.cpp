@@ -28,24 +28,24 @@
 //
 // ============================================================================>
 
-#include <ztd/text/validate_code_units.hpp>
+#include <ztd/text/validate_decodable_as.hpp>
 #include <ztd/text/encoding.hpp>
 
 #include <catch2/catch.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-inline namespace ztd_text_tests_basic_run_time_validate_code_units {
+inline namespace ztd_text_tests_basic_run_time_validate_decodable_as {
 	template <typename Input, typename Encoding>
 	void validate_check(Input& input, Encoding& encoding) {
-		auto result0 = ztd::text::validate_code_units(input);
+		auto result0 = ztd::text::validate_decodable_as(input);
 		REQUIRE(result0);
-		auto result1 = ztd::text::validate_code_units(input, encoding);
+		auto result1 = ztd::text::validate_decodable_as(input, encoding);
 		REQUIRE(result1);
 	}
-} // namespace ztd_text_tests_basic_run_time_validate_code_units
+} // namespace ztd_text_tests_basic_run_time_validate_decodable_as
 
-TEST_CASE("text/validate_code_units/basic", "basic usages of validate_code_units function do not explode") {
+TEST_CASE("text/validate_decodable_as/basic", "basic usages of validate_decodable_as function do not explode") {
 	SECTION("execution") {
 		ztd::text::execution encoding {};
 		validate_check(ztd::text::tests::basic_source_character_set, encoding);
@@ -62,20 +62,20 @@ TEST_CASE("text/validate_code_units/basic", "basic usages of validate_code_units
 	}
 	SECTION("literal") {
 		ztd::text::literal encoding {};
-		auto result0 = ztd::text::validate_code_units(ztd::text::tests::basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_decodable_as(ztd::text::tests::basic_source_character_set, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1
-			     = ztd::text::validate_code_units(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+			     = ztd::text::validate_decodable_as(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("wide_literal") {
 		ztd::text::wide_literal encoding {};
-		auto result0 = ztd::text::validate_code_units(ztd::text::tests::w_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_decodable_as(ztd::text::tests::w_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::validate_code_units(
+			auto result1 = ztd::text::validate_decodable_as(
 			     ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE(result1);
 		}

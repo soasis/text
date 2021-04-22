@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -28,4 +28,37 @@
 //
 // ============================================================================>
 
-#include <ztd/text/validate_code_units.hpp>
+#pragma once
+
+#ifndef ZTD_TEXT_DETAIL_REPLACEMENT_HPP
+#define ZTD_TEXT_DETAIL_REPLACEMENT_HPP
+
+#include <ztd/text/version.hpp>
+
+#include <ztd/text/detail/unicode.hpp>
+
+#include <array>
+
+#include <ztd/text/detail/prologue.hpp>
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	namespace __txt_detail {
+
+		template <typename _CharType>
+		inline constexpr ::std::array<_CharType, 1> __question_mark_replacement_units { { static_cast<_CharType>(
+			__ascii_replacement) } };
+
+		template <typename _CharType>
+		inline constexpr ::std::array<_CharType, 1> __0xfffd_replacement_units { { static_cast<_CharType>(
+			__replacement) } };
+
+	} // namespace __txt_detail
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+#include <ztd/text/detail/epilogue.hpp>
+
+#endif // ZTD_TEXT_DETAIL_REPLACEMENT_HPP

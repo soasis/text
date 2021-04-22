@@ -156,12 +156,19 @@ namespace ztd { namespace text {
 				return "unrecognized untyped error code";
 			}
 
-			virtual ::std::error_condition default_error_condition(int __untyped_error_code) const noexcept {
+			virtual ::std::error_condition default_error_condition(
+				int __untyped_error_code) const noexcept override {
 				return ::std::error_condition(__untyped_error_code, *this);
 			}
 		};
 	} // namespace __txt_detail
 
+	//////
+	/// @brief The system_error category type to be used with std::error_category-requiring errors.
+	///
+	/// @remarks Not constexpr in general because of ABI shenanigans from the 2019 Belfast Meeting, where it did not
+	/// successfully pass through Incubator review.
+	//////
 	inline const ::std::error_category& encoding_category() {
 		static const __txt_detail::__encoding_category __category = __txt_detail::__encoding_category();
 		return __category;

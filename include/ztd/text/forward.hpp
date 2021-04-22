@@ -42,8 +42,6 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		class __empty_state;
-
-		class __careless_handler;
 	} // namespace __txt_detail
 
 	namespace __impl {

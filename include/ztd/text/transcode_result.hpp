@@ -101,8 +101,8 @@ namespace ztd { namespace text {
 			encoding_error __error_code
 			= encoding_error::ok) noexcept(noexcept(stateless_transcode_result(::std::forward<_ArgInput>(__input),
 			::std::forward<_ArgOutput>(__output), __error_code, __error_code != encoding_error::ok)))
-		: stateless_transcode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
-			__error_code, __error_code != encoding_error::ok) {
+		: stateless_transcode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code,
+			__error_code != encoding_error::ok) {
 		}
 
 		//////
@@ -219,25 +219,26 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _DesiredOutput>
-		constexpr transcode_result<_Input, __txt_detail::__remove_cvref_t<_DesiredOutput>, _FromState, _ToState>
+		constexpr transcode_result<_Input, __txt_detail::__remove_cvref_t<_DesiredOutput>, _FromState,
+			_ToState>
 		__replace_result_output(transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
 			_DesiredOutput&& __desired_output) noexcept(::std::
-			     is_nothrow_constructible_v<transcode_result<_Input, _Output, _FromState, _ToState>, _Input&&,
-			          _DesiredOutput, _FromState&, _ToState&, encoding_error, ::std::size_t>) {
-			using _Result
-				= transcode_result<_Input, __txt_detail::__remove_cvref_t<_DesiredOutput>, _FromState, _ToState>;
+			     is_nothrow_constructible_v<transcode_result<_Input, _Output, _FromState, _ToState>,
+			          _Input&&, _DesiredOutput, _FromState&, _ToState&, encoding_error, ::std::size_t>) {
+			using _Result = transcode_result<_Input, __txt_detail::__remove_cvref_t<_DesiredOutput>,
+				_FromState, _ToState>;
 			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
 				__result.from_state, __result.to_state, __result.error_code, __result.handled_errors);
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _FromState, typename _ToState>
-		using __reconstruct_transcode_result_t
-			= transcode_result<__reconstruct_t<_InputRange>, __reconstruct_t<_OutputRange>, _FromState, _ToState>;
+		using __reconstruct_transcode_result_t = transcode_result<__reconstruct_t<_InputRange>,
+			__reconstruct_t<_OutputRange>, _FromState, _ToState>;
 
 		template <typename _InputRange, typename _OutputRange, typename _ToState, typename _FromState,
 			typename _InFirst, typename _InLast, typename _OutFirst, typename _OutLast, typename _ArgToState,
 			typename _ArgFromState>
-		constexpr decltype(auto) __reconstruct_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
+		constexpr decltype(auto) __reconstruct_stateless_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgFromState&& __to_state, _ArgToState&& __from_state,
 			encoding_error __error_code, ::std::size_t __handled_errors) {
 			decltype(auto) __in_range  = __reconstruct(::std::in_place_type<_InputRange>,
@@ -253,7 +254,7 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _FromState, typename _ToState,
 			typename _InFirst, typename _InLast, typename _OutFirst, typename _OutLast, typename _ArgToState,
 			typename _ArgFromState>
-		constexpr decltype(auto) __reconstruct_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
+		constexpr decltype(auto) __reconstruct_stateless_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgFromState&& __from_state, _ArgToState&& __to_state,
 			encoding_error __error_code = encoding_error::ok) {
 			return __reconstruct_transcode_result_t<_InputRange, _OutputRange, _FromState, _ToState>(

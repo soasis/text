@@ -18,3 +18,10 @@ Please considering sponsoring the work via [any of the available means listed ne
 # Documentation
 
 The documentation can be found in full on [https://ztdtext.rtfd.io/](https://ztdtext.rtfd.io/)!
+
+
+
+
+# License & Contributions
+
+By contributing to this repository, you agree that your contributions will be released to the copyright of JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC under the Apache 2.0 License or the relevant Commercial License. See the [LICENSE](LICENSE) file and the [CONTRIBUTING](CONTRIBUTING) file for details.

@@ -39,224 +39,177 @@
 
 #include <algorithm>
 
+inline namespace ztd_text_tests_basic_runtime_any_encoding_decode {
+	template <ztd::text::endian Endian = ztd::text::endian::native, typename BaseEncoding, typename BasicInput,
+	     typename UnicodeInput>
+	void check_decode(BaseEncoding&& base_encoding, BasicInput& input0, UnicodeInput& input1) {
+		using UBaseEncoding = std::remove_cv_t<std::remove_reference_t<BaseEncoding>>;
+		using Encoding      = ztd::text::any_encoding;
+
+		const auto& expected0 = ztd::text::tests::u32_basic_source_character_set;
+		const auto& expected1 = ztd::text::tests::u32_unicode_sequence_truth_native_endian;
+
+		ztd::text::any_encoding encoding(
+		     ztd::text::encoding_scheme<UBaseEncoding, Endian>(std::forward<BaseEncoding>(base_encoding)));
+
+		ztd::text::any_encoding::decode_state state0 = ztd::text::make_decode_state(encoding);
+		std::basic_string<char32_t> result0_storage(
+		     std::size(input0) * ztd::text::max_code_points_v<Encoding>, char32_t {});
+		ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
+		auto result0 = ztd::text::decode_into(
+		     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
+		std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
+		     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
+		bool is_equal0 = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
+		REQUIRE(result0.error_code == ztd::text::encoding_error::ok);
+		REQUIRE_FALSE(result0.errors_were_handled());
+		REQUIRE(std::size(result0.input) == 0);
+		REQUIRE(is_equal0);
+
+		if (ztd::text::contains_unicode_encoding(encoding)) {
+			ztd::text::any_encoding::decode_state state1 = ztd::text::make_decode_state(encoding);
+			std::basic_string<char32_t> result1_storage(
+			     std::size(input1) * ztd::text::max_code_points_v<Encoding>, char32_t {});
+			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
+			auto result1 = ztd::text::decode_into(
+			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
+			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
+			     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
+			bool is_equal1
+			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
+			REQUIRE(result1.error_code == ztd::text::encoding_error::ok);
+			REQUIRE_FALSE(result1.errors_were_handled());
+			REQUIRE(std::size(result1.input) == 0);
+			REQUIRE(is_equal1);
+		}
+	}
+} // namespace ztd_text_tests_basic_runtime_any_encoding_decode
+
 TEST_CASE("text/decode/any_encoding/encoding_scheme", "decode from byte arrays with specific endianness") {
-	const auto& expected0 = ztd::text::tests::u32_basic_source_character_set;
-	const auto& expected1 = ztd::text::tests::u32_unicode_sequence_truth_native_endian;
 	SECTION("endian::native") {
+		SECTION("ascii") {
+			check_decode<ztd::text::endian::native>(ztd::text::ascii {},
+			     ztd::text::tests::basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_native_endian);
+		}
 		SECTION("execution") {
-			const auto& input0 = ztd::text::tests::basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::execution, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			if (ztd::text::contains_unicode_encoding(encoding)) {
-				ztd::text::any_encoding::decode_state state1(encoding);
-				std::basic_string<char32_t> result1_storage(
-				     std::size(input1) * encoding.max_code_points, char32_t {});
-				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-				     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-				bool is_equal1
-				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-				REQUIRE(is_equal1);
-			}
+			check_decode<ztd::text::endian::native>(ztd::text::execution {},
+			     ztd::text::tests::basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_native_endian);
 		}
 		SECTION("wide_execution") {
-			const auto& input0 = ztd::text::tests::w_basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::wide_execution, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			if (ztd::text::contains_unicode_encoding(encoding)) {
-				ztd::text::any_encoding::decode_state state1(encoding);
-				std::basic_string<char32_t> result1_storage(
-				     std::size(input1) * encoding.max_code_points, char32_t {});
-				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-				     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-				bool is_equal1
-				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-				REQUIRE(is_equal1);
-			}
+			check_decode<ztd::text::endian::native>(ztd::text::wide_execution {},
+			     ztd::text::tests::w_basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian);
 		}
 		SECTION("literal") {
-			const auto& input0 = ztd::text::tests::basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::literal, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			if (ztd::text::contains_unicode_encoding(encoding)) {
-				ztd::text::any_encoding::decode_state state1(encoding);
-				std::basic_string<char32_t> result1_storage(
-				     std::size(input1) * encoding.max_code_points, char32_t {});
-				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-				     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-				bool is_equal1
-				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-				REQUIRE(is_equal1);
-			}
+			check_decode<ztd::text::endian::native>(ztd::text::literal {},
+			     ztd::text::tests::basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_native_endian);
 		}
 		SECTION("wide_literal") {
-			const auto& input0 = ztd::text::tests::w_basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::wide_literal, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			if (ztd::text::contains_unicode_encoding(encoding)) {
-				ztd::text::any_encoding::decode_state state1(encoding);
-				std::basic_string<char32_t> result1_storage(
-				     std::size(input1) * encoding.max_code_points, char32_t {});
-				ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-				auto result1 = ztd::text::decode_into(
-				     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-				std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-				     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-				bool is_equal1
-				     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-				REQUIRE(is_equal1);
-			}
+			check_decode<ztd::text::endian::native>(ztd::text::wide_literal {},
+			     ztd::text::tests::w_basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::w_unicode_sequence_bytes_truth_native_endian);
 		}
 		SECTION("utf8") {
-			const auto& input0 = ztd::text::tests::u8_basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::u8_unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::utf8, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			ztd::text::any_encoding::decode_state state1(encoding);
-			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-			auto result1 = ztd::text::decode_into(
-			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-			     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-			bool is_equal1
-			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-			REQUIRE(is_equal1);
+			check_decode<ztd::text::endian::native>(ztd::text::utf8 {},
+			     ztd::text::tests::u8_basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::u8_unicode_sequence_bytes_truth_native_endian);
 		}
 		SECTION("utf16") {
-			const auto& input0 = ztd::text::tests::u16_basic_source_character_set_bytes_native_endian;
-			const auto& input1 = ztd::text::tests::u16_unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::utf16, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			ztd::text::any_encoding::decode_state state1(encoding);
-			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-			auto result1 = ztd::text::decode_into(
-			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-			     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-			bool is_equal1
-			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-			REQUIRE(is_equal1);
+			check_decode<ztd::text::endian::native>(ztd::text::utf16 {},
+			     ztd::text::tests::u16_basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::u16_unicode_sequence_bytes_truth_native_endian);
 		}
 		SECTION("utf32") {
-			const auto input0 = ztd::text::tests::u32_basic_source_character_set_bytes_native_endian;
-			const auto input1 = ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian;
-
-			ztd::text::any_encoding encoding(
-			     ztd::text::encoding_scheme<ztd::text::utf32, ztd::text::endian::native> {});
-
-			ztd::text::any_encoding::decode_state state0(encoding);
-			std::basic_string<char32_t> result0_storage(std::size(input0) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result0_storage_view(result0_storage.data(), result0_storage.size());
-			auto result0 = ztd::text::decode_into(
-			     input0, encoding, result0_storage_view, ztd::text::replacement_handler {}, state0);
-			std::basic_string_view<char32_t> result0_view(result0_storage_view.data(),
-			     static_cast<std::size_t>(result0.output.data() - result0_storage_view.data()));
-			bool is_equal0
-			     = std::equal(result0_view.begin(), result0_view.end(), expected0.begin(), expected0.end());
-			REQUIRE(is_equal0);
-
-			ztd::text::any_encoding::decode_state state1(encoding);
-			std::basic_string<char32_t> result1_storage(std::size(input1) * encoding.max_code_points, char32_t {});
-			ztd::text::span<char32_t> result1_storage_view(result1_storage.data(), result1_storage.size());
-			auto result1 = ztd::text::decode_into(
-			     input1, encoding, result1_storage_view, ztd::text::replacement_handler {}, state1);
-			std::basic_string_view<char32_t> result1_view(result1_storage_view.data(),
-			     static_cast<std::size_t>(result1.output.data() - result1_storage_view.data()));
-			bool is_equal1
-			     = std::equal(result1_view.begin(), result1_view.end(), expected1.begin(), expected1.end());
-			REQUIRE(is_equal1);
+			check_decode<ztd::text::endian::native>(ztd::text::utf32 {},
+			     ztd::text::tests::u32_basic_source_character_set_bytes_native_endian,
+			     ztd::text::tests::u32_unicode_sequence_bytes_truth_native_endian);
+		}
+	}
+	SECTION("endian::little") {
+		SECTION("ascii") {
+			check_decode<ztd::text::endian::little>(ztd::text::ascii {},
+			     ztd::text::tests::basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("execution") {
+			check_decode<ztd::text::endian::little>(ztd::text::execution {},
+			     ztd::text::tests::basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("wide_execution") {
+			check_decode<ztd::text::endian::little>(ztd::text::wide_execution {},
+			     ztd::text::tests::w_basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::w_unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("literal") {
+			check_decode<ztd::text::endian::little>(ztd::text::literal {},
+			     ztd::text::tests::basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("wide_literal") {
+			check_decode<ztd::text::endian::little>(ztd::text::wide_literal {},
+			     ztd::text::tests::w_basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::w_unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("utf8") {
+			check_decode<ztd::text::endian::little>(ztd::text::utf8 {},
+			     ztd::text::tests::u8_basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::u8_unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("utf16") {
+			check_decode<ztd::text::endian::little>(ztd::text::utf16 {},
+			     ztd::text::tests::u16_basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::u16_unicode_sequence_bytes_truth_little_endian);
+		}
+		SECTION("utf32") {
+			check_decode<ztd::text::endian::little>(ztd::text::utf32 {},
+			     ztd::text::tests::u32_basic_source_character_set_bytes_little_endian,
+			     ztd::text::tests::u32_unicode_sequence_bytes_truth_little_endian);
+		}
+	}
+	SECTION("endian::big") {
+		SECTION("ascii") {
+			check_decode<ztd::text::endian::big>(ztd::text::ascii {},
+			     ztd::text::tests::basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("execution") {
+			check_decode<ztd::text::endian::big>(ztd::text::execution {},
+			     ztd::text::tests::basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("wide_execution") {
+			check_decode<ztd::text::endian::big>(ztd::text::wide_execution {},
+			     ztd::text::tests::w_basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::w_unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("literal") {
+			check_decode<ztd::text::endian::big>(ztd::text::literal {},
+			     ztd::text::tests::basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("wide_literal") {
+			check_decode<ztd::text::endian::big>(ztd::text::wide_literal {},
+			     ztd::text::tests::w_basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::w_unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("utf8") {
+			check_decode<ztd::text::endian::big>(ztd::text::utf8 {},
+			     ztd::text::tests::u8_basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::u8_unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("utf16") {
+			check_decode<ztd::text::endian::big>(ztd::text::utf16 {},
+			     ztd::text::tests::u16_basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::u16_unicode_sequence_bytes_truth_big_endian);
+		}
+		SECTION("utf32") {
+			check_decode<ztd::text::endian::big>(ztd::text::utf32 {},
+			     ztd::text::tests::u32_basic_source_character_set_bytes_big_endian,
+			     ztd::text::tests::u32_unicode_sequence_bytes_truth_big_endian);
 		}
 	}
 }

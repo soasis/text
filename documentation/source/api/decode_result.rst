@@ -28,7 +28,7 @@
 ..
 .. =============================================================================>
 
-ecode_result
+decode_result
 =============
 
 .. doxygenclass:: ztd::text::decode_result

@@ -227,8 +227,8 @@ namespace ztd { namespace text {
 			template <typename _ItLeft, typename _ItRight>
 			constexpr auto __adl_iter_swap(_ItLeft&& __left, _ItRight&& __right) noexcept(noexcept(
 				::std::ranges::iter_swap(::std::forward<_ItLeft>(__left), ::std::forward<_ItRight>(__right))))
-				-> decltype(
-				     ::std::ranges::iter_swap(::std::forward<_ItLeft>(__left), ::std::forward<_ItRight>(__right))) {
+				-> decltype(::std::ranges::iter_swap(
+				     ::std::forward<_ItLeft>(__left), ::std::forward<_ItRight>(__right))) {
 				::std::ranges::iter_swap(::std::forward<_ItLeft>(__left), ::std::forward<_ItRight>(__right));
 			}
 		} // namespace __adl
@@ -285,7 +285,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_begin_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_begin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_begin, _Range>) {
 					return noexcept(begin(::std::declval<_Range>()));
 				}
 				else {
@@ -295,7 +298,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_cbegin_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_cbegin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_cbegin, _Range>) {
 					return noexcept(cbegin(::std::declval<_Range>()));
 				}
 				else {
@@ -306,7 +312,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_rbegin_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_rbegin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_rbegin, _Range>) {
 					return noexcept(rbegin(::std::declval<_Range>()));
 				}
 				else {
@@ -317,7 +326,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_crbegin_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_crbegin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_crbegin, _Range>) {
 					return noexcept(crbegin(::std::declval<_Range>()));
 				}
 				else {
@@ -327,7 +339,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_end_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_end, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_end, _Range>) {
 					return noexcept(end(::std::declval<_Range>()));
 				}
 				else {
@@ -337,7 +352,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_cend_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_cend, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_cend, _Range>) {
 					return noexcept(cend(::std::declval<_Range>()));
 				}
 				else {
@@ -348,7 +366,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_rend_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_rend, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_rend, _Range>) {
 					return noexcept(rend(::std::declval<_Range>()));
 				}
 				else {
@@ -359,7 +380,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr bool __adl_crend_noexcept() noexcept {
-				if constexpr (__is_detected_v<__detect_crend, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return true;
+				}
+				else if constexpr (__is_detected_v<__detect_crend, _Range>) {
 					return noexcept(crend(::std::declval<_Range>()));
 				}
 				else {
@@ -391,7 +415,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_begin(_Range&& __range) noexcept(__adl_begin_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_begin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return (__range + 0);
+				}
+				else if constexpr (__is_detected_v<__detect_begin, _Range>) {
 					return begin(::std::forward<_Range>(__range));
 				}
 				else {
@@ -401,7 +428,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_cbegin(_Range&& __range) noexcept(__adl_cbegin_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_cbegin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return (__range + 0);
+				}
+				else if constexpr (__is_detected_v<__detect_cbegin, _Range>) {
 					return cbegin(::std::forward<_Range>(__range));
 				}
 				else {
@@ -411,7 +441,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_rbegin(_Range&& __range) noexcept(__adl_rbegin_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_rbegin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return ::std::make_reverse_iterator(__range + ::std::extent_v<__remove_cvref_t<_Range>>);
+				}
+				else if constexpr (__is_detected_v<__detect_rbegin, _Range>) {
 					return rbegin(::std::forward<_Range>(__range));
 				}
 				else {
@@ -421,7 +454,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_crbegin(_Range&& __range) noexcept(__adl_crbegin_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_crbegin, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return ::std::make_reverse_iterator(__range + ::std::extent_v<__remove_cvref_t<_Range>>);
+				}
+				else if constexpr (__is_detected_v<__detect_crbegin, _Range>) {
 					return crbegin(::std::forward<_Range>(__range));
 				}
 				else {
@@ -431,7 +467,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_end(_Range&& __range) noexcept(__adl_end_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_end, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return (__range + ::std::extent_v<__remove_cvref_t<_Range>>);
+				}
+				else if constexpr (__is_detected_v<__detect_end, _Range>) {
 					return end(::std::forward<_Range>(__range));
 				}
 				else {
@@ -441,7 +480,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_cend(_Range&& __range) noexcept(__adl_cend_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_cend, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return (__range + ::std::extent_v<__remove_cvref_t<_Range>>);
+				}
+				else if constexpr (__is_detected_v<__detect_cend, _Range>) {
 					return cend(::std::forward<_Range>(__range));
 				}
 				else {
@@ -451,7 +493,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_rend(_Range&& __range) noexcept(__adl_rend_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_rend, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return ::std::make_reverse_iterator(__range + 0);
+				}
+				else if constexpr (__is_detected_v<__detect_rend, _Range>) {
 					return rend(::std::forward<_Range>(__range));
 				}
 				else {
@@ -461,7 +506,10 @@ namespace ztd { namespace text {
 
 			template <typename _Range>
 			constexpr decltype(auto) __adl_crend(_Range&& __range) noexcept(__adl_crend_noexcept<_Range>()) {
-				if constexpr (__is_detected_v<__detect_crend, _Range>) {
+				if constexpr (::std::is_array_v<__remove_cvref_t<_Range>>) {
+					return ::std::make_reverse_iterator(__range + 0);
+				}
+				else if constexpr (__is_detected_v<__detect_crend, _Range>) {
 					return crend(::std::forward<_Range>(__range));
 				}
 				else {

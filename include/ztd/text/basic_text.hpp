@@ -59,8 +59,7 @@ namespace ztd { namespace text {
 	/// operations will provide room to override this.
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
-		typename _Container    = ::std::basic_string<code_unit_t<_Encoding>>,
-		typename _ErrorHandler = __txt_detail::__careless_handler>
+		typename _Container = ::std::basic_string<code_unit_t<_Encoding>>, typename _ErrorHandler = default_handler>
 	class basic_text : private basic_text_view<_Encoding, _NormalizationForm, _Container, _ErrorHandler> {
 	private:
 		using __base_t = basic_text_view<_Encoding, _NormalizationForm, _Container, _ErrorHandler>;

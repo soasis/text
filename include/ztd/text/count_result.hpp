@@ -159,7 +159,8 @@ namespace ztd { namespace text {
 		template <typename _ArgInput, typename _ArgState>
 		constexpr count_result(_ArgInput&& __input, ::std::size_t __count, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok)
-		: count_result(::std::forward<_ArgInput>(__input), __count, ::std::forward<_ArgState>(__state), __error_code,
+		: count_result(::std::forward<_ArgInput>(__input), __count, ::std::forward<_ArgState>(__state),
+			__error_code,
 			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
@@ -198,19 +199,19 @@ namespace ztd { namespace text {
 		using __reconstruct_count_result_t = count_result<__reconstruct_t<_InputRange>, _State>;
 
 		template <typename _InputRange, typename _State, typename _InFirst, typename _InLast, typename _ArgState>
-		constexpr decltype(auto) __reconstruct_count_result(_InFirst&& __in_first, _InLast&& __in_last,
+		constexpr decltype(auto) __reconstruct_stateless_count_result(_InFirst&& __in_first, _InLast&& __in_last,
 			::std::size_t __count, _ArgState&& __state, encoding_error __error_code,
 			::std::size_t __handled_errors) {
 			decltype(auto) __in_range = __reconstruct(::std::in_place_type<_InputRange>,
 				::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
-			return count_result<_InputRange, _State>(::std::forward<decltype(__in_range)>(__in_range), __count,
-				::std::forward<_ArgState>(__state), __error_code, __handled_errors);
+			return count_result<_InputRange, _State>(::std::forward<decltype(__in_range)>(__in_range),
+				__count, ::std::forward<_ArgState>(__state), __error_code, __handled_errors);
 		}
 
 		template <typename _InputRange, typename _State, typename _InFirst, typename _InLast, typename _ArgState>
-		constexpr decltype(auto) __reconstruct_count_result(_InFirst&& __in_first, _InLast&& __in_last,
+		constexpr decltype(auto) __reconstruct_stateless_count_result(_InFirst&& __in_first, _InLast&& __in_last,
 			::std::size_t __count, _ArgState&& __state, encoding_error __error_code = encoding_error::ok) {
-			return __reconstruct_count_result<_InputRange, _State>(::std::forward<_InFirst>(__in_first),
+			return __reconstruct_stateless_count_result<_InputRange, _State>(::std::forward<_InFirst>(__in_first),
 				::std::forward<_InLast>(__in_last), __count, ::std::forward<_ArgState>(__state), __error_code);
 		}
 	} // namespace __txt_detail

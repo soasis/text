@@ -30,52 +30,35 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-#include <ztd/text/validate_code_points.hpp>
+#include <ztd/text/validate_decodable_as.hpp>
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 
-inline namespace ztd_text_tests_basic_compile_time_validate_code_points {
+inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_default {
 
 	template <typename T>
 	static void delayed() {
-		// Basic Source Character Set, using defaults
-		static_assert(ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set));
-
-		// Basic Source Character Set, explicit encoding
-		static_assert(
-		     ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::literal()));
-		static_assert(ztd::text::validate_code_points(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal()));
-		static_assert(
-		     ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8()));
-		static_assert(
-		     ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16()));
-		static_assert(
-		     ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32()));
-
 		// Larger unicode sequences, using defaults
-		static_assert(ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian));
-
-		// Larger unicode sequences, explicit encoding
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		// Unicode sequences, using defaults
+		// Can only be done if we have constant evaluation inside to swap to the literal encoding
 		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
-			static_assert(ztd::text::validate_code_points(
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal()));
+			static_assert(ztd::text::validate_decodable_as(ztd::text::tests::unicode_sequence_truth_native_endian));
 		}
 		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
-			static_assert(ztd::text::validate_code_points(
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal()));
+			static_assert(
+			     ztd::text::validate_decodable_as(ztd::text::tests::w_unicode_sequence_truth_native_endian));
 		}
-		static_assert(ztd::text::validate_code_points(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8()));
-		static_assert(ztd::text::validate_code_points(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16()));
-		static_assert(ztd::text::validate_code_points(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32()));
+#endif
+		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::u8_unicode_sequence_truth_native_endian));
+		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::u16_unicode_sequence_truth_native_endian));
+		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::u32_unicode_sequence_truth_native_endian));
 	}
 
 	void instantiate() {
 		delayed<void>();
 	}
-} // namespace ztd_text_tests_basic_compile_time_validate_code_points
+
+} // namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_default

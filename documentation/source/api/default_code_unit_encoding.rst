@@ -70,8 +70,8 @@ Picks the default encoding for the given code unit type (for both run time, and 
 
 .. doxygentypedef:: ztd::text::default_code_unit_encoding_t
 
-.. doxygenclass:: ztd::text::default_compile_time_code_unit_encoding
+.. doxygenclass:: ztd::text::default_consteval_code_unit_encoding
 	:members:
 
-.. doxygentypedef:: ztd::text::default_compile_time_code_unit_encoding_t
+.. doxygentypedef:: ztd::text::default_consteval_code_unit_encoding_t
 

@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_VALIDATE_CODE_POINTS_HPP
-#define ZTD_TEXT_VALIDATE_CODE_POINTS_HPP
+#ifndef ZTD_TEXT_VALIDATE_ENCODABLE_AS_HPP
+#define ZTD_TEXT_VALIDATE_ENCODABLE_AS_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -59,7 +59,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_validate_code_points ztd::text::validate_code_points
+	/// @addtogroup ztd_text_validate_encodable_as ztd::text::validate_encodable_as
 	/// @brief These functions check if the given input of code points will encode without an error. Note that this
 	/// does not mean that an error handler will be invoked that can "smooth over" any possible errors: this checks
 	/// solely if it will encode from code points into code units cleanly.
@@ -80,7 +80,7 @@ namespace ztd { namespace text {
 	/// errors.
 	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState, typename _DecodeState>
-	constexpr auto basic_validate_code_points(
+	constexpr auto basic_validate_encodable_as(
 		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
 		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
 		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
@@ -94,11 +94,25 @@ namespace ztd { namespace text {
 		_WorkingInput __working_input(
 			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_points_one,
-			              _Encoding, _WorkingInput, _DecodeState>) {
-			(void)__decode_state;
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_encodable_as_one,
+			              _WorkingInput, _Encoding, _EncodeState, _DecodeState>) {
 			for (;;) {
-				auto __result = text_validate_code_points_one(
+				auto __result = text_validate_encodable_as_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state, __decode_state);
+				if (!__result.valid) {
+					return _Result(::std::move(__result.input), false, __encode_state);
+				}
+				__working_input = ::std::move(__result.input);
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), true, __encode_state);
+		}
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_encodable_as_one,
+			                   _WorkingInput, _Encoding, _EncodeState>) {
+			for (;;) {
+				auto __result = text_validate_encodable_as_one(
 					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __encode_state);
@@ -111,11 +125,43 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__working_input), true, __encode_state);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<
-			                   __txt_detail::__detect_adl_internal_text_validate_code_points_one, _Encoding,
-			                   _WorkingInput, _DecodeState>) {
+			                   __txt_detail::__detect_adl_internal_text_validate_encodable_as_one, _WorkingInput,
+			                   _Encoding, _EncodeState, _DecodeState>) {
+			for (;;) {
+				auto __result = text_validate_encodable_as_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state, __decode_state);
+				if (!__result.valid) {
+					return _Result(::std::move(__result.input), false, __encode_state);
+				}
+				__working_input = ::std::move(__result.input);
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), true, __encode_state);
+		}
+		else if constexpr (__txt_detail::__is_detected_v<
+			                   __txt_detail::__detect_adl_internal_text_validate_encodable_as_one, _WorkingInput,
+			                   _Encoding, _EncodeState>) {
+			for (;;) {
+				auto __result = __text_validate_encodable_as_one(
+					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state);
+				if (!__result.valid) {
+					return _Result(::std::move(__result.input), false, __encode_state);
+				}
+				__working_input = ::std::move(__result.input);
+				if (__txt_detail::__adl::__adl_empty(__working_input)) {
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), true, __encode_state);
+		}
+		else if constexpr (__txt_detail::__is_detected_v<
+			                   __txt_detail::__detect_adl_internal_text_validate_encodable_as_one, _WorkingInput,
+			                   _Encoding, _DecodeState>) {
 			(void)__decode_state;
 			for (;;) {
-				auto __result = __text_validate_code_points_one(
+				auto __result = __text_validate_encodable_as_one(
 					tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __encode_state);
@@ -137,14 +183,14 @@ namespace ztd { namespace text {
 			::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
 
 			for (;;) {
-				auto __validate_result = __txt_detail::__basic_validate_code_points_one(__working_input, __encoding,
-					__code_point_view, __code_unit_view, __encode_state, __decode_state);
-				if (!__validate_result.valid) {
+				auto __stateless_validate_result = __txt_detail::__basic_validate_encodable_as_one(__working_input,
+					__encoding, __code_point_view, __code_unit_view, __encode_state, __decode_state);
+				if (!__stateless_validate_result.valid) {
 					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
 						false, __encode_state);
 				}
-				__working_input = ::std::move(__validate_result.input);
+				__working_input = ::std::move(__stateless_validate_result.input);
 				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
@@ -164,42 +210,42 @@ namespace ztd { namespace text {
 	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
 	/// @param[in] __decode_state The state to use for the decoding portion of the validation check, if needed.
 	///
-	/// @remarks This functions checks to see if extension points for @c text_validate_code_points is available taking
+	/// @remarks This functions checks to see if extension points for @c text_validate_encodable_as is available taking
 	/// the available 4 parameters. If so, it calls this. Otherwise, it defers to doing a typical loop over the code
 	/// points to verify it can be encoded into code units, and then decoded into code points, with no errors.
 	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState, typename _DecodeState>
-	constexpr auto validate_code_points(
+	constexpr auto validate_encodable_as(
 		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_points, _Encoding,
-			              _Input, _EncodeState>) {
-			(void)__decode_state;
-			return text_validate_code_points(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
-				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
-		}
-		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_points, _Input,
-			                   _Encoding, _DecodeState>) {
-			return text_validate_code_points(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_encodable_as, _Input,
+			              _Encoding, _EncodeState, _DecodeState>) {
+			return text_validate_encodable_as(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state,
 				__decode_state);
 		}
-		else if constexpr (__txt_detail::__is_detected_v<
-			                   __txt_detail::__detect_adl_internal_text_validate_code_points, _Encoding, _Input,
-			                   _EncodeState>) {
+		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_encodable_as,
+			                   _Input, _Encoding, _EncodeState>) {
 			(void)__decode_state;
-			return __text_validate_code_points(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+			return text_validate_encodable_as(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<
-			                   __txt_detail::__detect_adl_internal_text_validate_code_points, _Input, _Encoding,
-			                   _DecodeState>) {
-			return __text_validate_code_points(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+			                   __txt_detail::__detect_adl_internal_text_validate_encodable_as, _Input, _Encoding,
+			                   _EncodeState>) {
+			(void)__decode_state;
+			return __text_validate_encodable_as(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
+		}
+		else if constexpr (__txt_detail::__is_detected_v<
+			                   __txt_detail::__detect_adl_internal_text_validate_encodable_as, _Input, _Encoding,
+			                   _EncodeState, _DecodeState>) {
+			return __text_validate_encodable_as(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state,
 				__decode_state);
 		}
 		else {
-			return basic_validate_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				__encode_state, __decode_state);
+			return basic_validate_encodable_as(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), __encode_state, __decode_state);
 		}
 	}
 
@@ -211,28 +257,28 @@ namespace ztd { namespace text {
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __encode_state The state for encoding to use.
 	///
-	/// @remarks This functions checks to see if extension points for @c text_validate_code_points is available taking
-	/// the available 3 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_code_points.
+	/// @remarks This functions checks to see if extension points for @c text_validate_encodable_as is available taking
+	/// the available 3 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_encodable_as.
 	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState>
-	constexpr auto validate_code_points(_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state) {
+	constexpr auto validate_encodable_as(_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state) {
 		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_code_points, _Encoding,
-			              _Input, _EncodeState>) {
-			return text_validate_code_points(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_encodable_as, _Input,
+			              _Encoding, _EncodeState>) {
+			return text_validate_encodable_as(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<
-			                   __txt_detail::__detect_adl_internal_text_validate_code_points, _Encoding, _Input,
+			                   __txt_detail::__detect_adl_internal_text_validate_encodable_as, _Input, _Encoding,
 			                   _EncodeState>) {
-			return __text_validate_code_points(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
+			return __text_validate_encodable_as(tag<__txt_detail::__remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __encode_state);
 		}
 		else {
 			using _State = decode_state_t<_UEncoding>;
 
 			_State __decode_state = make_decode_state(__encoding);
-			return validate_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+			return validate_encodable_as(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 				__encode_state, __decode_state);
 		}
 	}
@@ -244,13 +290,13 @@ namespace ztd { namespace text {
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	//////
 	template <typename _Input, typename _Encoding>
-	constexpr auto validate_code_points(_Input&& __input, _Encoding&& __encoding) {
+	constexpr auto validate_encodable_as(_Input&& __input, _Encoding&& __encoding) {
 		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
 		using _State     = encode_state_t<_UEncoding>;
 
 		_State __state = make_encode_state(__encoding);
 		auto __stateful_result
-			= validate_code_points(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __state);
+			= validate_encodable_as(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __state);
 		return __txt_detail::__slice_to_stateless(::std::move(__stateful_result));
 	}
 
@@ -263,22 +309,22 @@ namespace ztd { namespace text {
 	/// input into the ztd::text::default_code_point_encoding.
 	//////
 	template <typename _Input>
-	constexpr auto validate_code_points(_Input&& __input) {
+	constexpr auto validate_encodable_as(_Input&& __input) {
 		using _UInput    = __txt_detail::__remove_cvref_t<_Input>;
 		using _CodePoint = __txt_detail::__remove_cvref_t<__txt_detail::__range_value_type_t<_UInput>>;
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return validate_code_points(::std::forward<_Input>(__input), __encoding);
+			return validate_encodable_as(::std::forward<_Input>(__input), __encoding);
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return validate_code_points(::std::forward<_Input>(__input), __encoding);
+			return validate_encodable_as(::std::forward<_Input>(__input), __encoding);
 		}
 	}
 
@@ -291,4 +337,4 @@ namespace ztd { namespace text {
 
 #include <ztd/text/detail/epilogue.hpp>
 
-#endif // ZTD_TEXT_VALIDATE_CODE_POINTS_HPP
+#endif // ZTD_TEXT_VALIDATE_ENCODABLE_AS_HPP

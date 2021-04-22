@@ -93,75 +93,11 @@ namespace ztd { namespace text {
 			}
 		};
 
-		template <typename _Super, bool = is_code_units_replaceable_v<typename _Super::encoding_type>>
-		class __replacement_code_units { };
-
-		template <typename _Super>
-		class __replacement_code_units<_Super, true> {
-		private:
-			const _Super& _M_super() const noexcept {
-				return static_cast<const _Super&>(*this);
-			}
-
-		public:
-			constexpr auto replacement_code_units() const noexcept {
-				using _OriginalCodeUnit   = code_unit_t<typename _Super::encoding_type>;
-				using _CodeUnit           = typename _Super::code_unit;
-				decltype(auto) __original = this->_M_super().base().replacement_code_units();
-				if constexpr (::std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
-					return __original;
-				}
-				else {
-					using _OriginalSpan    = ::ztd::text::span<const _OriginalCodeUnit>;
-					using _TransformedSpan = ::ztd::text::span<const _CodeUnit>;
-					_OriginalSpan __guaranteed_code_unit_view(__original);
-					// transform into proper type...
-					auto __transformed_ptr
-						= reinterpret_cast<const _CodeUnit*>(__guaranteed_code_unit_view.data());
-					auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
-						/ sizeof(const _CodeUnit);
-					return _TransformedSpan(__transformed_ptr, __transformed_size);
-				}
-			}
-		};
-
-		template <typename _Super, bool = is_code_points_replaceable_v<typename _Super::encoding_type>>
-		class __replacement_code_points { };
-
-		template <typename _Super>
-		class __replacement_code_points<_Super, true> {
-		private:
-			const _Super& _M_super() const noexcept {
-				return static_cast<const _Super&>(*this);
-			}
-
-		public:
-			constexpr auto replacement_code_points() const noexcept {
-				using _OriginalCodePoint  = code_point_t<typename _Super::encoding_type>;
-				using _CodePoint          = typename _Super::code_point;
-				decltype(auto) __original = this->_M_super().base().replacement_code_points();
-				if constexpr (::std::is_same_v<_OriginalCodePoint, _CodePoint>) {
-					return __original;
-				}
-				else {
-					using _OriginalSpan    = ::ztd::text::span<const _OriginalCodePoint>;
-					using _TransformedSpan = ::ztd::text::span<const _CodePoint>;
-					_OriginalSpan __guaranteed_code_point_view(__original);
-					// transform into proper type...
-					auto __transformed_ptr
-						= reinterpret_cast<const _CodePoint*>(__guaranteed_code_point_view.data());
-					auto __transformed_size = (__guaranteed_code_point_view.size() * sizeof(_OriginalCodePoint))
-						/ sizeof(const _CodePoint);
-					return _TransformedSpan(__transformed_ptr, __transformed_size);
-				}
-			}
-		};
-
 		template <typename _Super, bool = is_code_units_maybe_replaceable_v<typename _Super::encoding_type>>
-		class __maybe_replacement_code_units { };
+		class __maybe_replacement_code_units_es { };
 
 		template <typename _Super>
-		class __maybe_replacement_code_units<_Super, true> {
+		class __maybe_replacement_code_units_es<_Super, true> {
 		private:
 			const _Super& _M_super() const noexcept {
 				return static_cast<const _Super&>(*this);
@@ -195,10 +131,10 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _Super, bool = is_code_points_maybe_replaceable_v<typename _Super::encoding_type>>
-		class __maybe_replacement_code_points { };
+		class __maybe_replacement_code_points_es { };
 
 		template <typename _Super>
-		class __maybe_replacement_code_points<_Super, true> {
+		class __maybe_replacement_code_points_es<_Super, true> {
 		private:
 			const _Super& _M_super() const noexcept {
 				return static_cast<const _Super&>(*this);
@@ -232,27 +168,13 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _Super, typename _Encoding, typename = void>
-		class __is_or_contains_unicode_encoding { };
+		class __is_unicode_encoding_es { };
 
 		template <typename _Super, typename _Encoding>
-		class __is_or_contains_unicode_encoding<_Super, _Encoding,
+		class __is_unicode_encoding_es<_Super, _Encoding,
 			::std::enable_if_t<__is_detected_v<__detect_is_unicode_encoding, _Encoding>>> {
 		public:
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<_Encoding>>;
-		};
-
-		template <typename _Super, typename _Encoding>
-		class __is_or_contains_unicode_encoding<_Super, _Encoding,
-			::std::enable_if_t<__is_detected_v<__detect_contains_unicode_encoding, _Encoding>>> {
-		private:
-			const _Super& _M_super() const noexcept {
-				return static_cast<const _Super&>(*this);
-			}
-
-		public:
-			bool contains_unicode_encoding() const noexcept {
-				return this->_M_super().base().contains_unicode_encoding();
-			}
 		};
 	} // namespace __txt_detail
 
@@ -275,18 +197,9 @@ namespace ztd { namespace text {
 	/// ztd::text::endian::native, unsigned char>``.
 	//////
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
-	class encoding_scheme
-	: public __txt_detail::__replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_points_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
-	  public __txt_detail::__replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_units_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
-	  public __txt_detail::__maybe_replacement_code_units<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_points_maybe_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
-	  public __txt_detail::__maybe_replacement_code_points<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  is_code_units_maybe_replaceable_v<__txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>>,
-	  public __txt_detail::__is_or_contains_unicode_encoding<encoding_scheme<_Encoding, _Endian, _Byte>,
-		  __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>,
-	  private __txt_detail::__ebco<_Encoding> {
+	class encoding_scheme : public __txt_detail::__is_unicode_encoding_es<encoding_scheme<_Encoding, _Endian, _Byte>,
+		                        __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>,
+		                   private __txt_detail::__ebco<_Encoding> {
 	private:
 		using __base_t       = __txt_detail::__ebco<_Encoding>;
 		using _UBaseEncoding = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>;
@@ -385,6 +298,95 @@ namespace ztd { namespace text {
 		}
 
 		//////
+		/// @brief Returns, the desired replacement code units to use.
+		///
+		/// @remarks This is only callable if the function call exists on the wrapped encoding. It is broken down into
+		/// a contiguous view type formulated from bytes if the wrapped code unit types do not match.
+		//////
+		template <typename _Unused                                     = encoding_type,
+			::std::enable_if_t<is_code_units_replaceable_v<_Unused>>* = nullptr>
+		constexpr decltype(auto) replacement_code_units() const noexcept {
+			using _OriginalCodeUnit = code_unit_t<encoding_type>;
+
+			decltype(auto) __original = this->base().replacement_code_units();
+			if constexpr (::std::is_same_v<_OriginalCodeUnit, code_unit>) {
+				return __original;
+			}
+			else {
+				using _OriginalSpan    = ::ztd::text::span<const _OriginalCodeUnit>;
+				using _TransformedSpan = ::ztd::text::span<const code_unit>;
+				_OriginalSpan __guaranteed_code_unit_view(__original);
+				// transform into proper type...
+				auto __transformed_ptr = reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
+				auto __transformed_size
+					= (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit)) / sizeof(const code_unit);
+				return _TransformedSpan(__transformed_ptr, __transformed_size);
+			}
+		}
+
+		//////
+		/// @brief Returns the desired replacement code points to use.
+		///
+		/// @remarks Is only callable if the function call exists on the wrapped encoding.
+		//////
+		template <typename _Unused                                      = encoding_type,
+			::std::enable_if_t<is_code_points_replaceable_v<_Unused>>* = nullptr>
+		constexpr decltype(auto) replacement_code_points() const noexcept {
+			return this->base().replacement_code_points();
+		}
+
+		//////
+		/// @brief Returns the desired replacement code units to use, or an empty optional-like type if there is
+		/// nothing present.
+		///
+		/// @remarks This is only callable if the function call exists on the wrapped encoding. It is broken down into
+		/// a contiguous view type formulated from bytes if the wrapped code unit types do not match.
+		//////
+		template <typename _Unused                                           = encoding_type,
+			::std::enable_if_t<is_code_units_maybe_replaceable_v<_Unused>>* = nullptr>
+		constexpr decltype(auto) maybe_replacement_code_units() const noexcept {
+			using _OriginalCodeUnit = code_unit_t<encoding_type>;
+
+			decltype(auto) __maybe_original = this->base().maybe_replacement_code_units();
+			if constexpr (::std::is_same_v<_OriginalCodeUnit, code_unit>) {
+				return __maybe_original;
+			}
+			else {
+				using _OriginalSpan    = ::ztd::text::span<const _OriginalCodeUnit>;
+				using _TransformedSpan = ::ztd::text::span<const code_unit>;
+				if (!__maybe_original) {
+					return ::std::optional<_TransformedSpan>(::std::nullopt);
+				}
+				decltype(auto) __original = *__maybe_original;
+				_OriginalSpan __guaranteed_code_unit_view(__original);
+				// transform into proper type...
+				auto __transformed_ptr = reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
+				auto __transformed_size
+					= (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit)) / sizeof(const code_unit);
+				return _TransformedSpan(__transformed_ptr, __transformed_size);
+			}
+		}
+
+		//////
+		/// @brief Returns the desired replacement code units to use.
+		///
+		/// @remarks This Is only callable if the function call exists on the wrapped encoding.
+		//////
+		template <typename _Unused                                            = encoding_type,
+			::std::enable_if_t<is_code_points_maybe_replaceable_v<_Unused>>* = nullptr>
+		constexpr decltype(auto) maybe_replacement_code_points() const noexcept {
+			return this->base().maybe_replacement_code_points();
+		}
+
+		//////
+		/// @brief Whether or not this encoding is some form of Unicode encoding.
+		///
+		//////
+		constexpr bool contains_unicode_encoding() const noexcept {
+			return ::ztd::text::contains_unicode_encoding(this->base());
+		}
+
+		//////
 		/// @brief Decodes a single complete unit of information as code points and produces a result with the
 		/// input and output ranges moved past what was successfully read and written; or, produces an error and
 		/// returns the input and output ranges untouched.
@@ -408,8 +410,8 @@ namespace ztd { namespace text {
 			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
 			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
-			using _Result   = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, decode_state>;
-			using _InByteIt = __txt_detail::__word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
+			using _Result    = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
+			using _InByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
 			using _InByteSen = __txt_detail::__word_sentinel;
 
 			subrange<_InByteIt, _InByteSen> __inbytes(_InByteIt(::std::forward<_InputRange>(__input)), _InByteSen());
@@ -446,7 +448,7 @@ namespace ztd { namespace text {
 			encode_state& __s) const {
 			using _UInputRange  = __txt_detail::__remove_cvref_t<_InputRange>;
 			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
-			using _Result = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, encode_state>;
+			using _Result     = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
 			using _OutByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
 			using _OutByteSen = __txt_detail::__word_sentinel;
 

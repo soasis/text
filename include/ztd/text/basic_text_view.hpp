@@ -65,8 +65,7 @@ namespace ztd { namespace text {
 	/// automatically cause a compile time error.
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
-		typename _Range        = ::std::basic_string_view<code_unit_t<_Encoding>>,
-		typename _ErrorHandler = __txt_detail::__careless_handler>
+		typename _Range = ::std::basic_string_view<code_unit_t<_Encoding>>, typename _ErrorHandler = default_handler>
 	class basic_text_view {
 	public:
 		//////

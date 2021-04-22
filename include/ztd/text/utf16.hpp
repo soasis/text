@@ -141,7 +141,7 @@ namespace ztd { namespace text {
 				using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
 				using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 				using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
-				using _Result = __txt_detail::__reconstruct_decode_result_t<_UInputRange, _UOutputRange, state>;
+				using _Result = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				auto __init   = __txt_detail::__adl::__adl_begin(::std::forward<_InputRange>(__input));
@@ -269,15 +269,15 @@ namespace ztd { namespace text {
 				using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
 				using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 				using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
-				using _Result = __txt_detail::__reconstruct_encode_result_t<_UInputRange, _UOutputRange, state>;
+				using _Result = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				auto __init   = __txt_detail::__adl::__adl_begin(__input);
 				auto __inlast = __txt_detail::__adl::__adl_end(__input);
 				if (__init == __inlast) {
 					// an exhausted sequence is fine
-					return _Result(__txt_detail::__reconstruct(
-						               ::std::in_place_type<_UInputRange>, ::std::forward<_InputRange>(__input)),
+					return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
+						               ::std::move(__init), ::std::move(__inlast)),
 						__txt_detail::__reconstruct(
 						     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
 						__s, encoding_error::ok);
@@ -312,10 +312,10 @@ namespace ztd { namespace text {
 					if (__point > __txt_detail::__last_code_point) {
 						__self_t __self {};
 						return __error_handler(__self,
-							_Result(__txt_detail::__reconstruct(
-							             ::std::in_place_type<_UInputRange>, __init, __inlast),
-							     __txt_detail::__reconstruct(
-							          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
+							_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
+							             ::std::move(__init), ::std::move(__inlast)),
+							     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>,
+							          ::std::move(__outit), ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
 							::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 					}
@@ -340,10 +340,10 @@ namespace ztd { namespace text {
 						if (__outit == __outlast) {
 							__self_t __self {};
 							return __error_handler(__self,
-								_Result(__txt_detail::__reconstruct(
-								             ::std::in_place_type<_UInputRange>, __init, __inlast),
-								     __txt_detail::__reconstruct(
-								          ::std::in_place_type<_UOutputRange>, __outit, __outlast),
+								_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
+								             ::std::move(__init), ::std::move(__inlast)),
+								     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>,
+								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::insufficient_output_space),
 								::ztd::text::span<code_point, 1>(::std::addressof(__points[0]), 1));
 						}
@@ -352,9 +352,11 @@ namespace ztd { namespace text {
 					__txt_detail::__advance(__outit);
 				}
 
-				return _Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, __init, __inlast),
-					__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, __outit, __outlast), __s,
-					encoding_error::ok);
+				return _Result(__txt_detail::__reconstruct(
+					               ::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
+					__txt_detail::__reconstruct(
+					     ::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast)),
+					__s, encoding_error::ok);
 			}
 		};
 	} // namespace __impl

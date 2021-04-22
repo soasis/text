@@ -96,7 +96,7 @@ namespace ztd { namespace text {
                ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
                     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                _UInput>>;
-		using _IntermediateOutput = __txt_detail::__reconstruct_t<_UOutput>;
+		using _IntermediateOutput = __txt_detail::__reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.decode_one(
                ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
 		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
@@ -293,7 +293,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
-		__txt_detail::__careless_handler __handler {};
+		default_handler __handler {};
 		return decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			::std::forward<_Output>(__output), __handler);
 	}
@@ -320,7 +320,7 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
 			return decode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
@@ -348,8 +348,8 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's decode step.
 	///
-	/// @result A ztd::text::decode_result object that contains references to @p __state and an output of type @p
-	/// _OutputContainer.
+	/// @result A ztd::text::decode_result object that contains references to @p __state and an output of type
+	/// @p _OutputContainer.
 	///
 	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
 	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to. The result is
@@ -449,7 +449,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding>
 	constexpr auto decode_to(_Input&& __input, _Encoding&& __encoding) {
-		__txt_detail::__careless_handler __handler {};
+		default_handler __handler {};
 		return decode_to<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
@@ -476,7 +476,7 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
 			return decode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
@@ -488,6 +488,63 @@ namespace ztd { namespace text {
 			return decode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 	}
+
+	namespace __txt_detail {
+		template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler,
+			typename _State>
+		constexpr auto __decode_dispatch(
+			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
+			using _UEncoding            = __txt_detail::__remove_cvref_t<_Encoding>;
+			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
+			using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
+			using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
+			using _Unbounded            = unbounded_view<_BackInserterIterator>;
+			using _IntermediateInput = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+				::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+				     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+				_UInput>>;
+
+			_OutputContainer __output {};
+			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
+				using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
+				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
+					              _OutputContainer, _SizeType>) {
+					auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
+					__output_size_hint *= max_code_points_v<_UEncoding>;
+					__output.reserve(__output_size_hint);
+				}
+			}
+			if constexpr (__txt_detail::__is_decode_error_handler_callable_v<_Encoding, _IntermediateInput,
+				              _Unbounded, _ErrorHandler, _State>) {
+				if constexpr (__txt_detail::__is_decode_one_callable_v<_Encoding, _IntermediateInput, _Unbounded,
+					              _ErrorHandler, _State>) {
+					// We can use the unbounded stuff
+					// We can use the unbounded stuff
+					_Unbounded __insert_view(::std::back_inserter(__output));
+					auto __stateful_result
+						= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+						     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+					// We are explicitly discarding this information with this function call.
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(
+						::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
+						::std::forward<_ErrorHandler>(__error_handler), __state);
+					(void)__stateful_result;
+					return __output;
+				}
+			}
+			else {
+				auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(
+					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				(void)__stateful_result;
+				return __output;
+			}
+		}
+	} // namespace __txt_detail
 
 	//////
 	/// @brief Converts the code units of the given @p __input view through the encoding to code points the
@@ -509,56 +566,26 @@ namespace ztd { namespace text {
 	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
 	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
+		typename _State>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding            = __txt_detail::__remove_cvref_t<_Encoding>;
-		using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-		using _Unbounded            = unbounded_view<_BackInserterIterator>;
-		using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
-		using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
-		using _IntermediateInput    = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-               _UInput>>;
-
-		_OutputContainer __output {};
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
-			using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
-				              _OutputContainer, _SizeType>) {
-				auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
-				__output_size_hint *= max_code_points_v<_UEncoding>;
-				__output.reserve(__output_size_hint);
-			}
-		}
-		if constexpr (__txt_detail::__is_decode_error_handler_callable_v<_Encoding, _IntermediateInput, _Unbounded,
-			              _ErrorHandler, _State>) {
-			if constexpr (__txt_detail::__is_decode_one_callable_v<_Encoding, _IntermediateInput, _Unbounded,
-				              _ErrorHandler, _State>) {
-				// We can use the unbounded stuff
-				// We can use the unbounded stuff
-				_Unbounded __insert_view(::std::back_inserter(__output));
-				auto __stateful_result
-					= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-					     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
-				// We are explicitly discarding this information with this function call.
-				(void)__stateful_result;
-				return __output;
-			}
-			else {
-				auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(
-					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
-					::std::forward<_ErrorHandler>(__error_handler), __state);
-				(void)__stateful_result;
-				return __output;
-			}
+		using _UEncoding                = __txt_detail::__remove_cvref_t<_Encoding>;
+		using _UOutputContainer         = __txt_detail::__remove_cvref_t<_OutputContainer>;
+		using _OutputCodePoint          = code_point_t<_UEncoding>;
+		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
+		constexpr bool _IsStringable
+			= (__txt_detail::__is_character_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
+		if constexpr (_IsVoidContainer && _IsStringable) {
+			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
+			using _RealOutputContainer = ::std::basic_string<_OutputCodePoint>;
+			return __txt_detail::__decode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
-			auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
-				__state);
-			(void)__stateful_result;
-			return __output;
+			using _RealOutputContainer
+				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodePoint>, _OutputContainer>;
+			return __txt_detail::__decode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}
 
@@ -580,7 +607,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates a @c state using ztd::text::make_decode_state.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
@@ -606,9 +633,9 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding) {
-		__txt_detail::__careless_handler __handler {};
+		default_handler __handler {};
 		return decode<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
@@ -628,14 +655,14 @@ namespace ztd { namespace text {
 	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
-	template <typename _OutputContainer, typename _Input>
+	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto decode(_Input&& __input) {
 		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
 		using _CodeUnit = __txt_detail::__range_value_type_t<_UInput>;
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
+			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
 			return decode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
@@ -645,117 +672,6 @@ namespace ztd { namespace text {
 			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
 			return decode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
-		}
-	}
-
-	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points in a @c
-	/// std::vector or @c std::basic_string .
-	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
-	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
-	/// output code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
-	/// respectively.
-	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's decode step.
-	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
-	/// output code unt type.
-	///
-	/// @remarks This function detects creates a container of either @c std::Vector (when @c std::byte is
-	/// involved) or
-	/// @c std::basic_string and uses a typical @c std::back_inserter or @c std::push_back_inserter to fill in
-	/// elements as it is written to.
-	//////
-	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
-	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
-		using _CodePoint = code_point_t<_UEncoding>;
-		using _OutputContainer
-			= ::std::conditional_t<is_unicode_code_point_v<_CodePoint> || __txt_detail::__is_character_v<_CodePoint>,
-			     ::std::basic_string<_CodePoint>, ::std::vector<_CodePoint>>;
-
-		return decode<_OutputContainer>(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_ErrorHandler>(__error_handler), __state);
-	}
-
-	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points in a @c
-	/// std::vector or @c std::basic_string .
-	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
-	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
-	/// output code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
-	/// respectively.
-	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
-	/// output code unt type.
-	///
-	/// @remarks This function creates a @c state using ztd::text::make_decode_state.
-	//////
-	template <typename _Input, typename _Encoding, typename _ErrorHandler>
-	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
-		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
-		using _State     = decode_state_t<_UEncoding>;
-
-		_State __state = make_decode_state(__encoding);
-		return decode(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_ErrorHandler>(__error_handler), __state);
-	}
-
-	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points in a @c
-	/// std::vector or @c std::basic_string .
-	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
-	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
-	/// output code units.
-	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
-	/// output code unt type.
-	///
-	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
-	//////
-	template <typename _Input, typename _Encoding>
-	constexpr auto decode(_Input&& __input, _Encoding&& __encoding) {
-		__txt_detail::__careless_handler __handler {};
-		return decode(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
-	}
-
-	//////
-	/// @brief Converts the code units of the given @p __input view through the encoding to code points in a @c
-	/// std::vector or @c std::basic_string .
-	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
-	/// produce code points.
-	///
-	/// @result An object of type @c std::vector or @c std::basic_string , whichever is more appropriate for the
-	/// output code unt type.
-	///
-	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
-	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
-	//////
-	template <typename _Input>
-	constexpr auto decode(_Input&& __input) {
-		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __txt_detail::__range_value_type_t<_UInput>;
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
-		if (::std::is_constant_evaluated()) {
-			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_unit_encoding_t<_CodeUnit>;
-			_Encoding __encoding {};
-			return decode(::std::forward<_Input>(__input), __encoding);
-		}
-		else
-#endif
-		{
-			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
-			_Encoding __encoding {};
-			return decode(::std::forward<_Input>(__input), __encoding);
 		}
 	}
 

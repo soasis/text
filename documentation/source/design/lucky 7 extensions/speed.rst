@@ -95,40 +95,50 @@ An extension point to provide faster one-by-one encoding transformations for a g
 Must return a :doc:`ztd::text::transcode_result </api/transcode_result>`.
 
 
-``text_validate_code_points_one``
-+++++++++++++++++++++++++++++++++
+``text_validate_encodable_as_one``
+++++++++++++++++++++++++++++++++++
 
-Form: ``text_validate_code_points_one(input, encoding, state)``
+Form: ``text_validate_encodable_as_one(input, encoding, state)``
 
 An extension point to provide faster one-by-one validation. Provides a shortcut to not needing to perform both a ``decode_one`` and an ``encode_one`` step during the basic validation loop.
 
 Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
 
-``text_validate_code_units_one``
-++++++++++++++++++++++++++++++++
+``text_validate_decodable_as_one``
+++++++++++++++++++++++++++++++++++
 
-Form: ``text_validate_code_units_one(input, encoding, state)``
+Form: ``text_validate_decodable_as_one(input, encoding, state)``
 
 An extension point to provide faster one-by-one validation. Provides a shortcut to not needing to perform both a ``encode_one`` and an ``decode_one`` step during the basic validation loop.
 
 Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
 
-``text_validate_code_points``
-+++++++++++++++++++++++++++++
+``text_validate_transcodable_as_one``
++++++++++++++++++++++++++++++++++++++
 
-Form: ``text_validate_code_points(input, encoding, state)``
+Form: ``text_validate_decodable_as_one(input, from_encoding, to_encoding, decode_state, encode_state)``
+
+An extension point to provide faster one-by-one validation. Provides a shortcut to not needing to perform both a ``encode_one`` and an ``decode_one`` step during the basic validation loop.
+
+Must return a :doc:`ztd::text::validate_transcode_result </api/validate_transcode_result>`.
+
+
+``text_validate_encodable_as``
+++++++++++++++++++++++++++++++
+
+Form: ``text_validate_encodable_as(input, encoding, state)``
 
 An extension point to provide faster bulk code point validation. There are many tricks to speed up validationg of text using bit twiddling of the input sequence and more.
 
 Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
 
-``text_validate_code_units``
-++++++++++++++++++++++++++++
+``text_validate_decodable_as``
+++++++++++++++++++++++++++++++
 
-Form: ``text_validate_code_units(input, encoding, state)``
+Form: ``text_validate_decodable_as(input, encoding, state)``
 
 An extension point to provide faster bulk code unit validation. There are many tricks to speed up validationg of text using bit twiddling of the input sequence and more.
 

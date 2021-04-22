@@ -51,6 +51,7 @@ inline namespace ztd_text_tests_basic_run_time_transcode_decode_encode_view {
 		auto truth0_it          = std::cbegin(expected_output);
 		const auto truth0_last  = std::cend(expected_output);
 		for (; result0_it != result0_last; ++result0_it, (void)++truth0_it) {
+			REQUIRE(result0_it.error_code() == ztd::text::encoding_error::ok);
 			REQUIRE(truth0_it != truth0_last);
 			const auto truth0_val  = *truth0_it;
 			const auto result0_val = *result0_it;

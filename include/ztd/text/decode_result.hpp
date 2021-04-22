@@ -220,7 +220,7 @@ namespace ztd { namespace text {
 
 		template <typename _InputRange, typename _OutputRange, typename _State, typename _InFirst, typename _InLast,
 			typename _OutFirst, typename _OutLast, typename _ArgState>
-		constexpr decltype(auto) __reconstruct_decode_result(_InFirst&& __in_first, _InLast&& __in_last,
+		constexpr decltype(auto) __reconstruct_stateless_decode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgState&& __state, encoding_error __error_code,
 			::std::size_t __handled_errors) {
 			decltype(auto) __in_range  = __reconstruct(::std::in_place_type<_InputRange>,
@@ -234,7 +234,7 @@ namespace ztd { namespace text {
 
 		template <typename _InputRange, typename _OutputRange, typename _State, typename _InFirst, typename _InLast,
 			typename _OutFirst, typename _OutLast, typename _ArgState>
-		constexpr decltype(auto) __reconstruct_decode_result(_InFirst&& __in_first, _InLast&& __in_last,
+		constexpr decltype(auto) __reconstruct_stateless_decode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok) {
 			return __reconstruct_decode_result_t<_InputRange, _OutputRange, _State>(

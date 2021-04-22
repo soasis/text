@@ -65,7 +65,8 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief Counts the number of code units that will result from attempting an encode operation.
+	/// @brief Counts the number of code units that will result from attempting an encode operation on the input code
+	/// points.
 	///
 	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	/// @param[in] __encoding The encoding to count the input with.
@@ -153,7 +154,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Counts the number of code units that will result from attempting an encode operation.
+	/// @brief Counts the number of code units that will result from attempting an encode operation on the input code
+	/// points.
 	///
 	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	/// @param[in] __encoding The encoding to count the input with.
@@ -190,7 +192,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Counts the number of code units that will result from attempting an encode operation.
+	/// @brief Counts the number of code units that will result from attempting an encode operation on the input code
+	/// points.
 	///
 	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	/// @param[in] __encoding The encoding to count the input with.
@@ -232,7 +235,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Counts the number of code units that will result from attempting an encode operation.
+	/// @brief Counts the number of code units that will result from attempting an encode operation on the input code
+	/// points.
 	///
 	/// @param[in] __input The input range (of code points) to find out how many code units there are.
 	///
@@ -249,14 +253,14 @@ namespace ztd { namespace text {
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
-			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
 			return count_code_points(::std::forward<_Input>(__input), __encoding);
 		}
 		else
 #endif
 		{
-			using _Encoding = default_compile_time_code_point_encoding_t<_CodePoint>;
+			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
 			return count_code_points(::std::forward<_Input>(__input), __encoding);
 		}

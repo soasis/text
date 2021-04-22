@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
 	runtime_locale encoding {};
 	std::string_view first_arg       = argv[0];
 	std::u32string decoded_first_arg = ztd::text::decode(
-	     first_arg, encoding, ztd::text::default_handler {});
+	     first_arg, encoding, ztd::text::replacement_handler {});
 
 	// the first argument is (usually!!) the executable name,
 	// so we'll see if we decoded that part nicely!

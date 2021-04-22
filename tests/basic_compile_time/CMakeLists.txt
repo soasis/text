@@ -29,7 +29,10 @@
 # ============================================================================>
 
 # # Tests
-file(GLOB ztd.text.tests.basic_compile_time.sources source/*.cpp)
+file(GLOB ztd.text.tests.basic_compile_time.sources
+	LIST_DIRECTORIES FALSE
+	CONFIGURE_DEPENDS
+	source/*.cpp)
 
 add_executable(ztd.text.tests.basic_compile_time ${ztd.text.tests.basic_compile_time.sources})
 target_compile_definitions(ztd.text.tests.basic_compile_time
@@ -44,6 +47,7 @@ target_compile_options(ztd.text.tests.basic_compile_time
 	${--warn-pedantic}
 	${--warn-default}
 	${--deny-errors}
+	${--template-debugging-mode}
 	${--extra-constexpr-power})
 target_include_directories(ztd.text.tests.basic_compile_time
 	PRIVATE 

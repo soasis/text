@@ -52,6 +52,7 @@
 #include <cstring>
 #include <memory>
 #include <optional>
+#include <iostream>
 
 #include <ztd/text/detail/prologue.hpp>
 
@@ -155,14 +156,22 @@ namespace ztd { namespace text {
 					::std::enable_if_t<::std::is_convertible_v<_Value,
 					                        value_type> && !::std::is_const_v<__base_iterator>>* = nullptr>
 				constexpr __word_reference& operator=(_Value __maybe_val) noexcept {
+					if constexpr (_Endian == endian::native
+						&& (endian::native != endian::big && endian::native != endian::little)) {
+						static_assert(__always_false_constant_v<endian, _Endian>,
+							"read value from byte stream to native endianness that is neither little nor big "
+							"(byte order is impossible to infer from the standard)");
+					}
+					static_assert(sizeof(value_type) <= (sizeof(__base_value_type) * __base_values_per_word),
+						"the size of the value type must be less than or equal to the array size");
 					value_type __val = static_cast<value_type>(__maybe_val);
-					__base_value_type __storage[__base_values_per_word] {};
-					auto __storage_first = __storage + 0;
-					auto __storage_last  = __storage + __base_values_per_word;
+					__base_value_type __write_storage[__base_values_per_word] {};
+					auto __write_storage_first = __write_storage + 0;
+					auto __write_storage_last  = __write_storage + __base_values_per_word;
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 					if (!::std::is_constant_evaluated()) {
 						// just memcpy the data
-						::std::memcpy(__storage, ::std::addressof(__val), sizeof(value_type));
+						::std::memcpy(__write_storage, ::std::addressof(__val), sizeof(value_type));
 					}
 					else
 #endif
@@ -170,20 +179,20 @@ namespace ztd { namespace text {
 						// God's given, handwritten, bit-splittin'
 						// one-way """memcpy""". 😵
 						__underlying_value_type __bit_value = __any_to_underlying(static_cast<value_type>(__val));
-						auto __storage_it                   = __storage + 0;
+						auto __write_storage_it             = __write_storage + 0;
 						for (::std::size_t __index = 0; __index < __base_values_per_word; ++__index) {
 							__underlying_value_type __bit_position
 								= static_cast<__underlying_value_type>(__index * __base_bits_per_element);
 							__underlying_base_value_type __shifted_bit_value
 								= static_cast<__underlying_base_value_type>(__bit_value >> __bit_position);
-							*__storage_it
+							*__write_storage_it
 								= static_cast<__base_value_type>(__shifted_bit_value & __base_lowest_bit_mask);
-							++__storage_it;
+							++__write_storage_it;
 						}
 					}
 					if constexpr (_Endian != endian::native) {
 						if constexpr (_Endian == endian::big) {
-							__reverse(__storage_first, __storage_last);
+							__reverse(__write_storage_first, __write_storage_last);
 						}
 						else {
 							// TODO: what about middle endian or some such??
@@ -191,14 +200,14 @@ namespace ztd { namespace text {
 					}
 					auto& __base_range = this->_M_base_range();
 					if constexpr (_IsInput) {
-						auto __result = __copy(__storage_first, __storage_last,
+						auto __result = __copy(__write_storage_first, __write_storage_last,
 							__adl::__adl_begin(::std::move(__base_range)),
 							__adl::__adl_end(::std::move(__base_range)));
 						this->_M_base_range()
 							= __reconstruct(::std::in_place_type<_URange>, ::std::move(__result.out));
 					}
 					else {
-						__copy(__storage_first, __storage_last, __adl::__adl_begin(__base_range),
+						__copy(__write_storage_first, __write_storage_last, __adl::__adl_begin(__base_range),
 							__adl::__adl_end(__base_range));
 					}
 					return *this;
@@ -209,11 +218,11 @@ namespace ztd { namespace text {
 						&& (endian::native != endian::big && endian::native != endian::little)) {
 						static_assert(__always_false_constant_v<endian, _Endian>,
 							"read value from byte stream to native endianness that is neither little nor big "
-							"(byte "
-							"order is impossible to infer from the standard)");
+							"(byte order is impossible to infer from the standard)");
 					}
-					__base_value_type __storage[__base_values_per_word] {};
-					auto __storage_first = __storage + 0;
+					__base_value_type __read_storage[__base_values_per_word] {};
+					__base_value_type* __read_storage_first = __read_storage + 0;
+					::std::size_t __read_storage_size       = __adl::__adl_size(__read_storage);
 					value_type __val {};
 					if constexpr (_IsInput) {
 						// input iterator here (output iterstors cannot be used)
@@ -222,7 +231,7 @@ namespace ztd { namespace text {
 						// to prevent failure
 						auto& __base_range    = this->_M_base_range();
 						auto __result         = __copy_n_unsafe(__adl::__adl_begin(::std::move(__base_range)),
-                                   __adl::__adl_size(__storage), __storage_first);
+                                   __read_storage_size, __read_storage_first);
 						this->_M_base_range() = __reconstruct(::std::in_place_type<_URange>,
 							::std::move(__result.in).begin().base(), ::std::move(__base_range).end());
 					}
@@ -231,10 +240,13 @@ namespace ztd { namespace text {
 						// just copy-and-use
 						auto __base_it_copy            = this->_M_base_range().begin();
 						[[maybe_unused]] auto __result = __copy_n_unsafe(
-							::std::move(__base_it_copy), __adl::__adl_size(__storage), __storage_first);
+							::std::move(__base_it_copy), __read_storage_size, __read_storage_first);
 					}
 					if constexpr (_Endian == endian::big) {
-						__reverse(__adl::__adl_begin(__storage), __adl::__adl_end(__storage));
+						if constexpr ((sizeof(value_type) * CHAR_BIT) > 8) {
+							__base_value_type* __read_storage_last = __read_storage + __base_values_per_word;
+							__reverse(__read_storage_first, __read_storage_last);
+						}
 					}
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 					if (!::std::is_constant_evaluated())
@@ -242,14 +254,16 @@ namespace ztd { namespace text {
 					if (false)
 #endif
 					{
-						::std::memcpy(::std::addressof(__val), __storage_first, __adl::__adl_size(__storage));
+						::std::size_t __read_memory_storage_size
+							= __read_storage_size * sizeof(__base_value_type);
+						::std::memcpy(::std::addressof(__val), __read_storage_first, __read_memory_storage_size);
 					}
 					else {
 						// God's given, handwritten, bit-fusin'
 						// one-way """memcpy""". 😵
 						for (::std::size_t __index = 0; __index < __base_values_per_word; ++__index) {
-							__underlying_value_type __bit_value
-								= static_cast<__underlying_value_type>(__any_to_underlying(__storage[__index]));
+							__underlying_value_type __bit_value = static_cast<__underlying_value_type>(
+								__any_to_underlying(__read_storage[__index]));
 							__underlying_value_type __bit_position
 								= static_cast<__underlying_value_type>(__index * __base_bits_per_element);
 							__underlying_value_type __shifted_bit_value = (__bit_value << __bit_position);

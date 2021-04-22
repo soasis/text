@@ -146,3 +146,4 @@ Result Types, Status Codes and Quality Aides
 	api/count_result
 	api/stateless_validate_result
 	api/validate_result
+	api/validate_transcode_result

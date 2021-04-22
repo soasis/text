@@ -483,9 +483,10 @@ namespace ztd { namespace text {
 				auto& __this_input_range = this->_M_range();
 				auto __this_cache_begin  = this->_M_cache.data();
 				[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
+				::ztd::text::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 				if constexpr (_IsInputOrOutput) {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
-						::std::move(__this_input_range), this->encoding(), this->_M_cache, this->handler(),
+						::std::move(__this_input_range), this->encoding(), __cache_view, this->handler(),
 						this->state());
 					__this_cache_end = __adl::__adl_to_address(__adl::__adl_begin(__result.output));
 					if constexpr (!_IsErrorless) {
@@ -495,7 +496,7 @@ namespace ztd { namespace text {
 				}
 				else {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
-						::std::move(__this_input_range), this->encoding(), this->_M_cache, this->handler(),
+						::std::move(__this_input_range), this->encoding(), __cache_view, this->handler(),
 						this->state());
 					__this_cache_end = __adl::__adl_to_address(__adl::__adl_begin(__result.output));
 					if constexpr (!_IsErrorless) {

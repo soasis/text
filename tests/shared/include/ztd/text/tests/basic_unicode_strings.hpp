@@ -663,6 +663,7 @@ namespace ztd { namespace text { namespace tests {
 		(CharType)0x2e000000, (CharType)0x20000000, (CharType)0x41000000, (CharType)0x75000000, (CharType)0x72000000,
 		(CharType)0xe9000000, (CharType)0x6c000000, (CharType)0x69000000, (CharType)0x65000000, (CharType)0x2e000000,
 		(CharType)0x00000000 };
+
 	template <typename CharType>
 	inline constexpr const CharType x_u16_unicode_sequence_truth_native_endian_storage[] = { (CharType)0x6b66,
 		(CharType)0x4fa6, (CharType)0x5baa, (CharType)0x7ae0, (CharType)0x7b2c, (CharType)0x0039, (CharType)0x6761,
@@ -922,22 +923,22 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const CharType x_u16_unicode_sequence_truth_reverse_endian_storage[] = { (CharType)0x666b,
 		(CharType)0xa64f, (CharType)0xaa5b, (CharType)0xe07a, (CharType)0x2c7b, (CharType)0x3900, (CharType)0x6167,
 		(CharType)0x1420, (CharType)0x1420, (CharType)0x945e, (CharType)0x555c, (CharType)0xc57f, (CharType)0x164e,
-		(CharType)0x4c75, (CharType)0x2300, (CharType)0xd4e0, (CharType)0x6520, (CharType)0xba4e, (CharType)0xcd79,
-		(CharType)0x1300, (CharType)0xfd56, (CharType)0x4d7c, (CharType)0x7151, (CharType)0xc540, (CharType)0x1862,
-		(CharType)0x9765, (CharType)0x2300, (CharType)0xc426, (CharType)0xc426, (CharType)0x2827, (CharType)0x2827,
-		(CharType)0x5270, (CharType)0x3ed8, (CharType)0x80dd, (CharType)0x3dd8, (CharType)0x2de0, (CharType)0x3dd8,
+		(CharType)0x4c75, (CharType)0x0230, (CharType)0x0d4e, (CharType)0x0652, (CharType)0xba4e, (CharType)0xcd79,
+		(CharType)0x0130, (CharType)0xfd56, (CharType)0x4d7c, (CharType)0x7151, (CharType)0x0c54, (CharType)0x1862,
+		(CharType)0x9765, (CharType)0x0230, (CharType)0xc426, (CharType)0xc426, (CharType)0x2827, (CharType)0x2827,
+		(CharType)0x0527, (CharType)0x3ed8, (CharType)0x80dd, (CharType)0x3dd8, (CharType)0x02de, (CharType)0x3dd8,
 		(CharType)0x2dde, (CharType)0x3dd8, (CharType)0x2cde, (CharType)0x3dd8, (CharType)0x2cde, (CharType)0x3dd8,
 		(CharType)0x14de, (CharType)0x3dd8, (CharType)0x14de, (CharType)0x3dd8, (CharType)0x14de, (CharType)0x3cd8,
 		(CharType)0xa8df, (CharType)0x3cd8, (CharType)0xa8df, (CharType)0x3dd8, (CharType)0x36dc, (CharType)0x3ed8,
-		(CharType)0x37dd, (CharType)0xd200, (CharType)0x4026, (CharType)0xffe0, (CharType)0x3dd8, (CharType)0xe0de,
+		(CharType)0x37dd, (CharType)0x0d20, (CharType)0x4026, (CharType)0x0ffe, (CharType)0x3dd8, (CharType)0xe0de,
 		(CharType)0x3dd8, (CharType)0x4bdc, (CharType)0x3dd8, (CharType)0xa5dc, (CharType)0x3dd8, (CharType)0xa3dc,
 		(CharType)0x3dd8, (CharType)0xa5dc, (CharType)0x3dd8, (CharType)0xa3dc, (CharType)0x3cd8, (CharType)0x77df,
 		(CharType)0x3cd8, (CharType)0x77df, (CharType)0x3cd8, (CharType)0x77df, (CharType)0x3cd8, (CharType)0x77df,
 		(CharType)0x7a00, (CharType)0x6526, (CharType)0x6645, (CharType)0xfdff, (CharType)0xfdff, (CharType)0xc179,
 		(CharType)0x6f30, (CharType)0xac30, (CharType)0xe930, (CharType)0xb930, (CharType)0x9230, (CharType)0xdf98,
-		(CharType)0x7930, (CharType)0x8930, (CharType)0x8c30, (CharType)0x7e30, (CharType)0x5930, (CharType)0x2300,
+		(CharType)0x7930, (CharType)0x8930, (CharType)0x8c30, (CharType)0x7e30, (CharType)0x5930, (CharType)0x0230,
 		(CharType)0x5d30, (CharType)0x8c30, (CharType)0x6f30, (CharType)0xc179, (CharType)0x9230, (CharType)0xb750,
-		(CharType)0x6430, (CharType)0x5130, (CharType)0x7e30, (CharType)0x5b30, (CharType)0x9330, (CharType)0x2300,
+		(CharType)0x6430, (CharType)0x5130, (CharType)0x7e30, (CharType)0x5b30, (CharType)0x9330, (CharType)0x0230,
 		(CharType)0xaf0b, (CharType)0xbe0b, (CharType)0xae0b, (CharType)0xb10b, (CharType)0xbf0b, (CharType)0xa80b,
 		(CharType)0xcd0b, (CharType)0xa40b, (CharType)0x2000, (CharType)0xae0b, (CharType)0xca0b, (CharType)0xb40b,
 		(CharType)0xbf0b, (CharType)0x950b, (CharType)0xb30b, (CharType)0xbf0b, (CharType)0xb20b, (CharType)0xc70b,
@@ -1128,34 +1129,34 @@ namespace ztd { namespace text { namespace tests {
 		(CharType)0x2000, (CharType)0x24c6, (CharType)0x98b2, (CharType)0x74c7, (CharType)0x2000, (CharType)0x24c6,
 		(CharType)0x98b2, (CharType)0x74c7, (CharType)0x8cc1, (CharType)0x1cc1, (CharType)0x2000, (CharType)0xe4b9,
 		(CharType)0x7cc7, (CharType)0x74c7, (CharType)0x2000, (CharType)0x24c6, (CharType)0x98b2, (CharType)0x74c7,
-		(CharType)0x8cc1, (CharType)0x1cc1, (CharType)0x2000, (CharType)0xc800, (CharType)0x3cbb, (CharType)0xc0c9,
+		(CharType)0x8cc1, (CharType)0x1cc1, (CharType)0x2000, (CharType)0x00c8, (CharType)0x3cbb, (CharType)0xc0c9,
 		(CharType)0xc4b3, (CharType)0x2000, (CharType)0xc8c0, (CharType)0xc0c9, (CharType)0xc4b3, (CharType)0x2000,
 		(CharType)0xd0b9, (CharType)0x3cc7, (CharType)0xdcc2, (CharType)0xe0ac, (CharType)0x2000, (CharType)0xc8c0,
 		(CharType)0x24b8, (CharType)0x74ba, (CharType)0x2000, (CharType)0x98b2, (CharType)0x2000, (CharType)0xb8c5,
 		(CharType)0x1cc8, (CharType)0x98b0, (CharType)0x2000, (CharType)0x24c6, (CharType)0x98b2, (CharType)0x74c7,
 		(CharType)0x8cc1, (CharType)0x1cc1, (CharType)0x2e00, (CharType)0x2000, (CharType)0x3052, (CharType)0x955e,
 		(CharType)0x2f66, (CharType)0x1162, (CharType)0x3c77, (CharType)0x5e79, (CharType)0x2a59, (CharType)0x7d59,
-		(CharType)0xcff0, (CharType)0xd88f, (CharType)0x2f66, (CharType)0x1162, (CharType)0xc540, (CharType)0x8b4e,
-		(CharType)0x3c77, (CharType)0x2a59, (CharType)0xb182, (CharType)0x2300, (CharType)0xa16c, (CharType)0x9670,
+		(CharType)0x0cff, (CharType)0xd88f, (CharType)0x2f66, (CharType)0x1162, (CharType)0x0c54, (CharType)0x8b4e,
+		(CharType)0x3c77, (CharType)0x2a59, (CharType)0xb182, (CharType)0x0230, (CharType)0xa16c, (CharType)0x0967,
 		(CharType)0xfb4e, (CharType)0x554f, (CharType)0xdd4f, (CharType)0xc18b, (CharType)0x2875, (CharType)0x864e,
 		(CharType)0x2000, (CharType)0x7000, (CharType)0x6900, (CharType)0x7000, (CharType)0x6500, (CharType)0x6e00,
 		(CharType)0x7600, (CharType)0x2000, (CharType)0x8476, (CharType)0x7998, (CharType)0xee76, (CharType)0xfd80,
-		(CharType)0x2857, (CharType)0x8f96, (CharType)0xbf4f, (CharType)0x4e00, (CharType)0x2a4e, (CharType)0x2000,
+		(CharType)0x2857, (CharType)0x8f96, (CharType)0xbf4f, (CharType)0x004e, (CharType)0x2a4e, (CharType)0x2000,
 		(CharType)0x4300, (CharType)0x6f00, (CharType)0x6e00, (CharType)0x6400, (CharType)0x6100, (CharType)0x2000,
 		(CharType)0x6500, (CharType)0x6e00, (CharType)0x7600, (CharType)0x6900, (CharType)0x7200, (CharType)0x6f00,
 		(CharType)0x6e00, (CharType)0x6d00, (CharType)0x6500, (CharType)0x6e00, (CharType)0x7400, (CharType)0x2000,
 		(CharType)0xcc91, (CharType)0xd18d, (CharType)0x778d, (CharType)0x6567, (CharType)0x5553, (CharType)0x4351,
-		(CharType)0x4b6d, (CharType)0xd58b, (CharType)0x1ff0, (CharType)0xed30, (CharType)0xa430, (CharType)0xbf30,
-		(CharType)0xfc30, (CharType)0x188a, (CharType)0x5800, (CharType)0x1300, (CharType)0x855f, (CharType)0x5f6a,
+		(CharType)0x4b6d, (CharType)0xd58b, (CharType)0x01ff, (CharType)0xed30, (CharType)0xa430, (CharType)0xbf30,
+		(CharType)0xfc30, (CharType)0x188a, (CharType)0x0580, (CharType)0x0130, (CharType)0x855f, (CharType)0x5f6a,
 		(CharType)0x1f67, (CharType)0x9395, (CharType)0x6e30, (CharType)0xd130, (CharType)0xfc30, (CharType)0xc630,
 		(CharType)0xa330, (CharType)0xfc30, (CharType)0xc253, (CharType)0xa052, (CharType)0x6730, (CharType)0xb330,
-		(CharType)0xed30, (CharType)0xca30, (CharType)0x9590, (CharType)0x7075, (CharType)0x2a68, (CharType)0x4c30,
+		(CharType)0xed30, (CharType)0xca30, (CharType)0x0959, (CharType)0x7075, (CharType)0x2a68, (CharType)0x4c30,
 		(CharType)0x1f61, (CharType)0xd367, (CharType)0xe162, (CharType)0x2759, (CharType)0x2000, (CharType)0x7c00,
 		(CharType)0x2000, (CharType)0xb930, (CharType)0xaf30, (CharType)0xfc30, (CharType)0xd730, (CharType)0x1f90,
 		(CharType)0x3158, (CharType)0x2000, (CharType)0x2300, (CharType)0xed30, (CharType)0xa430, (CharType)0xbf30,
 		(CharType)0xfc30, (CharType)0x2000, (CharType)0x2300, (CharType)0xb930, (CharType)0xaf30, (CharType)0xfc30,
 		(CharType)0xd730, (CharType)0x1f90, (CharType)0x3158, (CharType)0x2000, (CharType)0x2300, (CharType)0x3190,
-		(CharType)0xa520, (CharType)0x8765, (CharType)0x2566, (CharType)0x2000, (CharType)0x5c00, (CharType)0x2200,
+		(CharType)0x0a52, (CharType)0x8765, (CharType)0x2566, (CharType)0x2000, (CharType)0x5c00, (CharType)0x2200,
 		(CharType)0x4600, (CharType)0x6100, (CharType)0x6500, (CharType)0x6e00, (CharType)0x5c00, (CharType)0x2200,
 		(CharType)0x2000, (CharType)0x6f00, (CharType)0x6700, (CharType)0x2000, (CharType)0x5c00, (CharType)0x2200,
 		(CharType)0x6800, (CharType)0x6500, (CharType)0x7200, (CharType)0x7200, (CharType)0x6500, (CharType)0x6700,
@@ -1528,6 +1529,9 @@ namespace ztd { namespace text { namespace tests {
 			  (CharType)0x65, (CharType)0x2e, (CharType)0x2e, (CharType)0x2e, (CharType)0x20, (CharType)0x41,
 			  (CharType)0x75, (CharType)0x72, (CharType)0xc3, (CharType)0xa9, (CharType)0x6c, (CharType)0x69,
 			  (CharType)0x65, (CharType)0x2e, (CharType)0x00 };
+	inline constexpr std::size_t x_u8_unicode_sequence_truth_native_endian_storage_size
+		= sizeof(x_u8_unicode_sequence_truth_native_endian_storage<char>);
+
 
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_sequence_truth_native_endian
 		= x_u32_unicode_sequence_truth_native_endian_storage<char32_t>;
@@ -1559,22 +1563,28 @@ namespace ztd { namespace text { namespace tests {
 		= u8_unicode_sequence_truth_native_endian;
 
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_native_endian
-		= sizeof(wchar_t) == 4 ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-			                  : x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>;
-	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_big_endian = sizeof(wchar_t) == 4
+		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
+		? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
+		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
+			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
+	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_big_endian
+		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
 		? (ztd::text::endian::native == ztd::text::endian::big
 			     ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-			     : x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>)
-		: (ztd::text::endian::native == ztd::text::endian::big
-			     ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
-			     : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>);
+			     : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::text::endian::native == ztd::text::endian::big
+			        ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
+			        : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_little_endian
-		= sizeof(wchar_t) == 4 ? (ztd::text::endian::native == ztd::text::endian::little
-			       ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-			       : x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>)
-			                  : (ztd::text::endian::native == ztd::text::endian::little
-			                            ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
-			                            : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>);
+		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
+		? (ztd::text::endian::native == ztd::text::endian::little
+			     ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
+			     : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::text::endian::native == ztd::text::endian::little
+			        ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
+			        : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
 
 	inline constexpr const std::basic_string_view<char> unicode_sequence_truth_native_endian
 		= x_u8_unicode_sequence_truth_native_endian_storage<char>;
@@ -1591,8 +1601,9 @@ namespace ztd { namespace text { namespace tests {
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_native_endian);
 	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_native_endian);
-	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_native_endian
-		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
+	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_native_endian(
+		x_u8_unicode_sequence_truth_native_endian_storage<std::byte>,
+		x_u8_unicode_sequence_truth_native_endian_storage_size - 1);
 
 	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_big_endian);
@@ -1602,8 +1613,9 @@ namespace ztd { namespace text { namespace tests {
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_big_endian);
 	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_big_endian);
-	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_big_endian
-		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
+	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_big_endian(
+		x_u8_unicode_sequence_truth_native_endian_storage<std::byte>,
+		x_u8_unicode_sequence_truth_native_endian_storage_size - 1);
 
 	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_little_endian);
@@ -1613,8 +1625,9 @@ namespace ztd { namespace text { namespace tests {
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_little_endian);
 	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_little_endian);
-	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_little_endian
-		= x_u8_unicode_sequence_truth_native_endian_storage<std::byte>;
+	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_little_endian(
+		x_u8_unicode_sequence_truth_native_endian_storage<std::byte>,
+		x_u8_unicode_sequence_truth_native_endian_storage_size - 1);
 
 	inline constexpr const char32_t u32_unicode_invalid_input_arr[]                   = { 0xFFFFFFFF, 0 };
 	inline constexpr const char16_t u16_unicode_invalid_input_arr[]                   = { 0xD801, 0xFFFF, 0 };
@@ -1631,26 +1644,125 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_replacement_truth = L"?";
 	inline constexpr const std::basic_string_view<char> unicode_replacement_truth      = "?";
 
+	template <typename Char>
+	constexpr auto make_basic_source_character_set_reverse_storage_for() noexcept {
+		auto make_array = []() {
+			if constexpr (std::is_same_v<Char, char>) {
+				const auto& bscs
+					= "\f\v\t "
+					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
+					  "^&|~!=,\\\"'\0";
+				std::array<Char, 97> arr;
+				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				return arr;
+			}
+			else if constexpr (std::is_same_v<Char, wchar_t>) {
+				const auto& bscs
+					= L"\f\v\t "
+					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
+					  "^&|~!=,\\\"'\0";
+				std::array<Char, 97> arr;
+				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				return arr;
+			}
+			else if constexpr (std::is_same_v<Char, char8_t>) {
+				const auto& bscs
+					= u8"\f\v\t "
+					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
+					  "^&|~!=,\\\"'\0";
+				std::array<Char, 97> arr;
+				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				return arr;
+			}
+			else if constexpr (std::is_same_v<Char, ztd::text::uchar8_t>) {
+				const auto& bscs
+					= u8"\f\v\t "
+					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
+					  "^&|~!=,\\\"'\0";
+				std::array<Char, 97> arr;
+				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				return arr;
+			}
+			else if constexpr (std::is_same_v<Char, char16_t>) {
+				const auto& bscs
+					= u"\f\v\t "
+					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
+					  "^&|~!=,\\\"'\0";
+				std::array<Char, 97> arr;
+				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				return arr;
+			}
+			else if constexpr (std::is_same_v<Char, char32_t>) {
+				const auto& bscs
+					= U"\f\v\t "
+					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
+					  "^&|~!=,\\\"'\0";
+				std::array<Char, 97> arr;
+				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				return arr;
+			}
+			else {
+				static_assert(ztd::text::__txt_detail::__always_false_v<Char>, "no");
+			}
+		};
+		auto arr = make_array();
+		if constexpr (sizeof(Char) > 1) {
+			unsigned char* aliased_data      = reinterpret_cast<unsigned char*>(arr.data());
+			unsigned char* aliased_data_last = reinterpret_cast<unsigned char*>(arr.data() + arr.size());
+			for (; aliased_data != aliased_data_last; aliased_data += sizeof(Char)) {
+				std::reverse(aliased_data, aliased_data + sizeof(Char));
+			}
+		}
+		return arr;
+	}
+
+	template <typename Char>
+	const auto& basic_source_character_set_reverse_storage() noexcept {
+		static const auto arr = make_basic_source_character_set_reverse_storage_for<Char>();
+		return arr;
+	}
+
 	inline constexpr const std::size_t u32_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<char32_t> u32_basic_source_character_set(
-		U"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		U"\f\v\t "
+		U"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		u32_basic_source_character_set_size);
 	inline constexpr const std::size_t u16_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<char16_t> u16_basic_source_character_set(
-		u"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		u"\f\v\t "
+		u"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		u16_basic_source_character_set_size);
 	inline constexpr const std::size_t u8_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set(
-		u8"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		u8"\f\v\t "
+		u8"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		u8_basic_source_character_set_size);
 	inline constexpr const std::size_t w_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<wchar_t> w_basic_source_character_set(
-		L"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		L"\f\v\t "
+		L"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		w_basic_source_character_set_size);
 	inline constexpr const std::size_t basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<char> basic_source_character_set(
-		"\f\v\t \nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
+		"\f\v\t "
+		"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		basic_source_character_set_size);
+
+	inline const std::basic_string_view<char32_t> u32_basic_source_character_set_reverse(
+		basic_source_character_set_reverse_storage<char32_t>().data(),
+		basic_source_character_set_reverse_storage<char32_t>().size());
+	inline const std::basic_string_view<char16_t> u16_basic_source_character_set_reverse(
+		basic_source_character_set_reverse_storage<char16_t>().data(),
+		basic_source_character_set_reverse_storage<char16_t>().size());
+	inline const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set_reverse(
+		basic_source_character_set_reverse_storage<ztd::text::uchar8_t>().data(),
+		basic_source_character_set_reverse_storage<ztd::text::uchar8_t>().size());
+	inline const std::basic_string_view<wchar_t> w_basic_source_character_set_reverse(
+		basic_source_character_set_reverse_storage<wchar_t>().data(),
+		basic_source_character_set_reverse_storage<wchar_t>().size());
+	inline const std::basic_string_view<char> basic_source_character_set_reverse(
+		basic_source_character_set_reverse_storage<char>().data(),
+		basic_source_character_set_reverse_storage<char>().size());
 
 	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_basic_source_character_set);
@@ -1662,6 +1774,48 @@ namespace ztd { namespace text { namespace tests {
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_basic_source_character_set);
 	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::basic_source_character_set);
+
+	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+			     ? u32_basic_source_character_set
+			     : u32_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> u16_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+			     ? u16_basic_source_character_set
+			     : u16_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> u8_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+			     ? u8_basic_source_character_set
+			     : u8_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> w_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+			     ? w_basic_source_character_set
+			     : w_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+			     ? basic_source_character_set
+			     : basic_source_character_set_reverse);
+
+	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+			     ? u32_basic_source_character_set
+			     : u32_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> u16_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+			     ? u16_basic_source_character_set
+			     : u16_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> u8_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+			     ? u8_basic_source_character_set
+			     : u8_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> w_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+			     ? w_basic_source_character_set
+			     : w_basic_source_character_set_reverse);
+	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+			     ? basic_source_character_set
+			     : basic_source_character_set_reverse);
 
 	template <typename Encoding>
 	constexpr auto basic_source_character_set_for() {
@@ -1758,7 +1912,6 @@ namespace ztd { namespace text { namespace tests {
 			}
 		}
 	}
-
 }}} // namespace ztd::text::tests
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_VCXX_I_)

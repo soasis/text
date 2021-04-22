@@ -45,8 +45,8 @@
 #include <ztd/text/transcode.hpp>
 #include <ztd/text/count_code_points.hpp>
 #include <ztd/text/count_code_points.hpp>
-#include <ztd/text/validate_code_units.hpp>
-#include <ztd/text/validate_code_points.hpp>
+#include <ztd/text/validate_decodable_as.hpp>
+#include <ztd/text/validate_encodable_as.hpp>
 
 #include <ztd/text/encode_view.hpp>
 #include <ztd/text/decode_view.hpp>

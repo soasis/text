@@ -45,7 +45,8 @@ This covers the full universe of potential operations you may want to perform on
 	converting/encode
 	converting/decode
 	converting/transcode
-	converting/validate code points
-	converting/validate code units
+	converting/validate encodable
+	converting/validate decodable
+	converting/validate transcodable
 	converting/count code points
 	converting/count code units

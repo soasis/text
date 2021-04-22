@@ -488,6 +488,25 @@ namespace ztd { namespace text {
 			return ::std::move(this->__base_range_t::__get_value());
 		}
 
+		//////
+		/// @brief Returns whether the last read operation had an encoding error or not.
+		///
+		/// @returns The ztd::text::encoding_error that occurred. This can be ztd::text::encoding_error::ok for
+		/// an operation that went just fine.
+		///
+		/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
+		/// buffer, will never return an error. This is the case with specific encoding operations with
+		/// ztd::text::replacement_handler, or ztd::text::throw_handler.
+		//////
+		constexpr encoding_error error_code() const noexcept {
+			if constexpr (_IsErrorless) {
+				return encoding_error::ok;
+			}
+			else {
+				return this->__base_error_cache_t::_M_error_code;
+			}
+		}
+
 		// observers and modifiers: iteration
 
 		//////
@@ -615,9 +634,10 @@ namespace ztd { namespace text {
 			auto& __this_input_range = this->_M_range();
 			auto __this_cache_begin  = this->_M_cache.data();
 			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
+			::ztd::text::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 			if constexpr (_IsInputOrOutput) {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					::std::move(__this_input_range), this->from_encoding(), this->_M_cache, this->to_encoding(),
+					::std::move(__this_input_range), this->from_encoding(), __cache_view, this->to_encoding(),
 					this->from_handler(), this->to_handler(), this->from_state(), this->to_state());
 				__this_cache_end
 					= __txt_detail::__adl::__adl_to_address(__txt_detail::__adl::__adl_begin(__result.output));
@@ -628,7 +648,7 @@ namespace ztd { namespace text {
 			}
 			else {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					__this_input_range, this->from_encoding(), this->_M_cache, this->to_encoding(),
+					__this_input_range, this->from_encoding(), __cache_view, this->to_encoding(),
 					this->from_handler(), this->to_handler(), this->from_state(), this->to_state());
 				__this_cache_end
 					= __txt_detail::__adl::__adl_to_address(__txt_detail::__adl::__adl_begin(__result.output));

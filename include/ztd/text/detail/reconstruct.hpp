@@ -98,11 +98,10 @@ namespace ztd { namespace text {
 			}
 		}
 
-		template <typename _Ty, typename _Traits, typename _ArrayTy, ::std::size_t _ArraySize>
+		template <typename _Ty, typename _Traits, ::std::size_t _N>
 		constexpr ::std::basic_string_view<_Ty, _Traits> reconstruct(
-			::std::in_place_type_t<::std::basic_string_view<_Ty, _Traits>>,
-			const _ArrayTy (&__arr)[_ArraySize]) noexcept {
-			return ::std::basic_string_view<_Ty, _Traits>(__arr);
+			::std::in_place_type_t<::std::basic_string_view<_Ty, _Traits>>, const _Ty (&__array)[_N]) noexcept {
+			return ::std::basic_string_view<_Ty, _Traits>(__array);
 		}
 
 		template <typename _Range, typename _It, typename _Sen>
@@ -217,10 +216,25 @@ namespace ztd { namespace text {
 			= __is_nothrow_range_reconstructible_range<_Range, _InRange>::value;
 
 		template <typename _Range, typename _It, typename _Sen>
-		constexpr auto
-		__reconstruct(::std::in_place_type_t<_Range> __ty, _It&& __iterator, _Sen&& __sentinel) noexcept(
-			__is_nothrow_pair_reconstructible_range_v<_Range, _It,
-			     _Sen> || __is_nothrow_reconstructible_range_v<_Range, _It, _Sen> || ::std::is_nothrow_constructible_v<subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>, _It, _Sen>) {
+		constexpr bool __reconstruct_pair_noexcept() noexcept {
+			if constexpr (__is_pair_reconstructible_range_v<_Range, _It, _Sen>) {
+				return __is_nothrow_pair_reconstructible_range_v<_Range, _It, _Sen>;
+			}
+			else if constexpr (__is_reconstructible_range_v<_Range, _It, _Sen>) {
+				return __is_nothrow_reconstructible_range_v<_Range, _It, _Sen>;
+			}
+			else if (::std::is_constructible_v<subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>, _It, _Sen>) {
+				return ::std::is_nothrow_constructible_v<subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>,
+					_It, _Sen>;
+			}
+			else {
+				return false;
+			}
+		}
+
+		template <typename _Range, typename _It, typename _Sen>
+		constexpr auto __reconstruct(::std::in_place_type_t<_Range> __ty, _It&& __iterator,
+			_Sen&& __sentinel) noexcept(__reconstruct_pair_noexcept<_Range, _It, _Sen>()) {
 			if constexpr (__is_pair_reconstructible_range_v<_Range, _It, _Sen>) {
 				return __adl_pair_reconstruct(
 					__ty, ::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
@@ -236,24 +250,42 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Range, typename _ArgRange>
+		constexpr bool __reconstruct_noexcept() noexcept {
+			if constexpr (__is_range_reconstructible_range_v<_Range, _ArgRange>) {
+				return __is_nothrow_range_reconstructible_range_v<_Range, _ArgRange>;
+			}
+			else {
+				using _NoRefArgRange = ::std::remove_reference_t<_ArgRange>;
+				return noexcept(__reconstruct(::std::in_place_type<_Range>,
+					__adl::__adl_begin(::std::declval<_NoRefArgRange&>()),
+					__adl::__adl_end(::std::declval<_NoRefArgRange&>())));
+			}
+		}
+
+		template <typename _Range, typename _ArgRange>
 		constexpr decltype(auto) __reconstruct(::std::in_place_type_t<_Range> __tag, _ArgRange&& __range) noexcept(
-			__is_range_reconstructible_range_v<_Range, _ArgRange>
-			     ? __is_nothrow_range_reconstructible_range_v<_Range, _ArgRange>
-			     : noexcept(__reconstruct(__tag, __adl::__adl_begin(::std::forward<_ArgRange>(__range)),
-			          __adl::__adl_end(::std::forward<_ArgRange>(__range))))) {
+			__reconstruct_noexcept<_Range, _ArgRange>()) {
 			if constexpr (__is_range_reconstructible_range_v<_Range, _ArgRange>) {
 				return __adl_range_reconstruct(__tag, ::std::forward<_ArgRange>(__range));
 			}
 			else {
-				return __reconstruct(__tag, __adl::__adl_begin(::std::forward<_ArgRange>(__range)),
-					__adl::__adl_end(::std::forward<_ArgRange>(__range)));
+				return __reconstruct(__tag, __adl::__adl_begin(__range), __adl::__adl_end(__range));
 			}
 		}
 
-		template <typename _Range, typename _It = __range_iterator_t<_Range>,
-			typename _Sen = __range_sentinel_t<_Range>>
-		using __reconstruct_t = decltype(__reconstruct(::std::in_place_type<_Range>,
+		template <typename _Tag, typename _Array,
+			::std::enable_if_t<::std::is_array_v<__remove_cvref_t<_Array>> && !::std::is_const_v<_Array>>* = nullptr>
+		constexpr auto reconstruct(::std::in_place_type_t<_Tag> __tag, _Array& __array) noexcept {
+			return __reconstruct(__tag, __adl::__adl_begin(__array), __adl::__adl_end(__array));
+		}
+
+		template <typename _Tag, typename _It = __range_iterator_t<__remove_cvref_t<_Tag>>,
+			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Tag>>>
+		using __pair_reconstruct_t = decltype(__reconstruct(::std::in_place_type<__remove_cvref_t<_Tag>>,
 			::std::declval<__remove_cvref_t<_It>>(), ::std::declval<__remove_cvref_t<_Sen>>()));
+
+		template <typename _Range, typename _Tag = __remove_cvref_t<_Range>>
+		using __reconstruct_t = decltype(__reconstruct(::std::in_place_type<_Tag>, ::std::declval<_Range>()));
 
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

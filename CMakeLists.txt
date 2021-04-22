@@ -135,6 +135,15 @@ string(CONCAT --extra-constexpr-power
 		>
 	>
 )
+string(CONCAT --template-debugging-mode
+	$<IF:$<BOOL:${MSVC}>,
+		,
+		$<IF:$<BOOL:${CLANG}>,
+			-ftemplate-backtrack-limit=0,
+			-ftemplate-backtrace-limit=0
+		>
+	>
+)
 string(CONCAT ztd-use-cuneicode $<
 	$<AND:
 		$<BOOL:${ZTD_TEXT_USE_CUNEICODE}>,

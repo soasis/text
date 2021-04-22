@@ -55,8 +55,8 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief The result of valdation operations (such as ztd_text_validate_code_units and
-	/// ztd_text_validate_code_points) that specifically do not include a reference to the state.
+	/// @brief The result of valdation operations (such as ztd_text_validate_decodable_as and
+	/// ztd_text_validate_encodable_as) that specifically do not include a reference to the state.
 	//////
 	template <typename _Input>
 	class stateless_validate_result {
@@ -94,8 +94,8 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of validation operations (such as ztd_text_validate_code_units and
-	/// ztd_text_validate_code_points).
+	/// @brief The result of validation operations (such as ztd_text_validate_decodable_as and
+	/// ztd_text_validate_encodable_as).
 	///
 	//////
 	template <typename _Input, typename _State>
@@ -125,27 +125,66 @@ namespace ztd { namespace text {
 	};
 
 	//////
+	/// @brief The result of a transcoding validation operations (e.g. from ztd_text_validate_transcodable_as).
+	///
+	//////
+	template <typename _Input, typename _DecodeState, typename _EncodeState>
+	class validate_transcode_result : public stateless_validate_result<_Input> {
+	private:
+		using __base_t = stateless_validate_result<_Input>;
+
+	public:
+		//////
+		/// @brief A reference to the state of the associated Encoding used for validating the input.
+		///
+		//////
+		::std::reference_wrapper<_DecodeState> from_state;
+		//////
+		/// @brief A reference to the state of the associated Encoding used for validating the input.
+		///
+		//////
+		::std::reference_wrapper<_EncodeState> to_state;
+
+		//////
+		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
+		/// ztd::text::encoding_error::ok if not provided.
+		///
+		/// @param[in] __input The input range to store.
+		/// @param[in] __is_valid Whether or not the validation succeeded.
+		/// @param[in] __from_state The state related to the encoding that was used to do validation.
+		/// @param[in] __to_state The state related to the encoding that was used to do validation.
+		//////
+		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
+		constexpr validate_transcode_result(
+			_ArgInput&& __input, bool __is_valid, _ArgFromState&& __from_state, _ArgToState&& __to_state)
+		: __base_t(::std::forward<_ArgInput>(__input), __is_valid)
+		, from_state(::std::forward<_ArgFromState>(__from_state))
+		, to_state(::std::forward<_ArgToState>(__to_state)) {
+		}
+	};
+
+	//////
 	/// @}
 	/////
 
 	namespace __txt_detail {
 		template <typename _Input, typename _State>
-		constexpr stateless_validate_result<_Input> __slice_to_stateless(validate_result<_Input, _State>&& __result) {
+		constexpr stateless_validate_result<_Input>
+		__slice_to_stateless(validate_result<_Input, _State>&& __result) noexcept(
+			::std::is_nothrow_constructible_v<stateless_validate_result<_Input>, validate_result<_Input, _State>>) {
+			return __result;
+		}
+
+		template <typename _Input, typename _DecodeState, typename _EncodeState>
+		constexpr stateless_validate_result<_Input>
+		__slice_to_stateless(validate_transcode_result<_Input, _DecodeState, _EncodeState>&& __result) noexcept(
+			::std::is_nothrow_constructible_v<stateless_validate_result<_Input>,
+			     validate_transcode_result<_Input, _DecodeState, _EncodeState>>) {
 			return __result;
 		}
 
 		template <typename _InputRange, typename _State>
 		using __reconstruct_validate_result_t = validate_result<__reconstruct_t<_InputRange>, _State>;
-
-		template <typename _InputRange, typename _State, typename _InFirst, typename _InLast, typename _ArgState>
-		constexpr decltype(auto) __reconstruct_validate_result(
-			_InFirst&& __in_first, _InLast&& __in_last, bool __is_valid, _ArgState&& __state) {
-			using _Result = validate_result<__reconstruct_t<_InputRange>, _State>;
-
-			return _Result(__reconstruct(::std::in_place_type<_InputRange>, ::std::forward<_InFirst>(__in_first),
-				               ::std::forward<_InLast>(__in_last)),
-				__is_valid, ::std::forward<_State>(__state));
-		}
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

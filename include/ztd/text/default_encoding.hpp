@@ -171,15 +171,15 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_compile_time_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, true> { };
+	class default_consteval_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, true> { };
 
 	//////
-	/// @brief A @c typename alias for ztd::text::default_compile_time_code_unit_encoding.
+	/// @brief A @c typename alias for ztd::text::default_consteval_code_unit_encoding.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	using default_compile_time_code_unit_encoding_t = typename default_compile_time_code_unit_encoding<_Type>::type;
+	using default_consteval_code_unit_encoding_t = typename default_consteval_code_unit_encoding<_Type>::type;
 
 	//////
 	/// @brief The default encoding associated with a given code point type, that serves as either input to an encode
@@ -206,15 +206,15 @@ namespace ztd { namespace text {
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	class default_compile_time_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, true> { };
+	class default_consteval_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, true> { };
 
 	//////
-	/// @brief A @c typename alias for ztd::text::default_compile_time_code_point_encoding.
+	/// @brief A @c typename alias for ztd::text::default_consteval_code_point_encoding.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
 	template <typename _Type>
-	using default_compile_time_code_point_encoding_t = typename default_compile_time_code_point_encoding<_Type>::type;
+	using default_consteval_code_point_encoding_t = typename default_consteval_code_point_encoding<_Type>::type;
 
 	//////
 	/// @}

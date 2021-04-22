@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/validate_code_points.hpp>
+#include <ztd/text/validate_encodable_as.hpp>

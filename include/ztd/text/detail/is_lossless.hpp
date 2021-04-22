@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -51,7 +51,8 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_encode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_encode_injective_v<_Encoding> : true> { };
+			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_encode_injective_v<_Encoding> : true> {
+		};
 
 		template <typename _Encoding, typename _ErrorHandler>
 		inline constexpr bool __is_encode_lossless_or_deliberate_v
@@ -60,22 +61,26 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_decode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_decode_injective_v<_Encoding> : true> { };
+			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_decode_injective_v<_Encoding> : true> {
+		};
 
 		template <typename _Encoding, typename _ErrorHandler>
 		inline constexpr bool __is_decode_lossless_or_deliberate_v
 			= __is_decode_lossless_or_deliberate<_Encoding, _ErrorHandler>::value;
 
-		template <typename _FromEncoding, typename _ToEncoding, typename _ErrorHandler>
+		template <typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler>
 		class __is_transcode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler>
-			       ? is_decode_injective_v<_FromEncoding> && is_encode_injective_v<_ToEncoding>
-			       : true> { };
+			  (__txt_detail::__is_careless_error_handler_v<_FromErrorHandler> ? is_decode_injective_v<_FromEncoding>
+			                                                                  : true)
+			       && (__txt_detail::__is_careless_error_handler_v<_ToErrorHandler>
+			                 ? is_encode_injective_v<_ToEncoding>
+			                 : true)> { };
 
-		template <typename _FromEncoding, typename _ToEncoding, typename _ErrorHandler>
+		template <typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler>
 		inline constexpr bool __is_transcode_lossless_or_deliberate_v
-			= __is_transcode_lossless_or_deliberate<_FromEncoding, _ToEncoding, _ErrorHandler>::value;
+			= __is_transcode_lossless_or_deliberate<_FromEncoding, _ToEncoding, _FromErrorHandler,
+			     _ToErrorHandler>::value;
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

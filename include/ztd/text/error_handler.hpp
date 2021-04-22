@@ -494,21 +494,9 @@ namespace ztd { namespace text {
 	using default_incomplete_handler = incomplete_handler<default_handler>;
 
 	namespace __txt_detail {
-		class __careless_handler : public default_handler {
-		private:
-			using __error_handler_base_t = default_handler;
-
-		public:
-			using error_handler = __error_handler_base_t;
-
-			using __error_handler_base_t::__error_handler_base_t;
-
-			using __error_handler_base_t::operator();
-		};
-
 		template <typename _ErrorHandler>
 		inline constexpr bool __is_careless_error_handler_v
-			= ::std::is_same_v<__txt_detail::__remove_cvref_t<_ErrorHandler>, __careless_handler>;
+			= ::std::is_same_v<__txt_detail::__remove_cvref_t<_ErrorHandler>, default_handler>;
 
 		template <typename _ErrorHandler>
 		constexpr auto __duplicate_or_be_careless(_ErrorHandler& __original) {
@@ -518,11 +506,11 @@ namespace ztd { namespace text {
 					return __original;
 				}
 				else {
-					return __careless_handler {};
+					return default_handler {};
 				}
 			}
 			else {
-				return __careless_handler {};
+				return default_handler {};
 			}
 		}
 	} // namespace __txt_detail

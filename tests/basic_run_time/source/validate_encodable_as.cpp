@@ -28,76 +28,76 @@
 //
 // ============================================================================>
 
-#include <ztd/text/validate_code_points.hpp>
+#include <ztd/text/validate_encodable_as.hpp>
 #include <ztd/text/encoding.hpp>
 
 #include <catch2/catch.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-TEST_CASE("text/validate_code_points/basic", "basic usages of validate_code_points function do not explode") {
+TEST_CASE("text/validate_encodable_as/basic", "basic usages of validate_encodable_as function do not explode") {
 	SECTION("execution") {
 		ztd::text::execution encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::validate_code_points(
+			auto result1 = ztd::text::validate_encodable_as(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("wide_execution") {
 		ztd::text::wide_execution encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::validate_code_points(
+			auto result1 = ztd::text::validate_encodable_as(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("literal") {
 		ztd::text::literal encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::validate_code_points(
+			auto result1 = ztd::text::validate_encodable_as(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("wide_literal") {
 		ztd::text::wide_literal encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::validate_code_points(
+			auto result1 = ztd::text::validate_encodable_as(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("utf8") {
 		ztd::text::utf8 encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		auto result1
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+		     = ztd::text::validate_encodable_as(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 		REQUIRE(result1);
 	}
 	SECTION("utf16") {
 		ztd::text::utf16 encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		auto result1
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+		     = ztd::text::validate_encodable_as(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 		REQUIRE(result1);
 	}
 	SECTION("utf32") {
 		ztd::text::utf32 encoding {};
-		auto result0 = ztd::text::validate_code_points(ztd::text::tests::u32_basic_source_character_set, encoding);
+		auto result0 = ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0);
 		auto result1
-		     = ztd::text::validate_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
+		     = ztd::text::validate_encodable_as(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 		REQUIRE(result1);
 	}
 }

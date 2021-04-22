@@ -36,3 +36,5 @@ This detects when the ``encode_state`` of a given ``encoding`` requires the ``en
 The classification for this is done by :doc:`ztd::text::is_encode_state_independent </api/is_encode_state_independent>`.
 
 .. doxygenfunction:: ztd::text::make_encode_state
+
+.. doxygenfunction:: ztd::text::make_encode_state_with
