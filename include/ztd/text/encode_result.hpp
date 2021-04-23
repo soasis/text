@@ -201,12 +201,12 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
-		constexpr encode_result<_Input, __txt_detail::__remove_cvref_t<_DesiredOutput>, _State> __replace_result_output(
-			encode_result<_Input, _Output, _State>&& __result,
+		constexpr encode_result<_Input, __remove_cvref_t<_DesiredOutput>, _State>
+		__replace_result_output(encode_result<_Input, _Output, _State>&& __result,
 			_DesiredOutput&&
 			     __desired_output) noexcept(::std::is_nothrow_constructible_v<encode_result<_Input, _Output, _State>,
 			_Input&&, _DesiredOutput, _State&, encoding_error, ::std::size_t>) {
-			using _Result = encode_result<_Input, __txt_detail::__remove_cvref_t<_DesiredOutput>, _State>;
+			using _Result = encode_result<_Input, __remove_cvref_t<_DesiredOutput>, _State>;
 			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
 				__result.state, __result.error_code, __result.handled_errors);
 		}
@@ -241,9 +241,9 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
-		inline constexpr bool __is_encode_error_handler_callable_v = __is_detected_v<__detect_callable_handler,
-			_ErrorHandler, _Encoding, __reconstruct_encode_result_t<__remove_cvref_t<_Input>, _Output, _State>,
-			::ztd::text::span<code_unit_t<_Encoding>>>;
+		inline constexpr bool __is_encode_error_handler_callable_v
+			= __is_detected_v<__detect_callable_handler, _ErrorHandler, _Encoding,
+			     __reconstruct_encode_result_t<_Input, _Output, _State>, ::ztd::text::span<code_unit_t<__remove_cvref_t<_Encoding>>>>;
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
 		inline constexpr bool __is_encode_one_callable_v

@@ -112,8 +112,6 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
 		///
-		/// @overload
-		///
 		/// @tparam _ViewErrorHandler The type of the passed-in error handler to use for these operations.
 		///
 		/// @param[in] __state The state to use for this code point view.

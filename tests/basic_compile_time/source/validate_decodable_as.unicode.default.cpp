@@ -34,6 +34,9 @@
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 
+// There is an infinite recursion that needs to be investigated for Clang here...
+#if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILER_CLANG_I_)
+
 inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_default {
 
 	template <typename T>
@@ -62,3 +65,5 @@ inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode
 	}
 
 } // namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_default
+
+#endif

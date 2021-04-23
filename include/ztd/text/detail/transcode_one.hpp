@@ -170,12 +170,10 @@ namespace ztd { namespace text {
 			typename _ErrorHandler, typename _State>
 		constexpr auto __basic_encode_one(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 			_ErrorHandler& __error_handler, _State& __state) {
-			using _UInput         = __remove_cvref_t<_Input>;
 			using _UOutput        = __remove_cvref_t<_Output>;
 			using _UEncoding      = __remove_cvref_t<_Encoding>;
 			using _OutputIterator = __range_iterator_t<_UOutput>;
 			using _Blackhole      = unbounded_view<__blackhole_iterator>;
-
 
 			if constexpr (__is_iterator_output_iterator_v<_OutputIterator>) {
 				return __encoding.encode_one(
@@ -302,7 +300,6 @@ namespace ztd { namespace text {
 			_IntermediateContainer& __intermediate, _Output&& __output, _ToEncoding& __to_encoding,
 			_FromErrorHandler& __from_error_handler, _ToErrorHandler& __to_error_handler, _FromState& __from_state,
 			_ToState& __to_state) {
-			using _UInput = __remove_cvref_t<_Input>;
 			using _WorkingIntermediate
 				= ::std::conditional_t<__is_iterator_concept_or_better_v<contiguous_iterator_tag,
 				                            __range_iterator_t<_IntermediateContainer>>,
@@ -660,7 +657,6 @@ namespace ztd { namespace text {
 			typename _State>
 		constexpr auto __basic_count_code_points_one(_Input&& __input, _Encoding&& __encoding,
 			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UInput = __remove_cvref_t<_Input>;
 			using _Result = count_result<__reconstruct_t<_Input>, _State>;
 
 			auto __intermediate_result = __basic_encode_one<__consume::__no>(::std::forward<_Input>(__input),
@@ -689,7 +685,6 @@ namespace ztd { namespace text {
 			typename _State>
 		constexpr auto __basic_count_code_units_one(_Input&& __input, _Encoding&& __encoding,
 			_OutputCodePointContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UInput = __remove_cvref_t<_Input>;
 			using _Result = count_result<__reconstruct_t<_Input>, _State>;
 
 			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),

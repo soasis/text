@@ -91,7 +91,6 @@ namespace ztd { namespace text {
 	constexpr auto basic_encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
 		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
-		using _UOutput        = __txt_detail::__remove_cvref_t<_Output>;
 		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
 		// using _OutputValueType = __txt_detail::__range_value_type_t<_UOutput>;
 		using _IntermediateInput  = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,

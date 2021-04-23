@@ -412,7 +412,7 @@ namespace ztd { namespace text {
 			///
 			//////
 			friend constexpr bool operator==(const _Derived& __it, const __encoding_sentinel_t&) {
-				if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
+				if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
 					return __it._M_base_is_empty()
 						&& static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel)
 						== __it.__base_cursor_cache_t::_M_size;
@@ -436,7 +436,7 @@ namespace ztd { namespace text {
 			///
 			//////
 			friend constexpr bool operator!=(const _Derived& __it, const __encoding_sentinel_t&) {
-				if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
+				if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
 					return !__it._M_base_is_empty()
 						|| static_cast<__base_cursor_cache_size_t>(__txt_detail::_CursorlessSizeSentinel)
 						!= __it.__base_cursor_cache_t::_M_size;

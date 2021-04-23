@@ -88,41 +88,41 @@ namespace ztd { namespace text {
                     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                _UInput>>;
 		using _UEncoding      = __txt_detail::__remove_cvref_t<_Encoding>;
-		using _Result         = validate_transcode_result<_WorkingInput, _DecodeState>;
+		using _Result         = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
 		_WorkingInput __working_input(
 			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
 		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one,
 			              _WorkingInput, _Encoding, _DecodeState, _EncodeState>) {
+			using _Result = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
 					tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
 				if (!__result.valid) {
-					return _Result(::std::move(__result.input), false, __decode_state);
+					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
 				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
 			}
-			return _Result(::std::move(__working_input), true, __decode_state);
+			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one,
 			                   _WorkingInput, _Encoding, _DecodeState>) {
-			(void)__encode_state;
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
 					tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
 				if (!__result.valid) {
-					return _Result(::std::move(__result.input), false, __decode_state);
+					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
 				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
 			}
-			return _Result(::std::move(__working_input), true, __decode_state);
+			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<
 			                   __txt_detail::__detect_adl_internal_text_validate_decodable_as_one, _WorkingInput,
@@ -131,31 +131,30 @@ namespace ztd { namespace text {
 				auto __result = __text_validate_decodable_as_one(
 					tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
 				if (!__result.valid) {
-					return _Result(::std::move(__result.input), false, __decode_state);
+					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
 				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
 			}
-			return _Result(::std::move(__working_input), true, __decode_state);
+			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else if constexpr (__txt_detail::__is_detected_v<
 			                   __txt_detail::__detect_adl_internal_text_validate_decodable_as_one, _WorkingInput,
 			                   _Encoding, _DecodeState>) {
-			(void)__encode_state;
 			for (;;) {
 				auto __result = __text_validate_decodable_as_one(
 					tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
 				if (!__result.valid) {
-					return _Result(::std::move(__result.input), false, __decode_state);
+					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
 				if (__txt_detail::__adl::__adl_empty(__working_input)) {
 					break;
 				}
 			}
-			return _Result(::std::move(__working_input), true, __decode_state);
+			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else {
 			using _CodeUnit = code_unit_t<_UEncoding>;
@@ -172,7 +171,7 @@ namespace ztd { namespace text {
 				if (!__stateless_validate_result.valid) {
 					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-						false, __decode_state);
+						false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__stateless_validate_result.input);
 				if (__txt_detail::__adl::__adl_empty(__working_input)) {
@@ -181,7 +180,7 @@ namespace ztd { namespace text {
 			}
 			return _Result(
 				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-				true, __decode_state);
+				true, __decode_state, __encode_state);
 		}
 	}
 
@@ -227,76 +226,8 @@ namespace ztd { namespace text {
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else {
-			using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
-			using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
-			using _WorkingInput   = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-                    ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                         ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-                    _UInput>>;
-			using _UEncoding      = __txt_detail::__remove_cvref_t<_Encoding>;
-			using _Result         = validate_result<_WorkingInput, _DecodeState>;
-
-			_WorkingInput __working_input(
-				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
-
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one,
-				              _WorkingInput, _Encoding, _DecodeState>) {
-				(void)__encode_state;
-				for (;;) {
-					auto __result = text_validate_decodable_as_one(
-						tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __decode_state);
-					if (!__result.valid) {
-						return _Result(::std::move(__result.input), false, __decode_state);
-					}
-					__working_input = ::std::move(__result.input);
-					if (__txt_detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(::std::move(__working_input), true, __decode_state);
-			}
-			else if constexpr (__txt_detail::__is_detected_v<
-				                   __txt_detail::__detect_adl_text_validate_decodable_as_one, _WorkingInput,
-				                   _Encoding, _DecodeState>) {
-				(void)__encode_state;
-				for (;;) {
-					auto __result = __text_validate_decodable_as_one(
-						tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __decode_state);
-					if (!__result.valid) {
-						return _Result(::std::move(__result.input), false, __decode_state);
-					}
-					__working_input = ::std::move(__result.input);
-					if (__txt_detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(::std::move(__working_input), true, __decode_state);
-			}
-			else {
-				using _CodeUnit  = code_unit_t<_UEncoding>;
-				using _CodePoint = code_point_t<_UEncoding>;
-
-				_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
-				_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
-
-				for (;;) {
-					auto __stateless_validate_result
-						= __txt_detail::__basic_validate_decodable_as_one(__working_input, __encoding,
-						     __code_unit_buf, __code_point_buf, __decode_state, __encode_state);
-					if (!__stateless_validate_result.valid) {
-						return _Result(__txt_detail::__reconstruct(
-							               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-							false, __decode_state);
-					}
-					__working_input = ::std::move(__stateless_validate_result.input);
-					if (__txt_detail::__adl::__adl_empty(__working_input)) {
-						break;
-					}
-				}
-				return _Result(
-					__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-					true, __decode_state);
-			}
+			return basic_validate_decodable_as(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), __decode_state, __encode_state);
 		}
 	}
 
@@ -331,9 +262,15 @@ namespace ztd { namespace text {
 		else {
 			using _State = encode_state_t<_UEncoding>;
 
-			_State __encode_state = make_encode_state(__encoding);
-			return validate_decodable_as(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				__decode_state, __encode_state);
+			_State __encode_state  = make_encode_state_with(__encoding, __decode_state);
+			auto __stateful_result = validate_decodable_as(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), __decode_state, __encode_state);
+			if constexpr (__txt_detail::__is_specialization_of_v<decltype(__stateful_result), validate_result>) {
+				return __stateful_result;
+			}
+			else {
+				return __txt_detail::__drop_single_state(::std::move(__stateful_result));
+			}
 		}
 	}
 

@@ -183,6 +183,14 @@ namespace ztd { namespace text {
 			return __result;
 		}
 
+		template <typename _Input, typename _DecodeState, typename _EncodeState>
+		constexpr validate_result<_Input, _DecodeState>
+		__drop_single_state(validate_transcode_result<_Input, _DecodeState, _EncodeState>&& __result) noexcept(
+			::std::is_nothrow_constructible_v<validate_result<_Input, _DecodeState>, _Input&&, bool&, _DecodeState&>) {
+			return validate_result<_Input, _DecodeState>(
+				::std::move(__result.input), ::std::move(__result.valid), __result.from_state);
+		}
+
 		template <typename _InputRange, typename _State>
 		using __reconstruct_validate_result_t = validate_result<__reconstruct_t<_InputRange>, _State>;
 	} // namespace __txt_detail

@@ -41,7 +41,7 @@
 #include <iostream>
 
 int main(int, char*[]) {
-	const std::string_view input              = reinterpret_cast<const char*>(u8"приветствие" + 0);
+	const std::string_view input              = reinterpret_cast<const char*>(&u8"приветствие"[0]);
 	const std::u16string_view expected_output = u"приветствие";
 
 	using rope = __gnu_cxx::crope; // rope of char

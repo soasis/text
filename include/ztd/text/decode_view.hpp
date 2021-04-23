@@ -237,17 +237,23 @@ namespace ztd { namespace text {
 			return sentinel();
 		}
 
-		//////
-		/// @brief The reconstruct extension point for rebuilding an encoding view from its iterator and sentinel
-		/// type.
-		//////
-		friend decode_view reconstruct(::std::in_place_type_t<decode_view>, iterator __it, sentinel) {
-			return decode_view(::std::move(__it));
-		}
-
 	private:
 		iterator _M_it;
 	};
+
+	//////
+	/// @brief The reconstruct extension point for rebuilding an encoding view from its iterator and sentinel
+	/// type.
+	//////
+	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
+	constexpr decode_view<_Encoding, _Range, _ErrorHandler, _State> reconstruct(
+		::std::in_place_type_t<decode_view<_Encoding, _Range, _ErrorHandler, _State>>,
+		typename decode_view<_Encoding, _Range, _ErrorHandler, _State>::iterator __it,
+		typename decode_view<_Encoding, _Range, _ErrorHandler, _State>::sentinel) noexcept(::std::
+		     is_nothrow_constructible_v<decode_view<_Encoding, _Range, _ErrorHandler, _State>,
+		          typename decode_view<_Encoding, _Range, _ErrorHandler, _State>::iterator&&>) {
+		return decode_view<_Encoding, _Range, _ErrorHandler, _State>(::std::move(__it));
+	}
 
 	//////
 	/// @}

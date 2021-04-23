@@ -1653,7 +1653,7 @@ namespace ztd { namespace text { namespace tests {
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
 					  "^&|~!=,\\\"'\0";
 				std::array<Char, 97> arr;
-				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
 			else if constexpr (std::is_same_v<Char, wchar_t>) {
@@ -1662,7 +1662,7 @@ namespace ztd { namespace text { namespace tests {
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
 					  "^&|~!=,\\\"'\0";
 				std::array<Char, 97> arr;
-				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
 			else if constexpr (std::is_same_v<Char, char8_t>) {
@@ -1671,7 +1671,7 @@ namespace ztd { namespace text { namespace tests {
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
 					  "^&|~!=,\\\"'\0";
 				std::array<Char, 97> arr;
-				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
 			else if constexpr (std::is_same_v<Char, ztd::text::uchar8_t>) {
@@ -1680,7 +1680,7 @@ namespace ztd { namespace text { namespace tests {
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
 					  "^&|~!=,\\\"'\0";
 				std::array<Char, 97> arr;
-				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
 			else if constexpr (std::is_same_v<Char, char16_t>) {
@@ -1689,7 +1689,7 @@ namespace ztd { namespace text { namespace tests {
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
 					  "^&|~!=,\\\"'\0";
 				std::array<Char, 97> arr;
-				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
 			else if constexpr (std::is_same_v<Char, char32_t>) {
@@ -1698,7 +1698,7 @@ namespace ztd { namespace text { namespace tests {
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
 					  "^&|~!=,\\\"'\0";
 				std::array<Char, 97> arr;
-				ztd::text::__txt_detail::__copy(std::begin(bscs), std::end(bscs), arr.begin(), arr.end());
+				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
 			else {

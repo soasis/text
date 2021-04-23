@@ -106,7 +106,6 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state) {
 		using _UInput                = __txt_detail::__remove_cvref_t<_Input>;
-		using _UOutput               = __txt_detail::__remove_cvref_t<_Output>;
 		using _InputValueType        = __txt_detail::__range_value_type_t<_UInput>;
 		using _WorkingInput          = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,

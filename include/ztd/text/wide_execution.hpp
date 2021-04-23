@@ -159,7 +159,12 @@ namespace ztd { namespace text {
 		///
 		/// @remarks All known wide execution encodings can decode into Unicode just fine.
 		//////
-		using is_decode_injective = ::std::true_type;
+		using is_decode_injective =
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
+			::std::true_type;
+#else
+			::std::false_type;
+#endif
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values. On
 		/// Windows, this is guaranteed to be UTF-16 encoding for the platform. Normally, this is UTF-32 on *nix/POSIX

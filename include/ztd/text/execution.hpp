@@ -381,8 +381,7 @@ namespace ztd { namespace text {
 						_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
 						             ::std::move(__init), ::std::move(__inlast)),
 						     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>,
-						          ::std::move(__outit), ::std::move(__outlast)::std::move(__outit),
-						          ::std::move(__outlast)),
+						          ::std::move(__outit), ::std::move(__outlast)),
 						     __s, encoding_error::invalid_sequence),
 						::ztd::text::span<code_point, 1>(&__codepoint, 1));
 				}
@@ -393,9 +392,8 @@ namespace ztd { namespace text {
 					if (__outit == __outlast) {
 						execution __self {};
 						return __error_handler(__self,
-							_Result(__txt_detail::__reconstruct(
-							             ::std::in_place_type<_UInputRange>::std::move(__outit),
-							             ::std::move(__outlast)),
+							_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
+							             ::std::move(__init), ::std::move(__inlast)),
 							     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>,
 							          ::std::move(__outit), ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),

@@ -195,12 +195,12 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding>
 	constexpr decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_decode_state_with(_Encoding& __encoding,
-		const decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>& __encode_state) noexcept {
+		const encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>& __encode_state) noexcept {
 		using _UEncoding   = __txt_detail::__remove_cvref_t<_Encoding>;
 		using _DecodeState = decode_state_t<_UEncoding>;
 		using _EncodeState = encode_state_t<_UEncoding>;
-		if constexpr (is_encode_state_independent_v<_UEncoding>) {
-			if constexpr (::std::is_constructible_v<_EncodeState, _DecodeState>) {
+		if constexpr (is_decode_state_independent_v<_UEncoding>) {
+			if constexpr (::std::is_constructible_v<_EncodeState, const _DecodeState&>) {
 				(void)__encoding;
 				return _DecodeState(__encode_state);
 			}
@@ -211,7 +211,7 @@ namespace ztd { namespace text {
 			}
 		}
 		else {
-			if constexpr (::std::is_constructible_v<_EncodeState, _DecodeState>) {
+			if constexpr (::std::is_constructible_v<_EncodeState, const _UEncoding&, const _DecodeState&>) {
 				return _DecodeState(__encoding, __encode_state);
 			}
 			else {
@@ -236,7 +236,7 @@ namespace ztd { namespace text {
 		using _DecodeState = decode_state_t<_UEncoding>;
 		using _EncodeState = encode_state_t<_UEncoding>;
 		if constexpr (is_encode_state_independent_v<_UEncoding>) {
-			if constexpr (::std::is_constructible_v<_EncodeState, _DecodeState>) {
+			if constexpr (::std::is_constructible_v<_EncodeState, const _DecodeState&>) {
 				(void)__encoding;
 				return _EncodeState(__decode_state);
 			}
@@ -247,7 +247,7 @@ namespace ztd { namespace text {
 			}
 		}
 		else {
-			if constexpr (::std::is_constructible_v<_EncodeState, _DecodeState>) {
+			if constexpr (::std::is_constructible_v<_EncodeState, const _UEncoding&, const _DecodeState&>) {
 				return _EncodeState(__encoding, __decode_state);
 			}
 			else {
