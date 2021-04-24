@@ -18,7 +18,7 @@
 # file except in compliance with the License. You may obtain a copy of the
 # License at
 #
-#		http:#www.apache.org/licenses/LICENSE-2.0
+#		http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,12 +30,14 @@
 
 # # Fetch dependencies
 # Catch2
-FetchContent_Declare(
-	Catch2
-	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-	GIT_TAG        v2.13.4
-)
-FetchContent_MakeAvailable(Catch2)
+if (NOT TARGET Catch2::Catch2)
+	FetchContent_Declare(
+		catch2
+		GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+		GIT_TAG        v2.13.4
+	)
+	FetchContent_MakeAvailable(catch2)
+endif()
 
 # # Test Subdirectories
 add_subdirectory(basic_run_time)

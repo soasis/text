@@ -249,8 +249,6 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto encode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, encode_state& __s) {
-			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
 			using _Result = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
@@ -272,6 +270,9 @@ namespace ztd { namespace text {
 			}
 			return _Result(::std::move(__result.input), ::std::move(__result.output), __s, __result.error_code);
 #else
+			using _UInputRange = __txt_detail::__remove_cvref_t<_InputRange>;
+			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
+
 			auto __init = __txt_detail::__adl::__adl_begin(__input);
 			auto __inlast = __txt_detail::__adl::__adl_end(__input);
 
@@ -376,8 +377,6 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto decode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, decode_state& __s) {
-			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
 			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
 			using _Result = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
@@ -404,6 +403,8 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__result.input), ::std::move(__result.output), __s, __result.error_code,
 				__result.handled_errors);
 #else
+			using _UInputRange = __txt_detail::__remove_cvref_t<_InputRange>;
+			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
 
 			auto __init = __txt_detail::__adl::__adl_begin(__input);
 			auto __inlast = __txt_detail::__adl::__adl_end(__input);

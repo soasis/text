@@ -37,7 +37,6 @@
 inline namespace ztd_text_tests_basic_run_time_errors_throw {
 	template <typename Encoding, typename Input>
 	void decode_one_throw_check(Encoding& encoding, Input& container) {
-		constexpr std::size_t input_max  = ztd::text::max_code_units_v<Encoding>;
 		constexpr std::size_t output_max = ztd::text::max_code_points_v<Encoding>;
 		using code_point                 = ztd::text::code_point_t<Encoding>;
 		using code_unit                  = ztd::text::code_unit_t<Encoding>;
@@ -56,7 +55,6 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 
 	template <typename Encoding, typename Input>
 	void encode_one_throw_check(Encoding& encoding, Input& container) {
-		constexpr std::size_t input_max  = ztd::text::max_code_points_v<Encoding>;
 		constexpr std::size_t output_max = ztd::text::max_code_units_v<Encoding>;
 		using code_point                 = ztd::text::code_point_t<Encoding>;
 		using code_unit                  = ztd::text::code_unit_t<Encoding>;

@@ -18,7 +18,7 @@
 # file except in compliance with the License. You may obtain a copy of the
 # License at
 #
-#		http:#www.apache.org/licenses/LICENSE-2.0
+#		http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,8 +28,18 @@
 #
 # ============================================================================>
 
-cmake_minimum_required(VERSION 3.15.0)
-cmake_policy(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16.0)
+cmake_policy(VERSION 3.16)
+# # Project kickstart
+# Includes a bunch of basic flags and utilities shared across projects
+# See more at the github repository link below
+include(FetchContent)
+FetchContent_Declare(ztd.cmake
+	GIT_REPOSITORY https://github.com/soasis/cmake
+	GIT_TAG main)
+FetchContent_MakeAvailable(ztd.cmake)
+set(CMAKE_PROJECT_INCLUDE ${ZTD_CMAKE_PROJECT_PRELUDE})
+
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
@@ -39,12 +49,6 @@ project(ztd.text
   DESCRIPTION "A spicy text library."
   HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
   LANGUAGES C CXX)
-
-# # Modules
-# Include modules useful to the project, whether locally made in our own cmake DIRECTORY
-# our from the standard cmake libraries
-# Add home-rolled modules path to front of module path list
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # # # Top-Level Directories
 # Check if this is the top-level project or not
@@ -67,13 +71,6 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 	endif()
 endif()
 
-# # Include standard modules
-include(CMakePackageConfigHelpers)
-include(CheckCXXCompilerFlag)
-include(CMakeDependentOption)
-include(GNUInstallDirs)
-include(FetchContent)
-
 # # Options
 option(ZTD_TEXT_CI "Whether or not we are in continuous integration mode" OFF)
 option(ZTD_TEXT_TESTS "Enable build of tests" OFF)
@@ -89,7 +86,13 @@ if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
 endif()
 
 # # Dependencies
-# # Dependencies (test-specific)
+# ztd.version
+include(FetchContent)
+FetchContent_Declare(ztd.version
+	GIT_REPOSITORY https://github.com/soasis/version
+	GIT_TAG main)
+FetchContent_MakeAvailable(ztd.version)
+# ztd.cuneicode
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cuneicode)
 	set(ztd_text_has_cuneicode ON)
 	add_subdirectory(vendor/cuneicode)
@@ -97,77 +100,11 @@ else()
 	set(ztd_text_has_cuneicode OFF)
 endif()
 
-file(GLOB_RECURSE ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
-
-# Check environment/prepare generator expressions
-check_cxx_compiler_flag(/permissive- ZTD_TEXT_MSVC_DISABLE_PERMISSIVE)
-
-check_cxx_compiler_flag(-Wpedantic ZTD_TEXT_DIAGNOSTIC_PEDANTIC)
-check_cxx_compiler_flag(-Werror ZTD_TEXT_DIAGNOSTIC_ERRORS)
-check_cxx_compiler_flag(-Wall ZTD_TEXT_DIAGNOSTIC_DEFAULTS)
-check_cxx_compiler_flag(-W4 ZTD_TEXT_MSVC_DIAGNOSTIC_DEFAULTS)
-
 string(CONCAT ztd-text-is-top-level $<STREQUAL:${PROJECT_NAME},${CMAKE_PROJECT_NAME}>)
-string(CONCAT --disable-permissive $<
-	$<AND:
-		$<BOOL:${ZTD_TEXT_MSVC_DISABLE_PERMISSIVE}>,
-		${ztd-text-is-top-level}
-	>:/permissive-
->)
-string(CONCAT --utf8-literal-encoding
-	$<IF:$<BOOL:${MSVC}>,
-		/execution-charset:utf-8,
-		-fexec-charset=utf-8
-	>
-)
-string(CONCAT --utf8-source-encoding
-	$<IF:$<BOOL:${MSVC}>,
-		/source-charset:utf-8,
-		-finput-charset=utf-8
-	>
-)
-string(CONCAT --extra-constexpr-power
-	$<IF:$<BOOL:${MSVC}>,
-		/constexpr:steps2147483647,
-		$<IF:$<BOOL:${CLANG}>,
-			-fconstexpr-steps=2147483647,
-			-fconstexpr-depth=2147483647
-		>
-	>
-)
-string(CONCAT --template-debugging-mode
-	$<IF:$<BOOL:${MSVC}>,
-		,
-		$<IF:$<BOOL:${CLANG}>,
-			-ftemplate-backtrack-limit=0,
-			-ftemplate-backtrace-limit=0
-		>
-	>
-)
-string(CONCAT ztd-use-cuneicode $<
-	$<AND:
-		$<BOOL:${ZTD_TEXT_USE_CUNEICODE}>,
-		$<BOOL:${ztd_text_has_cuneicode}>
-	>:$<TARGET_NAME_IF_EXISTS:ztd::cuneicode>
->)
-
-string(CONCAT --warn-pedantic $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_PEDANTIC}>:-Wpedantic>)
-string(CONCAT --warn-default $<
-	$<AND:
-		$<BOOL:${ZTD_TEXT_DIAGNOSTIC_DEFAULTS}>,
-		$<NOT:$<BOOL:MSVC>>
-	>:-Wall
->)
-string(CONCAT --warn-default $<
-	$<AND:
-		$<BOOL:${ZTD_TEXT_MSVC_DIAGNOSTIC_DEFAULTS}>,
-		$<BOOL:MSVC>
-	>:-W4
->)
-string(CONCAT --deny-errors $<$<BOOL:${ZTD_TEXT_DIAGNOSTIC_ERRORS}>:-Werror>)
-
 
 # Main library declarations
+file(GLOB_RECURSE ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
+
 add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
 target_include_directories(ztd.text
@@ -177,7 +114,11 @@ target_include_directories(ztd.text
 target_compile_features(ztd.text INTERFACE $<${ztd-text-is-top-level}:cxx_std_20>)
 target_compile_options(ztd.text INTERFACE ${--disable-permissive})
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
-target_link_libraries(ztd.text INTERFACE ${ztd-use-cuneicode})
+target_link_libraries(ztd.text
+	INTERFACE
+		ztd::version
+		${ztd-use-cuneicode}
+)
 install(DIRECTORY include/
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
@@ -203,7 +144,7 @@ if (ZTD_TEXT_GENERATE_SINGLE)
 	add_subdirectory(single)
 endif()
 
-# # Benchmarks, Tests, Examples
+# # Benchmarks, Tests, Examples and Documentation
 if (ZTD_TEXT_TESTS)
 	include(CTest)
 	add_subdirectory(tests)
@@ -224,8 +165,9 @@ if (ZTD_TEXT_SCRATCH)
 	target_link_libraries(scratch PRIVATE ztd::text)
 	target_compile_options(scratch
 		PRIVATE
+		${--disable-permissive}
 		${--warn-pedantic}
-		${--warn-default}
-		${--deny-errors})
+		${--warn-all}
+		${--warn-errors})
 	target_compile_features(scratch PRIVATE cxx_std_20)
 endif()
