@@ -38,8 +38,8 @@
 #include <ztd/text/char8_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
+#include <ztd/text/reconstruct.hpp>
 
-#include <ztd/text/detail/reconstruct.hpp>
 #include <ztd/text/detail/span.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 

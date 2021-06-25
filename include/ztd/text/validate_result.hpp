@@ -36,8 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/encoding_error.hpp>
-
-#include <ztd/text/detail/reconstruct.hpp>
+#include <ztd/text/reconstruct.hpp>
 
 #include <cstddef>
 #include <array>

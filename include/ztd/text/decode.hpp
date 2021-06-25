@@ -43,12 +43,12 @@
 #include <ztd/text/unbounded.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/tag.hpp>
+#include <ztd/text/reconstruct.hpp>
 
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/type_traits.hpp>
 #include <ztd/text/detail/span.hpp>
-#include <ztd/text/detail/reconstruct.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
 
 #include <string>
@@ -203,7 +203,7 @@ namespace ztd { namespace text {
 					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
 				_Output __intermediate_output(
 					__intermediate_initial_output.data(), __result.output.data());
-				using _SpanIterator = typename ::ztd::text::span<_IntermediateValueType>::iterator;
+				using _SpanIterator = typename _Output::iterator;
 				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_insert_bulk, _OutputContainer,
 					              _SpanIterator, _SpanIterator>) {
 					// inserting in bulk

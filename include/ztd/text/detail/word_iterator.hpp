@@ -36,6 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/endian.hpp>
+#include <ztd/text/reconstruct.hpp>
 
 #include <ztd/text/detail/range.hpp>
 #include <ztd/text/detail/type_traits.hpp>
@@ -44,7 +45,7 @@
 #include <ztd/text/detail/algorithm.hpp>
 #include <ztd/text/detail/math.hpp>
 #include <ztd/text/detail/ebco.hpp>
-#include <ztd/text/detail/reconstruct.hpp>
+
 
 #include <cstddef>
 #include <limits>

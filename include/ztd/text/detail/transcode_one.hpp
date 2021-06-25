@@ -337,9 +337,9 @@ namespace ztd { namespace text {
 			// convertible to one another");
 
 
-			_WorkingIntermediate __working_intermediate = __span_or_reconstruct(__intermediate);
+			_WorkingIntermediate __working_output = __span_or_reconstruct(__intermediate);
 			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),
-				__from_encoding, __working_intermediate, __from_error_handler, __from_state);
+				__from_encoding, __working_output, __from_error_handler, __from_state);
 			if (__intermediate_result.error_code != encoding_error::ok) {
 #if 0
 				if constexpr (::std::is_same_v<__range_iterator_t<_OutputView>, __blackhole_iterator>) {
@@ -364,9 +364,9 @@ namespace ztd { namespace text {
 				}
 #endif
 			}
-			_WorkingIntermediate __intermediate_view = __reconstruct(::std::in_place_type<_WorkingIntermediate>,
-				__adl::__adl_begin(__working_intermediate), __adl::__adl_begin(__intermediate_result.output));
-			auto __end_result = __basic_encode_one<_ConsumeIntoTheNothingness>(::std::move(__intermediate_view),
+			_WorkingIntermediate __working_input = __reconstruct(::std::in_place_type<_WorkingIntermediate>,
+				__adl::__adl_begin(__working_output), __adl::__adl_begin(__intermediate_result.output));
+			auto __end_result = __basic_encode_one<_ConsumeIntoTheNothingness>(::std::move(__working_input),
 				__to_encoding, ::std::forward<_Output>(__output), __to_error_handler, __to_state);
 
 			return _Result(::std::move(__intermediate_result.input), ::std::move(__end_result.output),
@@ -637,7 +637,7 @@ namespace ztd { namespace text {
 				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
 				__state);
 			::std::size_t __written    = static_cast<::std::size_t>(
-                    __adl::__adl_begin(__intermediate_result.output) - __adl::__adl_begin(__output));
+                    __adl::__adl_data(__intermediate_result.output) - __adl::__adl_data(__output));
 
 			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state,
 				__intermediate_result.error_code, __intermediate_result.handled_errors);
@@ -668,7 +668,7 @@ namespace ztd { namespace text {
 				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
 				__state);
 			::std::size_t __written    = static_cast<::std::size_t>(
-                    __adl::__adl_begin(__intermediate_result.output) - __adl::__adl_begin(__output));
+                    __adl::__adl_data(__intermediate_result.output) - __adl::__adl_data(__output));
 
 			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state,
 				__intermediate_result.error_code, __intermediate_result.handled_errors);
@@ -681,9 +681,12 @@ namespace ztd { namespace text {
 			using _IntermediateCodePoint                       = code_point_t<_UEncoding>;
 			constexpr ::std::size_t _IntermediateMaxCodePoints = max_code_points_v<_UEncoding>;
 
-			_IntermediateCodePoint __intermediate_buffer[_IntermediateMaxCodePoints] {};
+
+			_IntermediateCodePoint __intermediate_storage[_IntermediateMaxCodePoints] {};
+			::ztd::text::span<_IntermediateCodePoint, _IntermediateMaxCodePoints> __intermediate(
+				__intermediate_storage);
 			return __basic_count_decodable_one(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __intermediate_buffer,
+				::std::forward<_Encoding>(__encoding), __intermediate,
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	} // namespace __txt_detail

@@ -209,7 +209,7 @@ namespace ztd { namespace text {
 		template <typename _It>
 		inline constexpr bool __is_iterator_contiguous_iterator_v = (
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
-			__is_iterator_concept_or_better_v<contiguous_iterator_tag, _It> &&
+			__is_iterator_concept_or_better_v<contiguous_iterator_tag, _It>) || (__is_iterator_concept_or_better_v<contiguous_iterator_tag, _It> &&
 #else
 			::std::is_pointer_v<_It> &&
 #endif

@@ -38,8 +38,8 @@
 #include <ztd/text/char8_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
+#include <ztd/text/reconstruct.hpp>
 
-#include <ztd/text/detail/reconstruct.hpp>
 #include <ztd/text/detail/span.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 
@@ -264,7 +264,7 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
 		inline constexpr bool __is_encode_error_handler_callable_v = __is_detected_v<__detect_callable_handler,
 			_ErrorHandler, _Encoding, __reconstruct_encode_result_t<_Input, _Output, _State>,
-			::ztd::text::span<code_unit_t<__remove_cvref_t<_Encoding>>>>;
+			::ztd::text::span<code_point_t<__remove_cvref_t<_Encoding>>>>;
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
 		inline constexpr bool __is_encode_one_callable_v

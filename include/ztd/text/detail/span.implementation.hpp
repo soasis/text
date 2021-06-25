@@ -725,7 +725,7 @@ namespace nonstd { namespace span_lite {
 		/*enum*/ struct enabler { };
 
 		template <typename T>
-		bool is_positive(T x) {
+		constexpr bool is_positive(T x) {
 			return std11::is_signed<T>::value ? x >= 0 : true;
 		}
 

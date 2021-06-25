@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/detail/reconstruct.hpp>
+#include <ztd/text/reconstruct.hpp>

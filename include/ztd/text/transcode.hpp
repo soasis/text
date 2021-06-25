@@ -120,8 +120,7 @@ namespace ztd { namespace text {
 
 		_WorkingInput __working_input(
 			__txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input)));
-		_WorkingOutput __working_output(
-			__txt_detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
+		_WorkingOutput __working_output = __txt_detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
 
 		_IntermediateStorage __intermediate_storage {};
 		_Intermediate __intermediate(__intermediate_storage);

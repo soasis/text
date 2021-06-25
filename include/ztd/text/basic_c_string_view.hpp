@@ -50,6 +50,18 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
+	/// @brief A sentinel type for ztd::text::basic_c_string_view. Provides additional type safety.
+	///
+	//////
+	class c_string_sentinel_t {};
+
+	//////
+	/// @brief An instance of the c_string_sentinel_t type, for ease of use.
+	///
+	//////
+	inline constexpr c_string_sentinel_t c_string_sentinel = {};
+
+	//////
 	/// @brief A class that is identical to std::string_view, except that it attempts to verify and guarantee that
 	/// ``.data() + .size()``, when dereferenced, is valid and gives a nullptr. The ``.size()`` does not include the
 	/// null terminator in its count.
@@ -246,6 +258,30 @@ namespace ztd { namespace text {
 		using __base_t::find_first_of;
 		using __base_t::find_last_not_of;
 		using __base_t::find_last_of;
+		
+		template <typename _It, typename _Sen>
+		friend constexpr __base_t reconstruct(
+			::std::in_place_type_t<basic_c_string_view>, _It __iterator, _Sen __sentinel) {
+			using _SizeType = typename __base_t::size_type;
+			if constexpr (!::std::is_integral_v<_Sen>) {
+#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
+				if (__iterator == __sentinel) {
+					const auto& __empty_str = __txt_detail::__empty_string<value_type>();
+					return __base_t(__empty_str + 0, 0);
+				}
+#endif
+				return __base_t(::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel - __iterator));
+			}
+			else {
+#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
+				if (static_cast<_SizeType>(__sentinel) == static_cast<_SizeType>(0)) {
+					const auto& __empty_str = __txt_detail::__empty_string<value_type>();
+					return __base_t(__empty_str + 0, 0);
+				}
+#endif
+				return __base_t(::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel));
+			}
+		}
 	};
 
 
@@ -357,32 +393,6 @@ namespace ztd { namespace text {
 		return __left.compare(__right) >= 0;
 	}
 
-
-	template <typename _Ty, typename _Traits, typename _It, typename _Sen>
-	constexpr ::std::basic_string_view<_Ty, _Traits> reconstruct(
-		::std::in_place_type_t<basic_c_string_view<_Ty, _Traits>>, _It __iterator, _Sen __sentinel) {
-		using _SizeType = typename ::std::basic_string_view<_Ty, _Traits>::size_type;
-		if constexpr (!::std::is_integral_v<_Sen>) {
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
-			if (__iterator == __sentinel) {
-				const auto& __empty_str = __txt_detail::__empty_string<_Ty>();
-				return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);
-			}
-#endif
-			return ::std::basic_string_view<_Ty, _Traits>(
-				::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel - __iterator));
-		}
-		else {
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
-			if (static_cast<_SizeType>(__sentinel) == static_cast<_SizeType>(0)) {
-				const auto& __empty_str = __txt_detail::__empty_string<_Ty>();
-				return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);
-			}
-#endif
-			return ::std::basic_string_view<_Ty, _Traits>(
-				::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel));
-		}
-	}
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

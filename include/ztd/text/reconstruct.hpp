@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_RECONSTRUCT_HPP
-#define ZTD_TEXT_DETAIL_RECONSTRUCT_HPP
+#ifndef ZTD_TEXT_RECONSTRUCT_HPP
+#define ZTD_TEXT_RECONSTRUCT_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -138,9 +138,19 @@ namespace ztd { namespace text {
 			= decltype(__string_view_or_span_or_reconstruct(::std::declval<_Input>()));
 	} // namespace __txt_detail
 
+	inline namespace __cpo {
+		//////
+		/// @brief The reconstruct object is a Customization Point Object (CPO) as defined by the Standard Library in
+		/// [customization.point.object] (http://eel.is/c++draft/customization.point.object). It is the route for
+		/// being able to put a range back from various bits and pieces of itself. For more in-depth information, see
+		/// P1664 (https://thephd.dev/_vendor/future_cxx/papers/d1664.html).
+		//////
+		inline constexpr auto& reconstruct = __txt_detail::__reconstruct;
+	} // namespace __cpo
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
 #include <ztd/text/detail/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_RECONSTRUCT_HPP
+#endif // ZTD_TEXT_RECONSTRUCT_HPP

@@ -41,8 +41,7 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/subrange.hpp>
-
-#include <ztd/text/detail/reconstruct.hpp>
+#include <ztd/text/reconstruct.hpp>
 
 #include <string_view>
 

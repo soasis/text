@@ -199,7 +199,7 @@ namespace ztd { namespace text {
 					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
 				_Output __intermediate_output(
 					__intermediate_initial_output.data(), __result.output.data());
-				using _SpanIterator = typename ::ztd::text::span<_IntermediateValueType>::iterator;
+				using _SpanIterator = typename _Output::iterator;
 				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_insert_bulk, _OutputContainer,
 					              _SpanIterator, _SpanIterator>) {
 					// inserting in bulk
