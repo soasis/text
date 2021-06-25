@@ -78,14 +78,14 @@ namespace ztd { namespace text {
 			sized
 		};
 
-		template <typename _SizeType, __subrange_kind _Kind>
+		template <typename _SizeType, bool _Store>
 		struct __subrange_size {
 			constexpr __subrange_size() noexcept {
 			}
 		};
 
 		template <typename _SizeType>
-		struct __subrange_size<_SizeType, __subrange_kind::sized> {
+		struct __subrange_size<_SizeType, true> {
 			_SizeType _M_size;
 
 			constexpr __subrange_size() noexcept : _M_size(static_cast<_SizeType>(0)) {
@@ -112,12 +112,13 @@ namespace ztd { namespace text {
 		template <typename _It, typename _Sen = _It,
 			__subrange_kind _Kind
 			= __txt_detail::__is_sized_sentinel_for_v<_It, _Sen> ? __subrange_kind::sized : __subrange_kind::unsized>
-		class __subrange : __txt_detail::__subrange_size<__txt_detail::__iterator_size_type_t<_It>, _Kind> {
+		class __subrange : __txt_detail::__subrange_size<__txt_detail::__iterator_size_type_t<_It>,
+			                   !__txt_detail::__is_sized_sentinel_for_v<_It, _Sen>> {
 		private:
 			inline static constexpr bool _SizeRequired
 				= _Kind == __subrange_kind::sized && !__txt_detail::__is_sized_sentinel_for_v<_It, _Sen>;
 			using _SizeType     = __txt_detail::__iterator_size_type_t<_It>;
-			using __base_size_t = __txt_detail::__subrange_size<_SizeType, _Kind>;
+			using __base_size_t = __txt_detail::__subrange_size<_SizeType, _SizeRequired>;
 
 		public:
 			//////
@@ -238,8 +239,8 @@ namespace ztd { namespace text {
 			//////
 			constexpr __subrange(iterator __it, sentinel __sen) noexcept(
 				::std::is_nothrow_move_constructible_v<iterator>&& ::std::is_nothrow_move_constructible_v<sentinel>)
-			: __subrange(__size_mark {}, ::std::integral_constant<bool, _Kind == __subrange_kind::sized>(),
-				::std::move(__it), ::std::move(__sen)) {
+			: __subrange(__size_mark {}, ::std::integral_constant<bool, _SizeRequired>(), ::std::move(__it),
+				::std::move(__sen)) {
 			}
 
 			//////

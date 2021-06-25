@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/count_code_units.hpp>
+#include <ztd/text/count_encodable.hpp>

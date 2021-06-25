@@ -75,7 +75,7 @@ namespace ztd { namespace text {
 		typename _ErrorHandler = default_handler, typename _State = decode_state_t<_Encoding>>
 	class decode_view {
 	private:
-		using _StoredRange = __txt_detail::__reconstruct_t<__txt_detail::__remove_cvref_t<_Range>>;
+		using _StoredRange = __txt_detail::__range_reconstruct_t<__txt_detail::__remove_cvref_t<_Range>>;
 
 	public:
 		//////

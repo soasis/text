@@ -28,20 +28,9 @@
 ..
 .. =============================================================================>
 
-max_code_units
-==============
+propagate_error
+===============
 
-The maximum number of code units needed for a given encoding object. This can be used to create a suitably-sized automatic storage duration buffer, e.g.
+This helper function processes an error for a transcoding operation and shuffles a result through its decode and encode-step :doc:`error handlers</design/error handling>`.
 
-.. code-block:: cpp
-
-	using code_unit = ztd::text::code_unit_t<ztd::text::utf8>;
-	constexpr std::size_t max_output_size = ztd::text::max_code_units_v<ztd::text::utf8>;
-	
-	// C++-style
-	std::array<code_unit, max_output_size> my_cxx_buffer;
-	// or C-style
-	code_unit my_c_buffer[max_output_size];
-
-
-.. doxygenvariable:: ztd::text::max_code_units_v
+.. doxygenfunction:: ztd::text::propagate_error

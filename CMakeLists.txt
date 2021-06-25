@@ -87,7 +87,6 @@ endif()
 
 # # Dependencies
 # ztd.version
-include(FetchContent)
 FetchContent_Declare(ztd.version
 	GIT_REPOSITORY https://github.com/soasis/version
 	GIT_TAG main)
@@ -111,8 +110,6 @@ target_include_directories(ztd.text
 	INTERFACE
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:include>)
-target_compile_features(ztd.text INTERFACE $<${ztd-text-is-top-level}:cxx_std_20>)
-target_compile_options(ztd.text INTERFACE ${--disable-permissive})
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_link_libraries(ztd.text
 	INTERFACE

@@ -52,7 +52,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
 	using contiguous_iterator_tag = ::std::contiguous_iterator_tag;
 #else
 	class contiguous_iterator_tag : public ::std::random_access_iterator_tag { };
@@ -207,8 +207,14 @@ namespace ztd { namespace text {
 			= ::std::is_base_of_v<_Tag, __iterator_concept_t<_It>>;
 
 		template <typename _It>
-		inline constexpr bool __is_iterator_contiguous_iterator_v
-			= __is_to_addressable_v<_It>&& ::std::is_lvalue_reference_v<::std::remove_reference_t<_It>>;
+		inline constexpr bool __is_iterator_contiguous_iterator_v = (
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
+			__is_iterator_concept_or_better_v<contiguous_iterator_tag, _It> &&
+#else
+			::std::is_pointer_v<_It> &&
+#endif
+			__is_to_addressable_v<
+			     _It> && ::std::is_lvalue_reference_v<__iterator_reference_t<::std::remove_reference_t<_It>>>);
 
 		template <typename _It>
 		inline constexpr bool __is_iterator_input_iterator_v

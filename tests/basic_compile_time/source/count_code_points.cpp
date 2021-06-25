@@ -30,65 +30,65 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-#include <ztd/text/count_code_points.hpp>
+#include <ztd/text/count_encodable.hpp>
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 
-inline namespace ztd_text_tests_basic_compile_time_count_code_points {
+inline namespace ztd_text_tests_basic_compile_time_count_encodable {
 
 	template <typename T>
 	static void delayed() {
 		// Basic Source Character Set, using defaults
-		static_assert(ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set).count
+		static_assert(ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set).count
 		     == ztd::text::tests::u8_basic_source_character_set.size());
 
 		// Basic Source Character Set, explicit encoding
 		static_assert(
-		     ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::literal())
+		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::literal())
 		          .count
 		     == ztd::text::tests::basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal())
+		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal())
 		          .count
 		     == ztd::text::tests::w_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8()).count
+		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8()).count
 		     == ztd::text::tests::u8_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16()).count
+		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16()).count
 		     == ztd::text::tests::u16_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_code_points(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32()).count
+		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32()).count
 		     == ztd::text::tests::u32_basic_source_character_set.size());
 
 		// Larger unicode sequences, using defaults
-		static_assert(ztd::text::count_code_points(ztd::text::tests::u32_unicode_sequence_truth_native_endian).count
+		static_assert(ztd::text::count_encodable(ztd::text::tests::u32_unicode_sequence_truth_native_endian).count
 		     == ztd::text::tests::u8_unicode_sequence_truth_native_endian.size());
 
 		// Larger unicode sequences, explicit encoding
 		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
-			static_assert(ztd::text::count_code_points(
+			static_assert(ztd::text::count_encodable(
 			                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal())
 			                   .count
 			     == ztd::text::tests::unicode_sequence_truth_native_endian.size());
 		}
 		if constexpr (ztd::text::__txt_detail::__always_true_v<
 		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
-			static_assert(ztd::text::count_code_points(
+			static_assert(ztd::text::count_encodable(
 			                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal())
 			                   .count
 			     == ztd::text::tests::w_unicode_sequence_truth_native_endian.size());
 		}
-		static_assert(ztd::text::count_code_points(
+		static_assert(ztd::text::count_encodable(
 		                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8())
 		                   .count
 		     == ztd::text::tests::u8_unicode_sequence_truth_native_endian.size());
-		static_assert(ztd::text::count_code_points(
+		static_assert(ztd::text::count_encodable(
 		                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16())
 		                   .count
 		     == ztd::text::tests::u16_unicode_sequence_truth_native_endian.size());
-		static_assert(ztd::text::count_code_points(
+		static_assert(ztd::text::count_encodable(
 		                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32())
 		                   .count
 		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
@@ -97,4 +97,4 @@ inline namespace ztd_text_tests_basic_compile_time_count_code_points {
 	void instantiate() {
 		delayed<void>();
 	}
-} // namespace ztd_text_tests_basic_compile_time_count_code_points
+} // namespace ztd_text_tests_basic_compile_time_count_encodable

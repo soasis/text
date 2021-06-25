@@ -145,40 +145,40 @@ An extension point to provide faster bulk code unit validation. There are many t
 Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
 
-``text_count_code_points_one``
+``text_count_encodable_one``
 ++++++++++++++++++++++++++++++
 
-Form: ``text_count_code_points_one(input, encoding, handler, state)``
+Form: ``text_count_encodable_one(input, encoding, handler, state)``
 
 An extension point to provide faster one-by-one counting. Computation cycles can be saved by only needing to check a subset of things. For example, specific code point ranges can be used to get a count for UTF-16 faster than by encoding into an empty buffer.
 
 Must return a :doc:`ztd::text::count_result </api/count_result>`.
 
 
-``text_count_code_units_one``
+``text_count_decodable_one``
 +++++++++++++++++++++++++++++
 
-Form: ``text_count_code_units_one(input, encoding, handler, state)``
+Form: ``text_count_decodable_one(input, encoding, handler, state)``
 
 An extension point to provide faster one-by-one counting. Computation cycles can be saved by only needing to check a subset of things. For example, the leading byte in UTF-8 can provide an immediate count for how many trailing bytes, leading to a faster counting algorithm.
 
 Must return a :doc:`ztd::text::count_result </api/count_result>`.
 
 
-``text_count_code_points``
+``text_count_encodable``
 ++++++++++++++++++++++++++
 
-Form: ``text_count_code_points(input, encoding, handler, state)``
+Form: ``text_count_encodable(input, encoding, handler, state)``
 
 An extension point for faster bulk code point validation.
 
 Must return a :doc:`ztd::text::count_result </api/count_result>`.
 
 
-``text_count_code_units``
+``text_count_decodable``
 +++++++++++++++++++++++++
 
-Form: ``text_count_code_units(input, encoding, handler, state)``
+Form: ``text_count_decodable(input, encoding, handler, state)``
 
 An extension point for faster bulk code point validation.
 

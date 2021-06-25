@@ -31,7 +31,7 @@
 validate_encodable_as
 =====================
 
-``ztd::text::validate_encodable_as`` is a function that takes an input sequence of ``code_point``\ s and attempts to validate that they can be turned into the ``code_unit``\ s of the provided encoding. Unlike the :doc:`ztd::text::count_code_points </api/conversions/validate_encodable_as>` function, this does not take an error handler. **Any** error, even if it would be corrected over, produces a stop in the algorithm and a :doc:`validate_result </api/validate_result>`/:doc:`stateless_validate_result </api/stateless_validate_result>` object gets returned with the ``.valid`` member set to false.
+``ztd::text::validate_encodable_as`` is a function that takes an input sequence of ``code_point``\ s and attempts to validate that they can be turned into the ``code_unit``\ s of the provided encoding. Unlike the :doc:`ztd::text::count_encodable </api/conversions/validate_encodable_as>` function, this does not take an error handler. **Any** error, even if it would be corrected over, produces a stop in the algorithm and a :doc:`validate_result </api/validate_result>`/:doc:`stateless_validate_result </api/stateless_validate_result>` object gets returned with the ``.valid`` member set to false.
 
 The overloads of this function increase the level of control with each passed argument. At the last overload with four arguments, the function attempts to work call some extension points or falls back to the base function call in this order:
 

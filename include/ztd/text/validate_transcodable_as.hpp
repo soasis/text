@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
 		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
 		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
-		using _WorkingInput   = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+		using _WorkingInput   = __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
                     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                _UInput>>;
@@ -137,15 +137,17 @@ namespace ztd { namespace text {
 			using _CodePoint = code_point_t<_UFromEncoding>;
 			using _CodeUnit  = code_unit_t<_UToEncoding>;
 
-			_CodePoint __code_point_buf[max_code_points_v<_UFromEncoding>] {};
-			_CodeUnit __code_unit_buf[max_code_units_v<_UToEncoding>] {};
+			_CodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
+
+			_CodeUnit __output_storage[max_code_units_v<_UToEncoding>] {};
+			::ztd::text::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
 
 			pass_handler __handler {};
 
 			for (;;) {
 				auto __transcode_result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					::std::move(__working_input), __from_encoding, __code_point_buf, __code_unit_buf,
-					__to_encoding, __handler, __handler, __decode_state, __encode_state);
+					::std::move(__working_input), __from_encoding, __output, __to_encoding, __handler, __handler,
+					__decode_state, __encode_state, __intermediate);
 				if (__transcode_result.error_code != encoding_error::ok) {
 					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),

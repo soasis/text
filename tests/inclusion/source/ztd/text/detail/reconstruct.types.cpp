@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -28,28 +28,4 @@
 //
 // ============================================================================>
 
-#pragma once
-
-#ifndef ZTD_TEXT_EXAMPLES_STARTUP_HPP
-#define ZTD_TEXT_EXAMPLES_STARTUP_HPP
-
-#include <iostream>
-#include <clocale>
-
-struct static_hook {
-	static_hook() {
-#ifdef _WIN32
-		char* res = std::setlocale(LC_ALL, ".65001");
-		if (res == nullptr) {
-			std::cout << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
-		}
-#else
-		char* res = std::setlocale(LC_ALL, "en_US.utf8");
-		if (res == nullptr) {
-			std::cout << "cannot set the locale-based encoding in non-Windows to UTF8" << std::endl;
-		}
-#endif
-	}
-} startup {};
-
-#endif // ZTD_TEXT_EXAMPLES_STARTUP_HPP
+#include <ztd/text/detail/reconstruct.types.hpp>

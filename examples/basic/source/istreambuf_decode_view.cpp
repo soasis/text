@@ -28,7 +28,7 @@
 //
 // ============================================================================>
 
-#include "utf8_startup.hpp"
+#include <ztd/text/examples/utf8_startup.hpp>
 
 #include <ztd/text/decode_view.hpp>
 #include <ztd/text/encoding.hpp>

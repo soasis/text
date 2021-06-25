@@ -57,8 +57,8 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief The result of counting operations (such as ztd_text_count_code_points and
-	/// ztd_text_count_code_points) that specifically do not include a reference to the state.
+	/// @brief The result of counting operations (such as ztd_text_count_encodable and
+	/// ztd_text_count_encodable) that specifically do not include a reference to the state.
 	//////
 	template <typename _Input>
 	class stateless_count_result {
@@ -132,8 +132,8 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of counting operations (such as ztd_text_count_code_points and
-	/// ztd_text_count_code_points).
+	/// @brief The result of counting operations (such as ztd_text_count_encodable and
+	/// ztd_text_count_encodable).
 	//////
 	template <typename _Input, typename _State>
 	class count_result : public stateless_count_result<_Input> {
@@ -159,8 +159,7 @@ namespace ztd { namespace text {
 		template <typename _ArgInput, typename _ArgState>
 		constexpr count_result(_ArgInput&& __input, ::std::size_t __count, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok)
-		: count_result(::std::forward<_ArgInput>(__input), __count, ::std::forward<_ArgState>(__state),
-			__error_code,
+		: count_result(::std::forward<_ArgInput>(__input), __count, ::std::forward<_ArgState>(__state), __error_code,
 			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
@@ -186,12 +185,86 @@ namespace ztd { namespace text {
 	};
 
 	//////
+	/// @brief The result of counting operations (such as ztd_text_count_encodable and
+	/// ztd_text_count_encodable).
+	//////
+	template <typename _Input, typename _FromState, typename _ToState>
+	class count_transcode_result : public stateless_count_result<_Input> {
+	private:
+		using __base_t = stateless_count_result<_Input>;
+
+	public:
+		//////
+		/// @brief A reference to the state of the associated Encoding used for counting which covers the decoding
+		/// portion of the transcode operation.
+		//////
+		::std::reference_wrapper<_FromState> from_state;
+
+		//////
+		/// @brief A reference to the state of the associated Encoding used for counting which covers the encoding
+		/// portion of the transcode operation.
+		//////
+		::std::reference_wrapper<_ToState> to_state;
+
+		//////
+		/// @brief Constructs a ztd::text::count_result, defaulting the error code to
+		/// ztd::text::encoding_error::ok if not provided.
+		///
+		/// @param[in] __input The input range to store.
+		/// @param[in] __count The number of code points or code units successfully counted.
+		/// @param[in] __from_state The state related to the encoding for the decode portion of the transcode counting
+		/// operation.
+		/// @param[in] __to_state The state related to the encoding for the encode portion of the transcode counting
+		/// operation.
+		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
+		/// or decode operation that failed.
+		//////
+		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
+		constexpr count_transcode_result(_ArgInput&& __input, ::std::size_t __count, _ArgFromState&& __from_state,
+			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
+		: count_transcode_result(::std::forward<_ArgInput>(__input), __count,
+			::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code,
+			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::count_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __input The input range to store.
+		/// @param[in] __count The number of code points or code units successfully counted.
+		/// @param[in] __from_state The state related to the encoding for the decode portion of the transcode counting
+		/// operation.
+		/// @param[in] __to_state The state related to the encoding for the encode portion of the transcode counting
+		/// operation.
+		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
+		/// or decode operation that failed.
+		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
+		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// invoked. This allows the value to be provided directly when constructing this result type.
+		//////
+		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
+		constexpr count_transcode_result(_ArgInput&& __input, ::std::size_t __count, _ArgFromState&& __from_state,
+			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __handled_errors)
+		: __base_t(::std::forward<_ArgInput>(__input), __count, __error_code, __handled_errors)
+		, from_state(::std::forward<_ArgFromState>(__from_state))
+		, to_state(::std::forward<_ArgToState>(__to_state)) {
+		}
+	};
+
+	//////
 	/// @}
 	//////
 
 	namespace __txt_detail {
 		template <typename _Input, typename _State>
 		constexpr stateless_count_result<_Input> __slice_to_stateless(count_result<_Input, _State>&& __result) {
+			return __result;
+		}
+
+		template <typename _Input, typename _FromState, typename _ToState>
+		constexpr stateless_count_result<_Input> __slice_to_stateless(
+			count_transcode_result<_Input, _FromState, _ToState>&& __result) {
 			return __result;
 		}
 
@@ -204,8 +277,8 @@ namespace ztd { namespace text {
 			::std::size_t __handled_errors) {
 			decltype(auto) __in_range = __reconstruct(::std::in_place_type<_InputRange>,
 				::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
-			return count_result<_InputRange, _State>(::std::forward<decltype(__in_range)>(__in_range),
-				__count, ::std::forward<_ArgState>(__state), __error_code, __handled_errors);
+			return count_result<_InputRange, _State>(::std::forward<decltype(__in_range)>(__in_range), __count,
+				::std::forward<_ArgState>(__state), __error_code, __handled_errors);
 		}
 
 		template <typename _InputRange, typename _State, typename _InFirst, typename _InLast, typename _ArgState>

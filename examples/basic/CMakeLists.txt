@@ -69,6 +69,10 @@ foreach (example_source_name ${ztd.text.examples.basic.sources})
 		ztd::text
 		${CMAKE_DL_LIBS}
 	)
+	target_include_directories(${example_target}
+		PRIVATE
+		../include
+	)
 	add_dependencies(${example_target} ztd.text.examples.basic.data)
 	if (ZTD_TEXT_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target} WORKING_DIRECTORY ${ztd-text-examples-data-destination})

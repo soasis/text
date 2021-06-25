@@ -104,10 +104,25 @@ namespace ztd { namespace text {
 			::std::is_same_v<_Type, ::ztd::text::unicode_code_point> ||
 			::std::is_same_v<_Type, ::ztd::text::unicode_scalar_value>
 		>;
+
+		template <typename _Type>
+		using __is_char_traitable = ::std::integral_constant<bool,
+			::std::is_same_v<_Type, char> || ::std::is_same_v<_Type, wchar_t> ||
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+			::std::is_same_v<_Type, char8_t> ||
+#endif
+			::std::is_same_v<_Type, char16_t> ||
+			::std::is_same_v<_Type, char32_t> ||
+			::std::is_same_v<_Type, ::ztd::text::unicode_code_point> ||
+			::std::is_same_v<_Type, ::ztd::text::unicode_scalar_value>
+		>;
 		// clang-format on
 
 		template <typename _Type>
 		inline constexpr bool __is_character_v = __is_character<_Type>::value;
+
+		template <typename _Type>
+		inline constexpr bool __is_char_traitable_v = __is_char_traitable<_Type>::value;
 
 		template <typename T, template <typename...> class Templ>
 		struct __is_specialization_of_impl : ::std::false_type { };

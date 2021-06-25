@@ -46,6 +46,7 @@
 #include <cstddef>
 #include <array>
 #include <utility>
+#include <functional>
 #include <system_error>
 
 #include <ztd/text/detail/prologue.hpp>
@@ -191,6 +192,26 @@ namespace ztd { namespace text {
 	};
 
 	//////
+	/// @brief A type alias to produce a span-containing decode result type. Useful for end-users with fairly standard,
+	/// pointer-based buffer usages.
+	//////
+	template <typename _Encoding>
+	using span_decode_result_for = decode_result<::ztd::text::span<const code_unit_t<_Encoding>>,
+		::ztd::text::span<code_point_t<_Encoding>>, decode_state_t<_Encoding>>;
+
+	//////
+	/// @brief A type alias to produce a concrete error handler for the encoding result of the specified @p _Encoding
+	/// type.
+	///
+	/// @tparam _Encoding The encoding to base this error handler off of.
+	/// @tparam _Function The template function type that will be used as the base type to insert the function
+	/// signature into.
+	//////
+	template <typename _Encoding, template <class...> class _Function = std::function>
+	using basic_decode_error_handler_for = _Function<span_decode_result_for<_Encoding>(
+		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::text::span<const code_unit_t<_Encoding>>)>;
+
+	//////
 	/// @}
 	/////
 
@@ -216,7 +237,7 @@ namespace ztd { namespace text {
 
 		template <typename _InputRange, typename _OutputRange, typename _State>
 		using __reconstruct_decode_result_t
-			= decode_result<__reconstruct_t<_InputRange>, __reconstruct_t<_OutputRange>, _State>;
+			= decode_result<__range_reconstruct_t<_InputRange>, __range_reconstruct_t<_OutputRange>, _State>;
 
 		template <typename _InputRange, typename _OutputRange, typename _State, typename _InFirst, typename _InLast,
 			typename _OutFirst, typename _OutLast, typename _ArgState>

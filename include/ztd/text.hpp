@@ -43,8 +43,8 @@
 #include <ztd/text/encode.hpp>
 #include <ztd/text/decode.hpp>
 #include <ztd/text/transcode.hpp>
-#include <ztd/text/count_code_points.hpp>
-#include <ztd/text/count_code_points.hpp>
+#include <ztd/text/count_encodable.hpp>
+#include <ztd/text/count_decodable.hpp>
 #include <ztd/text/validate_decodable_as.hpp>
 #include <ztd/text/validate_encodable_as.hpp>
 

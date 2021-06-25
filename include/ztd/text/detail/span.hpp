@@ -35,6 +35,8 @@
 
 #include <ztd/text/version.hpp>
 
+#include <type_traits>
+
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_SPAN_I_)
 
 #include <span>
@@ -73,14 +75,31 @@ namespace ztd { namespace text {
 	//////
 	inline constexpr decltype(::nonstd::dynamic_extent) dynamic_extent = ::nonstd::dynamic_extent;
 
-	using ::nonstd::span_lite::as_bytes;
-	using ::nonstd::span_lite::as_writable_bytes;
-	using ::nonstd::span_lite::span;
+	using ::nonstd::as_bytes;
+	using ::nonstd::as_writable_bytes;
+	using ::nonstd::span;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
 #endif
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	namespace __txt_detail {
+		template <typename _Ty>
+		class __is_std_span : public ::std::false_type { };
+
+		template <typename _Ty, decltype(::ztd::text::dynamic_extent) _N>
+		class __is_std_span<::ztd::text::span<_Ty, _N>> : public ::std::true_type { };
+
+		template <typename _Ty>
+		inline constexpr bool __is_std_span_v = __is_std_span<_Ty>::value;
+	} // namespace __txt_detail
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
 
 #include <ztd/text/detail/epilogue.hpp>
 

@@ -28,30 +28,37 @@
 //
 // ============================================================================>
 
-#include <ztd/text/examples/utf8_startup.hpp>
+#pragma once
 
-#include <ztd/text/any_encoding.hpp>
-#include <ztd/text/encode.hpp>
-#include <ztd/text/decode.hpp>
-#include <ztd/text/transcode.hpp>
+#ifndef ZTD_TEXT_PROPAGATE_ERROR_HPP
+#define ZTD_TEXT_PROPAGATE_ERROR_HPP
 
-#include <iostream>
-#include <fstream>
+#include <ztd/text/version.hpp>
 
-int main(int, char*[]) {
+#include <ztd/text/decode_result.hpp>
+#include <ztd/text/encode_result.hpp>
+#include <ztd/text/transcode_result.hpp>
 
-	ztd::text::any_encoding encoding(ztd::text::basic_utf8<char> {});
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	const char32_t source_data[] = U"\U0001F408\U0001F431\U0001F408\n\x3A\x33";
-	std::string storage;
-	storage.resize(std::size(source_data) * sizeof(char32_t));
+	//////
+	/// @brief Takes the given encodings from a transcoding operation and inspects the
+	///
+	//////
+	template <typename _FromEncoding, typename _ToEncoding, typename _Result, typename _DecodeErrorHandler,
+		typename _EncodeErrorHandler, typename _FromProgress, typename _ToProgress>
+	constexpr auto propagate_error(_FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding, _Result&& __result,
+		_DecodeErrorHandler&& __decode_error_handler, _EncodeErrorHandler&& __encode_error_handler,
+		_FromProgress&& __from_progress, _ToProgress&& __to_progress) {
+		auto __decode_result           = __decode_error_handler(::std::forward<FromEncoding>(__from_encoding),
+               ::std::forward<_Result>(__result), __from_progress, __from_progress);
+		auto __corrected_encode_result = ();
+	}
 
-	ztd::text::span<char> normal_output(storage);
-	ztd::text::span<std::byte> output = ztd::text::as_writable_bytes(normal_output);
-	ztd::text::encode_state_t<ztd::text::any_encoding> state(encoding);
-	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler {}, state);
-	std::size_t result_written = output.size() - result.output.size();
-	storage.resize(result_written);
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
 
-	return 0;
-}
+#include <ztd/text/detail/epilogue.hpp>
+
+#endif // ZTD_TEXT_PROPAGATE_ERROR_HPP

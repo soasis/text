@@ -28,30 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/examples/utf8_startup.hpp>
-
-#include <ztd/text/any_encoding.hpp>
-#include <ztd/text/encode.hpp>
-#include <ztd/text/decode.hpp>
-#include <ztd/text/transcode.hpp>
-
-#include <iostream>
-#include <fstream>
-
-int main(int, char*[]) {
-
-	ztd::text::any_encoding encoding(ztd::text::basic_utf8<char> {});
-
-	const char32_t source_data[] = U"\U0001F408\U0001F431\U0001F408\n\x3A\x33";
-	std::string storage;
-	storage.resize(std::size(source_data) * sizeof(char32_t));
-
-	ztd::text::span<char> normal_output(storage);
-	ztd::text::span<std::byte> output = ztd::text::as_writable_bytes(normal_output);
-	ztd::text::encode_state_t<ztd::text::any_encoding> state(encoding);
-	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler {}, state);
-	std::size_t result_written = output.size() - result.output.size();
-	storage.resize(result_written);
-
-	return 0;
-}
+#include <ztd/text/count_decodable.hpp>

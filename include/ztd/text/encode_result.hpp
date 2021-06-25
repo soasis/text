@@ -46,6 +46,7 @@
 #include <cstddef>
 #include <array>
 #include <utility>
+#include <functional>
 #include <system_error>
 
 #include <ztd/text/detail/prologue.hpp>
@@ -188,6 +189,26 @@ namespace ztd { namespace text {
 	};
 
 	//////
+	/// @brief A type alias to produce a span-containing encode result type. Useful for end-users with fairly standard,
+	/// pointer-based buffer usages.
+	//////
+	template <typename _Encoding>
+	using span_encode_result_for = encode_result<::ztd::text::span<const code_point_t<_Encoding>>,
+		::ztd::text::span<code_unit_t<_Encoding>>, encode_state_t<_Encoding>>;
+
+	//////
+	/// @brief A type alias to produce a concrete error handler for the encoding result of the specified @p _Encoding
+	/// type.
+	///
+	/// @tparam _Encoding The encoding to base this error handler off of.
+	/// @tparam _Function The template function type that will be used as the base type to insert the function
+	/// signature into.
+	//////
+	template <typename _Encoding, template <class...> class _Function = std::function>
+	using basic_encode_error_handler_for = _Function<span_encode_result_for<_Encoding>(
+		const _Encoding&, span_encode_result_for<_Encoding>, ::ztd::text::span<const code_point_t<_Encoding>>)>;
+
+	//////
 	/// @}
 	//////
 
@@ -201,8 +222,8 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
-		constexpr encode_result<_Input, __remove_cvref_t<_DesiredOutput>, _State>
-		__replace_result_output(encode_result<_Input, _Output, _State>&& __result,
+		constexpr encode_result<_Input, __remove_cvref_t<_DesiredOutput>, _State> __replace_result_output(
+			encode_result<_Input, _Output, _State>&& __result,
 			_DesiredOutput&&
 			     __desired_output) noexcept(::std::is_nothrow_constructible_v<encode_result<_Input, _Output, _State>,
 			_Input&&, _DesiredOutput, _State&, encoding_error, ::std::size_t>) {
@@ -213,7 +234,7 @@ namespace ztd { namespace text {
 
 		template <typename _InputRange, typename _OutputRange, typename _State>
 		using __reconstruct_encode_result_t
-			= encode_result<__reconstruct_t<_InputRange>, __reconstruct_t<_OutputRange>, _State>;
+			= encode_result<__range_reconstruct_t<_InputRange>, __range_reconstruct_t<_OutputRange>, _State>;
 
 		template <typename _InputRange, typename _OutputRange, typename _State, typename _InFirst, typename _InLast,
 			typename _OutFirst, typename _OutLast, typename _ArgState>
@@ -241,9 +262,9 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
-		inline constexpr bool __is_encode_error_handler_callable_v
-			= __is_detected_v<__detect_callable_handler, _ErrorHandler, _Encoding,
-			     __reconstruct_encode_result_t<_Input, _Output, _State>, ::ztd::text::span<code_unit_t<__remove_cvref_t<_Encoding>>>>;
+		inline constexpr bool __is_encode_error_handler_callable_v = __is_detected_v<__detect_callable_handler,
+			_ErrorHandler, _Encoding, __reconstruct_encode_result_t<_Input, _Output, _State>,
+			::ztd::text::span<code_unit_t<__remove_cvref_t<_Encoding>>>>;
 
 		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
 		inline constexpr bool __is_encode_one_callable_v

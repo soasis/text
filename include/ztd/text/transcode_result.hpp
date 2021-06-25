@@ -230,8 +230,8 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _FromState, typename _ToState>
-		using __reconstruct_transcode_result_t
-			= transcode_result<__reconstruct_t<_InputRange>, __reconstruct_t<_OutputRange>, _FromState, _ToState>;
+		using __reconstruct_transcode_result_t = transcode_result<__range_reconstruct_t<_InputRange>,
+			__range_reconstruct_t<_OutputRange>, _FromState, _ToState>;
 
 		template <typename _InputRange, typename _OutputRange, typename _ToState, typename _FromState,
 			typename _InFirst, typename _InLast, typename _OutFirst, typename _OutLast, typename _ArgToState,

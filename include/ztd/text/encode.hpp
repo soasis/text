@@ -93,11 +93,12 @@ namespace ztd { namespace text {
 		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
 		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
 		// using _OutputValueType = __txt_detail::__range_value_type_t<_UOutput>;
-		using _IntermediateInput  = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-               _UInput>>;
-		using _IntermediateOutput = __txt_detail::__reconstruct_t<_Output>;
+		using _IntermediateInput
+			= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+			     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+			          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+			     _UInput>>;
+		using _IntermediateOutput = __txt_detail::__range_reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.encode_one(
                ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
 		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
@@ -192,14 +193,15 @@ namespace ztd { namespace text {
 			using _UInput                = __txt_detail::__remove_cvref_t<_Input>;
 			using _InputValueType        = __txt_detail::__range_value_type_t<_UInput>;
 			using _IntermediateValueType = code_unit_t<_UEncoding>;
-			using _IntermediateInput = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-				::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-				     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-				_UInput>>;
-			using _Output            = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
-			using _Result            = decltype(__encoding.encode_one(
+			using _IntermediateInput
+				= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+				     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+				          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+				     _UInput>>;
+			using _Output       = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _Result       = decltype(__encoding.encode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
-			using _WorkingInput      = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
+			using _WorkingInput = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			_WorkingInput __working_input(
 				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
@@ -242,6 +244,60 @@ namespace ztd { namespace text {
 				if (__txt_detail::__adl::__adl_empty(__result.input)) {
 					return __result;
 				}
+			}
+		}
+
+		template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler,
+			typename _State>
+		constexpr auto __encode_dispatch(
+			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
+			using _UEncoding            = __txt_detail::__remove_cvref_t<_Encoding>;
+			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
+			using _Unbounded            = unbounded_view<_BackInserterIterator>;
+			using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
+			using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
+			using _IntermediateInput
+				= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+				     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+				          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+				     _UInput>>;
+
+			_OutputContainer __output {};
+			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
+				using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
+				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
+					              _OutputContainer, _SizeType>) {
+					auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
+					__output_size_hint *= max_code_points_v<_UEncoding>;
+					__output.reserve(__output_size_hint);
+				}
+			}
+			if constexpr (__txt_detail::__is_encode_error_handler_callable_v<_Encoding, _IntermediateInput,
+				              _Unbounded, _ErrorHandler, _State>) {
+				if constexpr (__txt_detail::__is_encode_one_callable_v<_Encoding, _IntermediateInput, _Unbounded,
+					              _ErrorHandler, _State>) {
+					// We can use the unbounded stuff
+					_Unbounded __insert_view(::std::back_inserter(__output));
+					auto __stateful_result
+						= encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+						     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
+						::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
+						::std::forward<_ErrorHandler>(__error_handler), __state);
+					(void)__stateful_result;
+					return __output;
+				}
+			}
+			else {
+				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
+					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				(void)__stateful_result;
+				return __output;
 			}
 		}
 	} // namespace __txt_detail
@@ -365,10 +421,11 @@ namespace ztd { namespace text {
 		using _Unbounded            = unbounded_view<_BackInserterIterator>;
 		using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
 		using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
-		using _IntermediateInput    = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-               _UInput>>;
+		using _IntermediateInput
+			= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+			     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+			          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+			     _UInput>>;
 
 		_OutputContainer __output {};
 		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
@@ -489,61 +546,6 @@ namespace ztd { namespace text {
 			return encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 	}
-
-	namespace __txt_detail {
-		template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler,
-			typename _State>
-		constexpr auto __encode_dispatch(
-			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UEncoding            = __txt_detail::__remove_cvref_t<_Encoding>;
-			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-			using _Unbounded            = unbounded_view<_BackInserterIterator>;
-			using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
-			using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
-			using _IntermediateInput = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-				::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-				     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-				_UInput>>;
-
-			_OutputContainer __output {};
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
-				using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
-					              _OutputContainer, _SizeType>) {
-					auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
-					__output_size_hint *= max_code_points_v<_UEncoding>;
-					__output.reserve(__output_size_hint);
-				}
-			}
-			if constexpr (__txt_detail::__is_encode_error_handler_callable_v<_Encoding, _IntermediateInput,
-				              _Unbounded, _ErrorHandler, _State>) {
-				if constexpr (__txt_detail::__is_encode_one_callable_v<_Encoding, _IntermediateInput, _Unbounded,
-					              _ErrorHandler, _State>) {
-					// We can use the unbounded stuff
-					_Unbounded __insert_view(::std::back_inserter(__output));
-					auto __stateful_result
-						= encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-						     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
-					(void)__stateful_result;
-					return __output;
-				}
-				else {
-					auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
-						::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
-						::std::forward<_ErrorHandler>(__error_handler), __state);
-					(void)__stateful_result;
-					return __output;
-				}
-			}
-			else {
-				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
-					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
-					::std::forward<_ErrorHandler>(__error_handler), __state);
-				(void)__stateful_result;
-				return __output;
-			}
-		}
-	} // namespace __txt_detail
 
 	//////
 	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the

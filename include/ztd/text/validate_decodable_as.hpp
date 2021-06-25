@@ -83,7 +83,7 @@ namespace ztd { namespace text {
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
 		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
 		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
-		using _WorkingInput   = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+		using _WorkingInput   = __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
                     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
                _UInput>>;
@@ -162,12 +162,17 @@ namespace ztd { namespace text {
 			using _CodeUnit  = code_unit_t<_UEncoding>;
 			using _CodePoint = code_point_t<_UEncoding>;
 
-			_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
-			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
+			_CodePoint __code_point_intermediate_storage[max_code_points_v<_UEncoding>] {};
+			::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_intermediate(
+				__code_point_intermediate_storage);
+			_CodeUnit __code_unit_intermediate_storage[max_code_units_v<_UEncoding>] {};
+			::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_intermediate(
+				__code_unit_intermediate_storage);
 
 			for (;;) {
-				auto __stateless_validate_result = __txt_detail::__basic_validate_decodable_as_one(__working_input,
-					__encoding, __code_unit_buf, __code_point_buf, __decode_state, __encode_state);
+				auto __stateless_validate_result
+					= __txt_detail::__basic_validate_decodable_as_one(__working_input, __encoding,
+					     __code_point_intermediate, __code_unit_intermediate, __decode_state, __encode_state);
 				if (!__stateless_validate_result.valid) {
 					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),

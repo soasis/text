@@ -635,10 +635,12 @@ namespace ztd { namespace text {
 			auto __this_cache_begin  = this->_M_cache.data();
 			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
 			::ztd::text::span<value_type, _MaxValues> __cache_view(this->_M_cache);
+			_IntermediateCodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
 			if constexpr (_IsInputOrOutput) {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
 					::std::move(__this_input_range), this->from_encoding(), __cache_view, this->to_encoding(),
-					this->from_handler(), this->to_handler(), this->from_state(), this->to_state());
+					this->from_handler(), this->to_handler(), this->from_state(), this->to_state(),
+					__intermediate);
 				__this_cache_end
 					= __txt_detail::__adl::__adl_to_address(__txt_detail::__adl::__adl_begin(__result.output));
 				if constexpr (!_IsErrorless) {
@@ -647,9 +649,10 @@ namespace ztd { namespace text {
 				this->__base_range_t::__get_value() = ::std::move(__result.input);
 			}
 			else {
-				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					__this_input_range, this->from_encoding(), __cache_view, this->to_encoding(),
-					this->from_handler(), this->to_handler(), this->from_state(), this->to_state());
+				auto __result
+					= __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(__this_input_range,
+					     this->from_encoding(), __cache_view, this->to_encoding(), this->from_handler(),
+					     this->to_handler(), this->from_state(), this->to_state(), __intermediate);
 				__this_cache_end
 					= __txt_detail::__adl::__adl_to_address(__txt_detail::__adl::__adl_begin(__result.output));
 				if constexpr (!_IsErrorless) {

@@ -35,18 +35,10 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/subrange.hpp>
-
-#include <ztd/text/detail/range.hpp>
-#include <ztd/text/detail/adl.hpp>
+#include <ztd/text/detail/reconstruct.types.hpp>
+#include <ztd/text/detail/reconstruct.cpo.hpp>
 #include <ztd/text/detail/span.hpp>
-#include <ztd/text/detail/memory.hpp>
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/detail/empty_string.hpp>
 
-#include <iterator>
-#include <utility>
-#include <type_traits>
 #include <string_view>
 
 #include <ztd/text/detail/prologue.hpp>
@@ -55,239 +47,98 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-
-		template <typename _Ty, decltype(::ztd::text::dynamic_extent) _Extent, typename _It, typename _Sen>
-		constexpr ::ztd::text::span<_Ty> reconstruct(
-			::std::in_place_type_t<::ztd::text::span<_Ty, _Extent>>, _It __iterator, _Sen __sentinel) noexcept {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_SPAN_I_)
-			return ::ztd::text::span<_Ty>(__iterator, __sentinel);
-#else
-			if constexpr (!::std::is_integral_v<_Sen>) {
-				return ::ztd::text::span<_Ty>(__adl::__adl_to_address(__iterator), __sentinel - __iterator);
+		template <typename _Input>
+		constexpr bool __span_or_reconstruct_noexcept() {
+			using _UInput = __remove_cvref_t<_Input>;
+			if constexpr (::std::is_array_v<_UInput> && ::std::is_lvalue_reference_v<_Input>) {
+				return true;
+			}
+			else if constexpr (__is_iterator_contiguous_iterator_v<__range_iterator_t<_Input>>) {
+				return true;
 			}
 			else {
-				return ::ztd::text::span<_Ty>(__adl::__adl_to_address(__iterator), __sentinel);
+				return noexcept(__reconstruct(::std::in_place_type<_UInput>, ::std::declval<_Input>()));
 			}
-#endif
 		}
 
-		template <typename _Ty, typename _Traits, typename _It, typename _Sen>
-		constexpr ::std::basic_string_view<_Ty, _Traits> reconstruct(
-			::std::in_place_type_t<::std::basic_string_view<_Ty, _Traits>>, _It __iterator,
-			_Sen __sentinel) noexcept {
-			using _SizeType = typename ::std::basic_string_view<_Ty, _Traits>::size_type;
-			if constexpr (!::std::is_integral_v<_Sen>) {
-				_SizeType __ptr_size = static_cast<_SizeType>(__sentinel - __iterator);
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
-				if (__ptr_size == static_cast<_SizeType>(0)) {
-					const auto& __empty_str = __empty_string<_Ty>();
-					return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);
+		template <typename _Input>
+		constexpr bool __string_view_or_span_or_reconstruct_noexcept() {
+			using _VInput = ::std::remove_reference_t<_Input>;
+			using _UInput = __remove_cvref_t<_Input>;
+			if constexpr (
+				::std::is_array_v<
+				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_VInput>> && ::std::is_lvalue_reference_v<_Input>) {
+				return true;
+			}
+			else {
+				return noexcept(__reconstruct(::std::in_place_type<_UInput>, ::std::declval<_Input>()));
+			}
+		}
+
+		template <typename _Input>
+		constexpr auto __span_or_reconstruct(_Input&& __input) noexcept(__span_or_reconstruct_noexcept<_Input>()) {
+			using _VInput = ::std::remove_reference_t<_Input>;
+			using _UInput = __remove_cvref_t<_Input>;
+			if constexpr (
+				__is_iterator_contiguous_iterator_v<__range_iterator_t<
+				     _Input>> && !__is_specialization_of_v<_UInput, ::std::basic_string_view> && !__is_std_span_v<_UInput>) {
+				using _Ty = ::std::remove_extent_t<_VInput>;
+				return __reconstruct(::std::in_place_type<::ztd::text::span<_Ty>>, __adl::__adl_begin(__input),
+					__adl::__adl_end(__input));
+			}
+			else {
+				return __reconstruct(::std::in_place_type<_UInput>, ::std::forward<_Input>(__input));
+			}
+		}
+
+		template <typename _Input>
+		constexpr auto __string_view_or_span_or_reconstruct(_Input&& __input) noexcept(
+			__string_view_or_span_or_reconstruct_noexcept<_Input>()) {
+			using _VInput = ::std::remove_reference_t<_Input>;
+			using _UInput = __remove_cvref_t<_Input>;
+			if constexpr (
+				::std::is_array_v<
+				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_VInput>> && ::std::is_lvalue_reference_v<_Input>) {
+				using _CharTy = ::std::remove_extent_t<_UInput>;
+				if constexpr (__is_char_traitable_v<_CharTy>) {
+					return __reconstruct(::std::in_place_type<::std::basic_string_view<_CharTy>>,
+						__adl::__adl_begin(__input), __adl::__adl_end(__input));
 				}
-#endif
-				return ::std::basic_string_view<_Ty, _Traits>(::std::addressof(*__iterator), __ptr_size);
-			}
-			else {
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
-				if (static_cast<_SizeType>(__sentinel) == static_cast<_SizeType>(0)) {
-					const auto& __empty_str = __empty_string<_Ty>();
-					return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);
+				else {
+					using _Ty = ::std::remove_extent_t<_VInput>;
+					return __reconstruct(::std::in_place_type<::ztd::text::span<_Ty>>, __adl::__adl_begin(__input),
+						__adl::__adl_end(__input));
 				}
-#endif
-				return ::std::basic_string_view<_Ty, _Traits>(
-					::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel));
-			}
-		}
-
-		template <typename _Ty, typename _Traits, ::std::size_t _N>
-		constexpr ::std::basic_string_view<_Ty, _Traits> reconstruct(
-			::std::in_place_type_t<::std::basic_string_view<_Ty, _Traits>>, const _Ty (&__array)[_N]) noexcept {
-			return ::std::basic_string_view<_Ty, _Traits>(__array);
-		}
-
-		template <typename _Range, typename _It, typename _Sen>
-		constexpr auto __adl_pair_reconstruct(::std::in_place_type_t<_Range> __ty, _It __iterator,
-			_Sen __sentinel) noexcept(noexcept(reconstruct(__ty, ::std::move(__iterator), ::std::move(__sentinel))))
-			-> decltype(reconstruct(__ty, ::std::move(__iterator), ::std::move(__sentinel))) {
-			return reconstruct(__ty, ::std::move(__iterator), ::std::move(__sentinel));
-		}
-
-		template <typename _Range, typename _It, typename _Sen>
-		constexpr auto __adl_reconstruct(
-			::std::in_place_type_t<_Range> __ty, _It __iterator, _Sen __sentinel) noexcept(noexcept(reconstruct(__ty,
-			subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>(::std::declval<_It>(), ::std::declval<_Sen>()))))
-			-> decltype(reconstruct(__ty,
-			     subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>(
-			          ::std::declval<_It>(), ::std::declval<_Sen>()))) {
-			return reconstruct(__ty,
-				subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>(
-				     ::std::move(__iterator), ::std::move(__sentinel)));
-		}
-
-		template <typename _Range, typename _InRange>
-		constexpr auto __adl_range_reconstruct(::std::in_place_type_t<_Range> __ty, _InRange&& __in_range) noexcept(
-			noexcept(reconstruct(__ty, ::std::forward<_InRange>(__in_range))))
-			-> decltype(reconstruct(__ty, ::std::forward<_InRange>(__in_range))) {
-			return reconstruct(__ty, ::std::forward<_InRange>(__in_range));
-		}
-
-		template <typename _Range, typename _It = __range_iterator_t<_Range>,
-			typename _Sen = __range_sentinel_t<_Range>>
-		using __detect_is_pair_reconstructible_range = decltype(__adl_pair_reconstruct(
-			::std::in_place_type<__remove_cvref_t<_Range>>, ::std::declval<_It>(), ::std::declval<_Sen>()));
-
-		template <typename _Range, typename _It = __range_iterator_t<__remove_cvref_t<_Range>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Range>>>
-		using __is_pair_reconstructible_range
-			= __is_detected<__detect_is_pair_reconstructible_range, _Range, _It, _Sen>;
-
-		template <typename _Range, typename _It = __range_iterator_t<__remove_cvref_t<_Range>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Range>>>
-		inline constexpr bool __is_pair_reconstructible_range_v
-			= __is_pair_reconstructible_range<_Range, _It, _Sen>::value;
-
-		template <typename _Range, typename _It = __range_iterator_t<__remove_cvref_t<_Range>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Range>>, typename = void>
-		class __is_nothrow_pair_reconstructible_range : public ::std::false_type { };
-
-		template <typename _Range, typename _It, typename _Sen>
-		class __is_nothrow_pair_reconstructible_range<_Range, _It, _Sen,
-			::std::enable_if_t<__is_pair_reconstructible_range_v<_Range, _It, _Sen>>>
-		: public ::std::integral_constant<bool,
-			  noexcept(__adl_pair_reconstruct(::std::in_place_type<__remove_cvref_t<_Range>>, ::std::declval<_It>(),
-			       ::std::declval<_Sen>()))> { };
-
-		template <typename _Range, typename _It = __range_iterator_t<_Range>,
-			typename _Sen = __range_sentinel_t<_Range>>
-		inline constexpr bool __is_nothrow_pair_reconstructible_range_v
-			= __is_nothrow_pair_reconstructible_range<_Range, _It, _Sen>::value;
-
-		template <typename _Range, typename _It, typename _Sen>
-		using __detect_is_reconstructible_range = decltype(__adl_reconstruct(
-			::std::in_place_type<__remove_cvref_t<_Range>>, ::std::declval<_It>(), ::std::declval<_Sen>()));
-
-		template <typename _Range, typename _It = __range_iterator_t<__remove_cvref_t<_Range>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Range>>>
-		using __is_reconstructible_range = __is_detected<__detect_is_reconstructible_range, _Range, _It, _Sen>;
-
-		template <typename _Range, typename _It = __range_iterator_t<__remove_cvref_t<_Range>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Range>>>
-		inline constexpr bool __is_reconstructible_range_v = __is_reconstructible_range<_Range, _It, _Sen>::value;
-
-		template <typename _Range, typename _It = __range_iterator_t<__remove_cvref_t<_Range>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Range>>, typename = void>
-		class __is_nothrow_reconstructible_range : public ::std::false_type { };
-
-		template <typename _Range, typename _It, typename _Sen>
-		class __is_nothrow_reconstructible_range<_Range, _It, _Sen,
-			::std::enable_if_t<__is_reconstructible_range_v<_Range, _It, _Sen>>>
-		: public ::std::integral_constant<bool,
-			  noexcept(__adl_reconstruct(::std::in_place_type<__remove_cvref_t<_Range>>, ::std::declval<_It>(),
-			       ::std::declval<_Sen>()))> { };
-
-		template <typename _Range, typename _It = __range_iterator_t<_Range>,
-			typename _Sen = __range_sentinel_t<_Range>>
-		inline constexpr bool __is_nothrow_reconstructible_range_v
-			= __is_nothrow_reconstructible_range<_Range, _It, _Sen>::value;
-
-		template <typename _Range, typename _InRange>
-		using __detect_is_range_reconstructible_range = decltype(
-			__adl_range_reconstruct(::std::in_place_type<__remove_cvref_t<_Range>>, ::std::declval<_InRange>()));
-
-		template <typename _Range, typename _InRange>
-		using __is_range_reconstructible_range
-			= __is_detected<__detect_is_range_reconstructible_range, _Range, _InRange>;
-
-		template <typename _Range, typename _InRange>
-		inline constexpr bool __is_range_reconstructible_range_v
-			= __is_range_reconstructible_range<_Range, _InRange>::value;
-
-		template <typename _Range, typename _InRange, typename = void>
-		class __is_nothrow_range_reconstructible_range : public ::std::false_type { };
-
-		template <typename _Range, typename _InRange>
-		class __is_nothrow_range_reconstructible_range<_Range, _InRange,
-			::std::enable_if_t<__is_range_reconstructible_range_v<_Range, _InRange>>>
-		: public ::std::integral_constant<bool,
-			  noexcept(__adl_range_reconstruct(
-			       ::std::in_place_type<__remove_cvref_t<_Range>>, ::std::declval<_InRange>()))> { };
-
-		template <typename _Range, typename _InRange>
-		inline constexpr bool __is_nothrow_range_reconstructible_range_v
-			= __is_nothrow_range_reconstructible_range<_Range, _InRange>::value;
-
-		template <typename _Range, typename _It, typename _Sen>
-		constexpr bool __reconstruct_pair_noexcept() noexcept {
-			if constexpr (__is_pair_reconstructible_range_v<_Range, _It, _Sen>) {
-				return __is_nothrow_pair_reconstructible_range_v<_Range, _It, _Sen>;
-			}
-			else if constexpr (__is_reconstructible_range_v<_Range, _It, _Sen>) {
-				return __is_nothrow_reconstructible_range_v<_Range, _It, _Sen>;
-			}
-			else if (::std::is_constructible_v<subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>, _It, _Sen>) {
-				return ::std::is_nothrow_constructible_v<subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>,
-					_It, _Sen>;
 			}
 			else {
-				return false;
+				if constexpr (
+					__is_iterator_contiguous_iterator_v<__range_iterator_t<
+					     _Input>> && !__is_specialization_of_v<_UInput, ::std::basic_string_view> && !__is_std_span_v<_UInput>) {
+					using _CharTy = __range_value_type_t<_Input>;
+					if constexpr (__is_char_traitable_v<_CharTy>) {
+						return __reconstruct(::std::in_place_type<::std::basic_string_view<_CharTy>>,
+							__adl::__adl_begin(__input), __adl::__adl_end(__input));
+					}
+					else {
+						using _Ty = ::std::remove_extent_t<_VInput>;
+						return __reconstruct(::std::in_place_type<::ztd::text::span<_Ty>>,
+							__adl::__adl_begin(__input), __adl::__adl_end(__input));
+					}
+				}
+				else {
+					return __reconstruct(::std::in_place_type<_UInput>, ::std::forward<_Input>(__input));
+				}
 			}
 		}
 
-		template <typename _Range, typename _It, typename _Sen>
-		constexpr auto __reconstruct(::std::in_place_type_t<_Range> __ty, _It&& __iterator,
-			_Sen&& __sentinel) noexcept(__reconstruct_pair_noexcept<_Range, _It, _Sen>()) {
-			if constexpr (__is_pair_reconstructible_range_v<_Range, _It, _Sen>) {
-				return __adl_pair_reconstruct(
-					__ty, ::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
-			}
-			else if constexpr (__is_reconstructible_range_v<_Range, _It, _Sen>) {
-				return __adl_reconstruct(__ty, ::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
-			}
-			else {
-				(void)__ty;
-				return subrange<__remove_cvref_t<_It>, __remove_cvref_t<_Sen>>(
-					::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
-			}
-		}
+		template <typename _Input>
+		using __span_or_reconstruct_t = decltype(__span_or_reconstruct(::std::declval<_Input>()));
 
-		template <typename _Range, typename _ArgRange>
-		constexpr bool __reconstruct_noexcept() noexcept {
-			if constexpr (__is_range_reconstructible_range_v<_Range, _ArgRange>) {
-				return __is_nothrow_range_reconstructible_range_v<_Range, _ArgRange>;
-			}
-			else {
-				using _NoRefArgRange = ::std::remove_reference_t<_ArgRange>;
-				return noexcept(__reconstruct(::std::in_place_type<_Range>,
-					__adl::__adl_begin(::std::declval<_NoRefArgRange&>()),
-					__adl::__adl_end(::std::declval<_NoRefArgRange&>())));
-			}
-		}
-
-		template <typename _Range, typename _ArgRange>
-		constexpr decltype(auto) __reconstruct(::std::in_place_type_t<_Range> __tag, _ArgRange&& __range) noexcept(
-			__reconstruct_noexcept<_Range, _ArgRange>()) {
-			if constexpr (__is_range_reconstructible_range_v<_Range, _ArgRange>) {
-				return __adl_range_reconstruct(__tag, ::std::forward<_ArgRange>(__range));
-			}
-			else {
-				return __reconstruct(__tag, __adl::__adl_begin(__range), __adl::__adl_end(__range));
-			}
-		}
-
-		template <typename _Tag, typename _Array,
-			::std::enable_if_t<::std::is_array_v<__remove_cvref_t<_Array>> && !::std::is_const_v<_Array>>* = nullptr>
-		constexpr auto reconstruct(::std::in_place_type_t<_Tag> __tag, _Array& __array) noexcept {
-			return __reconstruct(__tag, __adl::__adl_begin(__array), __adl::__adl_end(__array));
-		}
-
-		template <typename _Tag, typename _It = __range_iterator_t<__remove_cvref_t<_Tag>>,
-			typename _Sen = __range_sentinel_t<__remove_cvref_t<_Tag>>>
-		using __pair_reconstruct_t = decltype(__reconstruct(::std::in_place_type<__remove_cvref_t<_Tag>>,
-			::std::declval<__remove_cvref_t<_It>>(), ::std::declval<__remove_cvref_t<_Sen>>()));
-
-		template <typename _Range, typename _Tag = __remove_cvref_t<_Range>>
-		using __reconstruct_t = decltype(__reconstruct(::std::in_place_type<_Tag>, ::std::declval<_Range>()));
-
+		template <typename _Input>
+		using __string_view_or_span_or_reconstruct_t
+			= decltype(__string_view_or_span_or_reconstruct(::std::declval<_Input>()));
 	} // namespace __txt_detail
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 

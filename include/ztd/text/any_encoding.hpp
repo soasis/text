@@ -51,8 +51,8 @@
 #include <ztd/text/decode.hpp>
 #include <ztd/text/validate_decodable_as.hpp>
 #include <ztd/text/validate_encodable_as.hpp>
-#include <ztd/text/count_code_points.hpp>
-#include <ztd/text/count_code_units.hpp>
+#include <ztd/text/count_encodable.hpp>
+#include <ztd/text/count_decodable.hpp>
 #include <ztd/text/tag.hpp>
 
 #include <ztd/text/detail/transcode_one.hpp>
@@ -166,19 +166,19 @@ namespace ztd { namespace text {
 		static inline constexpr ::std::size_t max_code_units = _MaxCodeUnits;
 
 	private:
-		using __decode_result                   = decode_result<_DecodeCodeUnits, _DecodeCodePoints, decode_state>;
-		using __encode_result                   = encode_result<_EncodeCodePoints, _EncodeCodeUnits, encode_state>;
-		using __count_code_units_result         = count_result<_DecodeCodeUnits, decode_state>;
-		using __count_code_points_result        = count_result<_EncodeCodePoints, encode_state>;
-		using __validate_decodable_as_result    = validate_result<_DecodeCodeUnits, decode_state>;
-		using __validate_encodable_as_result    = validate_result<_EncodeCodePoints, encode_state>;
-		using __decode_error_handler            = ::std::function<__decode_result(
+		using __decode_result                 = decode_result<_DecodeCodeUnits, _DecodeCodePoints, decode_state>;
+		using __encode_result                 = encode_result<_EncodeCodePoints, _EncodeCodeUnits, encode_state>;
+		using __count_decodable_result        = count_result<_DecodeCodeUnits, decode_state>;
+		using __count_encodable_result        = count_result<_EncodeCodePoints, encode_state>;
+		using __validate_decodable_as_result  = validate_result<_DecodeCodeUnits, decode_state>;
+		using __validate_encodable_as_result  = validate_result<_EncodeCodePoints, encode_state>;
+		using __decode_error_handler          = ::std::function<__decode_result(
                const any_encoding_with&, __decode_result, const ::ztd::text::span<const code_unit>&)>;
-		using __encode_error_handler            = ::std::function<__encode_result(
+		using __encode_error_handler          = ::std::function<__encode_result(
                const any_encoding_with&, __encode_result, const ::ztd::text::span<const code_point>&)>;
-		using __count_code_units_error_handler  = ::std::function<__decode_result(
-               const any_encoding_with&, __decode_result, const ::ztd::text::span<const code_point>&)>;
-		using __count_code_points_error_handler = ::std::function<__encode_result(
+		using __count_decodable_error_handler = ::std::function<__decode_result(
+			const any_encoding_with&, __decode_result, const ::ztd::text::span<const code_point>&)>;
+		using __count_encodable_error_handler = ::std::function<__encode_result(
 			const any_encoding_with&, __encode_result, const ::ztd::text::span<const code_unit>&)>;
 
 		struct __erased_state {
@@ -200,11 +200,11 @@ namespace ztd { namespace text {
 			virtual __validate_decodable_as_result __validate_decodable_as_one(
 				_DecodeCodeUnits __input, decode_state& __state) const = 0;
 			virtual __validate_encodable_as_result __validate_encodable_as_one(
-				_EncodeCodePoints __input, encode_state& __state) const                         = 0;
-			virtual __count_code_points_result __count_code_points_one(_EncodeCodePoints __input,
-				__count_code_points_error_handler __error_handler, encode_state& __state) const = 0;
-			virtual __count_code_units_result __count_code_units_one(_DecodeCodeUnits __input,
-				__count_code_units_error_handler __error_handler, decode_state& __state) const  = 0;
+				_EncodeCodePoints __input, encode_state& __state) const                       = 0;
+			virtual __count_encodable_result __count_encodable_one(_EncodeCodePoints __input,
+				__count_encodable_error_handler __error_handler, encode_state& __state) const = 0;
+			virtual __count_decodable_result __count_decodable_one(_DecodeCodeUnits __input,
+				__count_decodable_error_handler __error_handler, decode_state& __state) const = 0;
 
 			virtual __decode_result __decode(_DecodeCodeUnits __input, _DecodeCodePoints __output,
 				__decode_error_handler __error_handler, decode_state& __state) const = 0;
@@ -213,11 +213,11 @@ namespace ztd { namespace text {
 			virtual __validate_decodable_as_result __validate_decodable_as(
 				_DecodeCodeUnits __input, decode_state& __state) const = 0;
 			virtual __validate_encodable_as_result __validate_encodable_as(
-				_EncodeCodePoints __input, encode_state& __state) const                         = 0;
-			virtual __count_code_points_result __count_code_points(_EncodeCodePoints __input,
-				__count_code_points_error_handler __error_handler, encode_state& __state) const = 0;
-			virtual __count_code_units_result __count_code_units(_DecodeCodeUnits __input,
-				__count_code_units_error_handler __error_handler, decode_state& __state) const  = 0;
+				_EncodeCodePoints __input, encode_state& __state) const                       = 0;
+			virtual __count_encodable_result __count_encodable(_EncodeCodePoints __input,
+				__count_encodable_error_handler __error_handler, encode_state& __state) const = 0;
+			virtual __count_decodable_result __count_decodable(_DecodeCodeUnits __input,
+				__count_decodable_error_handler __error_handler, decode_state& __state) const = 0;
 
 			virtual ::std::unique_ptr<__erased_state> __create_encode_state() const = 0;
 			virtual ::std::unique_ptr<__erased_state> __create_decode_state() const = 0;
@@ -475,63 +475,62 @@ namespace ztd { namespace text {
 				}
 			}
 
-			virtual __count_code_units_result __count_code_units_one(_DecodeCodeUnits __input,
-				__count_code_units_error_handler __error_handler, decode_state& __state) const override {
+			virtual __count_decodable_result __count_decodable_one(_DecodeCodeUnits __input,
+				__count_decodable_error_handler __error_handler, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
 				auto& __encoding = this->__base_t::__get_value();
 				if constexpr (__txt_detail::__is_detected_v<
-					              __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
+					              __txt_detail::__detect_adl_internal_text_count_decodable_one, _Encoding,
 					              _DecodeCodeUnits, __txt_detail::__pass_through_handler, __real_decode_state>) {
-					auto __raw_result = text_count_code_units_one(
+					auto __raw_result = text_count_decodable_one(
 						__encoding, ::std::move(__input), __pass_handler, __actual_state);
-					return __count_code_units_result(::std::move(__raw_result.input), __raw_result.count, __state,
+					return __count_decodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
 				else if constexpr (__txt_detail::__is_detected_v<
-					                   __txt_detail::__detect_adl_internal_text_count_code_units_one, _Encoding,
+					                   __txt_detail::__detect_adl_internal_text_count_decodable_one, _Encoding,
 					                   _DecodeCodeUnits, __txt_detail::__pass_through_handler,
 					                   __real_decode_state>) {
-					auto __raw_result = __text_count_code_units_one(
+					auto __raw_result = __text_count_decodable_one(
 						__encoding, ::std::move(__input), __pass_handler, __actual_state);
-					return __count_code_units_result(::std::move(__raw_result.input), __raw_result.count, __state,
+					return __count_decodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
 				else {
-					auto __raw_result = __txt_detail::__basic_count_code_units_one(
+					auto __raw_result = __txt_detail::__basic_count_decodable_one(
 						::std::move(__input), __encoding, __pass_handler, __actual_state);
-					return __count_code_units_result(::std::move(__raw_result.input), __raw_result.count, __state,
+					return __count_decodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
 			}
 
-			virtual __count_code_points_result __count_code_points_one(_EncodeCodePoints __input,
-				__count_code_points_error_handler __error_handler, encode_state& __state) const override {
+			virtual __count_encodable_result __count_encodable_one(_EncodeCodePoints __input,
+				__count_encodable_error_handler __error_handler, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
 				auto& __encoding = this->__base_t::__get_value();
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_code_points_one,
+				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_encodable_one,
 					              _Encoding, _EncodeCodePoints, __txt_detail::__pass_through_handler,
 					              __real_encode_state>) {
-					auto __raw_result = text_count_code_points_one(
+					auto __raw_result = text_count_encodable_one(
 						__encoding, ::std::move(__input), __pass_handler, __actual_state);
-					return __count_code_points_result(::std::move(__raw_result.input), __raw_result.count, __state,
+					return __count_encodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
 				else if constexpr (__txt_detail::__is_detected_v<
-					                   __txt_detail::__detect_adl_internal_text_count_code_points_one, _Encoding,
+					                   __txt_detail::__detect_adl_internal_text_count_encodable_one, _Encoding,
 					                   _EncodeCodePoints, __txt_detail::__pass_through_handler,
 					                   __real_encode_state>) {
-					auto __raw_result = __text_count_code_points_one(
+					auto __raw_result = __text_count_encodable_one(
 						__encoding, ::std::move(__input), __pass_handler, __actual_state);
-					return __count_code_points_result(::std::move(__raw_result.input), __raw_result.count, __state,
+					return __count_encodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.handled_errors);
 				}
 				else {
-					auto __raw_result = __txt_detail::__basic_count_code_points_one(
+					auto __raw_result = __txt_detail::__basic_count_encodable_one(
 						::std::move(__input), __encoding, __pass_handler, __actual_state);
-					return __count_code_points_result(
-						::std::move(__raw_result.input), __raw_result.count, __state);
+					return __count_encodable_result(::std::move(__raw_result.input), __raw_result.count, __state);
 				}
 			}
 
@@ -572,24 +571,24 @@ namespace ztd { namespace text {
 				return __validate_encodable_as_result(::std::move(__raw_result.input), __raw_result.valid, __state);
 			}
 
-			virtual __count_code_units_result __count_code_units(_DecodeCodeUnits __input,
-				__count_code_units_error_handler __error_handler, decode_state& __state) const override {
+			virtual __count_decodable_result __count_decodable(_DecodeCodeUnits __input,
+				__count_decodable_error_handler __error_handler, decode_state& __state) const override {
 				__real_decode_state& __actual_state = this->_M_get_state(__state);
 				auto& __encoding                    = this->__base_t::__get_value();
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto __raw_result = ::ztd::text::count_code_units(
+				auto __raw_result = ::ztd::text::count_decodable(
 					::std::move(__input), __encoding, __pass_handler, __actual_state);
-				return __count_code_units_result(::std::move(__raw_result.input), __raw_result.count, __state,
+				return __count_decodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 					__raw_result.error_code, __raw_result.handled_errors);
 			}
 
-			virtual __count_code_points_result __count_code_points(_EncodeCodePoints __input,
-				__count_code_points_error_handler __error_handler, encode_state& __state) const override {
+			virtual __count_encodable_result __count_encodable(_EncodeCodePoints __input,
+				__count_encodable_error_handler __error_handler, encode_state& __state) const override {
 				__real_encode_state& __actual_state = this->_M_get_state(__state);
 				__txt_detail::__pass_through_handler __pass_handler;
-				auto __raw_result = ::ztd::text::count_code_points(
+				auto __raw_result = ::ztd::text::count_encodable(
 					::std::move(__input), this->__base_t::__get_value(), __pass_handler, __actual_state);
-				return __count_code_points_result(::std::move(__raw_result.input), __raw_result.count, __state,
+				return __count_encodable_result(::std::move(__raw_result.input), __raw_result.count, __state,
 					__raw_result.error_code, __raw_result.handled_errors);
 			}
 
@@ -792,15 +791,15 @@ namespace ztd { namespace text {
 			return this->_M_storage->__validate_encodable_as_one(::std::move(__input), __state);
 		}
 
-		__count_code_points_result __count_code_points_one(_EncodeCodePoints __input,
-			__count_code_points_error_handler __error_handler, encode_state& __state) const {
-			return this->_M_storage->__count_code_points_one(
+		__count_encodable_result __count_encodable_one(_EncodeCodePoints __input,
+			__count_encodable_error_handler __error_handler, encode_state& __state) const {
+			return this->_M_storage->__count_encodable_one(
 				::std::move(__input), ::std::move(__error_handler), __state);
 		}
 
-		__count_code_units_result __count_code_units_one(
+		__count_decodable_result __count_decodable_one(
 			_DecodeCodeUnits __input, __encode_error_handler __error_handler, decode_state& __state) const {
-			return this->_M_storage->__count_code_units_one(
+			return this->_M_storage->__count_decodable_one(
 				::std::move(__input), ::std::move(__error_handler), __state);
 		}
 
@@ -828,15 +827,14 @@ namespace ztd { namespace text {
 				::std::move(__input), ::std::move(__error_handler), __state);
 		}
 
-		__count_code_points_result __count_code_points(
+		__count_encodable_result __count_encodable(
 			_EncodeCodePoints __input, __decode_error_handler __error_handler, encode_state& __state) const {
-			return this->_M_storage->__count_code_points(
-				::std::move(__input), ::std::move(__error_handler), __state);
+			return this->_M_storage->__count_encodable(::std::move(__input), ::std::move(__error_handler), __state);
 		}
 
-		__count_code_units_result __count_code_units(
+		__count_decodable_result __count_decodable(
 			_DecodeCodeUnits __input, __encode_error_handler __error_handler, decode_state& __state) const {
-			return this->_M_storage->__count_code_units(::std::move(__input), ::std::move(__error_handler), __state);
+			return this->_M_storage->__count_decodable(::std::move(__input), ::std::move(__error_handler), __state);
 		}
 
 
@@ -916,10 +914,10 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_code_points_one(tag<any_encoding_with>, _EncodeCodePoints __input,
+		constexpr friend auto __text_count_encodable_one(tag<any_encoding_with>, _EncodeCodePoints __input,
 			__txt_detail::__type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler,
 			_State& __state) {
-			return __encoding.__count_code_points_one(
+			return __encoding.__count_encodable_one(
 				::std::move(__input), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 
@@ -929,10 +927,10 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_code_units_one(tag<any_encoding_with>, _DecodeCodeUnits __input,
+		constexpr friend auto __text_count_decodable_one(tag<any_encoding_with>, _DecodeCodeUnits __input,
 			__txt_detail::__type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler,
 			_State& __state) {
-			return __encoding.__count_code_units_one(
+			return __encoding.__count_decodable_one(
 				::std::move(__input), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 
@@ -942,10 +940,10 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_code_points(tag<any_encoding_with>, _EncodeCodePoints __input,
+		constexpr friend auto __text_count_encodable(tag<any_encoding_with>, _EncodeCodePoints __input,
 			__txt_detail::__type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler,
 			_State& __state) {
-			return __encoding.__count_code_points(::std::move(__input), ::std::move(__error_handler), __state);
+			return __encoding.__count_encodable(::std::move(__input), ::std::move(__error_handler), __state);
 		}
 
 		//////
@@ -954,10 +952,10 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_code_units(tag<any_encoding_with>, _DecodeCodeUnits __input,
+		constexpr friend auto __text_count_decodable(tag<any_encoding_with>, _DecodeCodeUnits __input,
 			__txt_detail::__type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler,
 			_State& __state) {
-			return __encoding.__count_code_units(
+			return __encoding.__count_decodable(
 				::std::move(__input), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	};

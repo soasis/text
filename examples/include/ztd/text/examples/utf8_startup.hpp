@@ -28,30 +28,28 @@
 //
 // ============================================================================>
 
-#include <ztd/text/examples/utf8_startup.hpp>
+#pragma once
 
-#include <ztd/text/any_encoding.hpp>
-#include <ztd/text/encode.hpp>
-#include <ztd/text/decode.hpp>
-#include <ztd/text/transcode.hpp>
+#ifndef ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP
+#define ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP
 
 #include <iostream>
-#include <fstream>
+#include <clocale>
 
-int main(int, char*[]) {
+struct static_hook {
+	static_hook() {
+#ifdef _WIN32
+		char* res = std::setlocale(LC_ALL, ".65001");
+		if (res == nullptr) {
+			std::cout << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
+		}
+#else
+		char* res = std::setlocale(LC_ALL, "en_US.utf8");
+		if (res == nullptr) {
+			std::cout << "cannot set the locale-based encoding in non-Windows to UTF8" << std::endl;
+		}
+#endif
+	}
+} inline ztd_text_examples_utf8_startup {};
 
-	ztd::text::any_encoding encoding(ztd::text::basic_utf8<char> {});
-
-	const char32_t source_data[] = U"\U0001F408\U0001F431\U0001F408\n\x3A\x33";
-	std::string storage;
-	storage.resize(std::size(source_data) * sizeof(char32_t));
-
-	ztd::text::span<char> normal_output(storage);
-	ztd::text::span<std::byte> output = ztd::text::as_writable_bytes(normal_output);
-	ztd::text::encode_state_t<ztd::text::any_encoding> state(encoding);
-	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler {}, state);
-	std::size_t result_written = output.size() - result.output.size();
-	storage.resize(result_written);
-
-	return 0;
-}
+#endif // ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP

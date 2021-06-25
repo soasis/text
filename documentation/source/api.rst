@@ -147,3 +147,4 @@ Result Types, Status Codes and Quality Aides
 	api/stateless_validate_result
 	api/validate_result
 	api/validate_transcode_result
+	api/propagate_error

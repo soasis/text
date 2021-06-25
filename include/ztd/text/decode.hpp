@@ -48,6 +48,7 @@
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/type_traits.hpp>
 #include <ztd/text/detail/span.hpp>
+#include <ztd/text/detail/reconstruct.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
 
 #include <string>
@@ -89,13 +90,14 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto basic_decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
-		using _UInput             = __txt_detail::__remove_cvref_t<_Input>;
-		using _InputValueType     = __txt_detail::__range_value_type_t<_UInput>;
-		using _IntermediateInput  = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-               _UInput>>;
-		using _IntermediateOutput = __txt_detail::__reconstruct_t<_Output>;
+		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
+		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
+		using _IntermediateInput
+			= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+			     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+			          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+			     _UInput>>;
+		using _IntermediateOutput = __txt_detail::__range_reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.decode_one(
                ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
 		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
@@ -191,14 +193,15 @@ namespace ztd { namespace text {
 			using _UInput                = __txt_detail::__remove_cvref_t<_Input>;
 			using _InputValueType        = __txt_detail::__range_value_type_t<_UInput>;
 			using _IntermediateValueType = code_point_t<_UEncoding>;
-			using _IntermediateInput = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-				::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-				     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-				_UInput>>;
-			using _Output            = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
-			using _Result            = decltype(__encoding.decode_one(
+			using _IntermediateInput
+				= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+				     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+				          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+				     _UInput>>;
+			using _Output       = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _Result       = decltype(__encoding.decode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
-			using _WorkingInput      = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
+			using _WorkingInput = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			_WorkingInput __working_input(
 				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
@@ -362,10 +365,11 @@ namespace ztd { namespace text {
 		using _Unbounded            = unbounded_view<_BackInserterIterator>;
 		using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
 		using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
-		using _IntermediateInput    = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-               _UInput>>;
+		using _IntermediateInput
+			= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+			     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+			          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+			     _UInput>>;
 
 		_OutputContainer __output {};
 		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
@@ -498,10 +502,11 @@ namespace ztd { namespace text {
 			using _UInput               = __txt_detail::__remove_cvref_t<_Input>;
 			using _InputValueType       = __txt_detail::__range_value_type_t<_UInput>;
 			using _Unbounded            = unbounded_view<_BackInserterIterator>;
-			using _IntermediateInput = __txt_detail::__reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-				::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-				     ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-				_UInput>>;
+			using _IntermediateInput
+				= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+				     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
+				          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+				     _UInput>>;
 
 			_OutputContainer __output {};
 			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
