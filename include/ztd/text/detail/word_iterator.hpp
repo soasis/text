@@ -37,6 +37,7 @@
 
 #include <ztd/text/endian.hpp>
 #include <ztd/text/reconstruct.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <ztd/text/detail/range.hpp>
 #include <ztd/text/detail/type_traits.hpp>
@@ -283,7 +284,7 @@ namespace ztd { namespace text {
 					return this->_M_base_range_ref.get();
 				}
 
-				::std::reference_wrapper<_URange> _M_base_range_ref;
+				::ztd::text::reference_wrapper<_URange> _M_base_range_ref;
 			};
 
 		public:

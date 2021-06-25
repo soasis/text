@@ -39,6 +39,7 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
 #include <ztd/text/reconstruct.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <ztd/text/detail/span.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
@@ -150,7 +151,7 @@ namespace ztd { namespace text {
 		/// @brief The state of the associated Encoding used for decoding input code units to code points.
 		///
 		//////
-		::std::reference_wrapper<_State> state;
+		::ztd::text::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to

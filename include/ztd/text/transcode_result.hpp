@@ -39,6 +39,7 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
 #include <ztd/text/reconstruct.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <cstddef>
 #include <array>
@@ -150,12 +151,12 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for decoding input code units to
 		/// intermediate code points.
 		//////
-		::std::reference_wrapper<_FromState> from_state;
+		::ztd::text::reference_wrapper<_FromState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for encoding intermediate code points to
 		/// code units.
 		//////
-		::std::reference_wrapper<_ToState> to_state;
+		::ztd::text::reference_wrapper<_ToState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to

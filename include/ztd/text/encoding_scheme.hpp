@@ -49,6 +49,7 @@
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/endian.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <ztd/text/detail/word_iterator.hpp>
 #include <ztd/text/detail/ebco.hpp>
@@ -66,7 +67,7 @@ namespace ztd { namespace text {
 		template <typename _Byte, typename _UInputRange, typename _UOutputRange, typename _ErrorHandler>
 		class __scheme_decode_handler {
 		private:
-			::std::reference_wrapper<_ErrorHandler> _M_handler;
+			::ztd::text::reference_wrapper<_ErrorHandler> _M_handler;
 
 		public:
 			constexpr __scheme_decode_handler(_ErrorHandler& __handler) noexcept : _M_handler(__handler) {

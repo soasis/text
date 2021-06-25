@@ -37,6 +37,7 @@
 
 #include <ztd/text/encoding_error.hpp>
 #include <ztd/text/reconstruct.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <cstddef>
 #include <array>
@@ -107,7 +108,7 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		::std::reference_wrapper<_State> state;
+		::ztd::text::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
@@ -137,12 +138,12 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		::std::reference_wrapper<_DecodeState> from_state;
+		::ztd::text::reference_wrapper<_DecodeState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		::std::reference_wrapper<_EncodeState> to_state;
+		::ztd::text::reference_wrapper<_EncodeState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
@@ -185,7 +186,8 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _DecodeState, typename _EncodeState>
 		constexpr validate_result<_Input, _DecodeState>
 		__drop_single_state(validate_transcode_result<_Input, _DecodeState, _EncodeState>&& __result) noexcept(
-			::std::is_nothrow_constructible_v<validate_result<_Input, _DecodeState>, _Input&&, bool&, _DecodeState&>) {
+			::std::is_nothrow_constructible_v<validate_result<_Input, _DecodeState>, _Input&&, bool&,
+			     _DecodeState&>) {
 			return validate_result<_Input, _DecodeState>(
 				::std::move(__result.input), ::std::move(__result.valid), __result.from_state);
 		}

@@ -39,6 +39,7 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
 #include <ztd/text/reconstruct.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <cstddef>
 #include <array>
@@ -143,7 +144,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting.
 		//////
-		::std::reference_wrapper<_State> state;
+		::ztd::text::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::count_result, defaulting the error code to
@@ -197,13 +198,13 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for counting which covers the decoding
 		/// portion of the transcode operation.
 		//////
-		::std::reference_wrapper<_FromState> from_state;
+		::ztd::text::reference_wrapper<_FromState> from_state;
 
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting which covers the encoding
 		/// portion of the transcode operation.
 		//////
-		::std::reference_wrapper<_ToState> to_state;
+		::ztd::text::reference_wrapper<_ToState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::count_result, defaulting the error code to

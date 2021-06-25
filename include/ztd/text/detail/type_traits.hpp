@@ -37,6 +37,7 @@
 
 #include <ztd/text/forward.hpp>
 #include <ztd/text/char8_t.hpp>
+#include <ztd/text/reference_wrapper.hpp>
 
 #include <type_traits>
 
@@ -53,6 +54,11 @@ namespace ztd { namespace text {
 
 		template <typename _Dummy, typename _Type>
 		struct __unwrap_impl<_Dummy, ::std::reference_wrapper<_Type>> {
+			using type = ::std::add_lvalue_reference_t<_Type>;
+		};
+
+		template <typename _Dummy, typename _Type>
+		struct __unwrap_impl<_Dummy, ::ztd::text::reference_wrapper<_Type>> {
 			using type = ::std::add_lvalue_reference_t<_Type>;
 		};
 
