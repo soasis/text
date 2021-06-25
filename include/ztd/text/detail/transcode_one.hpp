@@ -520,36 +520,32 @@ namespace ztd { namespace text {
 				__to_error_handler, __from_state, __to_state, __intermediate);
 		}
 
-		template <typename _Input, typename _Encoding, typename _CodePointContainer, typename _CodeUnitContainer,
-			typename _DecodeState, typename _EncodeState>
-		constexpr auto __basic_validate_decodable_as_one(_Input&& __input, _Encoding&& __encoding,
-			_CodeUnitContainer& __code_unit_output, _CodePointContainer& __code_point_output,
-			_DecodeState& __decode_state, _EncodeState& __encode_state) {
+		template <typename _Input, typename _Encoding, typename _Output, typename _DecodeState, typename _EncodeState,
+			typename _Intermediate>
+		constexpr auto __basic_validate_decodable_as_one(_Input&& __input, _Encoding&& __encoding, _Output& __output,
+			_DecodeState& __decode_state, _EncodeState& __encode_state, _Intermediate& __intermediate) {
 
 			using _UInput      = __remove_cvref_t<_Input>;
-			using _UOutput     = __remove_cvref_t<_CodeUnitContainer>;
+			using _UOutput     = __remove_cvref_t<_Output>;
+			using _InSubRange  = subrange<__range_iterator_t<_UInput>, __range_sentinel_t<_UInput>>;
 			using _OutSubRange = subrange<__range_iterator_t<_UOutput>, __range_sentinel_t<_UOutput>>;
 
-			auto __inital_input = __reconstruct(std::in_place_type<_UInput>, __input);
-			_OutSubRange __working_output(__code_unit_output);
+			_InSubRange __working_input(::std::forward<_Input>(__input));
+			_OutSubRange __working_output(__output);
 			__pass_through_handler __error_handler {};
 
-			using _TranscodeResult = decltype(__basic_transcode_one<__consume::__no>(::std::forward<_Input>(__input),
-				__encoding, __working_output, __encoding, __error_handler, __error_handler, __decode_state,
-				__encode_state, __code_point_output));
-			using _ValidateInput   = decltype(::std::declval<_TranscodeResult>().input);
-			using _Result          = validate_result<_ValidateInput, _DecodeState>;
+			using _Result = validate_result<__range_reconstruct_t<_InSubRange, _UInput>, _DecodeState>;
 
-			auto __transcode_result = __basic_transcode_one<__consume::__no>(::std::forward<_Input>(__input),
-				__encoding, __working_output, __encoding, __error_handler, __error_handler, __decode_state,
-				__encode_state, __code_point_output);
+			auto __transcode_result
+				= __basic_transcode_one<__consume::__no>(__working_input, __encoding, __working_output, __encoding,
+				     __error_handler, __error_handler, __decode_state, __encode_state, __intermediate);
 			if (__transcode_result.error_code != encoding_error::ok) {
 				return _Result(__reconstruct(::std::in_place_type<_UInput>, ::std::move(__transcode_result.input)),
 					false, __decode_state);
 			}
 
 			const bool __is_equal_transcode
-				= __equal(__adl::__adl_begin(__inital_input), __adl::__adl_begin(__transcode_result.input),
+				= __equal(__adl::__adl_begin(__working_input), __adl::__adl_begin(__transcode_result.input),
 				     __adl::__adl_begin(__working_output), __adl::__adl_begin(__transcode_result.output));
 			if (!__is_equal_transcode) {
 				return _Result(__reconstruct(::std::in_place_type<_UInput>, ::std::move(__transcode_result.input)),
@@ -571,7 +567,7 @@ namespace ztd { namespace text {
 			_CodeUnit __output_storage[max_code_units_v<_UEncoding>] {};
 			::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __output(__output_storage);
 			return __basic_validate_decodable_as_one(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __output, __intermediate, __decode_state, __encode_state);
+				::std::forward<_Encoding>(__encoding), __output, __decode_state, __encode_state, __intermediate);
 		}
 
 		template <typename _Input, typename _Encoding, typename _CodePointContainer, typename _CodeUnitContainer,
@@ -582,9 +578,9 @@ namespace ztd { namespace text {
 
 			using _UInput      = __remove_cvref_t<_Input>;
 			using _UOutput     = __remove_cvref_t<_CodePointContainer>;
-			using _Result      = validate_result<__reconstruct_t<_Input>, _EncodeState>;
 			using _InSubRange  = subrange<__range_iterator_t<_UInput>, __range_sentinel_t<_UInput>>;
 			using _OutSubRange = subrange<__range_iterator_t<_UOutput>, __range_sentinel_t<_UOutput>>;
+			using _Result      = validate_result<__range_reconstruct_t<_InSubRange, _UInput>, _EncodeState>;
 
 			__pass_through_handler __error_handler {};
 			_InSubRange __working_input(::std::forward<_Input>(__input));

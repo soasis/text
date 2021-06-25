@@ -90,15 +90,8 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto basic_encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
-		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
-		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
-		// using _OutputValueType = __txt_detail::__range_value_type_t<_UOutput>;
-		using _IntermediateInput
-			= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-			     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-			          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-			     _UInput>>;
-		using _IntermediateOutput = __txt_detail::__range_reconstruct_t<_Output>;
+		using _IntermediateInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _IntermediateOutput = __txt_detail::__reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.encode_one(
                ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
 		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
@@ -112,10 +105,8 @@ namespace ztd { namespace text {
 			"to lose; specify a 'handler' error handler parameter to encode(in, encoding, handler, ...) or "
 			"encode_into(in, encoding, out, handler, ...) explicitly in order to bypass this.");
 
-		_WorkingInput __working_input(
-			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
-		_WorkingOutput __working_output(
-			__txt_detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
+		_WorkingInput __working_input = __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+		_WorkingOutput __working_output =__txt_detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
 		::std::size_t __handled_errors = false;
 
 		for (;;) {
@@ -190,28 +181,23 @@ namespace ztd { namespace text {
 				= ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE_I_ < max_code_units_v<_UEncoding>
 				? max_code_units_v<_UEncoding>
 				: ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE_I_;
-			using _UInput                = __txt_detail::__remove_cvref_t<_Input>;
-			using _InputValueType        = __txt_detail::__range_value_type_t<_UInput>;
 			using _IntermediateValueType = code_unit_t<_UEncoding>;
 			using _IntermediateInput
-				= __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-				     ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-				          ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
-				     _UInput>>;
-			using _Output       = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
-			using _Result       = decltype(__encoding.encode_one(
+				= __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+			using _InitialOutput = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _Output = ::ztd::text::span<_IntermediateValueType>;
+			using _Result        = decltype(__encoding.encode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
 			using _WorkingInput = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
-			_WorkingInput __working_input(
-				__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+			_WorkingInput __working_input = __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 			_IntermediateValueType __intermediate_translation_buffer[__intermediate_buffer_max] {};
 			for (;;) {
 				// Ignore "out of output" errors and do our best to recover properly along the way...
-				_Output __intermediate_initial_output(__intermediate_translation_buffer);
+				_InitialOutput __intermediate_initial_output(__intermediate_translation_buffer);
 				auto __result = encode_into(::std::move(__working_input), ::std::forward<_Encoding>(__encoding),
 					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
-				::ztd::text::span<_IntermediateValueType> __intermediate_output(
+				_Output __intermediate_output(
 					__intermediate_initial_output.data(), __result.output.data());
 				using _SpanIterator = typename ::ztd::text::span<_IntermediateValueType>::iterator;
 				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_insert_bulk, _OutputContainer,

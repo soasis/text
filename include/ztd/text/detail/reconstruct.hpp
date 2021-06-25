@@ -101,8 +101,7 @@ namespace ztd { namespace text {
 				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_VInput>> && ::std::is_lvalue_reference_v<_Input>) {
 				using _CharTy = ::std::remove_extent_t<_UInput>;
 				if constexpr (__is_char_traitable_v<_CharTy>) {
-					return __reconstruct(::std::in_place_type<::std::basic_string_view<_CharTy>>,
-						__adl::__adl_begin(__input), __adl::__adl_end(__input));
+					return ::std::basic_string_view<_CharTy>(::std::forward<_Input>(__input));
 				}
 				else {
 					using _Ty = ::std::remove_extent_t<_VInput>;

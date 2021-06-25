@@ -162,17 +162,14 @@ namespace ztd { namespace text {
 			using _CodeUnit  = code_unit_t<_UEncoding>;
 			using _CodePoint = code_point_t<_UEncoding>;
 
-			_CodePoint __code_point_intermediate_storage[max_code_points_v<_UEncoding>] {};
-			::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_intermediate(
-				__code_point_intermediate_storage);
-			_CodeUnit __code_unit_intermediate_storage[max_code_units_v<_UEncoding>] {};
-			::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_intermediate(
-				__code_unit_intermediate_storage);
+			_CodePoint __intermediate_storage[max_code_points_v<_UEncoding>] {};
+			::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
+			_CodeUnit __output_storage[max_code_units_v<_UEncoding>] {};
+			::ztd::text::span<_CodeUnit, max_code_units_v<_UEncoding>> __output(__output_storage);
 
 			for (;;) {
-				auto __stateless_validate_result
-					= __txt_detail::__basic_validate_decodable_as_one(__working_input, __encoding,
-					     __code_point_intermediate, __code_unit_intermediate, __decode_state, __encode_state);
+				auto __stateless_validate_result = __txt_detail::__basic_validate_decodable_as_one(
+					__working_input, __encoding, __output, __decode_state, __encode_state, __intermediate);
 				if (!__stateless_validate_result.valid) {
 					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
