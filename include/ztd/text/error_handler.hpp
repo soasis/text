@@ -52,6 +52,7 @@
 #include <ztd/text/detail/unicode.hpp>
 #include <ztd/text/detail/pass_through_handler.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
+#include <ztd/text/detail/transcode_one.hpp>
 
 #include <climits>
 #include <cstddef>
@@ -209,8 +210,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		///
-		/// @remarks TODO: describe the replacement process thoroughly.
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _Progress>
@@ -253,8 +252,8 @@ namespace ztd { namespace text {
 
 				__txt_detail::__pass_through_handler __handler {};
 				encode_state_t<_Encoding> __state = make_encode_state(__encoding);
-				auto __encresult
-					= __encoding.encode_one(__replacement_range, ::std::move(__result.output), __handler, __state);
+				auto __encresult                  = __txt_detail::__basic_encode_one<__txt_detail::__consume::__no>(
+                         __replacement_range, __encoding, ::std::move(__result.output), __handler, __state);
 				__result.output = ::std::move(__encresult.output);
 				if (__encresult.error_code != encoding_error::ok) {
 					// we can't even encode a single code point
@@ -494,10 +493,6 @@ namespace ztd { namespace text {
 	using default_incomplete_handler = incomplete_handler<default_handler>;
 
 	namespace __txt_detail {
-		template <typename _ErrorHandler>
-		inline constexpr bool __is_careless_error_handler_v
-			= ::std::is_same_v<__txt_detail::__remove_cvref_t<_ErrorHandler>, default_handler>;
-
 		template <typename _ErrorHandler>
 		constexpr auto __duplicate_or_be_careless(_ErrorHandler& __original) {
 			using _UErrorHandler = __remove_cvref_t<_ErrorHandler>;

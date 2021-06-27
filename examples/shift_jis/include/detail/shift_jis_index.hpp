@@ -30,15 +30,15 @@
 
 #pragma once
 
-// clang-format off
+#ifndef ZTD_TEXT_EXAMPLES_SHIFT_JIS_SHIFT_JIS_INDEX_HPP
+#define ZTD_TEXT_EXAMPLES_SHIFT_JIS_SHIFT_JIS_INDEX_HPP
 
-#if !defined(ZTD_TEXT_DETAIL_PROLOGUE_I_)
-	#error "[ztd.text] Library Prologue is missing from this translation unit."
-#else
-	#undef ZTD_TEXT_DETAIL_PROLOGUE_I_
-#endif
+#include <cstddef>
+#include <optional>
 
-#undef _FWD
-#undef _MOVE
+namespace detail {
+	std::optional<char32_t> shift_jis_index_to_code_point(std::size_t lookup_index_pointer) noexcept;
+	std::optional<std::size_t> shift_jis_code_point_to_index(char32_t code) noexcept;
+} // namespace detail
 
-// clang-format on
+#endif // ZTD_TEXT_EXAMPLES_SHIFT_JIS_SHIFT_JIS_INDEX_HPP

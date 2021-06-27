@@ -38,8 +38,6 @@
 #include <climits>
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
-
 #define ZTD_TEXT_VERSION_MAJOR 0
 #define ZTD_TEXT_VERSION_MINOR 0
 #define ZTD_TEXT_VERSION_PATCH 0
@@ -515,7 +513,7 @@
 	#else
 		#define ZTD_TEXT_STD_LIBRARY_REFERENCE_WRAPPER_CONSTEXPR_I_ ZTD_TEXT_OFF
 	#endif
-#elif defined(__cpp_­lib_­constexpr_­utility) && (__cpp_­lib_­constexpr_­utility >= 201811L)
+#elif defined(__cpp_lib_constexpr_utility) && (__cpp_lib_constexpr_utility >= 201811L)
 	#define ZTD_TEXT_STD_LIBRARY_REFERENCE_WRAPPER_CONSTEXPR_I_ ZTD_TEXT_DEFAULT_ON
 #else
 	#define ZTD_TEXT_STD_LIBRARY_REFERENCE_WRAPPER_CONSTEXPR_I_ ZTD_TEXT_DEFAULT_OFF
@@ -799,6 +797,8 @@
 	#define ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_ inline namespace __v0 {
 	#define ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_ }
 #endif
+
+#include <ztd/text/detail/prologue.hpp>
 
 #include <ztd/text/detail/epilogue.hpp>
 

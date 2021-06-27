@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/error_handler.hpp>
+#include <ztd/text/forward.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
 
 #include <ztd/text/detail/type_traits.hpp>
@@ -48,6 +48,10 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
+		template <typename _ErrorHandler>
+		inline constexpr bool __is_careless_error_handler_v
+			= ::std::is_same_v<__txt_detail::__remove_cvref_t<_ErrorHandler>, default_handler>;
+
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_encode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,

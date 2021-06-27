@@ -58,7 +58,7 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _Dummy, typename _Type>
-		struct __unwrap_impl<_Dummy, ::ztd::text::reference_wrapper<_Type>> {
+		struct __unwrap_impl<_Dummy, ::ztd::text::__txt_detail::__reference_wrapper<_Type>> {
 			using type = ::std::add_lvalue_reference_t<_Type>;
 		};
 

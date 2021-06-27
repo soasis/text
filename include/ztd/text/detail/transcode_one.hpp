@@ -40,7 +40,6 @@
 #include <ztd/text/transcode_result.hpp>
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/count_result.hpp>
-#include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
@@ -48,6 +47,7 @@
 #include <ztd/text/subrange.hpp>
 #include <ztd/text/tag.hpp>
 
+#include <ztd/text/detail/pass_through_handler.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/blackhole_iterator.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>

@@ -31,3 +31,4 @@
 add_subdirectory(basic)
 add_subdirectory(documentation)
 add_subdirectory(boost.text)
+add_subdirectory(shift_jis)

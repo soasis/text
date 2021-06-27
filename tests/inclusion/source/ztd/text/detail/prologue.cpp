@@ -28,5 +28,7 @@
 //
 // ============================================================================>
 
+#include <ztd/text/version.hpp>
+
 #include <ztd/text/detail/prologue.hpp>
 #include <ztd/text/detail/epilogue.hpp>
