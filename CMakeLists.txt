@@ -43,7 +43,6 @@ set(CMAKE_PROJECT_INCLUDE ${ZTD_CMAKE_PROJECT_PRELUDE})
 # # Project declaration
 # informs about the project, gives a description, version and MOST IMPORTANTLY
 # the languages the project is going to use. Required.
-
 project(ztd.text
 	VERSION 0.0.0
 	DESCRIPTION "A spicy text library."
@@ -86,6 +85,16 @@ if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
 endif()
 
 # # Dependencies
+# includes
+include(CheckIPOSupported)
+include(CMakePackageConfigHelpers)
+include(CMakeDependentOption)
+include(CMakePrintHelpers)
+include(GNUInstallDirs)
+include(FeatureSummary)
+include(FetchContent)
+include(CTest)
+
 # ztd.version
 FetchContent_Declare(ztd.version
 	GIT_REPOSITORY https://github.com/soasis/version
