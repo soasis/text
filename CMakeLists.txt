@@ -45,10 +45,10 @@ set(CMAKE_PROJECT_INCLUDE ${ZTD_CMAKE_PROJECT_PRELUDE})
 # the languages the project is going to use. Required.
 
 project(ztd.text
-  VERSION 0.0.0
-  DESCRIPTION "A spicy text library."
-  HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
-  LANGUAGES C CXX)
+	VERSION 0.0.0
+	DESCRIPTION "A spicy text library."
+	HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
+	LANGUAGES C CXX)
 
 # # # Top-Level Directories
 # Check if this is the top-level project or not
