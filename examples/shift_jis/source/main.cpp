@@ -50,7 +50,7 @@ int main() {
 		std::cerr << "Could not initialize the input stream with the file " << file_name << std::endl;
 		return 1;
 	}
-	if (!input_file) {
+	if (!expected_input_file) {
 		std::cerr << "Could not initialize the expected input stream with the file " << expected_file_name
 		          << std::endl;
 		return 1;
@@ -70,6 +70,7 @@ int main() {
 	ZTD_TEXT_ASSERT(std::equal(utf8_string.cbegin(), utf8_string.cend(), utf8_bytes.cbegin(), utf8_bytes.cend()));
 	ZTD_TEXT_ASSERT(std::equal(
 	     shift_jis_string.cbegin(), shift_jis_string.cend(), shift_jis_bytes.cbegin(), shift_jis_bytes.cend()));
+
 	std::cout << utf8_string << std::endl;
 
 	return 0;

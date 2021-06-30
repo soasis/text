@@ -183,9 +183,7 @@ namespace ztd { namespace text {
 				"nicely "
 				"spoken) request to implement the functionality. If you are part of the C++ Standards Committee, "
 				"please make sure p1885 (https://wg21.link/p1885) gets passed so we don't need to keep doing this "
-				"nonsense. If you are from Clang, please see my comment here "
-				"(https://reviews.llvm.org/D88741#2352203) and kindly encourage them to implement this. If you are "
-				"on some other compiler,\n\n"
+				"nonsense. If you are on some other compiler,\n\n"
 
 				"God's Speed.\n\n"
 
@@ -249,9 +247,7 @@ namespace ztd { namespace text {
 				"nicely "
 				"spoken) request to implement the functionality. If you are part of the C++ Standards Committee, "
 				"please make sure p1885 (https://wg21.link/p1885) gets passed so we don't need to keep doing this "
-				"nonsense. If you are from Clang, please see my comment here "
-				"(https://reviews.llvm.org/D88741#2352203) and kindly encourage them to implement this. If you are "
-				"on some other compiler,\n\n"
+				"nonsense. If you are on some other compiler,\n\n"
 
 				"God's Speed.\n\n"
 
