@@ -68,6 +68,26 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
 	endif()
+
+	if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+		set(CMAKE_CXX_STANDARD 20)
+	endif()
+
+	if (NOT CMAKE_C_STANDARD GREATER_EQUAL 11)
+		set(CMAKE_C_STANDARD 11)
+	endif()
+
+	# normal flags
+	check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
+	# Warning flags
+	check_compiler_flag(warn-pedantic MSVC /permissive- GCC -pedantic)
+	check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
+	check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
+	check_compiler_flag(utf8-literal-encoding MSVC /execution-charset:utf-8 GCC -fexec-charset=utf-8)
+	check_compiler_flag(utf8-source-encoding MSVC /source-charset:utf-8 GCC -finput-charset=utf-8)
+	check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 CLANG -fconstexpr-depth=2147483647)
+	check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 CLANG -fconstexpr-steps=2147483647)
+	check_compiler_flag(template-debugging-mode GCC -ftemplate-backtrace-limit=0)
 endif()
 
 # # Options
@@ -79,10 +99,6 @@ option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
 option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
 option(ZTD_TEXT_USE_CUNEICODE "Enable generation of a single header and its target" OFF)
-
-if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
-	set(CMAKE_CXX_STANDARD 20)
-endif()
 
 # # Dependencies
 # includes
@@ -118,7 +134,7 @@ add_library(ztd::text ALIAS ztd.text)
 target_include_directories(ztd.text
 	INTERFACE
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:include>)
+		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_link_libraries(ztd.text
 	INTERFACE
@@ -166,6 +182,8 @@ if (ZTD_TEXT_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
+# For quick debugging and development only: don't peek! 🙈
+mark_as_advanced(ZTD_TEXT_SCRATCH)
 if (ZTD_TEXT_SCRATCH)
 	add_executable(scratch main.cpp)
 	target_link_libraries(scratch PRIVATE ztd::text)

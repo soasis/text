@@ -44,6 +44,7 @@ using ascii_encode_result = ztd::text::encode_result<
 ascii_encode_result my_printing_handler(const ztd::text::ascii& encoding,
      ascii_encode_result result,
      ztd::text::span<const char32_t> unused_read_characters) noexcept {
+	(void)encoding;
 	// just printing some information
 	std::cout << "An error occurred.\n"
 	          << "\tError code value: "

@@ -51,6 +51,8 @@ struct my_error_handler {
 	     // Third Parameter
 	     code_point_span<Encoding> progress) const noexcept {
 		// ... implementation here!
+		(void)encoding;
+		(void)progress;
 		return result;
 	}
 
@@ -66,6 +68,8 @@ struct my_error_handler {
 	     // Third Parameter
 	     code_unit_span<Encoding> progress) const noexcept {
 		// ... implementation here!
+		(void)encoding;
+		(void)progress;
 		return result;
 	}
 };

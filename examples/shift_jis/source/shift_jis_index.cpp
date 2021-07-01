@@ -36,7 +36,7 @@
 
 namespace {
 
-	std::array<std::pair<std::uint_least16_t, std::uint_least16_t>, 7724> index_codepoint_map { { { 0, 0x3000 },
+	std::array<std::pair<std::uint_least32_t, std::uint_least32_t>, 7724> index_codepoint_map { { { 0, 0x3000 },
 		{ 1, 0x3001 }, { 2, 0x3002 }, { 3, 0xFF0C }, { 4, 0xFF0E }, { 5, 0x30FB }, { 6, 0xFF1A }, { 7, 0xFF1B },
 		{ 8, 0xFF1F }, { 9, 0xFF01 }, { 10, 0x309B }, { 11, 0x309C }, { 12, 0x00B4 }, { 13, 0xFF40 }, { 14, 0x00A8 },
 		{ 15, 0xFF3E }, { 16, 0xFFE3 }, { 17, 0xFF3F }, { 18, 0x30FD }, { 19, 0x30FE }, { 20, 0x309D },
@@ -1339,7 +1339,7 @@ namespace {
 		{ 11100, 0x9D6B }, { 11101, 0xFA2D }, { 11102, 0x9E19 }, { 11103, 0x9ED1 } } };
 
 	static bool less_than_index_target(
-	     std::pair<std::uint_least16_t, std::uint_least16_t> value, std::uint_least16_t target) {
+	     std::pair<std::uint_least32_t, std::uint_least32_t> value, std::uint_least32_t target) {
 		return value.first < target;
 	}
 
@@ -1347,13 +1347,13 @@ namespace {
 
 namespace detail {
 	std::optional<char32_t> shift_jis_index_to_code_point(std::size_t lookup_index_pointer) noexcept {
-		std::uint_least16_t lookup_index = static_cast<std::uint_least16_t>(lookup_index_pointer);
+		std::uint_least32_t lookup_index = static_cast<std::uint_least32_t>(lookup_index_pointer);
 		auto it                          = std::lower_bound(
                index_codepoint_map.cbegin(), index_codepoint_map.cend(), lookup_index, &less_than_index_target);
 		if (it == index_codepoint_map.cend()) {
 			return std::nullopt;
 		}
-		const std::pair<std::uint_least16_t, std::uint_least16_t> index_and_codepoint = *it;
+		const std::pair<std::uint_least32_t, std::uint_least32_t> index_and_codepoint = *it;
 		if (index_and_codepoint.first != lookup_index) {
 			return std::nullopt;
 		}
@@ -1361,14 +1361,14 @@ namespace detail {
 	}
 
 	std::optional<std::size_t> shift_jis_code_point_to_index(char32_t code) noexcept {
-		auto predicate = [&code](const std::pair<std::uint_least16_t, std::uint_least16_t>& value) {
+		auto predicate = [&code](const std::pair<std::uint_least32_t, std::uint_least32_t>& value) {
 			return code == value.second && !(value.first < 8272 && value.first > 8835);
 		};
 		auto it = std::find_if(index_codepoint_map.cbegin(), index_codepoint_map.cend(), predicate);
 		if (it == index_codepoint_map.cend()) {
 			return std::nullopt;
 		}
-		const std::pair<std::uint_least16_t, std::uint_least16_t> index_and_codepoint = *it;
+		const std::pair<std::uint_least32_t, std::uint_least32_t> index_and_codepoint = *it;
 		return static_cast<std::size_t>(index_and_codepoint.first);
 	}
 } // namespace detail

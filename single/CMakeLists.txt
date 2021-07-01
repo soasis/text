@@ -57,8 +57,16 @@ add_library(ztd.text.single INTERFACE)
 add_library(ztd::text::single ALIAS ztd.text.single)
 set_target_properties(ztd.text.single
 	PROPERTIES
-	EXPORT_NAME ztd::text::single
-	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/include")
+	EXPORT_NAME ztd::text::single)
+target_include_directories(ztd.text
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/single>)
 add_dependencies(ztd.text.single ztd.text.single_header_generator)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp"
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ztd/text/single)
+
+install(FILES
+	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp"
+	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp"
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/single/ztd/text)
+
+	

@@ -57,13 +57,16 @@ foreach (example_source_name ${ztd.text.examples.basic.sources})
 	set(example_source_file source/${example_source_name})
 	set(example_target ztd.text.examples.basic.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
-	if (MSVC)
-		target_compile_options(${example_target}
-			PRIVATE /std:c++latest /utf-8 /permissive-)
-	else()
-		target_compile_options(${example_target}
-			PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-	endif()
+	target_compile_options(${example_target}
+		PRIVATE
+		${--utf8-literal-encoding}
+		${--utf8-source-encoding}
+		${--disable-permissive}
+		${--warn-pedantic}
+		${--warn-all}
+		${--warn-errors}
+	)
+	
 	target_link_libraries(${example_target}
 		PRIVATE
 		ztd::text

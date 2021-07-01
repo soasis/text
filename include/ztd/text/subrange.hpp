@@ -359,7 +359,7 @@ namespace ztd { namespace text {
 			[[nodiscard]] constexpr __subrange next() const& noexcept(
 				(::std::is_nothrow_copy_constructible_v<
 				      iterator> && ::std::is_nothrow_copy_constructible_v<sentinel>)&& noexcept(__txt_detail::
-				          __advance(this->_M_it))) {
+				          __advance(::std::declval<iterator&>()))) {
 				auto __it = this->_M_it;
 				__txt_detail::__advance(__it);
 				return __subrange(::std::move(__it), this->_M_sen);
@@ -374,7 +374,7 @@ namespace ztd { namespace text {
 			[[nodiscard]] constexpr __subrange next() && noexcept(
 				(::std::is_nothrow_move_constructible_v<
 				      iterator> && ::std::is_nothrow_move_constructible_v<sentinel>)&& noexcept(__txt_detail::
-				          __advance(this->_M_it))) {
+				          __advance(::std::declval<iterator&>()))) {
 				iterator __it = ::std::move(this->_M_it);
 				__txt_detail::__advance(__it);
 				return __subrange(::std::move(__it), ::std::move(this->_M_sen));
@@ -390,7 +390,7 @@ namespace ztd { namespace text {
 			[[nodiscard]] constexpr __subrange next(difference_type __diff) const& noexcept(
 				(::std::is_nothrow_copy_constructible_v<
 				      iterator> && ::std::is_nothrow_copy_constructible_v<sentinel>)&& noexcept(__txt_detail::
-				          __advance(this->_M_it, __diff))) {
+				          __advance(::std::declval<iterator&>(), ::std::declval<difference_type>()))) {
 				auto __it = this->_M_it;
 				__txt_detail::__advance(__it, __diff);
 				return __subrange(::std::move(__it), this->_M_sen);
@@ -407,7 +407,7 @@ namespace ztd { namespace text {
 			[[nodiscard]] constexpr __subrange next(difference_type __diff) && noexcept(
 				(::std::is_nothrow_move_constructible_v<
 				      iterator> && ::std::is_nothrow_move_constructible_v<sentinel>)&& noexcept(__txt_detail::
-				          __advance(this->_M_it, __diff))) {
+				          __advance(::std::declval<iterator&>(), ::std::declval<difference_type>()))) {
 				iterator __it = ::std::move(this->_M_it);
 				__txt_detail::__advance(__it, __diff);
 				return __subrange(::std::move(__it), ::std::move(this->_M_sen));
@@ -423,7 +423,7 @@ namespace ztd { namespace text {
 			[[nodiscard]] constexpr __subrange prev(difference_type __diff = 1) const noexcept(
 				(::std::is_nothrow_copy_constructible_v<
 				      iterator> && ::std::is_nothrow_copy_constructible_v<sentinel>)&& noexcept(__txt_detail::
-				          __recede(this->_M_it, __diff))) {
+				          __recede(::std::declval<iterator&>(), ::std::declval<difference_type>()))) {
 				auto __it = this->_M_it;
 				__recede(__it, __diff);
 				return __subrange(::std::move(__it), this->_M_sen);
@@ -436,7 +436,7 @@ namespace ztd { namespace text {
 			/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 			//////
 			constexpr __subrange& advance(difference_type __diff = 1) noexcept(
-				noexcept(__txt_detail::__advance(this->_M_it, __diff))) {
+				noexcept(__txt_detail::__advance(::std::declval<iterator&>(), ::std::declval<difference_type>()))) {
 				__txt_detail::__advance(this->_M_it, __diff);
 				return *this;
 			}
@@ -450,7 +450,7 @@ namespace ztd { namespace text {
 			/// @remarks This function call requires that the underlying iterator are bidirectional.
 			//////
 			constexpr __subrange& recede(difference_type __diff = 1) noexcept(
-				noexcept(__txt_detail::__recede(this->_M_it, __diff))) {
+				noexcept(__txt_detail::__recede(std::declval<iterator&>(), ::std::declval<difference_type>()))) {
 				__txt_detail::__recede(this->_M_it, __diff);
 				return *this;
 			}

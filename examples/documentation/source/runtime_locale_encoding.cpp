@@ -231,6 +231,7 @@ public:
 };
 
 int main(int argc, char* argv[]) {
+	(void)argc;
 	// Text coming in from the command line / program arguments
 	// is (usually) encoded by the runtime locale
 	runtime_locale encoding {};

@@ -168,6 +168,42 @@ namespace ztd { namespace text {
 					"specified encoding type.");
 			}
 		}
+
+		template <typename _Encoding>
+		constexpr ::std::size_t __fill_replacement_code_unit_static(const _Encoding& __encoding,
+			code_unit_t<_Encoding> (&__replacement_code_units)[max_code_units_v<_Encoding>]) {
+			using _InputCodeUnit = code_unit_t<_Encoding>;
+			if constexpr (is_code_units_replaceable_v<_Encoding>) {
+				::std::size_t __replacement_index = 0;
+				for (const auto& __element : __encoding.replacement_code_units()) {
+					__replacement_code_units[__replacement_index] = static_cast<_InputCodeUnit>(__element);
+					++__replacement_index;
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_code_units_maybe_replaceable_v<_Encoding>) {
+				::std::size_t __replacement_index  = 0;
+				decltype(auto) __maybe_code_units = __encoding.maybe_replacement_code_units();
+				if (__maybe_code_units) {
+					decltype(auto) __code_units
+						= *::std::forward<decltype(__maybe_code_units)>(__maybe_code_units);
+					for (const auto& __element : __code_units) {
+						__replacement_code_units[__replacement_index] = static_cast<_InputCodeUnit>(__element);
+						++__replacement_index;
+					}
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_unicode_code_point_v<_InputCodeUnit>) {
+				__replacement_code_units[0] = static_cast<_InputCodeUnit>(__replacement);
+				return 1;
+			}
+			else {
+				static_assert(__always_false_v<_Encoding>,
+					"There is no logical replacement code points to insert into the stream on failure for the "
+					"specified encoding type.");
+			}
+		}
 	} // namespace __txt_detail
 
 	//////
@@ -260,11 +296,11 @@ namespace ztd { namespace text {
 					// into the stream... report error and bail
 					return __result;
 				}
+
+				__result.error_code = encoding_error::ok;
+
+				return __result;
 			}
-
-			__result.error_code = encoding_error::ok;
-
-			return __result;
 		}
 
 		//////
@@ -274,7 +310,7 @@ namespace ztd { namespace text {
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
 		///
-		/// @remarks TODO: describe the replacement process thoroughly.
+		/// @remarks TODO: describe the replacement process thoroughly and fix this!
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _Progress>
@@ -285,7 +321,51 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			return __txt_detail::__write_static_code_points_direct(__encoding, ::std::move(__result));
+			auto __outit   = __txt_detail::__adl::__adl_begin(__result.output);
+			auto __outlast = __txt_detail::__adl::__adl_end(__result.output);
+			if (__outit == __outlast) {
+				// BAIL
+				return __result;
+			}
+
+			if constexpr (is_code_points_replaceable_v<_Encoding>) {
+				return __txt_detail::__write_direct(
+					__encoding, __encoding.replacement_code_points(), ::std::move(__result));
+			}
+			else {
+				using _InputCodeUnit = code_unit_t<_Encoding>;
+				_InputCodeUnit __replacement[max_code_points_v<_Encoding>];
+				::std::size_t __replacement_size = 0;
+				if constexpr (is_code_units_replaceable_v<_Encoding>) {
+					auto __replacement_code_units = __encoding.replacement_code_units();
+					for (const auto& __element : __replacement_code_units) {
+						__replacement[__replacement_size] = __element;
+						++__replacement_size;
+					}
+				}
+				else {
+					__replacement_size
+						= __txt_detail::__fill_replacement_code_unit_static(__encoding, __replacement);
+				}
+
+				const ::ztd::text::span<const _InputCodeUnit> __replacement_range(
+					__replacement, __replacement_size);
+
+				__txt_detail::__pass_through_handler __handler {};
+				decode_state_t<_Encoding> __state = make_decode_state(__encoding);
+				auto __decresult                  = __txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
+                         __replacement_range, __encoding, ::std::move(__result.output), __handler, __state);
+				__result.output = ::std::move(__decresult.output);
+				if (__decresult.error_code != encoding_error::ok) {
+					// we can't even encode a single code point
+					// into the stream... report error and bail
+					return __result;
+				}
+			}
+
+			__result.error_code = encoding_error::ok;
+
+			return __result;
 		}
 	};
 

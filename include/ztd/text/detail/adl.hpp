@@ -38,6 +38,7 @@
 #include <ztd/text/detail/type_traits.hpp>
 
 #include <iterator>
+#include <limits>
 
 #include <ztd/text/detail/prologue.hpp>
 

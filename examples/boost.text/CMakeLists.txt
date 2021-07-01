@@ -40,13 +40,15 @@ target_compile_definitions(ztd.text.examples.boost_text
 	PRIVATE
 	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
 )
-if (MSVC)
-	target_compile_options(ztd.text.examples.boost_text
-		PRIVATE /std:c++latest /utf-8 /permissive-)
-else()
-	target_compile_options(ztd.text.examples.boost_text
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic -fexec-charset=UTF-8)
-endif()
+target_compile_options(ztd.text.examples.boost_text
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-all}
+	${--warn-errors})
+
 target_include_directories(ztd.text.examples.boost_text
 	PRIVATE
 	${Boost_INCLUDE_DIRS}

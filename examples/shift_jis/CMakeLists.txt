@@ -52,19 +52,21 @@ add_custom_target(ztd.text.examples.shift_jis.data
 file(GLOB_RECURSE ztd.text.examples.shift_jis.sources LIST_DIRECTORIES false 
 	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CONFIGURE_DEPENDS 
 	source/*.cpp)
-
 add_executable(ztd.text.examples.shift_jis ${ztd.text.examples.shift_jis.sources})
-if (MSVC)
-	target_compile_options(ztd.text.examples.shift_jis
-		PRIVATE /std:c++latest /utf-8 /permissive-)
-else()
-	target_compile_options(ztd.text.examples.shift_jis
-		PRIVATE -std=c++2a -Wall -Werror -Wpedantic)
-endif()
+target_compile_options(ztd.text.examples.shift_jis
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-all}
+	${--warn-errors}
+)
 target_include_directories(ztd.text.examples.shift_jis
 	PRIVATE
 	../include
-	include)
+	include
+)
 target_link_libraries(ztd.text.examples.shift_jis
 	PRIVATE
 	ztd::text
