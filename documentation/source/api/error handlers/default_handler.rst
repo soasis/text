@@ -31,7 +31,7 @@
 default_handler
 ===============
 
-The default handler for all operations. A class type that simply wraps :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` unless configured otherwise.
+The default handler for all operations. A class type that simply wraps :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` unless configured otherwise. You can change it to throw by default (NOT recommended) by using :ref:`ZTD_TEXT_DEFAULT_HANDLER_THROWS <config-ZTD_TEXT_DEFAULT_HANDLER_THROWS>`.
 
 .. doxygenclass:: ztd::text::default_handler
 	:members:

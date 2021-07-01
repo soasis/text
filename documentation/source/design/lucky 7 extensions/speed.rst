@@ -55,37 +55,37 @@ Extension Points: Forms & Return Types
 Overriding any one of these extension points allows you to hook that behavior. It is very much required that you either use concrete types to provide these ADL extension points, or heavily constrain them using `SFINAE (preferred for C++17 and below) <https://en.cppreference.com/w/cpp/language/sfinae>`_ or `Concepts (only C++20 and above) <https://en.cppreference.com/w/cpp/concepts>`_.
 
 
-``text_decode_into``
+``text_decode``
 ++++++++++++++++++++
 
-Form: ``text_decode_into(tag, input, encoding, output, handler, state)``.
+Form: ``text_decode(tag, input, encoding, output, handler, state)``.
 
 An extension point to speed up decoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/dependent states>`.
 
 Must return a :doc:`ztd::text::decode_result </api/decode_result>`.
 
 
-``text_encode_into``
+``text_encode``
 ++++++++++++++++++++
 
-Form: ``text_encode_into(input, encoding, output, handler, state)``.
+Form: ``text_encode(input, encoding, output, handler, state)``.
 
 An extension point to speed up encoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/dependent states>`.
 
 Must return a :doc:`ztd::text::encode_result </api/encode_result>`.
 
 
-``text_transcode_into``
+``text_transcode``
 +++++++++++++++++++++++
 
-Form: ``text_transcode_into(input, from_encoding, output, to_encoding, from_handler, to_handler,`` ``from_state, to_state)``
+Form: ``text_transcode(input, from_encoding, output, to_encoding, from_handler, to_handler,`` ``from_state, to_state)``
 
 An extension point to speed up transcoding in bulk, for a given encoding pair, its input and output ranges, and its error handlers and states. Useful for known encoding pairs that have faster conversion paths between them.
 
 Must return a :doc:`ztd::text::transcode_result </api/transcode_result>`.
 
 
-``text_transcode_code``
+``text_transcode_one``
 +++++++++++++++++++++++
 
 Form: ``text_transcode_one(input, from_encoding, output, to_encoding, from_handler, to_handler,`` ``from_state, to_state)``

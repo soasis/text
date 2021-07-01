@@ -65,6 +65,14 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Default: off.
 	- Not turned on by-default under any conditions.
 
+.. _config-ZTD_TEXT_DEFAULT_HANDLER_THROWS:
+
+- ``ZTD_TEXT_DEFAULT_HANDLER_THROWS``
+	- Makes the ``ztd::text::default_handler`` into a throwing handler rather than a replacement character handler.
+	- This is not at all recommended since malformed text (or text assumed to be the wrong encoding) is common, and not properly handling a thrown exception can result in what is, effectively, a denial-of-service attack for things which need to continually handle untrusted input.
+	- Default: off.
+	- Not turned on by-default under any conditions.
+
 .. _config-ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE:
 
 - ``ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE``
