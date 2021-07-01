@@ -38,14 +38,15 @@
 
 #define ZTD_TEXT_DETAIL_PROLOGUE_I_ 1
 
-#include <type_traits>
 
-#define _FWD(...) static_cast<decltype( __VA_OPT__(,) )&&>( __VA_OPT__(,) )
+#define _FWD(...) static_cast<decltype( __VA_ARGS__ )&&>( __VA_ARGS__ )
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_GCC_I_)
-	#define _MOVE(...) static_cast<__typeof( __VA_OPT__(,) )&&>( __VA_OPT__(,) )
+	#define _MOVE(...) static_cast<__typeof( __VA_ARGS__ )&&>( __VA_ARGS__ )
 #else
-	#define _MOVE(...) static_cast<::std::remove_reference_t<( __VA_OPT__(,) )>&&>( __VA_OPT__(,) )
+	#include <type_traits>
+	
+	#define _MOVE(...) static_cast<::std::remove_reference_t<( __VA_ARGS__ )>&&>( __VA_OPT__(,) )
 #endif
 
 // clang-format on
