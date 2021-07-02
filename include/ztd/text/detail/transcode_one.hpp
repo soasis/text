@@ -113,7 +113,7 @@ namespace ztd { namespace text {
 					__reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)), __state,
 					__intermediate_result.error_code, __intermediate_result.handled_errors);
 			}
-			else if (false) {
+			else if constexpr (__always_false_v<_Input>) {
 				// TODO: this branch SHOULD check for conditions conducive to unbounded_view...
 			}
 			else {
@@ -167,7 +167,7 @@ namespace ztd { namespace text {
 					__reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)), __state,
 					__intermediate_result.error_code, __intermediate_result.handled_errors);
 			}
-			else if (false) {
+			else if constexpr (__always_false_v<_Input>) {
 				// TODO: this branch SHOULD check for conditions conducive to unbounded_view...
 			}
 			else {

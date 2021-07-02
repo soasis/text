@@ -44,12 +44,12 @@ endif()
 file(GLOB_RECURSE ztd.text.generated_header_sources LIST_DIRECTORIES false CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../include/**/*.*)
 add_custom_command(
 	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text"
-	COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/single.py" --input "${CMAKE_CURRENT_SOURCE_DIR}/../include" --output "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp"
+	COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/single.py" --input "${CMAKE_CURRENT_SOURCE_DIR}/../include" --output "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp"
 	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/single.py" "${ztd.text.generated_header_sources}"
-	OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp")
+	OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp")
 add_custom_target(ztd.text.single_header_generator ALL
 	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/single.py"
-	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp" 
+	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp"
 	"${ztd.text.generated_header_sources}")
 
 # # # ztd.text generated single header library
@@ -65,8 +65,8 @@ target_include_directories(ztd.text
 add_dependencies(ztd.text.single ztd.text.single_header_generator)
 
 install(FILES
-	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/text.hpp"
+	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp"
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/single/ztd)
+install(FILES
 	"${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp"
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/single/ztd/text)
-
-	

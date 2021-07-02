@@ -241,7 +241,7 @@ include_guard = 'ZTD_TEXT_SINGLE_INCLUDE_HPP'
 forward_include_guard = 'ZTD_TEXT_SINGLE_INCLUDE_FORWARD_HPP'
 
 processed_files = [
-    os.path.join(project_path, x) for x in ['ztd/text/text.hpp']
+    os.path.join(project_path, x) for x in ['ztd/text.hpp']
 ]
 forward_processed_files = [
     os.path.join(project_path, x) for x in ['ztd/text/forward.hpp']
