@@ -132,11 +132,12 @@ namespace ztd { namespace text {
 		else {
 			using _CodePoint = code_point_t<_UEncoding>;
 
-			_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
+			_CodePoint __intermediate_storage[max_code_points_v<_UEncoding>] {};
+			::ztd::text::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
 
 			for (;;) {
 				auto __result = __txt_detail::__basic_count_decodable_one(
-					__working_input, __encoding, __code_point_buf, __error_handler, __state);
+					__working_input, __encoding, __error_handler, __state, __intermediate);
 				if (__result.error_code != encoding_error::ok) {
 					return _Result(
 						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);

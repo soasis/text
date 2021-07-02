@@ -382,18 +382,22 @@ namespace ztd { namespace text {
 			_OutputContainer& __output, _ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
 			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
 			// … Weeeellll. Here we go …
-			using _UToEncoding = __txt_detail::__remove_cvref_t<_ToEncoding>;
+			using _UToEncoding   = __txt_detail::__remove_cvref_t<_ToEncoding>;
+			using _UFromEncoding = __txt_detail::__remove_cvref_t<_FromEncoding>;
 			constexpr ::std::size_t _IntermediateOutputMax
 				= ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE_I_ < max_code_units_v<_UToEncoding>
 				? max_code_units_v<_UToEncoding>
 				: ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE_I_;
 			using _IntermediateOutputValueType = code_unit_t<_UToEncoding>;
 			using _InitialInput                = __string_view_or_span_or_reconstruct_t<_Input>;
+			using _IntermediateInputValueType  = code_point_t<_UFromEncoding>;
+			using _IntermediateInput           = ::ztd::text::span<_IntermediateInputValueType>;
 			using _IntermediateOutputInitial
 				= ::ztd::text::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
 			using _IntermediateOutput = ::ztd::text::span<_IntermediateOutputValueType>;
-			using _DecodeResult       = decltype(__from_encoding.decode_one(::std::declval<_InitialInput>(),
-                    ::std::declval<_IntermediateOutput>(), __from_error_handler, __from_state));
+			using _DecodeResult       = decltype(__txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
+                    ::std::declval<_InitialInput>(), ::std::forward<_FromEncoding>(__from_encoding),
+                    ::std::declval<_IntermediateInput>(), __from_error_handler, __from_state));
 			using _WorkingInput       = decltype(::std::declval<_DecodeResult>().input);
 
 			_WorkingInput __working_input(
@@ -445,16 +449,7 @@ namespace ztd { namespace text {
 		constexpr auto __transcode_dispatch(_Input&& __input, _FromEncoding&& __from_encoding,
 			_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
 			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
-
-			using _UFromEncoding        = __remove_cvref_t<_FromEncoding>;
-			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-			using _Unbounded            = unbounded_view<_BackInserterIterator>;
-			using _Intermediate = ::ztd::text::span<code_point_t<_UFromEncoding>, max_code_points_v<_UFromEncoding>>;
-
-			constexpr bool _IsErrorHandlerCallable
-				= __txt_detail::__is_encode_error_handler_callable_v<_ToEncoding, _Intermediate, _Unbounded,
-				       _ToErrorHandler,
-				       _ToState> && __txt_detail::__is_decode_error_handler_callable_v<_FromEncoding, _Input, _Intermediate, _FromErrorHandler, _FromState>;
+			using _UFromEncoding = __remove_cvref_t<_FromEncoding>;
 
 			_OutputContainer __output {};
 			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
@@ -465,28 +460,18 @@ namespace ztd { namespace text {
 					__output.reserve(__txt_detail::__adl::__adl_size(__input));
 				}
 			}
-			if constexpr (_IsErrorHandlerCallable) {
-				if constexpr (__txt_detail::__is_encode_one_callable_v<_ToEncoding, _Intermediate, _Unbounded,
-					              _ToErrorHandler, _ToState>) {
-					// We can use the unbounded stuff
-					_Unbounded __insert_view(::std::back_inserter(__output));
-					auto __stateful_result = transcode_into(::std::forward<_Input>(__input),
-						::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
-						::std::forward<_ToEncoding>(__to_encoding),
-						::std::forward<_FromErrorHandler>(__from_error_handler),
-						::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-					(void)__stateful_result;
-					return __output;
-				}
-				else {
-					auto __stateful_result = __txt_detail::__intermediate_transcode_to_storage(
-						::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding), __output,
-						::std::forward<_ToEncoding>(__to_encoding),
-						::std::forward<_FromErrorHandler>(__from_error_handler),
-						::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-					(void)__stateful_result;
-					return __output;
-				}
+			if constexpr (__txt_detail::__is_decode_range_category_output_v<_UFromEncoding>) {
+				using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
+				using _Unbounded            = unbounded_view<_BackInserterIterator>;
+				// We can use the unbounded stuff
+				_Unbounded __insert_view(::std::back_inserter(__output));
+				auto __stateful_result = transcode_into(::std::forward<_Input>(__input),
+					::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
+					::std::forward<_ToEncoding>(__to_encoding),
+					::std::forward<_FromErrorHandler>(__from_error_handler),
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				(void)__stateful_result;
+				return __output;
 			}
 			else {
 				auto __stateful_result = __txt_detail::__intermediate_transcode_to_storage(
@@ -529,6 +514,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
 		_ToState& __to_state) {
+		using _UFromEncoding = __txt_detail::__remove_cvref_t<_FromEncoding>;
 
 		_OutputContainer __output {};
 		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
@@ -540,12 +526,23 @@ namespace ztd { namespace text {
 			}
 		}
 
-		auto __insert_view     = unbounded_view(::std::back_inserter(__output));
-		auto __stateful_result = transcode_into(::std::forward<_Input>(__input),
-			::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
-			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-		return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		if constexpr (__txt_detail::__is_decode_range_category_output_v<_UFromEncoding>) {
+			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
+			using _Unbounded            = unbounded_view<_BackInserterIterator>;
+			auto __insert_view          = _Unbounded(::std::back_inserter(__output));
+			auto __stateful_result      = transcode_into(::std::forward<_Input>(__input),
+                    ::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
+                    ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+                    ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		}
+		else {
+			auto __stateful_result = __txt_detail::__intermediate_transcode_to_storage(
+				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding), __output,
+				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		}
 	}
 
 	//////

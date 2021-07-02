@@ -42,6 +42,7 @@
 
 #include <ztd/text/detail/adl.hpp>
 #include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/detail/iterator.hpp>
 
 #include <utility>
 
@@ -269,6 +270,57 @@ namespace ztd { namespace text {
 		template <typename _Handler, typename _Encoding, typename _Result, typename _Progress>
 		using __detect_callable_handler = decltype(::std::declval<_Handler>()(
 			::std::declval<const _Encoding&>(), ::std::declval<_Result>(), ::std::declval<_Progress>()));
+
+		template <typename _Encoding, typename = void>
+		struct __range_category {
+			using type = void;
+		};
+
+		template <typename _Encoding>
+		struct __range_category<_Encoding, ::std::void_t<typename __remove_cvref_t<_Encoding>::range_category>> {
+			using type = typename __remove_cvref_t<_Encoding>::range_category;
+		};
+
+		template <typename _Encoding, typename = void>
+		struct __decode_range_category : public __range_category<_Encoding> { };
+
+		template <typename _Encoding>
+		struct __decode_range_category<_Encoding,
+			::std::void_t<typename __remove_cvref_t<_Encoding>::decode_range_category>> {
+			using type = typename __remove_cvref_t<_Encoding>::decode_range_category;
+		};
+
+		template <typename _Encoding, typename = void>
+		struct __encode_range_category : public __range_category<_Encoding> { };
+
+		template <typename _Encoding>
+		struct __encode_range_category<_Encoding,
+			::std::void_t<typename __remove_cvref_t<_Encoding>::encode_range_category>> {
+			using type = typename __remove_cvref_t<_Encoding>::encode_range_category;
+		};
+
+		template <typename _Encoding>
+		using __decode_range_category_t = typename __decode_range_category<_Encoding>::type;
+
+		template <typename _Encoding>
+		using __encode_range_category_t = typename __encode_range_category<_Encoding>::type;
+
+		template <typename _Encoding>
+		inline constexpr bool __is_decode_range_category_output_v
+			= ::std::is_base_of_v<__decode_range_category_t<_Encoding>, ::std::output_iterator_tag>;
+
+		template <typename _Encoding>
+		inline constexpr bool __is_encode_range_category_output_v
+			= ::std::is_base_of_v<__encode_range_category_t<_Encoding>, ::std::output_iterator_tag>;
+
+		template <typename _Encoding>
+		inline constexpr bool __is_encode_range_category_contiguous_v
+			= ::std::is_base_of_v<__encode_range_category_t<_Encoding>, ::ztd::text::contiguous_iterator_tag>;
+
+		template <typename _Encoding>
+		inline constexpr bool __is_decode_range_category_contiguous_v
+			= ::std::is_base_of_v<__decode_range_category_t<_Encoding>, ::ztd::text::contiguous_iterator_tag>;
+
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -187,8 +187,10 @@ mark_as_advanced(ZTD_TEXT_SCRATCH)
 if (ZTD_TEXT_SCRATCH)
 	add_executable(scratch main.cpp)
 	target_link_libraries(scratch PRIVATE ztd::text)
+	target_include_directories(scratch PRIVATE tests/shared/include)
 	target_compile_options(scratch
 		PRIVATE
+		${--template-debugging-mode}
 		${--disable-permissive}
 		${--warn-pedantic}
 		${--warn-all}

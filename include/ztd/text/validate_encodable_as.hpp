@@ -183,7 +183,7 @@ namespace ztd { namespace text {
 
 			for (;;) {
 				auto __stateless_validate_result = __txt_detail::__basic_validate_encodable_as_one(__working_input,
-					__encoding, __code_point_view, __code_unit_view, __encode_state, __decode_state);
+					__encoding, __code_unit_view, __encode_state, __decode_state, __code_point_view);
 				if (!__stateless_validate_result.valid) {
 					return _Result(__txt_detail::__reconstruct(
 						               ::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),

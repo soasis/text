@@ -264,20 +264,6 @@ namespace ztd { namespace text {
 				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last),
 				::std::forward<_ArgState>(__state), __error_code);
 		}
-
-		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
-		inline constexpr bool __is_decode_error_handler_callable_v = __is_detected_v<__detect_callable_handler,
-			_ErrorHandler, _Encoding, __reconstruct_decode_result_t<_Input, _Output, _State>,
-			::ztd::text::span<code_unit_t<__remove_cvref_t<_Encoding>>>>;
-
-		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
-		inline constexpr bool __is_decode_one_callable_v
-			= __is_detected_v<__detect_object_decode_one, _Encoding, _Input, _Output, _ErrorHandler, _State>;
-
-		template <typename _Encoding, typename _Input, typename _Output, typename _ErrorHandler, typename _State>
-		inline constexpr bool __is_decode_one_and_error_handler_callable_v
-			= __is_decode_one_callable_v<_Encoding, _Input, _Output, _ErrorHandler, _State>&&
-			     __is_decode_error_handler_callable_v<_Encoding, _Input, _Output, _ErrorHandler, _State>;
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

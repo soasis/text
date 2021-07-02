@@ -47,7 +47,7 @@ struct shift_jis {
 	static constexpr inline std::size_t max_code_units  = 2;
 
 	constexpr ztd::text::span<const code_unit, 1> replacement_code_units() const noexcept {
-		return ztd::text::span<const code_unit, 1>("?" + 0, 1);
+		return ztd::text::span<const code_unit, 1>(&"?"[0], 1);
 	}
 
 	using is_decode_injective = std::true_type;

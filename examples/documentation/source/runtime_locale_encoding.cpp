@@ -130,7 +130,7 @@ public:
 	     ztd::text::span<code_point> output,
 	     rtl_decode_error_handler error_handler,
 	     decode_state& current // decode-based state
-	) {
+	) const {
 		using empty_span = ztd::text::span<const code_unit, 0>;
 
 		if (output.size() < 1) {
@@ -177,7 +177,7 @@ public:
 	     ztd::text::span<code_unit> output,
 	     rtl_encode_error_handler error_handler,
 	     encode_state& current // encode-based state
-	) {
+	) const {
 		using empty_span = ztd::text::span<const code_point, 0>;
 
 		// saved, in case we need to go

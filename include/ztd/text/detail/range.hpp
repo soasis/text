@@ -125,6 +125,10 @@ namespace ztd { namespace text {
 			= __is_iterator_input_or_output_iterator_v<__range_iterator_t<_Range>>;
 
 		template <typename _Range>
+		inline constexpr bool __is_range_contiguous_range_v
+			= __is_iterator_contiguous_iterator_v<__range_iterator_t<_Range>>;
+
+		template <typename _Range>
 		inline constexpr bool __is_sized_range_v
 			= __is_sized_sentinel_for_v<__range_iterator_t<_Range>, __range_sentinel_t<_Range>>;
 

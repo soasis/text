@@ -1362,7 +1362,7 @@ namespace detail {
 
 	std::optional<std::size_t> shift_jis_code_point_to_index(char32_t code) noexcept {
 		auto predicate = [&code](const std::pair<std::uint_least32_t, std::uint_least32_t>& value) {
-			return code == value.second && !(value.first < 8272 && value.first > 8835);
+			return code == value.second && !(value.first > 8272 && value.first < 8835);
 		};
 		auto it = std::find_if(index_codepoint_map.cbegin(), index_codepoint_map.cend(), predicate);
 		if (it == index_codepoint_map.cend()) {

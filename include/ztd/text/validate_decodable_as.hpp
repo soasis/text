@@ -157,8 +157,6 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else {
-			using _CodeUnit = code_unit_t<_UEncoding>;
-
 			using _CodeUnit  = code_unit_t<_UEncoding>;
 			using _CodePoint = code_point_t<_UEncoding>;
 
