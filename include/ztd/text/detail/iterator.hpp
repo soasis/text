@@ -38,6 +38,7 @@
 #include <ztd/text/detail/adl.hpp>
 #include <ztd/text/detail/type_traits.hpp>
 #include <ztd/text/detail/memory.hpp>
+#include <ztd/text/detail/mark_contiguous.hpp>
 
 #include <iterator>
 #include <type_traits>
@@ -61,10 +62,11 @@ namespace ztd { namespace text {
 	//////
 	using contiguous_iterator_tag =
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
-		::std::contiguous_iterator_tag;
+		::std::contiguous_iterator_tag
 #else
-		__txt_detail::__contiguous_iterator_tag;
+		__txt_detail::__contiguous_iterator_tag
 #endif
+		;
 
 	namespace __txt_detail {
 
@@ -215,10 +217,10 @@ namespace ztd { namespace text {
 			= ::std::is_base_of_v<_Tag, __iterator_concept_t<_It>>;
 
 		template <typename _It>
-		inline constexpr bool __is_iterator_contiguous_iterator_v
-			= (
+		inline constexpr bool __is_iterator_contiguous_iterator_v = __mark_contiguous<_It>::value
+			|| (
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
-			       __is_iterator_concept_or_better_v<contiguous_iterator_tag, _It>)
+			     __is_iterator_concept_or_better_v<contiguous_iterator_tag, _It>)
 			|| (__is_iterator_concept_or_better_v<contiguous_iterator_tag, _It> &&
 #else
 			     ::std::is_pointer_v<_It> &&

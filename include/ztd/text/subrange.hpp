@@ -145,12 +145,16 @@ namespace ztd { namespace text {
 			/// @brief The iterator category. Same as the iterator category for @p _It.
 			///
 			//////
-			using iterator_category = __txt_detail::__iterator_category_t<iterator>;
+			using iterator_category
+				= ::std::conditional_t<__txt_detail::__is_iterator_contiguous_iterator_v<iterator>,
+				     contiguous_iterator_tag, __txt_detail::__iterator_category_t<iterator>>;
 			//////
 			/// @brief The iterator concept. Same as the iterator concept for @p _It.
 			///
 			//////
-			using iterator_concept = __txt_detail::__iterator_concept_t<iterator>;
+			using iterator_concept
+				= ::std::conditional_t<__txt_detail::__is_iterator_contiguous_iterator_v<iterator>,
+				     contiguous_iterator_tag, __txt_detail::__iterator_concept_t<iterator>>;
 			//////
 			/// @brief The @c pointer type. Same as the @c pointer type for @p _It.
 			///
@@ -344,9 +348,8 @@ namespace ztd { namespace text {
 			/// @remarks This function call only works if the @c iterator_concept is a @c contiguous_iterator_tag or
 			/// better.
 			//////
-			template <typename _Dummy = _It,
-				::std::enable_if_t<
-				     __txt_detail::__is_iterator_concept_or_better_v<contiguous_iterator_tag, _Dummy>>* = nullptr>
+			template <typename _Dummy                                                           = _It,
+				::std::enable_if_t<__txt_detail::__is_iterator_contiguous_iterator_v<_Dummy>>* = nullptr>
 			constexpr pointer data() const noexcept {
 				return __txt_detail::__adl::__adl_to_address(this->_M_it);
 			}
@@ -532,7 +535,9 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
+#if (ZTD_TEXT_IS_ON(ZTD_TEXT_LIBSTDCXX_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_))   \
+     || (ZTD_TEXT_IS_ON(ZTD_TEXT_LIBVCXX_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_)) \
+     || (ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_))
 namespace std { namespace ranges {
 
 	template <typename _It, typename _Sen, ::ztd::text::__txt_detail::__subrange_kind _Kind>
