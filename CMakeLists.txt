@@ -69,11 +69,11 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/${CFG_INT_DIR}/bin")
 	endif()
 
-	if (NOT CMAKE_CXX_STANDARD GREATER_EQUAL 20)
-		set(CMAKE_CXX_STANDARD 20)
+	if (NOT DEFINED CMAKE_CXX_STANDARD)
+		set(CMAKE_CXX_STANDARD 17)
 	endif()
 
-	if (NOT CMAKE_C_STANDARD GREATER_EQUAL 11)
+	if (NOT DEFINED CMAKE_CXX_STANDARD)
 		set(CMAKE_C_STANDARD 11)
 	endif()
 
@@ -195,5 +195,4 @@ if (ZTD_TEXT_SCRATCH)
 		${--warn-pedantic}
 		${--warn-all}
 		${--warn-errors})
-	target_compile_features(scratch PRIVATE cxx_std_20)
 endif()

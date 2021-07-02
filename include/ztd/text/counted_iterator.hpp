@@ -91,13 +91,23 @@ namespace ztd { namespace text {
 
 			template <typename _It2, ::std::enable_if_t<::std::is_convertible_v<_It2, iterator_type>>* = nullptr>
 			constexpr __counted_iterator(const __counted_iterator<_It2>& __from) noexcept(
-				::std::is_nothrow_convertible_v<const _It2&, iterator_type>)
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_NOTHROW_CONVERTIBLE_I_)
+				::std::is_nothrow_convertible_v<const _It2&, iterator_type>
+#else
+				noexcept(static_cast<iterator_type>(::std::declval<const _It2&>()))
+#endif
+				)
 			: _M_count(__from._M_count), _M_it(__from._M_it) {
 			}
 
 			template <typename _It2, ::std::enable_if_t<::std::is_convertible_v<_It2, iterator_type>>* = nullptr>
 			constexpr __counted_iterator(__counted_iterator<_It2>&& __from) noexcept(
-				::std::is_nothrow_convertible_v<_It2&&, iterator_type>)
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_NOTHROW_CONVERTIBLE_I_)
+				::std::is_nothrow_convertible_v<_It2&&, iterator_type>
+#else
+				noexcept(static_cast<iterator_type>(::std::declval<_It2&&>()))
+#endif
+				)
 			: _M_count(::std::move(__from._M_count)), _M_it(::std::move(__from._M_it)) {
 			}
 

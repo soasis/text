@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -89,13 +89,13 @@ namespace ztd { namespace text {
 			}
 
 			__byte_reference& operator=(value_type __val) {
-				const __base_value_type __shift = __ones_mask_to_shift<__base_value_type>(this->_M_mask);
+				const __base_value_type __shift = __ones_mask_to_right_shift<__base_value_type>(this->_M_mask);
 				this->M_ref |= static_cast<__base_value_type>(__val) << __shift;
 				return *this;
 			}
 
 			value_type value() const {
-				const mask_type __shift = __ones_mask_to_shift<mask_type>(this->_M_mask);
+				const mask_type __shift = __ones_mask_to_right_shift<mask_type>(this->_M_mask);
 				return static_cast<value_type>((this->_M_ref & this->_M_mask) >> __shift);
 			}
 

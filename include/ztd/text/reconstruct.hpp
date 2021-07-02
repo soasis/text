@@ -121,8 +121,7 @@ namespace ztd {
 							     __adl::__adl_begin(__input), __adl::__adl_end(__input));
 						}
 						else {
-							using _Ty = ::std::remove_extent_t<_VInput>;
-							return __reconstruct(::std::in_place_type<::ztd::text::span<_Ty>>,
+							return __reconstruct(::std::in_place_type<::ztd::text::span<_CharTy>>,
 							     __adl::__adl_begin(__input), __adl::__adl_end(__input));
 						}
 					}

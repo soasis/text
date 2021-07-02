@@ -40,10 +40,10 @@
 inline namespace ztd_text_tests_transcode_containers {
 	template <typename FromEncoding, typename ToEncoding, template <class...> typename Container = std::vector>
 	void check_container_roundtrip(FromEncoding& from_encoding, ToEncoding& to_encoding) {
-		constexpr bool DecodeInjective = ztd::text::is_decode_injective_v<FromEncoding>;
-		constexpr bool EncodeInjective = ztd::text::is_encode_injective_v<ToEncoding>;
-		using ToCodeUnit               = ztd::text::code_unit_t<ToEncoding>;
-		using FromCodeUnit             = ztd::text::code_unit_t<FromEncoding>;
+#define DecodeInjective ztd::text::is_decode_injective_v<FromEncoding>
+#define EncodeInjective ztd::text::is_encode_injective_v<ToEncoding>
+		using ToCodeUnit   = ztd::text::code_unit_t<ToEncoding>;
+		using FromCodeUnit = ztd::text::code_unit_t<FromEncoding>;
 		{
 			Container<FromCodeUnit> in_container = { (FromCodeUnit)0, (FromCodeUnit)0, (FromCodeUnit)0 };
 			Container<ToCodeUnit> out_container  = { (ToCodeUnit)0, (ToCodeUnit)0, (ToCodeUnit)0 };
@@ -97,6 +97,8 @@ inline namespace ztd_text_tests_transcode_containers {
 			REQUIRE(
 			     std::equal(std::begin(in_container), std::end(in_container), std::begin(result), std::end(result)));
 		}
+#undef DecodeInjective
+#undef EncodeInjective
 	}
 } // namespace ztd_text_tests_transcode_containers
 

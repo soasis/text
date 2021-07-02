@@ -35,9 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/span.hpp>
-
-#include <type_traits>
+#include <ztd/text/detail/type_traits.hpp>
 
 #include <ztd/text/detail/prologue.hpp>
 
@@ -46,13 +44,23 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 
-		template <typename _It>
-		struct __mark_contiguous : public ::std::integral_constant<bool, ::std::is_pointer_v<_It>> { };
+		template <typename _It, typename = void>
+		struct __mark_contiguous : public ::std::integral_constant<bool, ::std::is_pointer_v<__remove_cvref_t<_It>>> {
+		};
 
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBSTDCXX_I_)
 		template <typename _It, typename _Parent>
 		struct __mark_contiguous<::__gnu_cxx::__normal_iterator<_It, _Parent>> : public __mark_contiguous<_It> { };
 #endif
+
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBVCXX_I_)
+		template <typename _It>
+		struct __mark_contiguous<_It, ::std::void_t<decltype(::std::declval<_It>()._Unwrapped())>>
+		: public __mark_contiguous<decltype(::std::declval<_It>()._Unwrapped())> { };
+#endif
+
+		template <typename _It>
+		inline constexpr bool __mark_contiguous_v = __mark_contiguous<_It>::value;
 
 	} // namespace __txt_detail
 

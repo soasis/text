@@ -1639,8 +1639,9 @@ namespace ztd { namespace text { namespace tests {
 
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_replacement_truth = U"\uFFFD";
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_replacement_truth = u"\uFFFD";
+	inline constexpr const ztd::text::uchar8_t u8_unicode_replacement_truth_storage[]     = { 0xEF, 0xBF, 0xBD, 0 };
 	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_replacement_truth
-		= (const ztd::text::uchar8_t*)u8"\uFFFD";
+		= u8_unicode_replacement_truth_storage;
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_replacement_truth = L"?";
 	inline constexpr const std::basic_string_view<char> unicode_replacement_truth      = "?";
 
@@ -1665,6 +1666,7 @@ namespace ztd { namespace text { namespace tests {
 				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
 			else if constexpr (std::is_same_v<Char, char8_t>) {
 				const auto& bscs
 					= u8"\f\v\t "
@@ -1674,6 +1676,7 @@ namespace ztd { namespace text { namespace tests {
 				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
+#endif
 			else if constexpr (std::is_same_v<Char, ztd::text::uchar8_t>) {
 				const auto& bscs
 					= u8"\f\v\t "
@@ -1733,10 +1736,16 @@ namespace ztd { namespace text { namespace tests {
 		u"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		u16_basic_source_character_set_size);
 	inline constexpr const std::size_t u8_basic_source_character_set_size = 97;
+	inline constexpr const ztd::text::uchar8_t u8_basic_source_character_set_storage[]
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+		= u8"\f\v\t "
+		  u8"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0";
+#else
+		= "\f\v\t "
+		  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0";
+#endif
 	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set(
-		u8"\f\v\t "
-		u8"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
-		u8_basic_source_character_set_size);
+		u8_basic_source_character_set_storage, u8_basic_source_character_set_size);
 	inline constexpr const std::size_t w_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<wchar_t> w_basic_source_character_set(
 		L"\f\v\t "

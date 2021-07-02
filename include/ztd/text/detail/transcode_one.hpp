@@ -84,7 +84,7 @@ namespace ztd { namespace text {
 				return __encoding.decode_one(
 					::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 			}
-			else if (
+			else if constexpr (
 				(!__is_range_contiguous_range_v<_UOutput> || __is_range_input_or_output_range_v<_UOutput>)&&__is_decode_range_category_contiguous_v<
 				     _UEncoding>) {
 				code_point_t<_UEncoding> __intermediate_output_storage[max_code_points_v<_UEncoding>];
@@ -137,7 +137,7 @@ namespace ztd { namespace text {
 				return __encoding.encode_one(
 					::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 			}
-			else if (
+			else if constexpr (
 				(!__is_range_contiguous_range_v<_UOutput> || __is_range_input_or_output_range_v<_UOutput>)&&__is_encode_range_category_contiguous_v<
 				     _UEncoding>) {
 				constexpr ::std::size_t _IntermediateMax = max_code_units_v<_UEncoding>;

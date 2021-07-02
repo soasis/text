@@ -337,7 +337,12 @@ namespace ztd { namespace text {
 			template <__subrange_kind _Dummy                           = _Kind,
 				::std::enable_if_t<_Dummy == __subrange_kind::sized>* = nullptr>
 			constexpr size_type size() const noexcept {
-				return ::std::distance(this->_M_it, this->_M_sen);
+				if constexpr (_SizeRequired) {
+					return this->__base_size_t::_M_size;
+				}
+				else {
+					return ::std::distance(this->_M_it, this->_M_sen);
+				}
 			}
 
 			//////

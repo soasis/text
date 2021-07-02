@@ -217,7 +217,7 @@ namespace ztd { namespace text {
 			= ::std::is_base_of_v<_Tag, __iterator_concept_t<_It>>;
 
 		template <typename _It>
-		inline constexpr bool __is_iterator_contiguous_iterator_v = __mark_contiguous<_It>::value
+		inline constexpr bool __is_iterator_contiguous_iterator_v = __mark_contiguous_v<_It>
 			|| (
 #if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
 			     __is_iterator_concept_or_better_v<contiguous_iterator_tag, _It>)

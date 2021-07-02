@@ -36,6 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/detail/mark_contiguous.hpp>
 
 #include <memory>
 
@@ -107,11 +108,20 @@ namespace ztd { namespace text {
 
 			template <typename _Pointer, ::std::enable_if_t<!::std::is_pointer_v<_Pointer>>* = nullptr>
 			auto __adl_to_address(_Pointer& p) noexcept {
-				if constexpr (__is_detected_v<__detect_std_pointer_traits_to_address, _Pointer>) {
-					return ::std::pointer_traits<_Pointer>::to_address(p);
+				if constexpr (__mark_contiguous_v<_Pointer>) {
+#if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBVCXX_I_)
+					return __adl_to_address(p._Unwrapped());
+#else
+					return __adl_to_address(p.operator->());
+#endif
 				}
 				else {
-					return __adl_to_address(p.operator->());
+					if constexpr (__is_detected_v<__detect_std_pointer_traits_to_address, _Pointer>) {
+						return ::std::pointer_traits<_Pointer>::to_address(p);
+					}
+					else {
+						return __adl_to_address(p.operator->());
+					}
 				}
 			}
 #endif

@@ -43,7 +43,7 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 		using state                      = ztd::text::decode_state_t<Encoding>;
 
 		auto action = [&]() noexcept(false) {
-			code_point output_buffer[output_max] {};
+			code_point output_buffer[ztd::text::max_code_points_v<Encoding>] {};
 			ztd::text::span<const code_unit> input(container.data(), container.size());
 			ztd::text::span<code_point> output(output_buffer, output_max);
 			state s {};
@@ -61,7 +61,7 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 		using state                      = ztd::text::encode_state_t<Encoding>;
 
 		auto action = [&]() noexcept(false) {
-			code_unit output_buffer[output_max] {};
+			code_unit output_buffer[ztd::text::max_code_units_v<Encoding>] {};
 			ztd::text::span<const code_point> input(container.data(), container.size());
 			ztd::text::span<code_unit> output(output_buffer, output_max);
 			state s {};
