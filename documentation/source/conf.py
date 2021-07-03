@@ -80,7 +80,7 @@ rst_prolog = """
 # C++ Index Configuration
 #
 cpp_index_common_prefix = [
-    'ztd::text::__impl::', 'ztd::text::__detail::', 'ztd::text::', 'ztd::'
+    'ztd::text::__impl::', 'ztd::text::__txt_detail::', 'ztd::text::', 'ztd::'
 ]
 
 # Breathe Configuration
@@ -92,10 +92,9 @@ breathe_default_project = "ztd.text"
 #
 autosectionlabel_prefix_document = True
 
+
 # ReadTheDocs Build Help
 #
-
-
 def run_cmake_doxygen():
 	"""Run the cmake command to get the doxygen sources"""
 
@@ -104,12 +103,12 @@ def run_cmake_doxygen():
 	xml_dir = os.path.join(cmake_dir, 'documentation/doxygen/xml')
 	os.makedirs(cmake_dir, exist_ok=True)
 	os.makedirs(xml_dir, exist_ok=True)
-	print("[conf.py] CMake Directory: %s" % cmake_dir)
-	print("[conf.py] XML Directory: %s" % xml_dir)
+	print("[ztd.text/documentation/conf.py] CMake Directory: %s" % cmake_dir)
+	print("[ztd.text/documentation/conf.py] XML Directory: %s" % xml_dir)
 
 	try:
 		retcode = subprocess.call(
-		    "cmake -DZTD_TEXT_DOCUMENTATION:BOOL=TRUE -DZTD_TEXT_DOCUMENTATION_NO_SPHINX:BOOL=TRUE ../../../..",
+		    "cmake -DZTD_TEXT_READTHEDOCS:BOOL=TRUE -DZTD_TEXT_DOCUMENTATION:BOOL=TRUE -DZTD_TEXT_DOCUMENTATION_NO_SPHINX:BOOL=TRUE ../../../..",
 		    shell=True,
 		    cwd=cmake_dir)
 	except OSError as e:

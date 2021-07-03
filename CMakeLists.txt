@@ -49,6 +49,24 @@ project(ztd.text
 	HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
 	LANGUAGES C CXX)
 
+if (ZTD_TEXT_READTHEDOCS)
+	# ReadTheDocs seems unable to handle the include at the project level: something must be going wrong?
+	include(CheckCXXCompilerFlag)
+	include(CheckCCompilerFlag)
+	include(CheckIPOSupported)
+	include(CMakePackageConfigHelpers)
+	include(CMakeDependentOption)
+	include(CMakePrintHelpers)
+	include(GNUInstallDirs)
+	include(FeatureSummary)
+	include(FetchContent)
+	include(CTest)
+	# ztd
+	include(CheckCompilerDiagnostic)
+	include(CheckCompilerFlag)
+	include(FindVersion)
+endif()
+
 # # # Top-Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
@@ -111,15 +129,19 @@ include(FeatureSummary)
 include(FetchContent)
 include(CTest)
 
-# ztd.version
-FetchContent_Declare(ztd.version
-	GIT_REPOSITORY https://github.com/soasis/version
+# ztd.idk
+FetchContent_Declare(ztd.idk
+	GIT_REPOSITORY https://github.com/soasis/idk.git
 	GIT_TAG main)
-FetchContent_MakeAvailable(ztd.version)
+FetchContent_MakeAvailable(ztd.idk)
+
 # ztd.cuneicode
-if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cuneicode)
+if (ZTD_TEXT_USE_CUNEICODE)
+	FetchContent_Declare(ztd.cuneicode
+		GIT_REPOSITORY https://github.com/soasis/cuneicode.git
+		GIT_TAG main)
+	FetchContent_MakeAvailable(ztd.cuneicode)
 	set(ztd_text_has_cuneicode ON)
-	add_subdirectory(vendor/cuneicode)
 else()
 	set(ztd_text_has_cuneicode OFF)
 endif()
@@ -138,7 +160,7 @@ target_include_directories(ztd.text
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_link_libraries(ztd.text
 	INTERFACE
-		ztd::version
+		ztd::idk
 		${ztd-use-cuneicode}
 )
 install(DIRECTORY include/
