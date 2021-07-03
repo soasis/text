@@ -61,10 +61,6 @@ if (ZTD_TEXT_READTHEDOCS)
 	include(FeatureSummary)
 	include(FetchContent)
 	include(CTest)
-	# ztd
-	include(CheckCompilerDiagnostic)
-	include(CheckCompilerFlag)
-	include(FindVersion)
 endif()
 
 # # # Top-Level Directories
@@ -74,6 +70,8 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 else()
 	set(ZTD_TEXT_IS_TOP_LEVEL_PROJECT NO)
 endif()
+
+string(CONCAT ztd-text-is-top-level $<STREQUAL:${PROJECT_NAME},${CMAKE_PROJECT_NAME}>)
 
 # Modify bad flags / change defaults if we are the top level
 if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
@@ -95,21 +93,24 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_C_STANDARD 11)
 	endif()
 
-	# normal flags
-	check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
-	# Warning flags
-	check_compiler_flag(warn-pedantic MSVC /permissive- GCC -pedantic)
-	check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
-	check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
-	check_compiler_flag(utf8-literal-encoding MSVC /execution-charset:utf-8 GCC -fexec-charset=utf-8)
-	check_compiler_flag(utf8-source-encoding MSVC /source-charset:utf-8 GCC -finput-charset=utf-8)
-	check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 CLANG -fconstexpr-depth=2147483647)
-	check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 CLANG -fconstexpr-steps=2147483647)
-	check_compiler_flag(template-debugging-mode GCC -ftemplate-backtrace-limit=0)
+	if (ZTD_TEXT_BENCHMARKS OR ZTD_TEXT_EXAMPLES OR ZTD_TEXT_TESTS OR ZTD_TEXT_SCRATCH)
+		# normal flags
+		check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
+		# Warning flags
+		check_compiler_flag(warn-pedantic MSVC /permissive- GCC -pedantic)
+		check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
+		check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
+		check_compiler_flag(utf8-literal-encoding MSVC /execution-charset:utf-8 GCC -fexec-charset=utf-8)
+		check_compiler_flag(utf8-source-encoding MSVC /source-charset:utf-8 GCC -finput-charset=utf-8)
+		check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 CLANG -fconstexpr-depth=2147483647)
+		check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 CLANG -fconstexpr-steps=2147483647)
+		check_compiler_flag(template-debugging-mode GCC -ftemplate-backtrace-limit=0)
+	endif()
 endif()
 
 # # Options
 option(ZTD_TEXT_CI "Whether or not we are in continuous integration mode" OFF)
+option(ZTD_TEXT_READTHEDOCS "Whether or not we are building inside of ReadTheDocs" OFF)
 option(ZTD_TEXT_TESTS "Enable build of tests" OFF)
 option(ZTD_TEXT_DOCUMENTATION "Enable build of documentation" OFF)
 option(ZTD_TEXT_DOCUMENTATION_NO_SPHINX "Turn off Sphinx usage (useful for ReadTheDocs builds)" OFF)
@@ -119,16 +120,6 @@ option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its ta
 option(ZTD_TEXT_USE_CUNEICODE "Enable generation of a single header and its target" OFF)
 
 # # Dependencies
-# includes
-include(CheckIPOSupported)
-include(CMakePackageConfigHelpers)
-include(CMakeDependentOption)
-include(CMakePrintHelpers)
-include(GNUInstallDirs)
-include(FeatureSummary)
-include(FetchContent)
-include(CTest)
-
 # ztd.idk
 FetchContent_Declare(ztd.idk
 	GIT_REPOSITORY https://github.com/soasis/idk.git
@@ -145,8 +136,6 @@ if (ZTD_TEXT_USE_CUNEICODE)
 else()
 	set(ztd_text_has_cuneicode OFF)
 endif()
-
-string(CONCAT ztd-text-is-top-level $<STREQUAL:${PROJECT_NAME},${CMAKE_PROJECT_NAME}>)
 
 # Main library declarations
 file(GLOB_RECURSE ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
