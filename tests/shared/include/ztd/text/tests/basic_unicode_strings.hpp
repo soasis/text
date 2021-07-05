@@ -59,7 +59,7 @@ namespace ztd { namespace text { namespace tests {
 
 	template <typename Container>
 	inline ztd::ranges::span<const std::byte> as_writeable_bytes(Container& c) {
-		return ztd::text::as_writable_bytes(
+		return ztd::ranges::as_writable_bytes(
 			ztd::ranges::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
 	}
 
