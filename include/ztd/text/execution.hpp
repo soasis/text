@@ -189,12 +189,12 @@ namespace ztd { namespace text {
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 			int __codepage_id = __txt_detail::__windows::__determine_active_code_page();
 			return __txt_detail::__windows::__is_unicode_code_page(__codepage_id);
-#elif ZTD_IS_ON(ZTD_TEXT_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_TEXT_LANGINFO_I_)
+#elif ZTD_IS_ON(ZTD_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_LANGINFO_I_)
 			const char* __ctype_name = nl_langinfo(CODESET);
 			return __txt_detail::__is_unicode_encoding_name(__ctype_name);
 #else
 				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
-				return __txt_detail::__is_encoding_name_unicode(__ctype_name);
+				return __txt_detail::__is_unicode_encoding_name(__ctype_name);
 #endif
 		}
 

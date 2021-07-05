@@ -212,7 +212,7 @@ namespace ztd { namespace text {
 		static bool contains_unicode_encoding() noexcept {
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 			return true;
-#elif ZTD_IS_ON(ZTD_TEXT_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
+#elif ZTD_IS_ON(ZTD_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
 			// On very specific platforms, we must probe......
 			// ... but we don't have the code right now to do that properly.
 			// When we do, it'll go in the detail/posix.hpp !
@@ -444,7 +444,7 @@ namespace ztd { namespace text {
 				const code_unit& __unit = __units[__units_count];
 				++__units_count;
 				ranges::advance(__init);
-#if ZTD_IS_ON(ZTD_TEXT_LIBVCXX_I_)
+#if ZTD_IS_ON(ZTD_LIBVCXX_I_)
 				::std::size_t __res;
 				errno_t __err = wcrtomb_s(::std::addressof(__res), __intermediate_buffer, __state_max, __unit,
 					::std::addressof(__s.__wide_state));

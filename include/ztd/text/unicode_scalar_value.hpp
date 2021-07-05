@@ -257,10 +257,10 @@ namespace std {
 
 namespace ztd {
 	template <>
-	class ::ztd::is_character<::ztd::text::unicode_scalar_value> : public ::std::true_type { };
+	class is_character<::ztd::text::unicode_scalar_value> : public ::std::true_type { };
 
 	template <>
-	class ::ztd::is_char_traitable<::ztd::text::unicode_scalar_value> : public std::true_type { };
+	class is_char_traitable<::ztd::text::unicode_scalar_value> : public std::true_type { };
 } // namespace ztd
 
 #include <ztd/epilogue.hpp>

@@ -128,7 +128,6 @@ Result Types, Status Codes and Quality Aides
 .. toctree::
 	:maxdepth: 1
 
-	api/char8_t
 	api/encoding_error
 	api/text_tag
 	api/make_decode_state
