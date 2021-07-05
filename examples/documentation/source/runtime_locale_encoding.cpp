@@ -96,7 +96,7 @@ public:
 		return false;
 	}
 
-	ztd::text::span<const code_unit>
+	ztd::ranges::span<const code_unit>
 	replacement_code_units() const noexcept {
 		if (this->contains_unicode_encoding()) {
 			// Probably CESU-8 or UTF-8!
@@ -113,25 +113,25 @@ public:
 
 private:
 	using rtl_decode_result
-	     = ztd::text::decode_result<ztd::text::span<const code_unit>,
-	          ztd::text::span<code_point>, decode_state>;
+	     = ztd::text::decode_result<ztd::ranges::span<const code_unit>,
+	          ztd::ranges::span<code_point>, decode_state>;
 	using rtl_encode_result
-	     = ztd::text::encode_result<ztd::text::span<const code_point>,
-	          ztd::text::span<code_unit>, encode_state>;
+	     = ztd::text::encode_result<ztd::ranges::span<const code_point>,
+	          ztd::ranges::span<code_unit>, encode_state>;
 	using rtl_decode_error_handler
 	     = std::function<rtl_decode_result(const runtime_locale&,
-	          rtl_decode_result, ztd::text::span<const char>)>;
+	          rtl_decode_result, ztd::ranges::span<const char>)>;
 	using rtl_encode_error_handler
 	     = std::function<rtl_encode_result(const runtime_locale&,
-	          rtl_encode_result, ztd::text::span<const char32_t>)>;
+	          rtl_encode_result, ztd::ranges::span<const char32_t>)>;
 
 public:
-	rtl_decode_result decode_one(ztd::text::span<const code_unit> input,
-	     ztd::text::span<code_point> output,
+	rtl_decode_result decode_one(ztd::ranges::span<const code_unit> input,
+	     ztd::ranges::span<code_point> output,
 	     rtl_decode_error_handler error_handler,
 	     decode_state& current // decode-based state
 	) const {
-		using empty_span = ztd::text::span<const code_unit, 0>;
+		using empty_span = ztd::ranges::span<const code_unit, 0>;
 
 		if (output.size() < 1) {
 			return error_handler(*this,
@@ -173,17 +173,18 @@ public:
 		     input.subspan(result), output.subspan(1), current);
 	}
 
-	rtl_encode_result encode_one(ztd::text::span<const code_point> input,
-	     ztd::text::span<code_unit> output,
+	rtl_encode_result encode_one(
+	     ztd::ranges::span<const code_point> input,
+	     ztd::ranges::span<code_unit> output,
 	     rtl_encode_error_handler error_handler,
 	     encode_state& current // encode-based state
 	) const {
-		using empty_span = ztd::text::span<const code_point, 0>;
+		using empty_span = ztd::ranges::span<const code_point, 0>;
 
 		// saved, in case we need to go
 		// around mulitple times to get
 		// an output character
-		ztd::text::span<const code_point> original_input = input;
+		ztd::ranges::span<const code_point> original_input = input;
 		// The C standard library assumes
 		// it can write out MB_CUR_MAX characters to the buffer:
 		// we have no guarantee our output buffer is that big, so it

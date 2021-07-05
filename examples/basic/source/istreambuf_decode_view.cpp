@@ -50,7 +50,7 @@ int main(int, char*[]) {
 
 	// We create a subrange of "istream iterators", which allow us to walk
 	// over a sequence of data as if it was just a normal, regular range
-	using istreambuf_view = ztd::text::subrange<std::istreambuf_iterator<char>, std::istreambuf_iterator<char>>;
+	using istreambuf_view = ztd::ranges::subrange<std::istreambuf_iterator<char>, std::istreambuf_iterator<char>>;
 	istreambuf_view input_file_view(std::istreambuf_iterator<char> { input_file }, std::istreambuf_iterator<char> {});
 
 	// View the desired input file as UTF-16, in Little Endian format,

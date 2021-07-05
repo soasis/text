@@ -42,11 +42,12 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/forward.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
-
 #include <ztd/text/detail/empty_state.hpp>
-#include <ztd/text/detail/range.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/ranges/range.hpp>
+#include <ztd/ranges/reconstruct.hpp>
+
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -124,51 +125,51 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto decode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+			using _UInputRange   = remove_cvref_t<_InputRange>;
+			using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 			using _Result        = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			auto __init   = __txt_detail::__adl::__adl_begin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_end(__input);
+			auto __init   = ranges::ranges_adl::adl_begin(__input);
+			auto __inlast = ranges::ranges_adl::adl_end(__input);
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
-				return _Result(__txt_detail::__reconstruct(
+				return _Result(ranges::reconstruct(
 					               ::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
-					__txt_detail::__reconstruct(
+					ranges::reconstruct(
 					     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
 					__s, encoding_error::ok);
 			}
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
-			auto __outlast = __txt_detail::__adl::__adl_end(__output);
+			auto __outit   = ranges::ranges_adl::adl_begin(__output);
+			auto __outlast = ranges::ranges_adl::adl_end(__output);
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
 					basic_no_encoding __self {};
 					return __error_handler(__self,
-						_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
-						             ::std::move(__init), ::std::move(__inlast)),
-						     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>,
-						          ::std::move(__outit), ::std::move(__outlast)),
+						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
+						             ::std::move(__inlast)),
+						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
+						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::text::span<code_unit, 0>());
+						::ztd::ranges::span<code_unit, 0>());
 				}
 			}
 			else {
 				(void)__outlast;
 			}
 
-			code_unit __unit = __txt_detail::__dereference(__init);
-			__txt_detail::__advance(__init);
+			code_unit __unit = *__init;
+			ranges::advance(__init);
 
-			__txt_detail::__dereference(__outit) = static_cast<code_point>(__unit);
-			__txt_detail::__advance(__outit);
+			*__outit = static_cast<code_point>(__unit);
+			ranges::advance(__outit);
 
-			return _Result(__txt_detail::__reconstruct(
-				               ::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
-				__txt_detail::__reconstruct(
+			return _Result(
+				ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
+				ranges::reconstruct(
 				     ::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast)),
 				__s, encoding_error::ok);
 		}
@@ -194,36 +195,36 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto encode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+			using _UInputRange   = remove_cvref_t<_InputRange>;
+			using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 			using _Result        = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			auto __init   = __txt_detail::__adl::__adl_begin(__input);
-			auto __inlast = __txt_detail::__adl::__adl_end(__input);
+			auto __init   = ranges::ranges_adl::adl_begin(__input);
+			auto __inlast = ranges::ranges_adl::adl_end(__input);
 			if (__init == __inlast) {
 				// an exhausted sequence is fine
-				return _Result(__txt_detail::__reconstruct(
+				return _Result(ranges::reconstruct(
 					               ::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
-					__txt_detail::__reconstruct(
+					ranges::reconstruct(
 					     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
 					__s, encoding_error::ok);
 			}
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__output);
-			auto __outlast = __txt_detail::__adl::__adl_end(__output);
+			auto __outit   = ranges::ranges_adl::adl_begin(__output);
+			auto __outlast = ranges::ranges_adl::adl_end(__output);
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
 					basic_no_encoding __self {};
 					return __error_handler(__self,
-						_Result(__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>,
-						             ::std::move(__init), ::std::move(__inlast)),
-						     __txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>,
-						          ::std::move(__outit), ::std::move(__outlast)),
+						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
+						             ::std::move(__inlast)),
+						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
+						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::text::span<code_point, 0>());
+						::ztd::ranges::span<code_point, 0>());
 				}
 			}
 			else {
@@ -231,16 +232,16 @@ namespace ztd { namespace text {
 			}
 
 			code_point __points[1] {};
-			__points[0]               = __txt_detail::__dereference(__init);
+			__points[0]               = *__init;
 			const code_point& __point = __points[0];
-			__txt_detail::__advance(__init);
+			ranges::advance(__init);
 
-			__txt_detail::__dereference(__outit) = static_cast<code_unit>(__point);
-			__txt_detail::__advance(__outit);
+			*__outit = static_cast<code_unit>(__point);
+			ranges::advance(__outit);
 
-			return _Result(__txt_detail::__reconstruct(
-				               ::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
-				__txt_detail::__reconstruct(
+			return _Result(
+				ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init), ::std::move(__inlast)),
+				ranges::reconstruct(
 				     ::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast)),
 				__s, encoding_error::ok);
 		}
@@ -260,12 +261,13 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_NO_ENCODING_HPP

@@ -55,7 +55,7 @@ Picks the default encoding for the given code unit type (for both run time, and 
 	  - :doc:`ztd::text::wide_literal </api/encodings/wide_literal>`
 	* - ``char8_t``
 	  - :doc:`ztd::text::basic_utf8\<char8_t\> </api/encodings/utf8>`
-	* - ``ztd::text::uchar8_t``
+	* - ``ztd::uchar8_t``
 	  - :doc:`ztd::text::basic_utf8\<uchar8_t\> </api/encodings/utf8>`
 	* - ``std::byte``
 	  - :doc:`ztd::text::basic_utf8\<std::byte\> </api/encodings/utf8>`

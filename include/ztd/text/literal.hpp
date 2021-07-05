@@ -40,12 +40,12 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-
-#include <ztd/text/detail/ebco.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/idk/ebco.hpp>
+
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -59,10 +59,10 @@ namespace ztd { namespace text {
 	/// @brief The encoding of string literals ( e.g. @c "👍" ) at compile time.
 	///
 	//////
-	class literal : private __txt_detail::__ebco<__txt_detail::__literal> {
+	class literal : private ebco<__txt_detail::__literal> {
 	private:
 		using __underlying_t = __txt_detail::__literal;
-		using __base_t       = __txt_detail::__ebco<__underlying_t>;
+		using __base_t       = ebco<__underlying_t>;
 
 	public:
 		//////
@@ -164,10 +164,10 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
-     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
+     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
-			static_assert(__txt_detail::__always_false_v<_Input>,
+			static_assert(always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string literal "
 				"encoding from the machine at compile time and you are trying to use the literal encoding "
 				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
@@ -186,11 +186,9 @@ namespace ztd { namespace text {
 				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 				"ignore this error and we will get right on doing exactly that for you.");
 #endif
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(__txt_detail::__always_true_v<_Input>
-				&& !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>,
-			"[[ Please read! ]] This text encoding ("
-			ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
+			"[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
 			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
 			
@@ -199,9 +197,9 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
-				__underlying_handler(*this, __error_handler);
-			return this->__base_t::__get_value().decode_one(
+			__txt_detail::__forwarding_handler<const literal, remove_cvref_t<_ErrorHandler>> __underlying_handler(
+				*this, __error_handler);
+			return this->__base_t::get_value().decode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 
@@ -226,10 +224,10 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
-     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
+     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
-			static_assert(__txt_detail::__always_false_v<_Input>,
+			static_assert(always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string literal "
 				"encoding from the machine at compile time and you are trying to use the literal encoding "
 				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
@@ -248,10 +246,9 @@ namespace ztd { namespace text {
 				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 				"ignore this error and we will get right on doing exactly that for you.");
 #endif
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(__txt_detail::__always_true_v<_Input> && !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>,
-			"[[ Please read! ]] This text encoding ("
-			ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
+			"[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
 			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
 			
@@ -260,9 +257,9 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
-				__underlying_handler(*this, __error_handler);
-			return this->__base_t::__get_value().encode_one(
+			__txt_detail::__forwarding_handler<const literal, remove_cvref_t<_ErrorHandler>> __underlying_handler(
+				*this, __error_handler);
+			return this->__base_t::get_value().encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 	};
@@ -270,6 +267,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_LITERAL_HPP

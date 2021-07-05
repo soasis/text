@@ -31,7 +31,7 @@
 #include <ztd/text/transcode_view.hpp>
 #include <ztd/text/encoding.hpp>
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_LIBSTDCXX_I_)
+#if ZTD_IS_ON(ZTD_LIBSTDCXX_I_)
 
 // libstdc++ (gcc) has a rope class!
 
@@ -49,7 +49,7 @@ int main(int, char*[]) {
 	rope_text += input.data();
 
 	using iterator      = typename rope::const_iterator;
-	using rope_subrange = ztd::text::subrange<iterator, iterator>;
+	using rope_subrange = ztd::ranges::subrange<iterator, iterator>;
 	rope_subrange rope_view(rope_text.begin(), rope_text.end());
 
 	// View the char-based UTF-8 of the rope

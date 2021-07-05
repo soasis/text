@@ -29,7 +29,8 @@
 // ============================================================================>
 
 #include <ztd/text/encoding.hpp>
-#include <ztd/text/detail/algorithm.hpp>
+
+#include <ztd/ranges/algorithm.hpp>
 
 #include <catch2/catch.hpp>
 
@@ -44,11 +45,11 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		using state                      = ztd::text::decode_state_t<Encoding>;
 
 		code_point output_buffer[output_max] {};
-		ztd::text::span<const code_unit> input(container.data(), container.size());
-		ztd::text::span<code_point> output(output_buffer, output_max);
+		ztd::ranges::span<const code_unit> input(container.data(), container.size());
+		ztd::ranges::span<code_point> output(output_buffer, output_max);
 		state s {};
 		auto result   = encoding.decode_one(input, output, ztd::text::replacement_handler {}, s);
-		bool is_equal = ztd::text::__txt_detail::__equal(
+		bool is_equal = ztd::ranges::__rng_detail::__equal(
 		     output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
 	}
@@ -61,11 +62,11 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		using state                      = ztd::text::encode_state_t<Encoding>;
 
 		code_unit output_buffer[output_max] {};
-		ztd::text::span<const code_point> input(container.data(), container.size());
-		ztd::text::span<code_unit> output(output_buffer, output_max);
+		ztd::ranges::span<const code_point> input(container.data(), container.size());
+		ztd::ranges::span<code_unit> output(output_buffer, output_max);
 		state s {};
 		auto result   = encoding.encode_one(input, output, ztd::text::replacement_handler {}, s);
-		bool is_equal = ztd::text::__txt_detail::__equal(
+		bool is_equal = ztd::ranges::__rng_detail::__equal(
 		     output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
 	}

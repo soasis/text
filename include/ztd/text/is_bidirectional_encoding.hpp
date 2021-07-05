@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -35,12 +35,12 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/detail/span.hpp>
+#include <ztd/text/type_traits.hpp>
+#include <ztd/ranges/span.hpp>
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -60,8 +60,8 @@ namespace ztd { namespace text {
 	template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>
 	class is_bidirectional_encoding
 	: public ::std::integral_constant<bool,
-		  __txt_detail::__is_detected_v<__txt_detail::__detect_decode_backward, _Type, _Input, _Output, _State,
-		       _ErrorHandler> && __txt_detail::__is_detected_v<__txt_detail::__detect_encode_backward, _Type, _Input, _Output, _State, _ErrorHandler>> {
+		  is_detected_v<__txt_detail::__detect_decode_backward, _Type, _Input, _Output, _State,
+		       _ErrorHandler> && is_detected_v<__txt_detail::__detect_encode_backward, _Type, _Input, _Output, _State, _ErrorHandler>> {
 	};
 
 	template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>
@@ -71,6 +71,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_BIDIRECTIONAL_ENCODING

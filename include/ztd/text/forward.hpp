@@ -35,7 +35,9 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/idk/char8_t.hpp>
+
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -60,19 +62,17 @@ namespace ztd { namespace text {
 		class __unicode_scalar_value;
 	} // namespace __impl
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
 	using unicode_code_point = __impl::__unicode_code_point;
 #else
 	using unicode_code_point   = char32_t;
 #endif
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
 	using unicode_scalar_value = __impl::__unicode_scalar_value;
 #else
 	using unicode_scalar_value = char32_t;
 #endif
-
-	using uchar8_t = ZTD_TEXT_CHAR8_T_I_;
 
 	class assume_valid_handler;
 	class pass_through_handler;
@@ -107,9 +107,12 @@ namespace ztd { namespace text {
 	template <typename, typename, typename, typename>
 	class basic_text;
 
+	template <typename, typename>
+	class basic_c_string_view;
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_FORWARD_HPP

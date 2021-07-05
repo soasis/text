@@ -85,11 +85,11 @@ TEST_CASE("text/encode/core", "basic usages of encode function do not explode") 
 	}
 	SECTION("utf8") {
 		ztd::text::utf8 encoding {};
-		std::basic_string<ztd::text::uchar8_t> result0
+		std::basic_string<ztd::uchar8_t> result0
 		     = ztd::text::encode(ztd::text::tests::u32_basic_source_character_set, encoding);
 		REQUIRE(result0 == ztd::text::tests::u8_basic_source_character_set);
 
-		std::basic_string<ztd::text::uchar8_t> result1
+		std::basic_string<ztd::uchar8_t> result1
 		     = ztd::text::encode(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding);
 		REQUIRE(result1 == ztd::text::tests::u8_unicode_sequence_truth_native_endian);
 	}

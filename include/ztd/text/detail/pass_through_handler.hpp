@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -37,7 +37,7 @@
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -72,6 +72,6 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_PASS_THROUGH_HANDLER_HPP

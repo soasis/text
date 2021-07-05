@@ -38,22 +38,23 @@
 #include <ztd/text/transcode_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/unbounded.hpp>
-#include <ztd/text/subrange.hpp>
-#include <ztd/text/default_sentinel.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
-
-#include <ztd/text/detail/ebco.hpp>
-#include <ztd/text/detail/blackhole_iterator.hpp>
+#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
-#include <ztd/text/detail/adl.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
-#include <ztd/text/detail/span.hpp>
+
+#include <ztd/idk/ebco.hpp>
+#include <ztd/ranges/unbounded.hpp>
+#include <ztd/ranges/subrange.hpp>
+#include <ztd/ranges/default_sentinel.hpp>
+#include <ztd/ranges/adl.hpp>
+#include <ztd/ranges/span.hpp>
+#include <ztd/ranges/blackhole_iterator.hpp>
 
 #include <array>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -62,35 +63,35 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _Input, typename _ErrorHandler>
 		inline constexpr bool __is_encoding_with_error_handler_never_returns_error_v = false;
 
-		using __encoding_sentinel_t = default_sentinel_t;
+		using __encoding_sentinel_t = ranges::default_sentinel_t;
 
 		template <__transaction _EncodeOrDecode, typename _Derived, typename _Encoding, typename _Range,
 			typename _ErrorHandler, typename _State>
 		class __encoding_iterator
-		: private __ebco<__remove_cvref_t<_Encoding>, 0>,
-		  private __ebco<__remove_cvref_t<_ErrorHandler>, 1>,
-		  private __state_storage<__remove_cvref_t<__unwrap_t<_Encoding>>, __remove_cvref_t<_State>>,
+		: private ebco<remove_cvref_t<_Encoding>, 0>,
+		  private ebco<remove_cvref_t<_ErrorHandler>, 1>,
+		  private __state_storage<remove_cvref_t<unwrap_t<_Encoding>>, remove_cvref_t<_State>>,
 		  private __cursor_cache<(_EncodeOrDecode == __transaction::__decode
-			                              ? max_code_points_v<__remove_cvref_t<__unwrap_t<_Encoding>>>
-			                              : max_code_units_v<__remove_cvref_t<__unwrap_t<_Encoding>>>),
-			  __is_range_input_or_output_range_v<__remove_cvref_t<__unwrap_t<_Range>>>>,
+			                              ? max_code_points_v<remove_cvref_t<unwrap_t<_Encoding>>>
+			                              : max_code_units_v<remove_cvref_t<unwrap_t<_Encoding>>>),
+			  ranges::is_range_input_or_output_range_v<remove_cvref_t<unwrap_t<_Range>>>>,
 		  private __error_cache<(_EncodeOrDecode == __transaction::__decode
-			       ? decode_error_handler_always_returns_ok_v<__remove_cvref_t<__unwrap_t<_Encoding>>,
-			            __remove_cvref_t<__unwrap_t<_ErrorHandler>>>
-			       : encode_error_handler_always_returns_ok_v<__remove_cvref_t<__unwrap_t<_Encoding>>,
-			            __remove_cvref_t<__unwrap_t<_ErrorHandler>>>)>,
-		  private __ebco<_Range, 2> {
+			       ? decode_error_handler_always_returns_ok_v<remove_cvref_t<unwrap_t<_Encoding>>,
+			            remove_cvref_t<unwrap_t<_ErrorHandler>>>
+			       : encode_error_handler_always_returns_ok_v<remove_cvref_t<unwrap_t<_Encoding>>,
+			            remove_cvref_t<unwrap_t<_ErrorHandler>>>)>,
+		  private ebco<_Range, 2> {
 		private:
-			using _URange                                    = __remove_cvref_t<__unwrap_t<_Range>>;
-			using _UEncoding                                 = __remove_cvref_t<__unwrap_t<_Encoding>>;
-			using _UErrorHandler                             = __remove_cvref_t<__unwrap_t<_ErrorHandler>>;
-			using _UState                                    = __remove_cvref_t<__unwrap_t<_State>>;
-			using _BaseIterator                              = __range_iterator_t<_URange>;
+			using _URange                                    = remove_cvref_t<unwrap_t<_Range>>;
+			using _UEncoding                                 = remove_cvref_t<unwrap_t<_Encoding>>;
+			using _UErrorHandler                             = remove_cvref_t<unwrap_t<_ErrorHandler>>;
+			using _UState                                    = remove_cvref_t<unwrap_t<_State>>;
+			using _BaseIterator                              = ranges::range_iterator_t<_URange>;
 			inline static constexpr ::std::size_t _MaxValues = (_EncodeOrDecode == __transaction::__decode
-				     ? max_code_points_v<__remove_cvref_t<__unwrap_t<_Encoding>>>
-				     : max_code_units_v<__remove_cvref_t<__unwrap_t<_Encoding>>>);
+				     ? max_code_points_v<remove_cvref_t<unwrap_t<_Encoding>>>
+				     : max_code_units_v<remove_cvref_t<unwrap_t<_Encoding>>>);
 			inline static constexpr bool _IsSingleValueType  = _MaxValues == 1;
-			inline static constexpr bool _IsInputOrOutput    = __is_range_input_or_output_range_v<_URange>;
+			inline static constexpr bool _IsInputOrOutput    = ranges::is_range_input_or_output_range_v<_URange>;
 			inline static constexpr bool _IsCursorless       = _IsSingleValueType && !_IsInputOrOutput;
 			inline static constexpr bool _IsErrorless        = _EncodeOrDecode == __transaction::__decode
 				       ? decode_error_handler_always_returns_ok_v<_UEncoding, _UErrorHandler>
@@ -98,13 +99,13 @@ namespace ztd { namespace text {
 			using __base_cursor_cache_t                      = __cursor_cache<_MaxValues, _IsInputOrOutput>;
 			using __base_cursor_cache_size_t                 = typename __base_cursor_cache_t::_SizeType;
 			using __base_error_cache_t                       = __error_cache<_IsErrorless>;
-			using __base_encoding_t                          = __ebco<__remove_cvref_t<_Encoding>, 0>;
-			using __base_error_handler_t                     = __ebco<__remove_cvref_t<_ErrorHandler>, 1>;
-			using __base_range_t                             = __ebco<_Range, 2>;
-			using __base_state_t = __state_storage<__remove_cvref_t<_Encoding>, __remove_cvref_t<_State>>;
+			using __base_encoding_t                          = ebco<remove_cvref_t<_Encoding>, 0>;
+			using __base_error_handler_t                     = ebco<remove_cvref_t<_ErrorHandler>, 1>;
+			using __base_range_t                             = ebco<_Range, 2>;
+			using __base_state_t = __state_storage<remove_cvref_t<_Encoding>, remove_cvref_t<_State>>;
 
-			inline static constexpr bool _IsBackwards = __is_detected_v<__detect_object_encode_one_backwards,
-				_UEncoding, _URange, _UErrorHandler, _UState>;
+			inline static constexpr bool _IsBackwards
+				= is_detected_v<__detect_object_encode_one_backwards, _UEncoding, _URange, _UErrorHandler, _UState>;
 
 		public:
 			//////
@@ -131,23 +132,23 @@ namespace ztd { namespace text {
 			/// @brief The state type used for encode operations.
 			///
 			//////
-			using state_type = __remove_cvref_t<_State>;
+			using state_type = remove_cvref_t<_State>;
 			//////
 			/// @brief The strength of the iterator category, as defined in relation to the base.
 			///
 			//////
 			using iterator_category = ::std::conditional_t<
-				__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
+				ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 				::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
-				__iterator_category_t<_BaseIterator>>;
+				ranges::iterator_category_t<_BaseIterator>>;
 			//////
 			/// @brief The strength of the iterator concept, as defined in relation to the base.
 			///
 			//////
 			using iterator_concept = ::std::conditional_t<
-				__is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
+				ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 				::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
-				__iterator_concept_t<_BaseIterator>>;
+				ranges::iterator_concept_t<_BaseIterator>>;
 			//////
 			/// @brief The object type that gets output on every dereference.
 			///
@@ -170,7 +171,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks It's not a very useful type...
 			//////
-			using difference_type = __iterator_difference_type_t<_BaseIterator>;
+			using difference_type = ranges::iterator_difference_type_t<_BaseIterator>;
 
 			constexpr __encoding_iterator() noexcept(::std::is_nothrow_default_constructible_v<
 				encoding_type>&& ::std::is_nothrow_default_constructible_v<error_handler_type>&& ::std::
@@ -189,8 +190,7 @@ namespace ztd { namespace text {
 			constexpr __encoding_iterator(__encoding_iterator&&)      = default;
 
 			template <typename _ArgRange,
-				::std::enable_if_t<
-				     !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>, __encoding_iterator>>* = nullptr>
+				::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_ArgRange>, __encoding_iterator>>* = nullptr>
 			constexpr __encoding_iterator(_ArgRange&& __range) noexcept(
 				noexcept(__encoding_iterator(::std::declval<range_type>(), ::std::declval<encoding_type>(),
 				     ::std::declval<error_handler_type>())))
@@ -250,7 +250,7 @@ namespace ztd { namespace text {
 			/// @returns A const l-value reference to the encoding object used to construct this iterator.
 			//////
 			constexpr const encoding_type& encoding() const noexcept {
-				return this->__base_encoding_t::__get_value();
+				return this->__base_encoding_t::get_value();
 			}
 
 			//////
@@ -259,7 +259,7 @@ namespace ztd { namespace text {
 			/// @returns An l-value reference to the encoding object used to construct this iterator.
 			//////
 			constexpr encoding_type& encoding() noexcept {
-				return this->__base_encoding_t::__get_value();
+				return this->__base_encoding_t::get_value();
 			}
 
 			//////
@@ -286,7 +286,7 @@ namespace ztd { namespace text {
 			/// @returns A const l-value reference to the error handler used to construct this iterator.
 			//////
 			constexpr const error_handler_type& handler() const& noexcept {
-				return this->__base_error_handler_t::__get_value();
+				return this->__base_error_handler_t::get_value();
 			}
 
 			//////
@@ -295,7 +295,7 @@ namespace ztd { namespace text {
 			/// @returns An l-value reference to the error handler used to construct this iterator.
 			//////
 			constexpr error_handler_type& handler() & noexcept {
-				return this->__base_error_handler_t::__get_value();
+				return this->__base_error_handler_t::get_value();
 			}
 
 			//////
@@ -304,7 +304,7 @@ namespace ztd { namespace text {
 			/// @returns An l-value reference to the error handler used to construct this iterator.
 			//////
 			constexpr error_handler_type&& handler() && noexcept {
-				return ::std::move(this->__base_error_handler_t::__get_value());
+				return ::std::move(this->__base_error_handler_t::get_value());
 			}
 
 			//////
@@ -313,7 +313,7 @@ namespace ztd { namespace text {
 			/// @returns A const l-value reference to the input range used to construct this iterator.
 			//////
 			constexpr range_type range() const& noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
-				return this->__base_range_t::__get_value();
+				return this->__base_range_t::get_value();
 			}
 
 			//////
@@ -324,10 +324,10 @@ namespace ztd { namespace text {
 				     ? ::std::is_nothrow_copy_constructible_v<range_type>
 				     : ::std::is_nothrow_move_constructible_v<range_type>) {
 				if constexpr (::std::is_copy_constructible_v<range_type>) {
-					return this->__base_range_t::__get_value();
+					return this->__base_range_t::get_value();
 				}
 				else {
-					return ::std::move(this->__base_range_t::__get_value());
+					return ::std::move(this->__base_range_t::get_value());
 				}
 			}
 
@@ -337,7 +337,7 @@ namespace ztd { namespace text {
 			/// @returns An r-value reference to the input range used to construct this iterator.
 			//////
 			constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
-				return ::std::move(this->__base_range_t::__get_value());
+				return ::std::move(this->__base_range_t::get_value());
 			}
 
 			//////
@@ -457,12 +457,12 @@ namespace ztd { namespace text {
 
 		private:
 			constexpr bool _M_base_is_empty() const noexcept {
-				if constexpr (__is_detected_v<__detect_adl_empty, _Range>) {
-					return __adl::__adl_empty(this->__base_range_t::__get_value());
+				if constexpr (is_detected_v<ranges::detect_adl_empty, _Range>) {
+					return ranges::ranges_adl::adl_empty(this->__base_range_t::get_value());
 				}
 				else {
-					return __adl::__adl_begin(this->__base_range_t::__get_value())
-						== __adl::__adl_end(this->__base_range_t::__get_value());
+					return ranges::ranges_adl::adl_begin(this->__base_range_t::get_value())
+						== ranges::ranges_adl::adl_end(this->__base_range_t::get_value());
 				}
 			}
 
@@ -483,26 +483,26 @@ namespace ztd { namespace text {
 				auto& __this_input_range = this->_M_range();
 				auto __this_cache_begin  = this->_M_cache.data();
 				[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
-				::ztd::text::span<value_type, _MaxValues> __cache_view(this->_M_cache);
+				::ztd::ranges::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 				if constexpr (_IsInputOrOutput) {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
 						::std::move(__this_input_range), this->encoding(), __cache_view, this->handler(),
 						this->state());
-					__this_cache_end = __adl::__adl_to_address(__adl::__adl_begin(__result.output));
+					__this_cache_end = idk_adl::adl_to_address(ranges::ranges_adl::adl_begin(__result.output));
 					if constexpr (!_IsErrorless) {
 						this->__base_error_cache_t::_M_error_code = __result.error_code;
 					}
-					this->__base_range_t::__get_value() = ::std::move(__result.input);
+					this->__base_range_t::get_value() = ::std::move(__result.input);
 				}
 				else {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
 						::std::move(__this_input_range), this->encoding(), __cache_view, this->handler(),
 						this->state());
-					__this_cache_end = __adl::__adl_to_address(__adl::__adl_begin(__result.output));
+					__this_cache_end = idk_adl::adl_to_address(ranges::ranges_adl::adl_begin(__result.output));
 					if constexpr (!_IsErrorless) {
 						this->__base_error_cache_t::_M_error_code = __result.error_code;
 					}
-					this->__base_range_t::__get_value() = ::std::move(__result.input);
+					this->__base_range_t::get_value() = ::std::move(__result.input);
 				}
 				if constexpr (!_IsSingleValueType) {
 					__base_cursor_cache_size_t __data_size
@@ -523,11 +523,11 @@ namespace ztd { namespace text {
 			}
 
 			constexpr _URange& _M_range() noexcept {
-				return this->__base_range_t::__get_value();
+				return this->__base_range_t::get_value();
 			}
 
 			constexpr const _URange& _M_range() const noexcept {
-				return this->__base_range_t::__get_value();
+				return this->__base_range_t::get_value();
 			}
 
 			::std::array<value_type, _MaxValues> _M_cache;
@@ -537,6 +537,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_ENCODING_ITERATOR_HPP

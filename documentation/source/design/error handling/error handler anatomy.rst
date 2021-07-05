@@ -83,7 +83,7 @@ For example, someone can see if there is space left in the ``result.output`` par
 Third Parameter
 ---------------
 
-The third parameter is a contiguous range of inpts that were read. Typically, this is a ``ztd::text::span`` handed to you, or something that can construct a ``ztd::text::span`` or either code units or code points (whatever the input type has). This is useful for ``input_range``\ s and ``input_iterator``\ s where it is impossible to guarantee a value can be re-read, as is the case `with istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_ and other I/O-style iterators and ranges.
+The third parameter is a contiguous range of inpts that were read. Typically, this is a ``ztd::ranges::span`` handed to you, or something that can construct a ``ztd::ranges::span`` or either code units or code points (whatever the input type has). This is useful for ``input_range``\ s and ``input_iterator``\ s where it is impossible to guarantee a value can be re-read, as is the case `with istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_ and other I/O-style iterators and ranges.
 
 This is useful for grabbing any unused-but-read input data, and storing it for later. For example, reading from a network buffer where the network still has more data means that getting a :doc:`ztd::text::encoding_error::incomplete_sequence </api/encoding_error>` is not **really** an error. It just means to save what has not been read yet, change the buffer pointer to leave those characters in the right place, and try again. This can also be done a little bit easier by utilizing the :doc:`ztd::text::incomplete_handler </api/error handlers/incomplete_handler>`.
 

@@ -35,9 +35,9 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 		/// @brief The @c decode_state type or @c state type on a given encoding type.
 		///
 		//////
-		using type = typename __txt_detail::__decode_state<__txt_detail::__remove_cvref_t<_Type>>::type;
+		using type = typename __txt_detail::__decode_state<remove_cvref_t<_Type>>::type;
 	};
 
 	//////
@@ -106,7 +106,7 @@ namespace ztd { namespace text {
 		/// @brief The @c encode_state type or @c state type on a given encoding type.
 		///
 		//////
-		using type = typename __txt_detail::__encode_state<__txt_detail::__remove_cvref_t<_Type>>::type;
+		using type = typename __txt_detail::__encode_state<remove_cvref_t<_Type>>::type;
 	};
 
 	//////
@@ -152,9 +152,8 @@ namespace ztd { namespace text {
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	//////
 	template <typename _Encoding>
-	constexpr decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_decode_state(
-		_Encoding& __encoding) noexcept {
-		using _UEncoding   = __txt_detail::__remove_cvref_t<_Encoding>;
+	constexpr decode_state_t<remove_cvref_t<_Encoding>> make_decode_state(_Encoding& __encoding) noexcept {
+		using _UEncoding   = remove_cvref_t<_Encoding>;
 		using _DecodeState = decode_state_t<_UEncoding>;
 		if constexpr (is_encode_state_independent_v<_UEncoding>) {
 			(void)__encoding;
@@ -172,9 +171,8 @@ namespace ztd { namespace text {
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	//////
 	template <typename _Encoding>
-	constexpr encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_encode_state(
-		_Encoding& __encoding) noexcept {
-		using _UEncoding   = __txt_detail::__remove_cvref_t<_Encoding>;
+	constexpr encode_state_t<remove_cvref_t<_Encoding>> make_encode_state(_Encoding& __encoding) noexcept {
+		using _UEncoding   = remove_cvref_t<_Encoding>;
 		using _EncodeState = encode_state_t<_UEncoding>;
 		if constexpr (is_encode_state_independent_v<_UEncoding>) {
 			(void)__encoding;
@@ -194,9 +192,9 @@ namespace ztd { namespace text {
 	/// @param[in] __encode_state A preexisting state from the decoder.
 	//////
 	template <typename _Encoding>
-	constexpr decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_decode_state_with(_Encoding& __encoding,
-		const encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>& __encode_state) noexcept {
-		using _UEncoding   = __txt_detail::__remove_cvref_t<_Encoding>;
+	constexpr decode_state_t<remove_cvref_t<_Encoding>> make_decode_state_with(
+		_Encoding& __encoding, const encode_state_t<remove_cvref_t<_Encoding>>& __encode_state) noexcept {
+		using _UEncoding   = remove_cvref_t<_Encoding>;
 		using _DecodeState = decode_state_t<_UEncoding>;
 		using _EncodeState = encode_state_t<_UEncoding>;
 		if constexpr (is_decode_state_independent_v<_UEncoding>) {
@@ -230,9 +228,9 @@ namespace ztd { namespace text {
 	/// @param[in] __decode_state A preexisting state from the decoder.
 	//////
 	template <typename _Encoding>
-	constexpr encode_state_t<__txt_detail::__remove_cvref_t<_Encoding>> make_encode_state_with(_Encoding& __encoding,
-		const decode_state_t<__txt_detail::__remove_cvref_t<_Encoding>>& __decode_state) noexcept {
-		using _UEncoding   = __txt_detail::__remove_cvref_t<_Encoding>;
+	constexpr encode_state_t<remove_cvref_t<_Encoding>> make_encode_state_with(
+		_Encoding& __encoding, const decode_state_t<remove_cvref_t<_Encoding>>& __decode_state) noexcept {
+		using _UEncoding   = remove_cvref_t<_Encoding>;
 		using _DecodeState = decode_state_t<_UEncoding>;
 		using _EncodeState = encode_state_t<_UEncoding>;
 		if constexpr (is_encode_state_independent_v<_UEncoding>) {
@@ -264,6 +262,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_STATE_HPP

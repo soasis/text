@@ -35,18 +35,19 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char8_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/reconstruct.hpp>
-#include <ztd/text/reference_wrapper.hpp>
+
+#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/reference_wrapper.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 
 #include <cstddef>
 #include <array>
 #include <utility>
 #include <system_error>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -143,8 +144,9 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting.
+		///
 		//////
-		::ztd::text::reference_wrapper<_State> state;
+		::ztd::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::count_result, defaulting the error code to
@@ -198,13 +200,13 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for counting which covers the decoding
 		/// portion of the transcode operation.
 		//////
-		::ztd::text::reference_wrapper<_FromState> from_state;
+		::ztd::reference_wrapper<_FromState> from_state;
 
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting which covers the encoding
 		/// portion of the transcode operation.
 		//////
-		::ztd::text::reference_wrapper<_ToState> to_state;
+		::ztd::reference_wrapper<_ToState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::count_result, defaulting the error code to
@@ -254,6 +256,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	namespace __txt_detail {
@@ -269,13 +272,13 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _InputRange, typename _State>
-		using __reconstruct_count_result_t = count_result<__reconstruct_t<_InputRange>, _State>;
+		using __reconstruct_count_result_t = count_result<ranges::reconstruct_t<_InputRange>, _State>;
 
 		template <typename _InputRange, typename _State, typename _InFirst, typename _InLast, typename _ArgState>
 		constexpr decltype(auto) __reconstruct_stateless_count_result(_InFirst&& __in_first, _InLast&& __in_last,
 			::std::size_t __count, _ArgState&& __state, encoding_error __error_code,
 			::std::size_t __handled_errors) {
-			decltype(auto) __in_range = __reconstruct(::std::in_place_type<_InputRange>,
+			decltype(auto) __in_range = ranges::reconstruct(::std::in_place_type<_InputRange>,
 				::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
 			return count_result<_InputRange, _State>(::std::forward<decltype(__in_range)>(__in_range), __count,
 				::std::forward<_ArgState>(__state), __error_code, __handled_errors);
@@ -292,6 +295,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_COUNT_RESULT_HPP

@@ -35,29 +35,11 @@
 
 #include <ztd/text/version.hpp>
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_WINDOWS_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 
-#pragma push_macro("NOMINMAX")
-#pragma push_macro("WIN32_LEAN_AND_MEAN")
-#pragma push_macro("VC_EXTRALEAN")
+#include <ztd/idk/detail/windows.hpp>
 
-#define NOMINMAX 1
-#define WIN32_LEAN_AND_MEAN 1
-#define VC_EXTRALEAN 1
-
-#ifdef _MSC_VER
-#include <cstddef>
-#include <ciso646>
-#include <cwchar>
-#include <locale>
-#else
-#endif
-
-extern "C" {
-#include <Windows.h>
-}
-
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -99,12 +81,8 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#pragma pop_macro("VC_EXTRALEAN")
-#pragma pop_macro("WIN32_LEAN_AND_MEAN")
-#pragma pop_macro("NOMINMAX")
-
 #endif // Windows nightmare
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_WINDOWS_HPP

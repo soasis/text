@@ -45,14 +45,14 @@
 #include <ztd/text/is_code_points_replaceable.hpp>
 #include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
-
-#include <ztd/text/detail/range.hpp>
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/detail/ebco.hpp>
+#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/unicode.hpp>
 #include <ztd/text/detail/pass_through_handler.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
+
+#include <ztd/ranges/range.hpp>
+#include <ztd/idk/ebco.hpp>
 
 #include <climits>
 #include <cstddef>
@@ -62,7 +62,7 @@
 #include <array>
 #include <system_error>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -71,16 +71,16 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename _Input, typename _Result>
 		constexpr _Result&& __write_direct(const _Encoding&, _Input&& __input, _Result&& __result) noexcept {
-			using _UOutputRange = __txt_detail::__remove_cvref_t<decltype(__result.output)>;
+			using _UOutputRange = remove_cvref_t<decltype(__result.output)>;
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__result.output);
-			auto __outlast = __txt_detail::__adl::__adl_end(__result.output);
+			auto __outit   = ranges::ranges_adl::adl_begin(__result.output);
+			auto __outlast = ranges::ranges_adl::adl_end(__result.output);
 			if (__outit == __outlast) {
 				// BAIL
 				return ::std::forward<_Result>(__result);
 			}
 
-			if (__txt_detail::__adl::__adl_empty(__input)) {
+			if (ranges::ranges_adl::adl_empty(__input)) {
 				// empty range, everything is okay
 				__result.error_code = encoding_error::ok;
 				return ::std::forward<_Result>(__result);
@@ -88,7 +88,7 @@ namespace ztd { namespace text {
 
 			for (const auto& __element : ::std::forward<_Input>(__input)) {
 				if (__outit == __outlast) {
-					__result.output = __txt_detail::__reconstruct(
+					__result.output = ranges::reconstruct(
 						::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast));
 					return ::std::forward<_Result>(__result);
 				}
@@ -96,7 +96,7 @@ namespace ztd { namespace text {
 				++__outit;
 			}
 
-			__result.output = __txt_detail::__reconstruct(
+			__result.output = ranges::reconstruct(
 				::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast));
 			__result.error_code = encoding_error::ok;
 			return ::std::forward<_Result>(__result);
@@ -127,7 +127,7 @@ namespace ztd { namespace text {
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::forward<_Result>(__result));
 			}
 			else {
-				static_assert(__txt_detail::__always_false_v<_Encoding>,
+				static_assert(always_false_v<_Encoding>,
 					"There is no logical replacement code points to insert into the stream on failure for the "
 					"specified encoding type.");
 			}
@@ -158,7 +158,7 @@ namespace ztd { namespace text {
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::forward<_Result>(__result));
 			}
 			else {
-				static_assert(__txt_detail::__always_false_v<_Encoding>,
+				static_assert(always_false_v<_Encoding>,
 					"There is no logical replacement code units to insert into the stream on failure for the "
 					"specified encoding type.");
 			}
@@ -194,7 +194,7 @@ namespace ztd { namespace text {
 				return 1;
 			}
 			else {
-				static_assert(__always_false_v<_Encoding>,
+				static_assert(always_false_v<_Encoding>,
 					"There is no logical replacement code points to insert into the stream on failure for the "
 					"specified encoding type.");
 			}
@@ -234,7 +234,7 @@ namespace ztd { namespace text {
 				return 1;
 			}
 			else {
-				static_assert(__always_false_v<_Encoding>,
+				static_assert(always_false_v<_Encoding>,
 					"There is no logical replacement code units to insert into the stream on failure for the "
 					"specified encoding type.");
 			}
@@ -245,9 +245,9 @@ namespace ztd { namespace text {
 	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
 	/// adjustment, correction or checking.
 	///
-	/// @remarks This error handler is useful in conjunction with a ztd::text::unbounded_view for the fastest possible
-	/// encoding and decoding in a general sense. However: IT IS ALSO EXTREMELY DANGEROUS AND CAN INVOKE UNDEFINED
-	/// BEHAVIOR IF YOUR TEXT IS, IN FACT, MESSED UP. PLEASE DO NOT USE THIS WITHOUT A GOOD REASON!
+	/// @remarks This error handler is useful in conjunction with a ztd::text::ranges::unbounded_view for the fastest
+	/// possible encoding and decoding in a general sense. However: IT IS ALSO EXTREMELY DANGEROUS AND CAN INVOKE
+	/// UNDEFINED BEHAVIOR IF YOUR TEXT IS, IN FACT, MESSED UP. PLEASE DO NOT USE THIS WITHOUT A GOOD REASON!
 	//////
 	class assume_valid_handler : public __txt_detail::__pass_through_handler_with<true> { };
 
@@ -291,8 +291,8 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			auto __outit   = __txt_detail::__adl::__adl_begin(__result.output);
-			auto __outlast = __txt_detail::__adl::__adl_end(__result.output);
+			auto __outit   = ranges::ranges_adl::adl_begin(__result.output);
+			auto __outlast = ranges::ranges_adl::adl_end(__result.output);
 			if (__outit == __outlast) {
 				// BAIL
 				return __result;
@@ -326,7 +326,7 @@ namespace ztd { namespace text {
 						= __txt_detail::__fill_replacement_code_point_static(__encoding, __replacement);
 				}
 
-				const ::ztd::text::span<const _InputCodePoint> __replacement_range(
+				const ::ztd::ranges::span<const _InputCodePoint> __replacement_range(
 					__replacement, __replacement_size);
 
 				__txt_detail::__pass_through_handler __handler {};
@@ -365,8 +365,8 @@ namespace ztd { namespace text {
 				// BAIL
 				return __result;
 			}
-			auto __outit   = __txt_detail::__adl::__adl_begin(__result.output);
-			auto __outlast = __txt_detail::__adl::__adl_end(__result.output);
+			auto __outit   = ranges::ranges_adl::adl_begin(__result.output);
+			auto __outlast = ranges::ranges_adl::adl_end(__result.output);
 			if (__outit == __outlast) {
 				// BAIL
 				return __result;
@@ -405,7 +405,7 @@ namespace ztd { namespace text {
 						= __txt_detail::__fill_replacement_code_unit_static(__encoding, __replacement);
 				}
 
-				const ::ztd::text::span<const _InputCodeUnit> __replacement_range(
+				const ::ztd::ranges::span<const _InputCodeUnit> __replacement_range(
 					__replacement, __replacement_size);
 
 				__txt_detail::__pass_through_handler __handler {};
@@ -470,9 +470,9 @@ namespace ztd { namespace text {
 	/// for I/O (e.g., Networking) operations.
 	//////
 	template <typename _Encoding, typename _ErrorHandler = default_handler>
-	class incomplete_handler : private __txt_detail::__ebco<_ErrorHandler> {
+	class incomplete_handler : private ebco<_ErrorHandler> {
 	private:
-		using __error_handler_base_t = __txt_detail::__ebco<_ErrorHandler>;
+		using __error_handler_base_t = ebco<_ErrorHandler>;
 		using _CodeUnit              = code_unit_t<_Encoding>;
 		using _CodePoint             = code_point_t<_Encoding>;
 
@@ -485,6 +485,7 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Constructs a ztd::text::incomplete_handler with a default-constructed internal error handler.
+		///
 		//////
 		constexpr incomplete_handler() noexcept(::std::is_nothrow_default_constructible_v<__error_handler_base_t>)
 		: __error_handler_base_t(), _M_code_points_size(), _M_code_units_size() {
@@ -525,7 +526,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr _ErrorHandler& base() & noexcept {
-			return this->__error_handler_base_t::__get_value();
+			return this->__error_handler_base_t::get_value();
 		}
 
 		//////
@@ -533,7 +534,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr const _ErrorHandler& base() const& noexcept {
-			return this->__error_handler_base_t::__get_value();
+			return this->__error_handler_base_t::get_value();
 		}
 
 		//////
@@ -541,7 +542,7 @@ namespace ztd { namespace text {
 		///
 		//////
 		constexpr _ErrorHandler&& base() && noexcept {
-			return this->__error_handler_base_t::__get_value();
+			return this->__error_handler_base_t::get_value();
 		}
 
 		//////
@@ -559,17 +560,17 @@ namespace ztd { namespace text {
 			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result, const _Progress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {
 				// it's incomplete and we are okay with that
-				if constexpr (__txt_detail::__is_specialization_of_v<_Result, decode_result>) {
+				if constexpr (is_specialization_of_v<_Result, decode_result>) {
 					// save the read code units
-					::std::copy_n(__txt_detail::__adl::__adl_cbegin(__progress),
-						__txt_detail::__adl::__adl_cend(__progress), this->_M_code_units.data());
-					this->_M_code_units_size = __txt_detail::__adl::__adl_size(__progress);
+					::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress),
+						ranges::ranges_adl::adl_cend(__progress), this->_M_code_units.data());
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__progress);
 				}
 				else {
 					// save the read code points
-					::std::copy_n(__txt_detail::__adl::__adl_cbegin(__progress),
-						__txt_detail::__adl::__adl_cend(__progress), this->_M_code_points.data());
-					this->_M_code_points_size = __txt_detail::__adl::__adl_size(__progress);
+					::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress),
+						ranges::ranges_adl::adl_cend(__progress), this->_M_code_points.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__progress);
 				}
 				return __result;
 			}
@@ -580,16 +581,16 @@ namespace ztd { namespace text {
 		/// @brief Returns the code units from the last incomplete decode operations.
 		///
 		//////
-		::ztd::text::span<_CodeUnit> code_units() const noexcept {
-			return ::ztd::text::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+		::ztd::ranges::span<_CodeUnit> code_units() const noexcept {
+			return ::ztd::ranges::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 		//////
 		/// @brief Returns the code points from the last incomplete encode operations.
 		///
 		//////
-		::ztd::text::span<_CodePoint> code_points() const noexcept {
-			return ::ztd::text::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
+		::ztd::ranges::span<_CodePoint> code_points() const noexcept {
+			return ::ztd::ranges::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 	private:
@@ -604,7 +605,7 @@ namespace ztd { namespace text {
 	/// time. Without configuration, it defaults to the ztd::text::replacement_handler.
 	//////
 	class default_handler
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
 	: private throw_handler {
 	private:
 		using __error_handler_base_t = throw_handler;
@@ -631,7 +632,7 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _ErrorHandler>
 		constexpr auto __duplicate_or_be_careless(_ErrorHandler& __original) {
-			using _UErrorHandler = __remove_cvref_t<_ErrorHandler>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 			if constexpr (!::std::is_function_v<_UErrorHandler>) {
 				if constexpr (::std::is_copy_constructible_v<_UErrorHandler>) {
 					return __original;
@@ -650,6 +651,6 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_ERROR_HANDLER_HPP

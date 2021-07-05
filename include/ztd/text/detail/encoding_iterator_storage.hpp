@@ -38,14 +38,15 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/encoding_error.hpp>
 
-#include <ztd/text/detail/range.hpp>
-#include <ztd/text/detail/ebco.hpp>
-#include <ztd/text/detail/math.hpp>
+
+#include <ztd/idk/ebco.hpp>
+#include <ztd/idk/detail/math.hpp>
+#include <ztd/ranges/range.hpp>
 
 #include <cstddef>
 #include <climits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -54,25 +55,25 @@ namespace ztd { namespace text {
 		inline constexpr ::std::size_t _CursorlessSizeSentinel = 1;
 
 		template <typename _Encoding, typename _EncodingState, ::std::size_t _Id = 0>
-		class __state_storage : private __ebco<__remove_cvref_t<__unwrap_t<_EncodingState>>, _Id> {
+		class __state_storage : private ebco<remove_cvref_t<unwrap_t<_EncodingState>>, _Id> {
 		private:
-			using _UEncoding      = __remove_cvref_t<__unwrap_t<_Encoding>>;
-			using _UEncodingState = __remove_cvref_t<__unwrap_t<_EncodingState>>;
-			using __state_base_t  = __ebco<__remove_cvref_t<__unwrap_t<_EncodingState>>, _Id>;
+			using _UEncoding      = remove_cvref_t<unwrap_t<_Encoding>>;
+			using _UEncodingState = remove_cvref_t<unwrap_t<_EncodingState>>;
+			using __state_base_t  = ebco<remove_cvref_t<unwrap_t<_EncodingState>>, _Id>;
 
 		public:
 			template <typename _ArgEncoding = _UEncoding,
 				::std::enable_if_t<
-				     !is_state_independent_v<__remove_cvref_t<_ArgEncoding>,
-				          _UEncodingState> && !::std::is_same_v<__remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
+				     !is_state_independent_v<remove_cvref_t<_ArgEncoding>,
+				          _UEncodingState> && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding& __encoding) noexcept(
 				::std::is_nothrow_constructible_v<__state_base_t, _Encoding&>)
 			: __state_base_t(::std::forward<_ArgEncoding>(__encoding)) {
 			}
 			template <typename _ArgEncoding = _UEncoding,
 				::std::enable_if_t<
-				     is_state_independent_v<__remove_cvref_t<_ArgEncoding>,
-				          _UEncodingState> && !::std::is_same_v<__remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
+				     is_state_independent_v<remove_cvref_t<_ArgEncoding>,
+				          _UEncodingState> && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding&) noexcept(
 				::std::is_nothrow_default_constructible_v<__state_base_t>)
 			: __state_base_t() {
@@ -91,12 +92,12 @@ namespace ztd { namespace text {
 			constexpr __state_storage& operator=(__state_storage&&) = default;
 
 			constexpr ::std::add_lvalue_reference_t<_UEncodingState> _M_get_state() noexcept {
-				return this->__state_base_t::__get_value();
+				return this->__state_base_t::get_value();
 			}
 
 			constexpr ::std::add_const_t<::std::add_lvalue_reference_t<_UEncodingState>>
 			_M_get_state() const noexcept {
-				return this->__state_base_t::__get_value();
+				return this->__state_base_t::get_value();
 			}
 		};
 
@@ -148,6 +149,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_ENCODING_ITERATOR_STORAGE_HPP

@@ -38,11 +38,11 @@
 #include <ztd/text/forward.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -50,7 +50,7 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _ErrorHandler>
 		inline constexpr bool __is_careless_error_handler_v
-			= ::std::is_same_v<__txt_detail::__remove_cvref_t<_ErrorHandler>, default_handler>;
+			= ::std::is_same_v<remove_cvref_t<_ErrorHandler>, default_handler>;
 
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_encode_lossless_or_deliberate
@@ -90,6 +90,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_LOSSLESS_HPP

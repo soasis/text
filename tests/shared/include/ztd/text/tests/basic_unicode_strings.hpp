@@ -37,13 +37,14 @@
 
 #include <ztd/text/c_string_view.hpp>
 #include <ztd/text/encoding.hpp>
-#include <ztd/text/endian.hpp>
-#include <ztd/text/char8_t.hpp>
+#include <ztd/idk/char8_t.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 
-#include <ztd/text/detail/span.hpp>
+#include <ztd/idk/endian.hpp>
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_VCXX_I_)
+#include <ztd/ranges/span.hpp>
+
+#if ZTD_IS_ON(ZTD_COMPILER_VCXX_I_)
 #pragma warning(push)
 #pragma warning(disable : 4310)
 #endif
@@ -51,14 +52,15 @@
 namespace ztd { namespace text { namespace tests {
 
 	template <typename Container>
-	inline ztd::text::span<const std::byte> as_bytes(Container& c) {
-		return ztd::text::as_bytes(ztd::text::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
+	inline ztd::ranges::span<const std::byte> as_bytes(Container& c) {
+		return ztd::ranges::as_bytes(
+			ztd::ranges::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
 	}
 
 	template <typename Container>
-	inline ztd::text::span<const std::byte> as_writeable_bytes(Container& c) {
+	inline ztd::ranges::span<const std::byte> as_writeable_bytes(Container& c) {
 		return ztd::text::as_writable_bytes(
-			ztd::text::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
+			ztd::ranges::span<std::remove_pointer_t<decltype(c.data())>>(c.data(), c.size()));
 	}
 
 	template <typename CharType>
@@ -1536,30 +1538,26 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_sequence_truth_native_endian
 		= x_u32_unicode_sequence_truth_native_endian_storage<char32_t>;
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_sequence_truth_big_endian
-		= ztd::text::endian::native == ztd::text::endian::big
-		? x_u32_unicode_sequence_truth_native_endian_storage<char32_t>
-		: x_u32_unicode_sequence_truth_reverse_endian_storage<char32_t>;
+		= ztd::endian::native == ztd::endian::big ? x_u32_unicode_sequence_truth_native_endian_storage<char32_t>
+			                                     : x_u32_unicode_sequence_truth_reverse_endian_storage<char32_t>;
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_sequence_truth_little_endian
-		= ztd::text::endian::native == ztd::text::endian::little
-		? x_u32_unicode_sequence_truth_native_endian_storage<char32_t>
-		: x_u32_unicode_sequence_truth_reverse_endian_storage<char32_t>;
+		= ztd::endian::native == ztd::endian::little ? x_u32_unicode_sequence_truth_native_endian_storage<char32_t>
+			                                        : x_u32_unicode_sequence_truth_reverse_endian_storage<char32_t>;
 
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_sequence_truth_native_endian
 		= x_u16_unicode_sequence_truth_native_endian_storage<char16_t>;
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_sequence_truth_big_endian
-		= ztd::text::endian::native == ztd::text::endian::big
-		? x_u16_unicode_sequence_truth_native_endian_storage<char16_t>
-		: x_u16_unicode_sequence_truth_reverse_endian_storage<char16_t>;
+		= ztd::endian::native == ztd::endian::big ? x_u16_unicode_sequence_truth_native_endian_storage<char16_t>
+			                                     : x_u16_unicode_sequence_truth_reverse_endian_storage<char16_t>;
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_sequence_truth_little_endian
-		= ztd::text::endian::native == ztd::text::endian::little
-		? x_u16_unicode_sequence_truth_native_endian_storage<char16_t>
-		: x_u16_unicode_sequence_truth_reverse_endian_storage<char16_t>;
+		= ztd::endian::native == ztd::endian::little ? x_u16_unicode_sequence_truth_native_endian_storage<char16_t>
+			                                        : x_u16_unicode_sequence_truth_reverse_endian_storage<char16_t>;
 
-	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_sequence_truth_native_endian
-		= x_u8_unicode_sequence_truth_native_endian_storage<ztd::text::uchar8_t>;
-	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_sequence_truth_big_endian
+	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_unicode_sequence_truth_native_endian
+		= x_u8_unicode_sequence_truth_native_endian_storage<ztd::uchar8_t>;
+	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_unicode_sequence_truth_big_endian
 		= u8_unicode_sequence_truth_native_endian;
-	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_sequence_truth_little_endian
+	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_unicode_sequence_truth_little_endian
 		= u8_unicode_sequence_truth_native_endian;
 
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_native_endian
@@ -1569,19 +1567,17 @@ namespace ztd { namespace text { namespace tests {
 			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_big_endian
 		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
-		? (ztd::text::endian::native == ztd::text::endian::big
-			     ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-			     : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
-		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::text::endian::native == ztd::text::endian::big
+		? (ztd::endian::native == ztd::endian::big ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
+			                                      : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::endian::native == ztd::endian::big
 			        ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
 			        : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
 			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_little_endian
 		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
-		? (ztd::text::endian::native == ztd::text::endian::little
-			     ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-			     : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
-		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::text::endian::native == ztd::text::endian::little
+		? (ztd::endian::native == ztd::endian::little ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
+			                                         : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::endian::native == ztd::endian::little
 			        ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
 			        : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
 			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
@@ -1593,39 +1589,39 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const std::basic_string_view<char> unicode_sequence_truth_little_endian
 		= unicode_sequence_truth_native_endian;
 
-	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::ranges::span<const std::byte> u32_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_native_endian);
-	inline const ztd::text::span<const std::byte> u16_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::ranges::span<const std::byte> u16_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_unicode_sequence_truth_native_endian);
-	inline const ztd::text::span<const std::byte> u8_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::ranges::span<const std::byte> u8_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_native_endian);
-	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_native_endian
+	inline const ztd::ranges::span<const std::byte> w_unicode_sequence_bytes_truth_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_native_endian);
-	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_native_endian(
+	inline constexpr ztd::ranges::span<const std::byte> unicode_sequence_bytes_truth_native_endian(
 		x_u8_unicode_sequence_truth_native_endian_storage<std::byte>,
 		x_u8_unicode_sequence_truth_native_endian_storage_size - 1);
 
-	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::ranges::span<const std::byte> u32_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_big_endian);
-	inline const ztd::text::span<const std::byte> u16_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::ranges::span<const std::byte> u16_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_unicode_sequence_truth_big_endian);
-	inline const ztd::text::span<const std::byte> u8_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::ranges::span<const std::byte> u8_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_big_endian);
-	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_big_endian
+	inline const ztd::ranges::span<const std::byte> w_unicode_sequence_bytes_truth_big_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_big_endian);
-	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_big_endian(
+	inline constexpr ztd::ranges::span<const std::byte> unicode_sequence_bytes_truth_big_endian(
 		x_u8_unicode_sequence_truth_native_endian_storage<std::byte>,
 		x_u8_unicode_sequence_truth_native_endian_storage_size - 1);
 
-	inline const ztd::text::span<const std::byte> u32_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::ranges::span<const std::byte> u32_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_unicode_sequence_truth_little_endian);
-	inline const ztd::text::span<const std::byte> u16_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::ranges::span<const std::byte> u16_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_unicode_sequence_truth_little_endian);
-	inline const ztd::text::span<const std::byte> u8_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::ranges::span<const std::byte> u8_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_unicode_sequence_truth_little_endian);
-	inline const ztd::text::span<const std::byte> w_unicode_sequence_bytes_truth_little_endian
+	inline const ztd::ranges::span<const std::byte> w_unicode_sequence_bytes_truth_little_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_unicode_sequence_truth_little_endian);
-	inline constexpr ztd::text::span<const std::byte> unicode_sequence_bytes_truth_little_endian(
+	inline constexpr ztd::ranges::span<const std::byte> unicode_sequence_bytes_truth_little_endian(
 		x_u8_unicode_sequence_truth_native_endian_storage<std::byte>,
 		x_u8_unicode_sequence_truth_native_endian_storage_size - 1);
 
@@ -1634,13 +1630,13 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const uchar8_t u8_unicode_invalid_input_arr[]                    = { 0xC0, 0 };
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_invalid_input = u32_unicode_invalid_input_arr;
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_invalid_input = u16_unicode_invalid_input_arr;
-	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_invalid_input
+	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_unicode_invalid_input
 		= u8_unicode_invalid_input_arr;
 
 	inline constexpr const std::basic_string_view<char32_t> u32_unicode_replacement_truth = U"\uFFFD";
 	inline constexpr const std::basic_string_view<char16_t> u16_unicode_replacement_truth = u"\uFFFD";
-	inline constexpr const ztd::text::uchar8_t u8_unicode_replacement_truth_storage[]     = { 0xEF, 0xBF, 0xBD, 0 };
-	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_unicode_replacement_truth
+	inline constexpr const ztd::uchar8_t u8_unicode_replacement_truth_storage[]           = { 0xEF, 0xBF, 0xBD, 0 };
+	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_unicode_replacement_truth
 		= u8_unicode_replacement_truth_storage;
 	inline constexpr const std::basic_string_view<wchar_t> w_unicode_replacement_truth = L"?";
 	inline constexpr const std::basic_string_view<char> unicode_replacement_truth      = "?";
@@ -1666,7 +1662,7 @@ namespace ztd { namespace text { namespace tests {
 				std::copy(std::begin(bscs), std::end(bscs) - 1, arr.begin());
 				return arr;
 			}
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 			else if constexpr (std::is_same_v<Char, char8_t>) {
 				const auto& bscs
 					= u8"\f\v\t "
@@ -1677,7 +1673,7 @@ namespace ztd { namespace text { namespace tests {
 				return arr;
 			}
 #endif
-			else if constexpr (std::is_same_v<Char, ztd::text::uchar8_t>) {
+			else if constexpr (std::is_same_v<Char, ztd::uchar8_t>) {
 				const auto& bscs
 					= u8"\f\v\t "
 					  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/"
@@ -1705,7 +1701,7 @@ namespace ztd { namespace text { namespace tests {
 				return arr;
 			}
 			else {
-				static_assert(ztd::text::__txt_detail::__always_false_v<Char>, "no");
+				static_assert(ztd::always_false_v<Char>, "no");
 			}
 		};
 		auto arr = make_array();
@@ -1736,15 +1732,15 @@ namespace ztd { namespace text { namespace tests {
 		u"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0",
 		u16_basic_source_character_set_size);
 	inline constexpr const std::size_t u8_basic_source_character_set_size = 97;
-	inline constexpr const ztd::text::uchar8_t u8_basic_source_character_set_storage[]
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+	inline constexpr const ztd::uchar8_t u8_basic_source_character_set_storage[]
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 		= u8"\f\v\t "
 		  u8"\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0";
 #else
 		= "\f\v\t "
 		  "\nabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_{}[]#()<>%:;.?*+-/^&|~!=,\\\"'\0";
 #endif
-	inline constexpr const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set(
+	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_basic_source_character_set(
 		u8_basic_source_character_set_storage, u8_basic_source_character_set_size);
 	inline constexpr const std::size_t w_basic_source_character_set_size = 97;
 	inline constexpr const std::basic_string_view<wchar_t> w_basic_source_character_set(
@@ -1763,9 +1759,9 @@ namespace ztd { namespace text { namespace tests {
 	inline const std::basic_string_view<char16_t> u16_basic_source_character_set_reverse(
 		basic_source_character_set_reverse_storage<char16_t>().data(),
 		basic_source_character_set_reverse_storage<char16_t>().size());
-	inline const std::basic_string_view<ztd::text::uchar8_t> u8_basic_source_character_set_reverse(
-		basic_source_character_set_reverse_storage<ztd::text::uchar8_t>().data(),
-		basic_source_character_set_reverse_storage<ztd::text::uchar8_t>().size());
+	inline const std::basic_string_view<ztd::uchar8_t> u8_basic_source_character_set_reverse(
+		basic_source_character_set_reverse_storage<ztd::uchar8_t>().data(),
+		basic_source_character_set_reverse_storage<ztd::uchar8_t>().size());
 	inline const std::basic_string_view<wchar_t> w_basic_source_character_set_reverse(
 		basic_source_character_set_reverse_storage<wchar_t>().data(),
 		basic_source_character_set_reverse_storage<wchar_t>().size());
@@ -1773,58 +1769,54 @@ namespace ztd { namespace text { namespace tests {
 		basic_source_character_set_reverse_storage<char>().data(),
 		basic_source_character_set_reverse_storage<char>().size());
 
-	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_native_endian
+	inline const ztd::ranges::span<const std::byte> u32_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u32_basic_source_character_set);
-	inline const ztd::text::span<const std::byte> u16_basic_source_character_set_bytes_native_endian
+	inline const ztd::ranges::span<const std::byte> u16_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u16_basic_source_character_set);
-	inline const ztd::text::span<const std::byte> u8_basic_source_character_set_bytes_native_endian
+	inline const ztd::ranges::span<const std::byte> u8_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::u8_basic_source_character_set);
-	inline const ztd::text::span<const std::byte> w_basic_source_character_set_bytes_native_endian
+	inline const ztd::ranges::span<const std::byte> w_basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::w_basic_source_character_set);
-	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_native_endian
+	inline const ztd::ranges::span<const std::byte> basic_source_character_set_bytes_native_endian
 		= ztd::text::tests::as_bytes(ztd::text::tests::basic_source_character_set);
 
-	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_little_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+	inline const ztd::ranges::span<const std::byte> u32_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::little
 			     ? u32_basic_source_character_set
 			     : u32_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> u16_basic_source_character_set_bytes_little_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+	inline const ztd::ranges::span<const std::byte> u16_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::little
 			     ? u16_basic_source_character_set
 			     : u16_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> u8_basic_source_character_set_bytes_little_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+	inline const ztd::ranges::span<const std::byte> u8_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::little
 			     ? u8_basic_source_character_set
 			     : u8_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> w_basic_source_character_set_bytes_little_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
+	inline const ztd::ranges::span<const std::byte> w_basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::little
 			     ? w_basic_source_character_set
 			     : w_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_little_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::little
-			     ? basic_source_character_set
-			     : basic_source_character_set_reverse);
+	inline const ztd::ranges::span<const std::byte> basic_source_character_set_bytes_little_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::little ? basic_source_character_set
+			                                                                   : basic_source_character_set_reverse);
 
-	inline const ztd::text::span<const std::byte> u32_basic_source_character_set_bytes_big_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+	inline const ztd::ranges::span<const std::byte> u32_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::big
 			     ? u32_basic_source_character_set
 			     : u32_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> u16_basic_source_character_set_bytes_big_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
+	inline const ztd::ranges::span<const std::byte> u16_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::big
 			     ? u16_basic_source_character_set
 			     : u16_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> u8_basic_source_character_set_bytes_big_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
-			     ? u8_basic_source_character_set
-			     : u8_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> w_basic_source_character_set_bytes_big_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
-			     ? w_basic_source_character_set
-			     : w_basic_source_character_set_reverse);
-	inline const ztd::text::span<const std::byte> basic_source_character_set_bytes_big_endian
-		= ztd::text::tests::as_bytes(ztd::text::endian::native == ztd::text::endian::big
-			     ? basic_source_character_set
-			     : basic_source_character_set_reverse);
+	inline const ztd::ranges::span<const std::byte> u8_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::big ? u8_basic_source_character_set
+			                                                                : u8_basic_source_character_set_reverse);
+	inline const ztd::ranges::span<const std::byte> w_basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::big ? w_basic_source_character_set
+			                                                                : w_basic_source_character_set_reverse);
+	inline const ztd::ranges::span<const std::byte> basic_source_character_set_bytes_big_endian
+		= ztd::text::tests::as_bytes(ztd::endian::native == ztd::endian::big ? basic_source_character_set
+			                                                                : basic_source_character_set_reverse);
 
 	template <typename Encoding>
 	constexpr auto basic_source_character_set_for() {
@@ -1840,10 +1832,10 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, wchar_t>) {
 				return w_basic_source_character_set;
 			}
-			else if constexpr (std::is_same_v<CodeUnit, ztd::text::uchar8_t>) {
+			else if constexpr (std::is_same_v<CodeUnit, ztd::uchar8_t>) {
 				return u8_basic_source_character_set;
 			}
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 			else if constexpr (std::is_same_v<CodeUnit, char8_t>) {
 				return u8_basic_source_character_set;
 			}
@@ -1855,7 +1847,7 @@ namespace ztd { namespace text { namespace tests {
 				return u32_basic_source_character_set;
 			}
 			else {
-				static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
+				static_assert(ztd::always_false_v<Encoding>,
 					"Cannot pick basic_source_character_set object for this Encoding");
 			}
 		}
@@ -1886,7 +1878,7 @@ namespace ztd { namespace text { namespace tests {
 			if constexpr (std::is_same_v<CodeUnit, char>) {
 				if constexpr (std::is_same_v<Encoding,
 						         ztd::text::literal> && !ztd::text::is_unicode_encoding_v<Encoding>) {
-					static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
+					static_assert(ztd::always_false_v<Encoding>,
 						"The encoding ztd::text::literal is not a unicode encoding, and therefore doesn't "
 						"work here!");
 				}
@@ -1895,7 +1887,7 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, wchar_t>) {
 				if constexpr (std::is_same_v<Encoding,
 						         ztd::text::wide_literal> && !ztd::text::is_unicode_encoding_v<Encoding>) {
-					static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
+					static_assert(ztd::always_false_v<Encoding>,
 						"The encoding ztd::text::literal is not a unicode encoding, and therefore doesn't "
 						"work here!");
 				}
@@ -1904,7 +1896,7 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, uchar8_t>) {
 				return u8_unicode_sequence_truth_native_endian;
 			}
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 			else if constexpr (std::is_same_v<CodeUnit, char8_t>) {
 				return u8_unicode_sequence_truth_native_endian;
 			}
@@ -1916,14 +1908,14 @@ namespace ztd { namespace text { namespace tests {
 				return u32_unicode_sequence_truth_native_endian;
 			}
 			else {
-				static_assert(ztd::text::__txt_detail::__always_false_v<Encoding>,
+				static_assert(ztd::always_false_v<Encoding>,
 					"Cannot pick basic_source_character_set object for this Encoding");
 			}
 		}
 	}
 }}} // namespace ztd::text::tests
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_COMPILER_VCXX_I_)
+#if ZTD_IS_ON(ZTD_COMPILER_VCXX_I_)
 #pragma warning(pop)
 #endif
 

@@ -15,7 +15,7 @@
 // Apache License Version 2 Usage
 // Alternatively, this file may be used under the terms of Apache License
 // Version 2.0 (the "License") for non-commercial use; you may not use this
-// file except in compliance with the License. You may obtain a copy of the 
+// file except in compliance with the License. You may obtain a copy of the
 // License at
 //
 //		http://www.apache.org/licenses/LICENSE-2.0
@@ -35,11 +35,11 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/ebco.hpp>
+#include <ztd/idk/ebco.hpp>
 
 #include <utility>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -47,11 +47,10 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 
 		template <typename _Encoding, typename _ErrorHandler>
-		class __forwarding_handler : private __txt_detail::__ebco<_Encoding&, 0>,
-			                        private __txt_detail::__ebco<_ErrorHandler&, 1> {
+		class __forwarding_handler : private ebco<_Encoding&, 0>, private ebco<_ErrorHandler&, 1> {
 		private:
-			using __encoding_base_t      = __txt_detail::__ebco<_Encoding&, 0>;
-			using __error_handler_base_t = __txt_detail::__ebco<_ErrorHandler&, 1>;
+			using __encoding_base_t      = ebco<_Encoding&, 0>;
+			using __error_handler_base_t = ebco<_ErrorHandler&, 1>;
 
 		public:
 			constexpr __forwarding_handler(_Encoding& __encoding, _ErrorHandler& __error_handler) noexcept
@@ -60,9 +59,9 @@ namespace ztd { namespace text {
 
 			template <typename _UnderlyingEncoding, typename _Result, typename _Progress>
 			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _Progress&& __progress) const
-				noexcept(noexcept(this->__error_handler_base_t::__get_value()(this->__encoding_base_t::__get_value(),
+				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_Progress>(__progress)))) {
-				return this->__error_handler_base_t::__get_value()(this->__encoding_base_t::__get_value(),
+				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 					::std::forward<_Result>(__result), ::std::forward<_Progress>(__progress));
 			}
 		};
@@ -73,6 +72,6 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_FORWARDING_HANDLER_HPP

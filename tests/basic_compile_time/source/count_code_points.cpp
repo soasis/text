@@ -44,8 +44,7 @@ inline namespace ztd_text_tests_basic_compile_time_count_encodable {
 
 		// Basic Source Character Set, explicit encoding
 		static_assert(
-		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::literal())
-		          .count
+		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::literal()).count
 		     == ztd::text::tests::basic_source_character_set.size());
 		static_assert(
 		     ztd::text::count_encodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal())
@@ -66,23 +65,21 @@ inline namespace ztd_text_tests_basic_compile_time_count_encodable {
 		     == ztd::text::tests::u8_unicode_sequence_truth_native_endian.size());
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::text::__txt_detail::__always_true_v<
-		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
 			static_assert(ztd::text::count_encodable(
 			                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal())
 			                   .count
 			     == ztd::text::tests::unicode_sequence_truth_native_endian.size());
 		}
-		if constexpr (ztd::text::__txt_detail::__always_true_v<
-		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
 			static_assert(ztd::text::count_encodable(
 			                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal())
 			                   .count
 			     == ztd::text::tests::w_unicode_sequence_truth_native_endian.size());
 		}
-		static_assert(ztd::text::count_encodable(
-		                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8())
-		                   .count
+		static_assert(
+		     ztd::text::count_encodable(ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8())
+		          .count
 		     == ztd::text::tests::u8_unicode_sequence_truth_native_endian.size());
 		static_assert(ztd::text::count_encodable(
 		                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16())

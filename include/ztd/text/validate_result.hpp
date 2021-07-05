@@ -36,15 +36,16 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/reconstruct.hpp>
-#include <ztd/text/reference_wrapper.hpp>
+
+#include <ztd/idk/reference_wrapper.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 
 #include <cstddef>
 #include <array>
 #include <utility>
 #include <system_error>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -68,6 +69,7 @@ namespace ztd { namespace text {
 		_Input input;
 		//////
 		/// @brief Whether or not the specified input is valid or not.
+		///
 		//////
 		bool valid;
 
@@ -108,7 +110,7 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		::ztd::text::reference_wrapper<_State> state;
+		::ztd::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
@@ -138,12 +140,12 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		::ztd::text::reference_wrapper<_DecodeState> from_state;
+		::ztd::reference_wrapper<_DecodeState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
 		///
 		//////
-		::ztd::text::reference_wrapper<_EncodeState> to_state;
+		::ztd::reference_wrapper<_EncodeState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::validate_result, defaulting the error code to
@@ -193,12 +195,12 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _InputRange, typename _State>
-		using __reconstruct_validate_result_t = validate_result<__reconstruct_t<_InputRange>, _State>;
+		using __reconstruct_validate_result_t = validate_result<ranges::range_reconstruct_t<_InputRange>, _State>;
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_VALIDATE_RESULT_HPP

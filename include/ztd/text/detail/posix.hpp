@@ -37,15 +37,15 @@
 
 #include <ztd/text/detail/encoding_name.hpp>
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_PLATFORM_UNIX_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_UNIX_I_)
 
 // clang-foramt off
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_LANGINFO_I_)
+#if ZTD_IS_ON(ZTD_LANGINFO_I_)
 extern "C" {
 #include <langinfo.h>
 }
-#elif ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_)
+#elif ZTD_IS_ON(ZTD_NL_LANGINFO_I_)
 // IBM-specific??
 extern "C" {
 #include <nl_langinfo.h>
@@ -57,7 +57,7 @@ extern "C" {
 
 // clang-format on
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 
@@ -66,7 +66,7 @@ namespace ztd { namespace text {
 	namespace __txt_detail { namespace __posix {
 
 		inline __encoding_id __determine_active_code_page() noexcept {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_LANGINFO_I_) || ZTD_TEXT_IS_ON(ZTD_TEXT_NL_LANGINFO_I_)
+#if ZTD_IS_ON(ZTD_LANGINFO_I_) || ZTD_IS_ON(ZTD_NL_LANGINFO_I_)
 			const char* __name = nl_langinfo(LC_CTYPE);
 			return __to_encoding_id(__name);
 #else
@@ -84,6 +84,6 @@ namespace ztd { namespace text {
 
 #endif // POSIX
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_POSIX_HPP

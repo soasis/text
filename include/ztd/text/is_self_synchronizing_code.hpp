@@ -35,11 +35,11 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -54,13 +54,13 @@ namespace ztd { namespace text {
 
 		template <typename _Type>
 		struct __is_self_synchronizing_code_sfinae<_Type,
-			::std::enable_if_t<__is_detected_v<__detect_is_self_synchronizing_code, _Type>>>
+			::std::enable_if_t<is_detected_v<__detect_is_self_synchronizing_code, _Type>>>
 		: ::std::integral_constant<bool, _Type::self_synchronizing_code::value> { };
 	} // namespace __txt_detail
 
 	template <typename _Type>
 	class is_self_synchronizing_code
-	: public __txt_detail::__is_self_synchronizing_code_sfinae<__txt_detail::__remove_cvref_t<_Type>> { };
+	: public __txt_detail::__is_self_synchronizing_code_sfinae<remove_cvref_t<_Type>> { };
 
 	template <typename _Type>
 	inline constexpr bool is_self_synchronizing_code_v = is_self_synchronizing_code<_Type>::value;
@@ -69,6 +69,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_SELF_SYNCHRONIZING_HPP

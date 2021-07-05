@@ -40,12 +40,12 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 
-#include <ztd/text/detail/adl.hpp>
+#include <ztd/ranges/adl.hpp>
 
 #include <array>
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -67,14 +67,13 @@ namespace ztd { namespace text {
 
 			template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 				typename _Progress>
-			constexpr auto operator()(const _Encoding&,
-				encode_result<_InputRange, _OutputRange, _State> __result,
+			constexpr auto operator()(const _Encoding&, encode_result<_InputRange, _OutputRange, _State> __result,
 				const _Progress& __progress) noexcept {
-				_M_code_points_size = __adl::__adl_size(__progress);
+				_M_code_points_size = ranges::ranges_adl::adl_size(__progress);
 				// avoid needing potentially non-constexpr ::std::copy
 #ifdef __cpp_lib_constexpr_algorithms
-				::std::copy_n(__adl::__adl_cbegin(__progress), this->_M_code_points_size,
-					__adl::__adl_begin(this->_M_code_points));
+				::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress), this->_M_code_points_size,
+					ranges::ranges_adl::adl_begin(this->_M_code_points));
 #else
 				for (::std::size_t __index = 0; __index < _M_code_points_size; ++__index) {
 					_M_code_points[__index] = __progress[__index];
@@ -85,16 +84,15 @@ namespace ztd { namespace text {
 
 			template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 				typename _Progress>
-			constexpr auto operator()(const _Encoding&,
-				decode_result<_InputRange, _OutputRange, _State> __result,
+			constexpr auto operator()(const _Encoding&, decode_result<_InputRange, _OutputRange, _State> __result,
 				const _Progress& __progress) noexcept {
-				_M_code_units_size = __adl::__adl_size(__progress);
+				_M_code_units_size = ranges::ranges_adl::adl_size(__progress);
 #ifdef __cpp_lib_constexpr_algorithms
-				::std::copy_n(__adl::__adl_cbegin(__progress), this->_M_code_units_size,
-					__adl::__adl_begin(this->_M_code_units));
+				::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress), this->_M_code_units_size,
+					ranges::ranges_adl::adl_begin(this->_M_code_units));
 #else
 				// avoid needing potentially non-constexpr ::std::copy
-				auto __first = __adl::__adl_cbegin(__progress);
+				auto __first = ranges::ranges_adl::adl_cbegin(__progress);
 				for (::std::size_t __index = 0; __index < _M_code_units_size; (void)++__index, (void)++__first) {
 					_M_code_units[__index] = *__first;
 				}
@@ -107,6 +105,6 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_PROGRESS_HANDLER_HPP

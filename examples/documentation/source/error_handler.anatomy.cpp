@@ -34,10 +34,10 @@ struct my_error_handler {
 	// Helper definitions
 	template <typename Encoding>
 	using code_point_span
-	     = ztd::text::span<const ztd::text::code_point_t<Encoding>>;
+	     = ztd::ranges::span<const ztd::text::code_point_t<Encoding>>;
 	template <typename Encoding>
 	using code_unit_span
-	     = ztd::text::span<const ztd::text::code_unit_t<Encoding>>;
+	     = ztd::ranges::span<const ztd::text::code_unit_t<Encoding>>;
 
 	// Function call operator that returns a "deduced" (auto) type
 	// Specifically, this one is called for encode failures

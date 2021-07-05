@@ -44,8 +44,8 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 
 		auto action = [&]() noexcept(false) {
 			code_point output_buffer[ztd::text::max_code_points_v<Encoding>] {};
-			ztd::text::span<const code_unit> input(container.data(), container.size());
-			ztd::text::span<code_point> output(output_buffer, output_max);
+			ztd::ranges::span<const code_unit> input(container.data(), container.size());
+			ztd::ranges::span<code_point> output(output_buffer, output_max);
 			state s {};
 			[[maybe_unused]] auto result = encoding.decode_one(input, output, ztd::text::throw_handler {}, s);
 			REQUIRE(false); // should not make it here ever!
@@ -62,8 +62,8 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 
 		auto action = [&]() noexcept(false) {
 			code_unit output_buffer[ztd::text::max_code_units_v<Encoding>] {};
-			ztd::text::span<const code_point> input(container.data(), container.size());
-			ztd::text::span<code_unit> output(output_buffer, output_max);
+			ztd::ranges::span<const code_point> input(container.data(), container.size());
+			ztd::ranges::span<code_unit> output(output_buffer, output_max);
 			state s {};
 			[[maybe_unused]] auto result = encoding.encode_one(input, output, ztd::text::throw_handler {}, s);
 			REQUIRE(false); // should not make it here ever!

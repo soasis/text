@@ -40,22 +40,22 @@
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/unbounded.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
-#include <ztd/text/tag.hpp>
-#include <ztd/text/reconstruct.hpp>
-
+#include <ztd/text/text_tag.hpp>
+#include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/detail/span.hpp>
+#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
+
+#include <ztd/ranges/unbounded.hpp>
+#include <ztd/ranges/span.hpp>
 
 #include <string>
 #include <vector>
 #include <string_view>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -91,13 +91,13 @@ namespace ztd { namespace text {
 	constexpr auto basic_decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
 		using _IntermediateInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
-		using _IntermediateOutput = __txt_detail::__range_reconstruct_t<_Output>;
+		using _IntermediateOutput = ranges::range_reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.decode_one(
                ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
-		using _WorkingInput       = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
-		using _WorkingOutput      = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().output)>;
-		using _UEncoding          = __txt_detail::__remove_cvref_t<_Encoding>;
-		using _UErrorHandler      = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+		using _WorkingInput       = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
+		using _WorkingOutput      = remove_cvref_t<decltype(::std::declval<_Result>().output)>;
+		using _UEncoding          = remove_cvref_t<_Encoding>;
+		using _UErrorHandler      = remove_cvref_t<_ErrorHandler>;
 
 		static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_UEncoding, _UErrorHandler>,
 			"This decode is a lossy, non-injective operation. This means you may lose data that you did "
@@ -110,7 +110,7 @@ namespace ztd { namespace text {
 		_WorkingInput __working_input
 			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 		_WorkingOutput __working_output(
-			__txt_detail::__reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
+			ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
 		::std::size_t __handled_errors = 0;
 
 		for (;;) {
@@ -122,7 +122,7 @@ namespace ztd { namespace text {
 			__handled_errors += __result.handled_errors;
 			__working_input  = ::std::move(__result.input);
 			__working_output = ::std::move(__result.output);
-			if (__txt_detail::__adl::__adl_empty(__result.input)) {
+			if (ranges::ranges_adl::adl_empty(__result.input)) {
 				break;
 			}
 		}
@@ -154,15 +154,15 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_decode, _Input, _Encoding,
-			              _Output, _ErrorHandler, _State>) {
-			return text_decode(tag<__txt_detail::__remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_decode, _Input, _Encoding, _Output, _ErrorHandler,
+			              _State>) {
+			return text_decode(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
-		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_decode, _Input,
-			                   _Encoding, _Output, _ErrorHandler, _State>) {
-			return __text_decode(tag<__txt_detail::__remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_decode, _Input, _Encoding, _Output,
+			                   _ErrorHandler, _State>) {
+			return __text_decode(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
@@ -179,18 +179,19 @@ namespace ztd { namespace text {
 			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
 			// Well, SHIT. Write into temporary, then serialize one-by-one/bulk to output.
 			// I'll admit, this is HELLA work to support...
-			using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+			using _UEncoding = remove_cvref_t<_Encoding>;
 			constexpr ::std::size_t __intermediate_buffer_max
-				= ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE_I_ < max_code_points_v<_UEncoding>
+				= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UEncoding>)
+				     < max_code_points_v<_UEncoding>
 				? max_code_points_v<_UEncoding>
-				: ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE_I_;
+				: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UEncoding>);
 			using _IntermediateValueType = code_point_t<_UEncoding>;
 			using _IntermediateInput     = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
-			using _OutputInitial         = ::ztd::text::span<_IntermediateValueType, __intermediate_buffer_max>;
-			using _Output                = ::ztd::text::span<_IntermediateValueType>;
+			using _OutputInitial         = ::ztd::ranges::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _Output                = ::ztd::ranges::span<_IntermediateValueType>;
 			using _Result                = decltype(__encoding.decode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
-			using _WorkingInput          = __txt_detail::__remove_cvref_t<decltype(::std::declval<_Result>().input)>;
+			using _WorkingInput          = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			_WorkingInput __working_input(
 				__txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input)));
@@ -202,8 +203,8 @@ namespace ztd { namespace text {
 					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
 				_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());
 				using _SpanIterator = typename _Output::iterator;
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_insert_bulk, _OutputContainer,
-					              _SpanIterator, _SpanIterator>) {
+				if constexpr (is_detected_v<ranges::detect_insert_bulk, _OutputContainer, _SpanIterator,
+					              _SpanIterator>) {
 					// inserting in bulk
 					// can be faster, more performant,
 					// save us some coding too
@@ -212,8 +213,8 @@ namespace ztd { namespace text {
 				else {
 					// O O F! we have to insert one at a time.
 					for (auto&& __intermediate_code_point : __intermediate_output) {
-						if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_push_back,
-							              _OutputContainer, _IntermediateValueType>) {
+						if constexpr (is_detected_v<ranges::detect_push_back, _OutputContainer,
+							              _IntermediateValueType>) {
 							__output.push_back(__intermediate_code_point);
 						}
 						else {
@@ -229,7 +230,7 @@ namespace ztd { namespace text {
 				if (__result.error_code != encoding_error::ok) {
 					return __result;
 				}
-				if (__txt_detail::__adl::__adl_empty(__result.input)) {
+				if (ranges::ranges_adl::adl_empty(__result.input)) {
 					return __result;
 				}
 			}
@@ -256,7 +257,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler>
 	constexpr auto decode_into(
 		_Input&& __input, _Encoding&& __encoding, _Output&& __output, _ErrorHandler&& __error_handler) {
-		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
 
 		_State __state         = make_decode_state(__encoding);
@@ -305,9 +306,9 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _Output>
 	constexpr auto decode_into(_Input&& __input, _Output&& __output) {
-		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __txt_detail::__range_value_type_t<_UInput>;
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		using _UInput   = remove_cvref_t<_Input>;
+		using _CodeUnit = ranges::range_value_type_t<_UInput>;
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
@@ -348,14 +349,13 @@ namespace ztd { namespace text {
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto decode_to(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+		using _UEncoding = remove_cvref_t<_Encoding>;
 
 		_OutputContainer __output {};
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
-			using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
-				              _OutputContainer, _SizeType>) {
-				auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
+		if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
+			using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
+			if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
+				auto __output_size_hint = ranges::ranges_adl::adl_size(__input);
 				__output_size_hint *= max_code_points_v<_UEncoding>;
 				__output.reserve(__output_size_hint);
 			}
@@ -363,7 +363,7 @@ namespace ztd { namespace text {
 		if constexpr (__txt_detail::__is_decode_range_category_output_v<_UEncoding>) {
 			// We can use the unbounded stuff
 			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-			using _Unbounded            = unbounded_view<_BackInserterIterator>;
+			using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
 			_Unbounded __insert_view(::std::back_inserter(__output));
 			auto __stateful_result
 				= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -398,7 +398,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto decode_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
-		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
 		_State __state   = make_decode_state(__encoding);
 		return decode_to<_OutputContainer>(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -445,9 +445,9 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer, typename _Input>
 	constexpr auto decode_to(_Input&& __input) {
-		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __txt_detail::__range_value_type_t<_UInput>;
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		using _UInput   = remove_cvref_t<_Input>;
+		using _CodeUnit = ranges::range_value_type_t<_UInput>;
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
@@ -468,21 +468,20 @@ namespace ztd { namespace text {
 			typename _State>
 		constexpr auto __decode_dispatch(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+			using _UEncoding = remove_cvref_t<_Encoding>;
 
 			_OutputContainer __output {};
-			if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_size, _Input>) {
-				using _SizeType = decltype(__txt_detail::__adl::__adl_size(__input));
-				if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_reserve_with_size_type,
-					              _OutputContainer, _SizeType>) {
-					auto __output_size_hint = __txt_detail::__adl::__adl_size(__input);
+			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
+				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
+				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
+					auto __output_size_hint = ranges::ranges_adl::adl_size(__input);
 					__output_size_hint *= max_code_points_v<_UEncoding>;
 					__output.reserve(__output_size_hint);
 				}
 			}
 			if constexpr (__txt_detail::__is_decode_range_category_output_v<_Encoding>) {
 				using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-				using _Unbounded            = unbounded_view<_BackInserterIterator>;
+				using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(__output));
 				auto __stateful_result
 					= decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
@@ -524,12 +523,12 @@ namespace ztd { namespace text {
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
 		typename _State>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding                = __txt_detail::__remove_cvref_t<_Encoding>;
-		using _UOutputContainer         = __txt_detail::__remove_cvref_t<_OutputContainer>;
+		using _UEncoding                = remove_cvref_t<_Encoding>;
+		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
 		using _OutputCodePoint          = code_point_t<_UEncoding>;
 		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
 		constexpr bool _IsStringable
-			= (__txt_detail::__is_character_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
+			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
 			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
 			using _RealOutputContainer = ::std::basic_string<_OutputCodePoint>;
@@ -564,7 +563,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
-		using _UEncoding = __txt_detail::__remove_cvref_t<_Encoding>;
+		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
 
 		_State __state = make_decode_state(__encoding);
@@ -612,9 +611,9 @@ namespace ztd { namespace text {
 	//////
 	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto decode(_Input&& __input) {
-		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __txt_detail::__range_value_type_t<_UInput>;
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		using _UInput   = remove_cvref_t<_Input>;
+		using _CodeUnit = ranges::range_value_type_t<_UInput>;
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
@@ -632,11 +631,12 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_HPP

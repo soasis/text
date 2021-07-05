@@ -45,12 +45,12 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-
-#include <ztd/text/detail/ebco.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/idk/ebco.hpp>
+
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -65,10 +65,10 @@ namespace ztd { namespace text {
 	/// @brief The encoding of wide string literals ( e.g. @c "👍" ) at compile time.
 	///
 	//////
-	class wide_literal : private __txt_detail::__ebco<__txt_detail::__wide_literal, 0> {
+	class wide_literal : private ebco<__txt_detail::__wide_literal, 0> {
 	private:
 		using __underlying_t = __txt_detail::__wide_literal;
-		using __base_t       = __txt_detail::__ebco<__underlying_t, 0>;
+		using __base_t       = ebco<__underlying_t, 0>;
 
 	public:
 		//////
@@ -170,10 +170,10 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
-     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
+     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
-			static_assert(__txt_detail::__always_false_v<_Input>,
+			static_assert(always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
 				"wide_literal "
 				"encoding from the machine at compile time and you are trying to use the wide_literal encoding "
@@ -194,9 +194,9 @@ namespace ztd { namespace text {
 				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT to your command "
 				"line to ignore this error and we will get right on doing exactly that for you.");
 #endif
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(__txt_detail::__always_true_v<_Input>
-				&& !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>,
+#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
+			static_assert(always_true_v<_Input>
+				&& !is_specialization_of_v<__base_t, basic_no_encoding>,
 			"[[ Please read! ]] This text encoding ("
 			ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
@@ -207,9 +207,9 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const wide_literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
+			__txt_detail::__forwarding_handler<const wide_literal, remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
-			return this->__base_t::__get_value().decode_one(
+			return this->__base_t::get_value().decode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 
@@ -234,10 +234,10 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
-     && ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
+     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
-			static_assert(__txt_detail::__always_false_v<_Input>,
+			static_assert(always_false_v<_Input>,
 				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
 				"wide_literal "
 				"encoding from the machine at compile time and you are trying to use the wide_literal encoding "
@@ -258,9 +258,9 @@ namespace ztd { namespace text {
 				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT to your command "
 				"line to ignore this error and we will get right on doing exactly that for you.");
 #endif
-#if ZTD_TEXT_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(__txt_detail::__always_true_v<_Input>
-				&& !__txt_detail::__is_specialization_of_v<__base_t, basic_no_encoding>,
+#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
+			static_assert(always_true_v<_Input>
+				&& !is_specialization_of_v<__base_t, basic_no_encoding>,
 			"[[ Please read! ]] This text encoding ("
 			ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
@@ -271,9 +271,9 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const wide_literal, __txt_detail::__remove_cvref_t<_ErrorHandler>>
+			__txt_detail::__forwarding_handler<const wide_literal, remove_cvref_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
-			return this->__base_t::__get_value().encode_one(
+			return this->__base_t::get_value().encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 	};
@@ -281,6 +281,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_WIDE_LITERAL_HPP

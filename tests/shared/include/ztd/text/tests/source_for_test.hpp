@@ -38,8 +38,8 @@
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/c_string_view.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/detail/span.hpp>
+#include <ztd/text/type_traits.hpp>
+#include <ztd/ranges/span.hpp>
 
 namespace ztd { namespace text { namespace tests {
 
@@ -64,8 +64,7 @@ namespace ztd { namespace text { namespace tests {
 			return u32_basic_source_character_set;
 		}
 		else {
-			static_assert(
-				ztd::text::__txt_detail::__always_false_v<Encoding>, "No appropriate source input for this type");
+			static_assert(ztd::always_false_v<Encoding>, "No appropriate source input for this type");
 		}
 	}
 

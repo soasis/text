@@ -43,11 +43,9 @@
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/execution.hpp>
 
-#include <ztd/text/subrange.hpp>
-
 #include <string_view>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -244,12 +242,13 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONCEPTS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
 namespace std { namespace ranges {
 
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
@@ -260,6 +259,6 @@ namespace std { namespace ranges {
 }} // namespace std::ranges
 #endif
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_TRANSCODE_VIEW_HPP

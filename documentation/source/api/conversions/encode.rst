@@ -56,7 +56,7 @@ This set of function overloads takes the provided ``input``, ``encoding``, ``han
 
 The container type can be specified by passing it as an explicit template parameter to this function, such as ``ztd::text::encode<std::vector<std::byte>>(U"bark", ztd::text::utf16_be{});``. The output container is default constructed.
 
-It will either call ``push_back``/``insert`` directly on the target container to fill it up, or serialize data to a temporary buffer (controlled by :ref:`ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE <config-ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE>`) before then copying it into the desired output container through any available means (bulk ``.insert``, repeated ``.push_back``, or repeated single ``.insert`` with the ``.cend()`` iterator in that order).
+It will either call ``push_back``/``insert`` directly on the target container to fill it up, or serialize data to a temporary buffer (controlled by :ref:`ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_BYTE_SIZE <config-ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_BYTE_SIZE>`) before then copying it into the desired output container through any available means (bulk ``.insert``, repeated ``.push_back``, or repeated single ``.insert`` with the ``.cend()`` iterator in that order).
 
 This is the "fire and forget" version of the ``encode`` function, returning only the container and not returning any of the result or state information used to construct it.
 
@@ -70,7 +70,7 @@ This set of function overloads takes the provided ``input``, ``encoding``, ``han
 
 The container type can be specified by passing it as an explicit template parameter to this function, such as ``ztd::text::encode_to<std::string>(U"meow", ascii{});``. The output container is default constructed.
 
-It will either call ``push_back``/``insert`` directly on the target container to fill it up, or serialize data to a temporary buffer (controlled by :ref:`ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE <config-ZTD_TEXT_INTERMEDIATE_BUFFER_SIZE>`) before then copying it into the desired output container through any available means (bulk ``.insert``, repeated ``.push_back``, or repeated single ``.insert`` with the ``.cend()`` iterator in that order).
+It will either call ``push_back``/``insert`` directly on the target container to fill it up, or serialize data to a temporary buffer (controlled by :ref:`ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_BYTE_SIZE <config-ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_BYTE_SIZE>`) before then copying it into the desired output container through any available means (bulk ``.insert``, repeated ``.push_back``, or repeated single ``.insert`` with the ``.cend()`` iterator in that order).
 
 If nothing goes wrong or the error handler lets the algorithm continue, ``.input`` on the result should be empty.
 

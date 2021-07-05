@@ -38,7 +38,7 @@
 int main(int, char*[]) {
 	using u16_gap_buffer  = gap::gap_vector<char16_t>;
 	using iterator        = typename u16_gap_buffer::iterator;
-	using buffer_subrange = ztd::text::subrange<iterator, iterator>;
+	using buffer_subrange = ztd::ranges::subrange<iterator, iterator>;
 
 	u16_gap_buffer buffer;
 	std::u16string_view data = u"⛲ Très beau !";

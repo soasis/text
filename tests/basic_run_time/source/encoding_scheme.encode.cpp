@@ -40,7 +40,7 @@
 TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific endianness") {
 	SECTION("endian::native") {
 		SECTION("execution") {
-			ztd::text::encoding_scheme<ztd::text::execution, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::execution, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(
 			     ztd::text::tests::u32_basic_source_character_set, encoding, ztd::text::replacement_handler {});
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),
@@ -59,7 +59,7 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::encoding_scheme<ztd::text::wide_execution, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::wide_execution, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(
 			     ztd::text::tests::u32_basic_source_character_set, encoding, ztd::text::replacement_handler {});
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),
@@ -78,7 +78,7 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			}
 		}
 		SECTION("literal") {
-			ztd::text::encoding_scheme<ztd::text::literal, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::literal, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(
 			     ztd::text::tests::u32_basic_source_character_set, encoding, ztd::text::replacement_handler {});
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),
@@ -97,7 +97,7 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			}
 		}
 		SECTION("wide_literal") {
-			ztd::text::encoding_scheme<ztd::text::wide_literal, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::wide_literal, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(
 			     ztd::text::tests::u32_basic_source_character_set, encoding, ztd::text::replacement_handler {});
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),
@@ -116,7 +116,7 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::encoding_scheme<ztd::text::utf8, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::utf8, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0
 			     = ztd::text::encode(ztd::text::tests::u32_basic_source_character_set, encoding);
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),
@@ -132,7 +132,7 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf16") {
-			ztd::text::encoding_scheme<ztd::text::utf16, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::utf16, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0
 			     = ztd::text::encode(ztd::text::tests::u32_basic_source_character_set, encoding);
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),
@@ -148,7 +148,7 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			REQUIRE(is_equal1);
 		}
 		SECTION("utf32") {
-			ztd::text::encoding_scheme<ztd::text::utf32, ztd::text::endian::native> encoding {};
+			ztd::text::encoding_scheme<ztd::text::utf32, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0
 			     = ztd::text::encode(ztd::text::tests::u32_basic_source_character_set, encoding);
 			bool is_equal0 = std::equal(result0.begin(), result0.end(),

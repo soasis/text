@@ -40,19 +40,17 @@
 #include <ztd/text/count_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/tag.hpp>
+#include <ztd/text/text_tag.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/subrange.hpp>
-#include <ztd/text/unbounded.hpp>
-#include <ztd/text/detail/span.hpp>
+#include <ztd/ranges/span.hpp>
 
 #include <string_view>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -93,18 +91,18 @@ namespace ztd { namespace text {
 	constexpr auto basic_count_transcodable(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state) {
-		using _UInput         = __txt_detail::__remove_cvref_t<_Input>;
-		using _InputValueType = __txt_detail::__range_value_type_t<_UInput>;
-		using _WorkingInput   = __txt_detail::__range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<__txt_detail::__is_character_v<_InputValueType>,
-                    ::std::basic_string_view<_InputValueType>, ::ztd::text::span<const _InputValueType>>,
+		using _UInput         = remove_cvref_t<_Input>;
+		using _InputValueType = ranges::range_value_type_t<_UInput>;
+		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
+               ::std::conditional_t<is_char_traitable_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
+                    ::ztd::ranges::span<const _InputValueType>>,
                _UInput>>;
-		using _UFromEncoding  = __txt_detail::__remove_cvref_t<_FromEncoding>;
-		using _UToEncoding    = __txt_detail::__remove_cvref_t<_ToEncoding>;
+		using _UFromEncoding  = remove_cvref_t<_FromEncoding>;
+		using _UToEncoding    = remove_cvref_t<_ToEncoding>;
 		using _Result         = count_transcode_result<_WorkingInput, _FromState, _ToState>;
 
 		_WorkingInput __working_input(
-			__txt_detail::__reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+			ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
 		::std::size_t __code_unit_count = 0;
 		::std::size_t __errors_handled  = 0;
@@ -117,28 +115,26 @@ namespace ztd { namespace text {
 	__code_unit_count += __result.count;                                                                        \
 	__errors_handled += __result.handled_errors;                                                                \
 	__working_input = ::std::move(__result.input);                                                              \
-	if (__txt_detail::__adl::__adl_empty(__working_input)) {                                                    \
+	if (ranges::ranges_adl::adl_empty(__working_input)) {                                                       \
 		break;                                                                                                 \
 	}                                                                                                           \
 	do {                                                                                                        \
 	} while (0)
 
-#define ZTD_TEXT_BASIC_COUNT_TRANSCODABLE_LOOP_BODY_I_(...)                                                           \
-	auto __result = __VA_ARGS__(tag<_UFromEncoding, _UToEncoding> {}, ::std::move(__working_input), __from_encoding, \
-	     __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);                         \
+#define ZTD_TEXT_BASIC_COUNT_TRANSCODABLE_LOOP_BODY_I_(...)                                                    \
+	auto __result = __VA_ARGS__(text_tag<_UFromEncoding, _UToEncoding> {}, ::std::move(__working_input),      \
+	     __from_encoding, __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state); \
 	ZTD_TEXT_BASIC_COUNT_TRANSCODABLE_LOOP_BODY_CORE_I_()
 
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_transcodable_one,
-			              _WorkingInput, _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
-			              _ToState>) {
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_transcodable_one, _WorkingInput,
+			              _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
 			for (;;) {
 				ZTD_TEXT_BASIC_COUNT_TRANSCODABLE_LOOP_BODY_I_(text_count_transcodable_one);
 			}
 		}
-		else if constexpr (__txt_detail::__is_detected_v<
-			                   __txt_detail::__detect_adl_internal_text_count_transcodable_one, _WorkingInput,
-			                   _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
-			                   _ToState>) {
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_transcodable_one,
+			                   _WorkingInput, _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler,
+			                   _FromState, _ToState>) {
 			for (;;) {
 				ZTD_TEXT_BASIC_COUNT_TRANSCODABLE_LOOP_BODY_I_(__text_count_transcodable_one);
 			}
@@ -148,10 +144,11 @@ namespace ztd { namespace text {
 			using _CodeUnit  = code_unit_t<_UToEncoding>;
 
 			_CodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
-			::ztd::text::span<_CodePoint, max_code_points_v<_UFromEncoding>> __intermediate(__intermediate_storage);
+			::ztd::ranges::span<_CodePoint, max_code_points_v<_UFromEncoding>> __intermediate(
+				__intermediate_storage);
 
 			_CodeUnit __output_storage[max_code_units_v<_UToEncoding>] {};
-			::ztd::text::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
+			::ztd::ranges::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
 
 			for (;;) {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
@@ -165,7 +162,7 @@ namespace ztd { namespace text {
 				__code_unit_count += __written;
 				__errors_handled += __result.handled_errors;
 				__working_input = ::std::move(__result.input);
-				if (__txt_detail::__adl::__adl_empty(__working_input)) {
+				if (ranges::ranges_adl::adl_empty(__working_input)) {
 					break;
 				}
 			}
@@ -202,19 +199,17 @@ namespace ztd { namespace text {
 	constexpr auto count_transcodable(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
 		_ToState& __to_state) {
-		if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_text_count_transcodable, _Input,
-			              _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
-			return text_count_transcodable(
-				tag<__txt_detail::__remove_cvref_t<_FromEncoding>, __txt_detail::__remove_cvref_t<_ToEncoding>> {},
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_transcodable, _Input, _FromEncoding,
+			              _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
+			return text_count_transcodable(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
-		else if constexpr (__txt_detail::__is_detected_v<__txt_detail::__detect_adl_internal_text_count_transcodable,
-			                   _Input, _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_transcodable, _Input,
+			                   _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
 			                   _ToState>) {
-			return __text_count_transcodable(
-				tag<__txt_detail::__remove_cvref_t<_FromEncoding>, __txt_detail::__remove_cvref_t<_ToEncoding>> {},
+			return __text_count_transcodable(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
@@ -252,7 +247,7 @@ namespace ztd { namespace text {
 		typename _ToErrorHandler, typename _FromState>
 	constexpr auto count_transcodable(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state) {
-		using _UToEncoding = __txt_detail::__remove_cvref_t<_ToEncoding>;
+		using _UToEncoding = remove_cvref_t<_ToEncoding>;
 		using _State       = encode_state_t<_UToEncoding>;
 
 		_State __to_state = make_encode_state(__to_encoding);
@@ -289,7 +284,7 @@ namespace ztd { namespace text {
 		typename _ToErrorHandler>
 	constexpr auto count_transcodable(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
-		using _UFromEncoding = __txt_detail::__remove_cvref_t<_FromEncoding>;
+		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _State         = decode_state_t<_UFromEncoding>;
 
 		_State __from_state = make_decode_state(__from_encoding);
@@ -365,9 +360,9 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Input, typename _ToEncoding>
 	constexpr auto count_transcodable(_Input&& __input, _ToEncoding&& __to_encoding) {
-		using _UInput   = __txt_detail::__remove_cvref_t<_Input>;
-		using _CodeUnit = __txt_detail::__remove_cvref_t<__txt_detail::__range_value_type_t<_UInput>>;
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+		using _UInput   = remove_cvref_t<_Input>;
+		using _CodeUnit = remove_cvref_t<ranges::range_value_type_t<_UInput>>;
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
 			using _FromEncoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
@@ -387,11 +382,12 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_COUNT_TRANSCODABLE_HPP

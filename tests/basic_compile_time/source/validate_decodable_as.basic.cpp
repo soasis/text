@@ -38,7 +38,7 @@ inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_basic {
 
 	template <typename T>
 	static void delayed() {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		// Basic Source Character Set, using defaults
 		// Can only be done if we have constant evaluation inside to swap to the literal encoding
 		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::basic_source_character_set));

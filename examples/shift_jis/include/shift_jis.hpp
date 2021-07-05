@@ -46,8 +46,8 @@ struct shift_jis {
 	static constexpr inline std::size_t max_code_points = 1;
 	static constexpr inline std::size_t max_code_units  = 2;
 
-	constexpr ztd::text::span<const code_unit, 1> replacement_code_units() const noexcept {
-		return ztd::text::span<const code_unit, 1>(&"?"[0], 1);
+	constexpr ztd::ranges::span<const code_unit, 1> replacement_code_units() const noexcept {
+		return ztd::ranges::span<const code_unit, 1>(&"?"[0], 1);
 	}
 
 	using is_decode_injective = std::true_type;
@@ -64,20 +64,20 @@ struct shift_jis {
 	using sjis_encode_error_handler = std::function<sjis_encode_result(
 		const shift_jis&,
 		sjis_encode_result,
-		ztd::text::span<const code_point>
+		ztd::ranges::span<const code_point>
 	)>;
 
 	using sjis_decode_error_handler = std::function<sjis_decode_result(
 		const shift_jis&,
 		sjis_decode_result,
-		ztd::text::span<const code_unit>
+		ztd::ranges::span<const code_unit>
 	)>;
 	// clang-format on
 
-	sjis_encode_result encode_one(ztd::text::span<const code_point> input, ztd::text::span<code_unit> output,
+	sjis_encode_result encode_one(ztd::ranges::span<const code_point> input, ztd::ranges::span<code_unit> output,
 	     sjis_encode_error_handler error_handler, state& current_state) const;
 
-	sjis_decode_result decode_one(ztd::text::span<const code_unit> input, ztd::text::span<code_point> output,
+	sjis_decode_result decode_one(ztd::ranges::span<const code_unit> input, ztd::ranges::span<code_point> output,
 	     sjis_decode_error_handler error_handler, state& current_state) const;
 };
 

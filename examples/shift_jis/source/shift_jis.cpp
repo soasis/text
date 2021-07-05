@@ -31,10 +31,10 @@
 #include "shift_jis.hpp"
 #include "detail/shift_jis_index.hpp"
 
-shift_jis::sjis_encode_result shift_jis::encode_one(ztd::text::span<const code_point> input,
-     ztd::text::span<code_unit> output, sjis_encode_error_handler error_handler, state& current_state) const {
-	using input_span  = ztd::text::span<const code_point>;
-	using output_span = ztd::text::span<code_unit>;
+shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code_point> input,
+     ztd::ranges::span<code_unit> output, sjis_encode_error_handler error_handler, state& current_state) const {
+	using input_span  = ztd::ranges::span<const code_point>;
+	using output_span = ztd::ranges::span<code_unit>;
 	// Do we have anything to read?
 	if (input.empty()) {
 		// we don't need more, so we can just say the empty state is a-okay.
@@ -143,10 +143,10 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::text::span<const code_p
 	     input_span());
 }
 
-shift_jis::sjis_decode_result shift_jis::decode_one(ztd::text::span<const shift_jis::code_unit> input,
-     ztd::text::span<code_point> output, sjis_decode_error_handler error_handler, state& current_state) const {
-	using input_span  = ztd::text::span<const code_unit>;
-	using output_span = ztd::text::span<code_point>;
+shift_jis::sjis_decode_result shift_jis::decode_one(ztd::ranges::span<const shift_jis::code_unit> input,
+     ztd::ranges::span<code_point> output, sjis_decode_error_handler error_handler, state& current_state) const {
+	using input_span  = ztd::ranges::span<const code_unit>;
+	using output_span = ztd::ranges::span<code_point>;
 	// Do we have anything to read?
 	if (input.empty()) {
 		// we don't need more, so we can just say the empty state is a-okay.

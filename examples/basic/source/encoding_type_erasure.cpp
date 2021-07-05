@@ -46,8 +46,8 @@ int main(int, char*[]) {
 	std::string storage;
 	storage.resize(std::size(source_data) * sizeof(char32_t));
 
-	ztd::text::span<char> normal_output(storage);
-	ztd::text::span<std::byte> output = ztd::text::as_writable_bytes(normal_output);
+	ztd::ranges::span<char> normal_output(storage);
+	ztd::ranges::span<std::byte> output = ztd::ranges::as_writable_bytes(normal_output);
 	ztd::text::encode_state_t<ztd::text::any_encoding> state(encoding);
 	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler {}, state);
 	std::size_t result_written = output.size() - result.output.size();

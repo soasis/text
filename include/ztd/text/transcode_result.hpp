@@ -35,18 +35,18 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char8_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/reconstruct.hpp>
-#include <ztd/text/reference_wrapper.hpp>
+
+#include <ztd/idk/reference_wrapper.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 
 #include <cstddef>
 #include <array>
 #include <utility>
 #include <system_error>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -151,12 +151,12 @@ namespace ztd { namespace text {
 		/// @brief A reference to the state of the associated Encoding used for decoding input code units to
 		/// intermediate code points.
 		//////
-		::ztd::text::reference_wrapper<_FromState> from_state;
+		::ztd::reference_wrapper<_FromState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for encoding intermediate code points to
 		/// code units.
 		//////
-		::ztd::text::reference_wrapper<_ToState> to_state;
+		::ztd::reference_wrapper<_ToState> to_state;
 
 		//////
 		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to
@@ -219,19 +219,19 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _DesiredOutput>
-		constexpr transcode_result<_Input, __remove_cvref_t<_DesiredOutput>, _FromState, _ToState>
+		constexpr transcode_result<_Input, remove_cvref_t<_DesiredOutput>, _FromState, _ToState>
 		__replace_result_output(transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
 			_DesiredOutput&& __desired_output) noexcept(::std::
 			     is_nothrow_constructible_v<transcode_result<_Input, _Output, _FromState, _ToState>, _Input&&,
 			          _DesiredOutput, _FromState&, _ToState&, encoding_error, ::std::size_t>) {
-			using _Result = transcode_result<_Input, __remove_cvref_t<_DesiredOutput>, _FromState, _ToState>;
+			using _Result = transcode_result<_Input, remove_cvref_t<_DesiredOutput>, _FromState, _ToState>;
 			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
 				__result.from_state, __result.to_state, __result.error_code, __result.handled_errors);
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _FromState, typename _ToState>
-		using __reconstruct_transcode_result_t = transcode_result<__range_reconstruct_t<_InputRange>,
-			__range_reconstruct_t<_OutputRange>, _FromState, _ToState>;
+		using __reconstruct_transcode_result_t = transcode_result<ranges::range_reconstruct_t<_InputRange>,
+			ranges::range_reconstruct_t<_OutputRange>, _FromState, _ToState>;
 
 		template <typename _InputRange, typename _OutputRange, typename _ToState, typename _FromState,
 			typename _InFirst, typename _InLast, typename _OutFirst, typename _OutLast, typename _ArgToState,
@@ -239,9 +239,9 @@ namespace ztd { namespace text {
 		constexpr decltype(auto) __reconstruct_stateless_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgFromState&& __to_state, _ArgToState&& __from_state,
 			encoding_error __error_code, ::std::size_t __handled_errors) {
-			decltype(auto) __in_range  = __reconstruct(::std::in_place_type<_InputRange>,
+			decltype(auto) __in_range  = ranges::reconstruct(::std::in_place_type<_InputRange>,
                     ::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
-			decltype(auto) __out_range = __reconstruct(::std::in_place_type<_OutputRange>,
+			decltype(auto) __out_range = ranges::reconstruct(::std::in_place_type<_OutputRange>,
 				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last));
 			return transcode_result<_InputRange, _OutputRange, _FromState, _ToState>(
 				::std::forward<decltype(__in_range)>(__in_range),
@@ -265,6 +265,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_TRANSCODE_RESULT_HPP

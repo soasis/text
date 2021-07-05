@@ -85,11 +85,11 @@ TEST_CASE("text/transcode/roundtrip", "transcode can roundtrip") {
 		}
 	}
 	SECTION("utf8") {
-		std::basic_string<ztd::text::uchar8_t> result0
+		std::basic_string<ztd::uchar8_t> result0
 		     = ztd::text::transcode(ztd::text::tests::u8_basic_source_character_set, ztd::text::utf8 {});
 		REQUIRE(result0 == ztd::text::tests::u8_basic_source_character_set);
 
-		std::basic_string<ztd::text::uchar8_t> result1
+		std::basic_string<ztd::uchar8_t> result1
 		     = ztd::text::transcode(ztd::text::tests::u8_unicode_sequence_truth_native_endian, ztd::text::utf8 {});
 		REQUIRE(result1 == ztd::text::tests::u8_unicode_sequence_truth_native_endian);
 	}

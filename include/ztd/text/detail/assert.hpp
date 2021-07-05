@@ -92,6 +92,6 @@
 #define ZTD_TEXT_ASSERT(...) ZTD_TEXT_ASSERT_I_(__VA_ARGS__)
 #define ZTD_TEXT_ASSERT_MESSAGE(...) ZTD_TEXT_ASSERT_MESSAGE_I_(__VA_ARGS__)
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DETAIL_ASSERT_HPP

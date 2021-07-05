@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char8_t.hpp>
+#include <ztd/idk/char8_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/detail/to_underlying.hpp>
 
@@ -47,7 +47,7 @@
 #include <exception>
 #include <array>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -110,10 +110,12 @@ namespace ztd { namespace text {
 		invalid_sequence = 0x04,
 		//////
 		/// leading code unit is wrong
+		///
 		//////
 		invalid_sequence = 0x05,
 		//////
 		/// leading code units were correct, trailing code units were wrong
+		///
 		//////
 		invalid_sequence = 0x06
 #endif
@@ -176,13 +178,14 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 namespace std {
 	template <>

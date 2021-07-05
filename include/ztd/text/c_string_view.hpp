@@ -36,11 +36,11 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/basic_c_string_view.hpp>
-#include <ztd/text/char8_t.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/type_traits.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -88,7 +88,7 @@ namespace ztd { namespace text {
 			return wc_string_view(__str, __len);
 		}
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 		//////
 		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a @c u8"abc" string literal.
 		///
@@ -131,6 +131,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_C_STRING_VIEW_HPP

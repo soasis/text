@@ -129,9 +129,8 @@ Result Types, Status Codes and Quality Aides
 	:maxdepth: 1
 
 	api/char8_t
-	api/endian
 	api/encoding_error
-	api/tag
+	api/text_tag
 	api/make_decode_state
 	api/make_encode_state
 	api/unicode_code_point

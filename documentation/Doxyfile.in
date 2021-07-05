@@ -1009,7 +1009,7 @@ EXCLUDE_PATTERNS       = "*/detail/*" "*/vendor/*"
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
 
-EXCLUDE_SYMBOLS        = "ztd::text::__txt_detail*" "_M_*" "std" "*c_string_view"
+EXCLUDE_SYMBOLS        = "ztd::text::__txt_detail*" "ztd::ranges::__rng_detail*" "ztd::__idk_detail*" "_M_*" "std" "*c_string_view"
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

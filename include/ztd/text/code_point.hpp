@@ -36,10 +36,9 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
+#include <ztd/text/type_traits.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
-
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -61,7 +60,7 @@ namespace ztd { namespace text {
 		/// ztd::text::unicode_code_point is assumed.
 		///
 		//////
-		using type = typename __txt_detail::__remove_cvref_t<_Type>::code_point;
+		using type = typename remove_cvref_t<_Type>::code_point;
 	};
 
 	//////
@@ -85,6 +84,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_CODE_POINT_HPP

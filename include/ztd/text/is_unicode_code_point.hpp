@@ -37,17 +37,17 @@
 
 #include <ztd/text/forward.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _Type>
 	class is_unicode_scalar_value
-	: public ::std::integral_constant<bool,
-		  ::std::is_same_v<__txt_detail::__remove_cvref_t<_Type>, __impl::__unicode_scalar_value>> { };
+	: public ::std::integral_constant<bool, ::std::is_same_v<remove_cvref_t<_Type>, __impl::__unicode_scalar_value>> {
+	};
 
 	template <typename _Type>
 	inline constexpr bool is_unicode_scalar_value_v = is_unicode_scalar_value<_Type>::value;
@@ -55,8 +55,8 @@ namespace ztd { namespace text {
 	template <typename _Type>
 	class is_unicode_code_point
 	: public ::std::integral_constant<bool,
-		  ::std::is_same_v<__txt_detail::__remove_cvref_t<_Type>,
-		       char32_t> || ::std::is_same_v<__txt_detail::__remove_cvref_t<_Type>, __impl::__unicode_code_point> || is_unicode_scalar_value_v<_Type>> {
+		  ::std::is_same_v<remove_cvref_t<_Type>,
+		       char32_t> || ::std::is_same_v<remove_cvref_t<_Type>, __impl::__unicode_code_point> || is_unicode_scalar_value_v<_Type>> {
 	};
 
 	template <typename _Type>
@@ -65,6 +65,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_UNICODE_CODE_POINT_HPP

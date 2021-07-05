@@ -42,9 +42,9 @@
 #include <ztd/text/unicode_scalar_value.hpp>
 #include <ztd/text/forward.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -54,14 +54,14 @@ namespace ztd { namespace text {
 		// clang-format off
 		template <typename _From, typename _To>
 		struct __is_bitwise_transcoding_compatible : ::std::integral_constant<bool,
-			::std::is_same_v<__remove_cvref_t<_To>, __remove_cvref_t<_From>>
+			::std::is_same_v<remove_cvref_t<_To>, remove_cvref_t<_From>>
 			// if the To is from ASCII, then it's bitwise-compatible with all UTF-8 implementations,
 			// provided those UTF-8 implementations have a sufficiently sized/aligned char that can be bit-copied.
-			|| (::std::is_same_v<__remove_cvref_t<_From>, ascii>
-				&& (::std::is_same_v<__remove_cvref_t<_To>, utf8>
-					|| ::std::is_base_of_v<__impl::__utf8_tag, __remove_cvref_t<_To>>)
-				&& ((sizeof(code_unit_t<__remove_cvref_t<_To>>) == sizeof(char))
-					&& (alignof(code_unit_t<__remove_cvref_t<_To>>) == alignof(char)))
+			|| (::std::is_same_v<remove_cvref_t<_From>, ascii>
+				&& (::std::is_same_v<remove_cvref_t<_To>, utf8>
+					|| ::std::is_base_of_v<__impl::__utf8_tag, remove_cvref_t<_To>>)
+				&& ((sizeof(code_unit_t<remove_cvref_t<_To>>) == sizeof(char))
+					&& (alignof(code_unit_t<remove_cvref_t<_To>>) == alignof(char)))
 			)
 		> { };
 		// clang-format on
@@ -102,7 +102,7 @@ namespace ztd { namespace text {
 		template <typename _From, typename _To>
 		inline constexpr bool __is_transcoding_compatible_v
 			= is_bitwise_transcoding_compatible_v<_From,_To>
-			|| ::std::is_same_v<__txt_detail::__remove_cvref_t<_From>, __txt_detail::__remove_cvref_t<_To>>
+			|| ::std::is_same_v<remove_cvref_t<_From>, remove_cvref_t<_To>>
 			|| ::std::is_same_v<code_point_t<_From>, code_point_t<_To>>
 			|| (is_unicode_scalar_value_v<code_point_t<_From>>
 				? (is_unicode_code_point_v<code_point_t<_To>>)
@@ -142,6 +142,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_TRANSCODING_COMPATIBLE_HPP

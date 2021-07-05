@@ -35,6 +35,8 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/type_traits.hpp>
+
 #include <ztd/text/detail/assert.hpp>
 #include <ztd/text/detail/unicode.hpp>
 
@@ -42,7 +44,7 @@
 #include <string>
 #include <cstdint>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -67,7 +69,7 @@ namespace ztd { namespace text {
 			/// @remarks
 			//////
 			constexpr __unicode_code_point(char32_t __code_point) noexcept : _M_scalar(__code_point) {
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_INVARIANT_ABORT_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_INVARIANT_ABORT_I_)
 				if (__txt_detail::__is_surrogate(this->_M_scalar)
 					|| (this->_M_scalar > __txt_detail::__last_code_point)) {
 					::std::abort();
@@ -146,7 +148,7 @@ namespace ztd { namespace text {
 		}
 	} // namespace __impl
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
 	using unicode_code_point = ____impl::__unicode_code_point;
 #else
 	// TODO: what are the merits of a strong type here?
@@ -180,14 +182,14 @@ namespace std {
 			     reinterpret_cast<char32_t*>(__destination), reinterpret_cast<const char32_t*>(__source), __count));
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static /*constexpr*/ int compare(
+		ZTD_NODISCARD_I_ static /*constexpr*/ int compare(
 		     const char_type* __left, const char_type* __right, ::std::size_t __count) noexcept {
 			// TODO: constexpr. right now illegal cast
 			return ::std::char_traits<char32_t>::compare(
 			     reinterpret_cast<const char32_t*>(__left), reinterpret_cast<const char32_t*>(__right), __count);
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {
+		ZTD_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {
 			size_t __count = 0;
 			const char_type __null_value {};
 			while (*__it != __null_value) {
@@ -197,7 +199,7 @@ namespace std {
 			return __count;
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr const char_type* find(
+		ZTD_NODISCARD_I_ static constexpr const char_type* find(
 		     const char_type* __it, size_t __count, const char_type& __c) noexcept {
 			for (; 0 < __count; --__count, (void)++__it) {
 				if (*__it == __c) {
@@ -218,37 +220,44 @@ namespace std {
 			__left = __right;
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr bool eq(const char_type& __left, const char_type& __right) noexcept {
+		ZTD_NODISCARD_I_ static constexpr bool eq(const char_type& __left, const char_type& __right) noexcept {
 			return __left == __right;
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr bool lt(const char_type& __left, const char_type& __right) noexcept {
+		ZTD_NODISCARD_I_ static constexpr bool lt(const char_type& __left, const char_type& __right) noexcept {
 			return __left < __right;
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr char_type to_char_type(const int_type& __c_as_int) noexcept {
+		ZTD_NODISCARD_I_ static constexpr char_type to_char_type(const int_type& __c_as_int) noexcept {
 			return char_type(static_cast<char32_t>(__c_as_int));
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr int_type to_int_type(const char_type& __c) noexcept {
+		ZTD_NODISCARD_I_ static constexpr int_type to_int_type(const char_type& __c) noexcept {
 			return static_cast<int_type>(__c.value());
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr bool eq_int_type(
-		     const int_type& __left, const int_type& __right) noexcept {
+		ZTD_NODISCARD_I_ static constexpr bool eq_int_type(const int_type& __left, const int_type& __right) noexcept {
 			return __left == __right;
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr int_type not_eof(const int_type& __c_as_int) noexcept {
+		ZTD_NODISCARD_I_ static constexpr int_type not_eof(const int_type& __c_as_int) noexcept {
 			return __c_as_int != eof() ? __c_as_int : !eof();
 		}
 
-		ZTD_TEXT_NODISCARD_I_ static constexpr int_type eof() noexcept {
+		ZTD_NODISCARD_I_ static constexpr int_type eof() noexcept {
 			return static_cast<int_type>(EOF);
 		}
 	};
 } // namespace std
 
-#include <ztd/text/detail/epilogue.hpp>
+namespace ztd {
+	template <>
+	class is_character<::ztd::text::__impl::__unicode_code_point> : public ::std::true_type { };
+
+	template <>
+	class is_char_traitable<::ztd::text::__impl::__unicode_code_point> : public std::true_type { };
+} // namespace ztd
+
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_UNICODE_CODE_POINT_HPP

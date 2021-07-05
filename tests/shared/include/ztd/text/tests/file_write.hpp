@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/span.hpp>
+#include <ztd/ranges/span.hpp>
 
 #include <fstream>
 #include <string>
@@ -69,7 +69,8 @@ namespace ztd { namespace text { namespace tests {
 	struct write_and_cleanup_file {
 		std::string file_name;
 
-		write_and_cleanup_file(std::string file_name_, ztd::text::span<unsigned char> data_) : file_name(file_name_) {
+		write_and_cleanup_file(std::string file_name_, ztd::ranges::span<unsigned char> data_)
+		: file_name(file_name_) {
 			write_file_attempt(file_name, data_);
 		}
 

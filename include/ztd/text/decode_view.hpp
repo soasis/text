@@ -41,12 +41,11 @@
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
 
-#include <ztd/text/subrange.hpp>
-#include <ztd/text/reconstruct.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 
 #include <string_view>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -75,7 +74,7 @@ namespace ztd { namespace text {
 		typename _ErrorHandler = default_handler, typename _State = decode_state_t<_Encoding>>
 	class decode_view {
 	private:
-		using _StoredRange = __txt_detail::__range_reconstruct_t<__txt_detail::__remove_cvref_t<_Range>>;
+		using _StoredRange = ranges::range_reconstruct_t<remove_cvref_t<_Range>>;
 
 	public:
 		//////
@@ -118,8 +117,8 @@ namespace ztd { namespace text {
 		//////
 		template <typename _ArgRange,
 			::std::enable_if_t<
-			     !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>,
-			          decode_view> && !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>, iterator>>* = nullptr>
+			     !::std::is_same_v<remove_cvref_t<_ArgRange>,
+			          decode_view> && !::std::is_same_v<remove_cvref_t<_ArgRange>, iterator>>* = nullptr>
 		constexpr decode_view(_ArgRange&& __range) noexcept(::std::is_nothrow_constructible_v<iterator, _ArgRange>)
 		: _M_it(::std::forward<_ArgRange>(__range)) {
 		}
@@ -246,7 +245,7 @@ namespace ztd { namespace text {
 	/// type.
 	//////
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
-	constexpr decode_view<_Encoding, _Range, _ErrorHandler, _State> reconstruct(
+	constexpr decode_view<_Encoding, _Range, _ErrorHandler, _State> tag_invoke(ztd::tag_t<ranges::reconstruct>,
 		::std::in_place_type_t<decode_view<_Encoding, _Range, _ErrorHandler, _State>>,
 		typename decode_view<_Encoding, _Range, _ErrorHandler, _State>::iterator __it,
 		typename decode_view<_Encoding, _Range, _ErrorHandler, _State>::sentinel) noexcept(::std::
@@ -257,12 +256,13 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_CONCEPTS_I_) && ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONCEPTS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
 namespace std { namespace ranges {
 
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
@@ -272,6 +272,6 @@ namespace std { namespace ranges {
 }} // namespace std::ranges
 #endif
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_VIEW_HPP

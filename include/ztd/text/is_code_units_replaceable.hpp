@@ -37,11 +37,11 @@
 
 #include <ztd/text/code_unit.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -67,7 +67,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Type>
 	class is_code_units_maybe_replaceable
-	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type> { };
+	: public is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_code_units_maybe_replaceable
@@ -86,8 +86,7 @@ namespace ztd { namespace text {
 	/// a contiguous view of code units.
 	//////
 	template <typename _Type>
-	class is_code_units_replaceable
-	: public __txt_detail::__is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type> { };
+	class is_code_units_replaceable : public is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_code_units_replaceable
@@ -99,6 +98,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_CODE_UNITS_REPLACEABLE_HPP

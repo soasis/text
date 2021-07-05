@@ -40,7 +40,7 @@
 
 #include <ztd/text/detail/encoding_iterator.hpp>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -166,8 +166,7 @@ namespace ztd { namespace text {
 		/// @remarks Each argument is moved/forwarded in.
 		//////
 		template <typename _ArgRange,
-			::std::enable_if_t<
-			     !::std::is_same_v<__txt_detail::__remove_cvref_t<_ArgRange>, decode_iterator>>* = nullptr>
+			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_ArgRange>, decode_iterator>>* = nullptr>
 		constexpr decode_iterator(_ArgRange&& __range) noexcept(
 			::std::is_nothrow_constructible_v<__iterator_base_it, range_type>)
 		: __iterator_base_it(::std::forward<_ArgRange>(__range)) {
@@ -248,11 +247,12 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_ITERATOR_HPP

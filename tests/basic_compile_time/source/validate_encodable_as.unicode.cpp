@@ -42,13 +42,11 @@ inline namespace ztd_text_tests_basic_compile_time_validate_encodable_as_unicode
 		static_assert(ztd::text::validate_encodable_as(ztd::text::tests::u32_unicode_sequence_truth_native_endian));
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::text::__txt_detail::__always_true_v<
-		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
 			static_assert(ztd::text::validate_encodable_as(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal()));
 		}
-		if constexpr (ztd::text::__txt_detail::__always_true_v<
-		                   T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
 			static_assert(ztd::text::validate_encodable_as(
 			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal()));
 		}

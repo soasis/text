@@ -44,7 +44,7 @@
 
 #include <string_view>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -99,8 +99,7 @@ namespace ztd { namespace text {
 		friend class basic_text;
 
 		template <typename _ViewErrorHandler = error_handler_type>
-		using _CodePointView
-			= decode_view<encoding_type, range_type, __txt_detail::__remove_cvref_t<_ViewErrorHandler>, state_type>;
+		using _CodePointView = decode_view<encoding_type, range_type, remove_cvref_t<_ViewErrorHandler>, state_type>;
 
 		range_type _M_storage;
 		encoding_type _M_encoding;
@@ -176,6 +175,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_BASIC_TEXT_VIEW_HPP

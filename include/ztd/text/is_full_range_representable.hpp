@@ -38,11 +38,11 @@
 #include <ztd/text/is_transcoding_compatible.hpp>
 
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 
 		template <typename _Type>
 		struct __is_encode_injective_sfinae<_Type,
-			::std::enable_if_t<__is_detected_v<__detect_is_encode_injective, _Type>>>
+			::std::enable_if_t<is_detected_v<__detect_is_encode_injective, _Type>>>
 		: ::std::integral_constant<bool, _Type::is_encode_injective::value> { };
 
 		template <typename _Type>
@@ -67,7 +67,7 @@ namespace ztd { namespace text {
 
 		template <typename _Type>
 		struct __is_decode_injective_sfinae<_Type,
-			::std::enable_if_t<__is_detected_v<__detect_is_decode_injective, _Type>>>
+			::std::enable_if_t<is_detected_v<__detect_is_decode_injective, _Type>>>
 		: ::std::integral_constant<bool, _Type::is_decode_injective::value> { };
 	} // namespace __txt_detail
 
@@ -122,9 +122,7 @@ namespace ztd { namespace text {
 	template <typename _From, typename _To>
 	class is_full_range_representable_between
 	: public ::std::integral_constant<bool,
-		  is_decode_injective_v<
-		       __txt_detail::__remove_cvref_t<_From>> && is_encode_injective_v<__txt_detail::__remove_cvref_t<_To>>> {
-	};
+		  is_decode_injective_v<remove_cvref_t<_From>> && is_encode_injective_v<remove_cvref_t<_To>>> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_full_range_representable_between.
@@ -155,6 +153,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_FULL_RANGE_REPRESENTABLE_HPP

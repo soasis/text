@@ -35,16 +35,19 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char8_t.hpp>
-
-#include <ztd/text/detail/type_traits.hpp>
-#include <ztd/text/detail/empty_string.hpp>
+#include <ztd/text/forward.hpp>
+#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/assert.hpp>
+
+#include <ztd/idk/ebco.hpp>
+#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/empty_string.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 
 #include <string_view>
 #include <utility>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -53,18 +56,24 @@ namespace ztd { namespace text {
 	/// @brief A sentinel type for ztd::text::basic_c_string_view. Provides additional type safety.
 	///
 	//////
-	class c_string_sentinel_t {};
+	template <typename _Sentinel>
+	class basic_c_string_sentinel : private ebco<_Sentinel> {
+	private:
+		using __base_t = ebco<_Sentinel>;
 
-	//////
-	/// @brief An instance of the c_string_sentinel_t type, for ease of use.
-	///
-	//////
-	inline constexpr c_string_sentinel_t c_string_sentinel = {};
+		template <typename _CharTy, typename _Traits>
+		friend class basic_c_string_view;
+
+		using __base_t::get_value;
+
+	public:
+		using __base_t::__base_t;
+	};
 
 	//////
 	/// @brief A class that is identical to std::string_view, except that it attempts to verify and guarantee that
-	/// ``.data() + .size()``, when dereferenced, is valid and gives a nullptr. The ``.size()`` does not include the
-	/// null terminator in its count.
+	/// ``.data() + .size()``, when dereferenced, is valid and gives a nullptr. The ``.size()`` does not include
+	/// the null terminator in its count.
 	//////
 	template <typename _CharType, typename _Traits = ::std::char_traits<_CharType>>
 	class basic_c_string_view : private ::std::basic_string_view<_CharType, _Traits> {
@@ -78,10 +87,12 @@ namespace ztd { namespace text {
 
 	public:
 		using const_iterator         = typename __base_t::const_iterator;
+		using const_sentinel         = basic_c_string_sentinel<typename __base_t::const_iterator>;
 		using const_pointer          = typename __base_t::const_pointer;
 		using const_reverse_iterator = typename __base_t::const_reverse_iterator;
 		using difference_type        = typename __base_t::difference_type;
 		using iterator               = typename __base_t::iterator;
+		using sentinel               = basic_c_string_sentinel<typename __base_t::iterator>;
 		using pointer                = typename __base_t::pointer;
 		using reference              = typename __base_t::reference;
 		using const_reference        = typename __base_t::reference;
@@ -93,13 +104,12 @@ namespace ztd { namespace text {
 		using __base_t::npos;
 
 		constexpr basic_c_string_view() noexcept
-		: basic_c_string_view(
-			static_cast<const_pointer>(__txt_detail::__empty_string<_CharType>()), static_cast<size_type>(1)) {
+		: basic_c_string_view(static_cast<const_pointer>(empty_string<_CharType>()), static_cast<size_type>(1)) {
 		}
 
 		constexpr basic_c_string_view(const_iterator __arg0, const_iterator __arg1) noexcept
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
-		: __base_t(__arg0 == __arg1 ? __txt_detail::__empty_string<_CharType>() : ::std::addressof(*__arg0),
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+		: __base_t(__arg0 == __arg1 ? empty_string<_CharType>() : ::std::addressof(*__arg0),
 			::std::distance(__arg0, __arg1)) {
 #else
 		: __base_t(::std::addressof(*__arg0), ::std::distance(__arg0, __arg1)) {
@@ -111,21 +121,20 @@ namespace ztd { namespace text {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
 		}
 
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 0
+		template <typename _Strawman                                                                 = const_iterator,
+			::std::enable_if_t<!::std::is_convertible_v<_Strawman,
+			                        const_pointer> && !::std::is_same_v<_Strawman, const_pointer>>* = nullptr>
 		constexpr basic_c_string_view(const_pointer __arg0, const_pointer __arg1) noexcept
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
-		: __base_t(__arg0 == __arg1 ? __txt_detail::__empty_string<_CharType>() : ::std::addressof(*__arg0),
-			::std::distance(__arg0, __arg1)) {
-#else
-		: __base_t(::std::addressof(*__arg0), ::std::distance(__arg0, __arg1)) {
-#endif
+		: __base_t(__arg0, __arg1) {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
 		}
 
+		template <typename _Strawman                                                                 = const_iterator,
+			::std::enable_if_t<!::std::is_convertible_v<_Strawman,
+			                        const_pointer> && !::std::is_same_v<_Strawman, const_pointer>>* = nullptr>
 		constexpr basic_c_string_view(const_pointer __arg0, size_type __arg1) : __base_t(__arg0, __arg1) {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
 		}
-#endif // not needed if iterator is implicitly constructible from the pointer
 
 		constexpr basic_c_string_view(const_pointer __arg0) noexcept : __base_t(__arg0, _Traits::length(__arg0)) {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
@@ -133,8 +142,8 @@ namespace ztd { namespace text {
 
 		template <typename _Arg,
 			::std::enable_if_t<
-			     !::std::is_same_v<__txt_detail::__remove_cvref_t<_Arg>,
-			          basic_c_string_view> && !::std::is_same_v<__txt_detail::__remove_cvref_t<_Arg>, const_pointer> && !::std::is_array_v<__txt_detail::__remove_cvref_t<_Arg>>>* = nullptr>
+			     !::std::is_same_v<remove_cvref_t<_Arg>,
+			          basic_c_string_view> && !::std::is_same_v<remove_cvref_t<_Arg>, const_pointer> && !::std::is_array_v<remove_cvref_t<_Arg>>>* = nullptr>
 		constexpr basic_c_string_view(_Arg&& __arg) noexcept : __base_t(::std::data(__arg), ::std::size(__arg)) {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
 		}
@@ -242,11 +251,11 @@ namespace ztd { namespace text {
 		using __base_t::compare;
 
 		using __base_t::copy;
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_STARTS_ENDS_WITH_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_STARTS_ENDS_WITH_I_)
 		using __base_t::ends_with;
 		using __base_t::starts_with;
 #endif
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_STD_LIBRARY_STRING_CONTAINS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_STRING_CONTAINS_I_)
 		using __base_t::contains;
 #endif
 
@@ -258,29 +267,59 @@ namespace ztd { namespace text {
 		using __base_t::find_first_of;
 		using __base_t::find_last_not_of;
 		using __base_t::find_last_of;
-		
-		template <typename _It, typename _Sen>
-		friend constexpr __base_t reconstruct(
-			::std::in_place_type_t<basic_c_string_view>, _It __iterator, _Sen __sentinel) {
+
+		friend constexpr difference_type operator-(const sentinel& __sen, const iterator& __it) noexcept {
+			return __sen.get_value() - __it;
+		}
+
+		friend constexpr difference_type operator-(const iterator& __it, const sentinel& __sen) noexcept {
+			return __it - __sen.get_value();
+		}
+
+		friend constexpr bool operator==(const sentinel& __sen, const iterator& __it) noexcept {
+			return __sen.get_value() == __it;
+		}
+
+		friend constexpr bool operator==(const iterator& __it, const sentinel& __sen) noexcept {
+			return __it == __sen.get_value();
+		}
+
+		template <typename _It, typename _Sen,
+			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_Sen>, sentinel>>* = nullptr>
+		friend constexpr __base_t tag_invoke(ztd::tag_t<::ztd::ranges::reconstruct>,
+			::std::in_place_type_t<basic_c_string_view>, _It __iterator, _Sen __sentinel) noexcept {
 			using _SizeType = typename __base_t::size_type;
 			if constexpr (!::std::is_integral_v<_Sen>) {
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
 				if (__iterator == __sentinel) {
-					const auto& __empty_str = __txt_detail::__empty_string<value_type>();
+					const auto& __empty_str = empty_string<value_type>();
 					return __base_t(__empty_str + 0, 0);
 				}
 #endif
 				return __base_t(::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel - __iterator));
 			}
 			else {
-#if defined(_ITERATOR_DEBUG_LEVEL) && _ITERATOR_DEBUG_LEVEL >= 1
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
 				if (static_cast<_SizeType>(__sentinel) == static_cast<_SizeType>(0)) {
-					const auto& __empty_str = __txt_detail::__empty_string<value_type>();
+					const auto& __empty_str = empty_string<value_type>();
 					return __base_t(__empty_str + 0, 0);
 				}
 #endif
 				return __base_t(::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel));
 			}
+		}
+
+		template <typename _It>
+		friend constexpr basic_c_string_view tag_invoke(ztd::tag_t<::ztd::ranges::reconstruct>,
+			::std::in_place_type_t<basic_c_string_view>, _It __iterator, sentinel __sentinel) {
+			using _SizeType = typename __base_t::size_type;
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+			if (__iterator == __sentinel) {
+				const auto& __empty_str = empty_string<value_type>();
+				return __base_t(__empty_str + 0, 0);
+			}
+#endif
+			return __base_t(::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel - __iterator));
 		}
 	};
 
@@ -293,12 +332,12 @@ namespace ztd { namespace text {
 
 	template <typename _CharType, typename _Traits>
 	constexpr bool operator==(basic_c_string_view<_CharType, _Traits> __left,
-		__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
+		type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
 		return __left.size() == __right.size() && __left.compare(__right) == 0;
 	}
 
 	template <typename _CharType, typename _Traits>
-	constexpr bool operator==(__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
+	constexpr bool operator==(type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
 		basic_c_string_view<_CharType, _Traits> __right) noexcept {
 		return __left.size() == __right.size() && __left.compare(__right) == 0;
 	}
@@ -311,12 +350,12 @@ namespace ztd { namespace text {
 
 	template <typename _CharType, typename _Traits>
 	constexpr bool operator!=(basic_c_string_view<_CharType, _Traits> __left,
-		__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
+		type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
 		return !(__left == __right);
 	}
 
 	template <typename _CharType, typename _Traits>
-	constexpr bool operator!=(__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
+	constexpr bool operator!=(type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
 		basic_c_string_view<_CharType, _Traits> __right) noexcept {
 		return !(__left == __right);
 	}
@@ -329,12 +368,12 @@ namespace ztd { namespace text {
 
 	template <typename _CharType, typename _Traits>
 	constexpr bool operator<(basic_c_string_view<_CharType, _Traits> __left,
-		__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
+		type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
 		return __left.compare(__right) < 0;
 	}
 
 	template <typename _CharType, typename _Traits>
-	constexpr bool operator<(__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
+	constexpr bool operator<(type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
 		basic_c_string_view<_CharType, _Traits> __right) noexcept {
 		return __left.compare(__right) < 0;
 	}
@@ -347,12 +386,12 @@ namespace ztd { namespace text {
 
 	template <typename _CharType, typename _Traits>
 	constexpr bool operator>(basic_c_string_view<_CharType, _Traits> __left,
-		__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
+		type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
 		return __left.compare(__right) > 0;
 	}
 
 	template <typename _CharType, typename _Traits>
-	constexpr bool operator>(__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
+	constexpr bool operator>(type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
 		basic_c_string_view<_CharType, _Traits> __right) noexcept {
 		return __left.compare(__right) > 0;
 	}
@@ -365,12 +404,12 @@ namespace ztd { namespace text {
 
 	template <typename _CharType, typename _Traits>
 	constexpr bool operator<=(basic_c_string_view<_CharType, _Traits> __left,
-		__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
+		type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
 		return __left.compare(__right) <= 0;
 	}
 
 	template <typename _CharType, typename _Traits>
-	constexpr bool operator<=(__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
+	constexpr bool operator<=(type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
 		basic_c_string_view<_CharType, _Traits> __right) noexcept {
 		return __left.compare(__right) <= 0;
 	}
@@ -383,12 +422,12 @@ namespace ztd { namespace text {
 
 	template <typename _CharType, typename _Traits>
 	constexpr bool operator>=(basic_c_string_view<_CharType, _Traits> __left,
-		__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
+		type_identity_t<basic_c_string_view<_CharType, _Traits>> __right) noexcept {
 		return __left.compare(__right) >= 0;
 	}
 
 	template <typename _CharType, typename _Traits>
-	constexpr bool operator>=(__txt_detail::__type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
+	constexpr bool operator>=(type_identity_t<basic_c_string_view<_CharType, _Traits>> __left,
 		basic_c_string_view<_CharType, _Traits> __right) noexcept {
 		return __left.compare(__right) >= 0;
 	}
@@ -408,6 +447,6 @@ namespace std {
 
 } // namespace std
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_BASIC_C_STRING_VIEW_HPP

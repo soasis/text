@@ -40,11 +40,11 @@
 #include <ztd/text/is_code_points_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <type_traits>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -65,7 +65,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __decode_error_handler_always_returns_ok
-		: ::std::integral_constant<bool, __is_detected_v<__detect_decode_always_ok, _ErrorHandler>> { };
+		: ::std::integral_constant<bool, is_detected_v<__detect_decode_always_ok, _ErrorHandler>> { };
 
 		template <typename _Encoding>
 		struct __decode_error_handler_always_returns_ok<_Encoding, replacement_handler>
@@ -90,7 +90,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __encode_error_handler_always_returns_ok
-		: ::std::integral_constant<bool, __is_detected_v<__detect_encode_always_ok, _ErrorHandler>> { };
+		: ::std::integral_constant<bool, is_detected_v<__detect_encode_always_ok, _ErrorHandler>> { };
 
 		template <typename _Encoding>
 		struct __encode_error_handler_always_returns_ok<_Encoding, replacement_handler>
@@ -195,6 +195,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_IS_IGNORABLE_ERROR_HANDLER_HPP

@@ -35,14 +35,14 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char8_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/reconstruct.hpp>
-#include <ztd/text/reference_wrapper.hpp>
-
-#include <ztd/text/detail/span.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
+
+#include <ztd/ranges/span.hpp>
+#include <ztd/ranges/reconstruct.hpp>
+
+#include <ztd/idk/reference_wrapper.hpp>
 
 #include <cstddef>
 #include <array>
@@ -50,7 +50,7 @@
 #include <functional>
 #include <system_error>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -79,6 +79,7 @@ namespace ztd { namespace text {
 		_Output output;
 		//////
 		/// @brief The kind of error that occured, if any.
+		///
 		//////
 		encoding_error error_code;
 		//////
@@ -151,7 +152,7 @@ namespace ztd { namespace text {
 		/// @brief The state of the associated Encoding used for decoding input code units to code points.
 		///
 		//////
-		::ztd::text::reference_wrapper<_State> state;
+		::ztd::reference_wrapper<_State> state;
 
 		//////
 		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
@@ -197,8 +198,8 @@ namespace ztd { namespace text {
 	/// pointer-based buffer usages.
 	//////
 	template <typename _Encoding>
-	using span_decode_result_for = decode_result<::ztd::text::span<const code_unit_t<_Encoding>>,
-		::ztd::text::span<code_point_t<_Encoding>>, decode_state_t<_Encoding>>;
+	using span_decode_result_for = decode_result<::ztd::ranges::span<const code_unit_t<_Encoding>>,
+		::ztd::ranges::span<code_point_t<_Encoding>>, decode_state_t<_Encoding>>;
 
 	//////
 	/// @brief A type alias to produce a concrete error handler for the encoding result of the specified @p _Encoding
@@ -210,7 +211,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, template <class...> class _Function = std::function>
 	using basic_decode_error_handler_for = _Function<span_decode_result_for<_Encoding>(
-		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::text::span<const code_unit_t<_Encoding>>)>;
+		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::ranges::span<const code_unit_t<_Encoding>>)>;
 
 	//////
 	/// @}
@@ -226,28 +227,28 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
-		constexpr decode_result<_Input, __remove_cvref_t<_DesiredOutput>, _State> __replace_result_output(
+		constexpr decode_result<_Input, remove_cvref_t<_DesiredOutput>, _State> __replace_result_output(
 			decode_result<_Input, _Output, _State>&& __result,
 			_DesiredOutput&&
 			     __desired_output) noexcept(::std::is_nothrow_constructible_v<decode_result<_Input, _Output, _State>,
 			_Input&&, _DesiredOutput, _State&, encoding_error, ::std::size_t>) {
-			using _Result = decode_result<_Input, __remove_cvref_t<_DesiredOutput>, _State>;
+			using _Result = decode_result<_Input, remove_cvref_t<_DesiredOutput>, _State>;
 			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
 				__result.state, __result.error_code, __result.handled_errors);
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _State>
-		using __reconstruct_decode_result_t
-			= decode_result<__range_reconstruct_t<_InputRange>, __range_reconstruct_t<_OutputRange>, _State>;
+		using __reconstruct_decode_result_t = decode_result<ranges::range_reconstruct_t<_InputRange>,
+			ranges::range_reconstruct_t<_OutputRange>, _State>;
 
 		template <typename _InputRange, typename _OutputRange, typename _State, typename _InFirst, typename _InLast,
 			typename _OutFirst, typename _OutLast, typename _ArgState>
 		constexpr decltype(auto) __reconstruct_stateless_decode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgState&& __state, encoding_error __error_code,
 			::std::size_t __handled_errors) {
-			decltype(auto) __in_range  = __reconstruct(::std::in_place_type<_InputRange>,
+			decltype(auto) __in_range  = ranges::reconstruct(::std::in_place_type<_InputRange>,
                     ::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
-			decltype(auto) __out_range = __reconstruct(::std::in_place_type<_OutputRange>,
+			decltype(auto) __out_range = ranges::reconstruct(::std::in_place_type<_OutputRange>,
 				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last));
 			return decode_result<_InputRange, _OutputRange, _State>(::std::forward<decltype(__in_range)>(__in_range),
 				::std::forward<decltype(__out_range)>(__out_range), ::std::forward<_ArgState>(__state),
@@ -269,6 +270,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DECODE_RESULT_HPP

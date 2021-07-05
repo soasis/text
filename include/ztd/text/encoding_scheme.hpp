@@ -44,21 +44,21 @@
 #include <ztd/text/is_bidirectional_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
-#include <ztd/text/subrange.hpp>
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/encoding_scheme.hpp>
-#include <ztd/text/endian.hpp>
-#include <ztd/text/reference_wrapper.hpp>
 
-#include <ztd/text/detail/word_iterator.hpp>
-#include <ztd/text/detail/ebco.hpp>
-#include <ztd/text/detail/span.hpp>
+#include <ztd/idk/endian.hpp>
+#include <ztd/idk/ebco.hpp>
+#include <ztd/idk/reference_wrapper.hpp>
+#include <ztd/ranges/subrange.hpp>
+#include <ztd/ranges/span.hpp>
+#include <ztd/ranges/word_iterator.hpp>
 
 #include <optional>
 #include <cstddef>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -67,7 +67,7 @@ namespace ztd { namespace text {
 		template <typename _Byte, typename _UInputRange, typename _UOutputRange, typename _ErrorHandler>
 		class __scheme_decode_handler {
 		private:
-			::ztd::text::reference_wrapper<_ErrorHandler> _M_handler;
+			::ztd::reference_wrapper<_ErrorHandler> _M_handler;
 
 		public:
 			constexpr __scheme_decode_handler(_ErrorHandler& __handler) noexcept : _M_handler(__handler) {
@@ -82,13 +82,13 @@ namespace ztd { namespace text {
 					return this->_M_handler.get()(__encoding, ::std::move(__result), __progress);
 				}
 				else {
-					using _ProgressPointer = __txt_detail::__range_pointer_t<_Progress>;
-					using _ProgressWord    = __txt_detail::__range_value_type_t<_Progress>;
+					using _ProgressPointer = ranges::range_pointer_t<_Progress>;
+					using _ProgressWord    = ranges::range_value_type_t<_Progress>;
 					_Byte* __byte_progress_data
 						= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__progress.data()));
 					auto __byte_progress_size
-						= (__txt_detail::__adl::__adl_size(__progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
-					::ztd::text::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
+						= (ranges::ranges_adl::adl_size(__progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
+					::ztd::ranges::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
 					return this->_M_handler.get()(__encoding, ::std::move(__result), __byte_progress);
 				}
 			}
@@ -113,8 +113,8 @@ namespace ztd { namespace text {
 					return __maybe_original;
 				}
 				else {
-					using _OriginalSpan         = ::ztd::text::span<const _OriginalCodeUnit>;
-					using _TransformedSpan      = ::ztd::text::span<const _CodeUnit>;
+					using _OriginalSpan         = ::ztd::ranges::span<const _OriginalCodeUnit>;
+					using _TransformedSpan      = ::ztd::ranges::span<const _CodeUnit>;
 					using _MaybeTransformedSpan = ::std::optional<_TransformedSpan>;
 					if (!__maybe_original) {
 						return _MaybeTransformedSpan(::std::nullopt);
@@ -150,8 +150,8 @@ namespace ztd { namespace text {
 					return __maybe_original;
 				}
 				else {
-					using _OriginalSpan         = ::ztd::text::span<const _OriginalCodePoint>;
-					using _TransformedSpan      = ::ztd::text::span<const _CodePoint>;
+					using _OriginalSpan         = ::ztd::ranges::span<const _OriginalCodePoint>;
+					using _TransformedSpan      = ::ztd::ranges::span<const _CodePoint>;
 					using _MaybeTransformedSpan = ::std::optional<_TransformedSpan>;
 					if (!__maybe_original) {
 						return _MaybeTransformedSpan(::std::nullopt);
@@ -173,7 +173,7 @@ namespace ztd { namespace text {
 
 		template <typename _Super, typename _Encoding>
 		class __is_unicode_encoding_es<_Super, _Encoding,
-			::std::enable_if_t<__is_detected_v<__detect_is_unicode_encoding, _Encoding>>> {
+			::std::enable_if_t<is_detected_v<__detect_is_unicode_encoding, _Encoding>>> {
 		public:
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<_Encoding>>;
 		};
@@ -189,21 +189,21 @@ namespace ztd { namespace text {
 	/// single encoding type to be viewed in different ways.
 	///
 	/// @tparam _Encoding The encoding type.
-	/// @tparam _Endian The endianess to use. Defaults to ztd::text::endian::native.
+	/// @tparam _Endian The endianess to use. Defaults to ztd::endian::native.
 	/// @tparam _Byte The byte type to use. Defaults to ``std::byte``.
 	///
 	/// @remarks For example, this can be used to construct a Big Endian UTF-16 by using
-	/// ``encoding_scheme<ztd::text::utf16, ztd::text::endian::big>``. It can be made interopable with ``unsigned
+	/// ``encoding_scheme<ztd::text::utf16, ztd::endian::big>``. It can be made interopable with ``unsigned
 	/// char`` buffers rather than ``std::byte`` buffers by doing: ``ztd::text::encoding_scheme<ztd::text::utf32,
-	/// ztd::text::endian::native, unsigned char>``.
+	/// ztd::endian::native, unsigned char>``.
 	//////
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
 	class encoding_scheme : public __txt_detail::__is_unicode_encoding_es<encoding_scheme<_Encoding, _Endian, _Byte>,
-		                        __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>>,
-		                   private __txt_detail::__ebco<_Encoding> {
+		                        remove_cvref_t<unwrap_t<_Encoding>>>,
+		                   private ebco<_Encoding> {
 	private:
-		using __base_t       = __txt_detail::__ebco<_Encoding>;
-		using _UBaseEncoding = __txt_detail::__remove_cvref_t<__txt_detail::__unwrap_t<_Encoding>>;
+		using __base_t       = ebco<_Encoding>;
+		using _UBaseEncoding = remove_cvref_t<unwrap_t<_Encoding>>;
 		using _BaseCodeUnit  = code_unit_t<_UBaseEncoding>;
 
 	public:
@@ -277,7 +277,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object.
 		//////
 		constexpr encoding_type& base() & noexcept {
-			return this->__base_t::__get_value();
+			return this->__base_t::get_value();
 		}
 
 		//////
@@ -286,7 +286,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object.
 		//////
 		constexpr const encoding_type& base() const& noexcept {
-			return this->__base_t::__get_value();
+			return this->__base_t::get_value();
 		}
 
 		//////
@@ -295,7 +295,7 @@ namespace ztd { namespace text {
 		/// @returns An l-value reference to the encoding object.
 		//////
 		constexpr encoding_type&& base() && noexcept {
-			return this->__base_t::__get_value();
+			return this->__base_t::get_value();
 		}
 
 		//////
@@ -314,8 +314,8 @@ namespace ztd { namespace text {
 				return __original;
 			}
 			else {
-				using _OriginalSpan    = ::ztd::text::span<const _OriginalCodeUnit>;
-				using _TransformedSpan = ::ztd::text::span<const code_unit>;
+				using _OriginalSpan    = ::ztd::ranges::span<const _OriginalCodeUnit>;
+				using _TransformedSpan = ::ztd::ranges::span<const code_unit>;
 				_OriginalSpan __guaranteed_code_unit_view(__original);
 				// transform into proper type...
 				auto __transformed_ptr = reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
@@ -353,8 +353,8 @@ namespace ztd { namespace text {
 				return __maybe_original;
 			}
 			else {
-				using _OriginalSpan    = ::ztd::text::span<const _OriginalCodeUnit>;
-				using _TransformedSpan = ::ztd::text::span<const code_unit>;
+				using _OriginalSpan    = ::ztd::ranges::span<const _OriginalCodeUnit>;
+				using _TransformedSpan = ::ztd::ranges::span<const code_unit>;
 				if (!__maybe_original) {
 					return ::std::optional<_TransformedSpan>(::std::nullopt);
 				}
@@ -408,21 +408,22 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			decode_state& __s) const {
-			using _UInputRange   = __txt_detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange  = __txt_detail::__remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = __txt_detail::__remove_cvref_t<_ErrorHandler>;
+			using _UInputRange   = remove_cvref_t<_InputRange>;
+			using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 			using _Result    = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
-			using _InByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
-			using _InByteSen = __txt_detail::__word_sentinel;
+			using _InByteIt  = ranges::word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
+			using _InByteSen = ranges::word_sentinel;
 
-			subrange<_InByteIt, _InByteSen> __inbytes(_InByteIt(::std::forward<_InputRange>(__input)), _InByteSen());
+			ranges::subrange<_InByteIt, _InByteSen> __inbytes(
+				_InByteIt(::std::forward<_InputRange>(__input)), _InByteSen());
 			__txt_detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler>
 				__scheme_handler(__error_handler);
 			auto __result = this->base().decode_one(
 				::std::move(__inbytes), ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
-			return _Result(__txt_detail::__reconstruct(
+			return _Result(ranges::reconstruct(
 				               ::std::in_place_type<_UInputRange>, ::std::move(__result.input).begin().range()),
-				__txt_detail::__reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
+				ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
 				__result.error_code, __result.handled_errors);
 		}
 
@@ -447,19 +448,18 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			encode_state& __s) const {
-			using _UInputRange  = __txt_detail::__remove_cvref_t<_InputRange>;
-			using _UOutputRange = __txt_detail::__remove_cvref_t<_OutputRange>;
+			using _UInputRange  = remove_cvref_t<_InputRange>;
+			using _UOutputRange = remove_cvref_t<_OutputRange>;
 			using _Result     = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
-			using _OutByteIt  = __txt_detail::__word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
-			using _OutByteSen = __txt_detail::__word_sentinel;
+			using _OutByteIt  = ranges::word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
+			using _OutByteSen = ranges::word_sentinel;
 
-			subrange<_OutByteIt, _OutByteSen> __outwords(
+			ranges::subrange<_OutByteIt, _OutByteSen> __outwords(
 				_OutByteIt(::std::forward<_OutputRange>(__output)), _OutByteSen());
 			auto __result = this->base().encode_one(::std::forward<_InputRange>(__input), __outwords,
 				::std::forward<_ErrorHandler>(__error_handler), __s);
-			return _Result(
-				__txt_detail::__reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__result.input)),
-				__txt_detail::__reconstruct(
+			return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__result.input)),
+				ranges::reconstruct(
 				     ::std::in_place_type<_UOutputRange>, ::std::move(__result.output).begin().range()),
 				__s, __result.error_code, __result.handled_errors);
 		}
@@ -551,11 +551,12 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	///
 	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_ENCODING_SCHEME_HPP

@@ -59,7 +59,7 @@ int main() {
 	std::vector<char> utf8_bytes(
 	     std::istreambuf_iterator<char>(expected_input_file), std::istreambuf_iterator<char> {});
 
-	ztd::text::span<char> shift_jis_input(shift_jis_bytes);
+	ztd::ranges::span<char> shift_jis_input(shift_jis_bytes);
 	std::string utf8_string      = ztd::text::transcode(shift_jis_input, shift_jis(), ztd::text::compat_utf8(),
           ztd::text::replacement_handler(), ztd::text::replacement_handler());
 	std::string_view utf8_input  = utf8_string;

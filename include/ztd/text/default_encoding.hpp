@@ -48,11 +48,11 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/unicode_scalar_value.hpp>
 
-#include <ztd/text/detail/type_traits.hpp>
+#include <ztd/text/type_traits.hpp>
 
 #include <cstdint>
 
-#include <ztd/text/detail/prologue.hpp>
+#include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -70,26 +70,26 @@ namespace ztd { namespace text {
 						::std::conditional_t<::std::is_same_v<_Type, signed char>, basic_ascii<signed char>,
 							::std::conditional_t<::std::is_same_v<_Type, uchar8_t>, utf8,
 								::std::conditional_t<::std::is_same_v<_Type, unsigned char>, basic_utf8<unsigned char>,
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 									::std::conditional_t<::std::is_same_v<_Type, char8_t>, basic_utf8<char8_t>,
 #endif
 										::std::conditional_t<::std::is_same_v<_Type, char16_t>, utf16,
 											::std::conditional_t<::std::is_same_v<_Type, char32_t>, utf32,
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
 												::std::conditional_t<::std::is_same_v<_Type, unicode_code_point>, basic_utf32<unicode_code_point>,
 #endif
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
 													::std::conditional_t<::std::is_same_v<_Type, unicode_scalar_value>, basic_utf32<unicode_scalar_value>,
 #endif
 														::std::conditional_t<::std::is_same_v<_Type, ::std::byte>, encoding_scheme<utf8, endian::native, ::std::byte>, basic_no_encoding<_Type, unicode_code_point>>
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
 													>
 #endif
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
 												>
 #endif
 											>
-#if ZTD_TEXT_IS_ON(ZTD_TEXT_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 										>
 #endif
 									>
@@ -100,7 +100,7 @@ namespace ztd { namespace text {
 				>;
 			// clang-format on
 
-			static_assert(!__txt_detail::__is_specialization_of_v<_ChosenType, basic_no_encoding>,
+			static_assert(!is_specialization_of_v<_ChosenType, basic_no_encoding>,
 				"there is no default encoding for the given code unit type");
 
 		public:
@@ -111,7 +111,7 @@ namespace ztd { namespace text {
 			/// - @c char ➡ ztd::text::execution (runtime), ztd::text::literal (compiletime)
 			/// - @c wchar_t ➡ ztd::text::wide_execution (runtime), ztd::text::wide_literal (compiletime)
 			/// - @c char8_t ➡ ztd::text::utf8
-			/// - @c ztd::text::uchar8_t ➡ ztd::text::utf8 (if different from @c char8_t type)
+			/// - @c ztd::uchar8_t ➡ ztd::text::utf8 (if different from @c char8_t type)
 			/// - @c std::byte ➡ ztd::text::basic_utf8<std::byte>
 			/// - @c signed char ➡ ztd::text::basic_ascii<signed char>
 			/// - @c char16_t ➡ ztd::text::utf16
@@ -223,6 +223,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#include <ztd/text/detail/epilogue.hpp>
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_DEFAULT_ENCODING_HPP
