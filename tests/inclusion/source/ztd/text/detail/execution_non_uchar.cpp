@@ -28,19 +28,4 @@
 //
 // ============================================================================>
 
-#pragma once
-
-#ifndef ZTD_TEXT_WIDE_EXECUTION_HPP
-#define ZTD_TEXT_WIDE_EXECUTION_HPP
-
-#include <ztd/text/version.hpp>
-
-#include <ztd/text/detail/windows.hpp>
-
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-#include <ztd/text/detail/wide_execution_windows.hpp>
-#else
-#include <ztd/text/detail/wide_execution_non_windows.hpp>
-#endif
-
-#endif // ZTD_TEXT_WIDE_EXECUTION_HPP
+#include <ztd/text/detail/execution_non_uchar.hpp>

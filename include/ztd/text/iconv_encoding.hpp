@@ -30,17 +30,21 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_WIDE_EXECUTION_HPP
-#define ZTD_TEXT_WIDE_EXECUTION_HPP
+#ifndef ZTD_TEXT_ICONV_ENCODING_HPP
+#define ZTD_TEXT_ICONV_ENCODING_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/windows.hpp>
+#include <ztd/prologue.hpp>
 
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-#include <ztd/text/detail/wide_execution_windows.hpp>
-#else
-#include <ztd/text/detail/wide_execution_non_windows.hpp>
-#endif
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-#endif // ZTD_TEXT_WIDE_EXECUTION_HPP
+	// WIP!
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+#include <ztd/epilogue.hpp>
+
+#endif // ZTD_TEXT_ICONV_ENCODING_HPP

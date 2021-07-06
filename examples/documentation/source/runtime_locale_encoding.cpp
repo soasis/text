@@ -30,8 +30,16 @@
 
 #include <ztd/text.hpp>
 
-#include <cuchar>
 #include <cstddef>
+#if !defined(_LIBCPP_VERSION)
+#include <cuchar>
+#define UCHAR_ACCESS ::std::
+#else
+extern "C" {
+#include <uchar.h>
+}
+#define UCHAR_ACCESS ::
+#endif
 
 #if defined(_WIN32_)
 #define NOMINMAX 1
@@ -56,7 +64,8 @@ public:
 		decode_state() noexcept : c_stdlib_state() {
 			// properly set for mbrtoc32 state
 			code_point ghost_ouput[2] {};
-			std::mbrtoc32(ghost_ouput, "\0", 1, &c_stdlib_state);
+			UCHAR_ACCESS mbrtoc32(
+			     ghost_ouput, "\0", 1, &c_stdlib_state);
 		}
 	};
 
@@ -66,7 +75,7 @@ public:
 		encode_state() noexcept : c_stdlib_state() {
 			// properly set for c32rtomb state
 			code_unit ghost_ouput[MB_LEN_MAX] {};
-			std::c32rtomb(ghost_ouput, U'\0', &c_stdlib_state);
+			UCHAR_ACCESS c32rtomb(ghost_ouput, U'\0', &c_stdlib_state);
 		}
 	};
 
@@ -140,8 +149,8 @@ public:
 			               insufficient_output_space),
 			     empty_span());
 		}
-		std::size_t result = std::mbrtoc32(output.data(), input.data(),
-		     input.size(), &current.c_stdlib_state);
+		std::size_t result = UCHAR_ACCESS mbrtoc32(output.data(),
+		     input.data(), input.size(), &current.c_stdlib_state);
 		switch (result) {
 		case (std::size_t)0:
 			// '\0' was encountered in the input
@@ -196,8 +205,9 @@ public:
 				// no more input: everything is fine
 				return rtl_encode_result(input, output, current);
 			}
-			std::size_t result = std::c32rtomb(intermediate_buffer,
-			     *input.data(), &current.c_stdlib_state);
+			std::size_t result
+			     = UCHAR_ACCESS c32rtomb(intermediate_buffer,
+			          *input.data(), &current.c_stdlib_state);
 			if (result == (std::size_t)-1) {
 				// invalid sequence!
 				return error_handler(*this,
