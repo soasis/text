@@ -43,7 +43,7 @@
 
 #include <ztd/prologue.hpp>
 
-namespace ztd { namespace text {
+namespace ztd { namespace ranges {
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
@@ -57,7 +57,7 @@ namespace ztd { namespace text {
 	using ::std::span;
 
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text
+}} // namespace ztd::ranges
 
 #else
 
@@ -97,16 +97,14 @@ namespace std { namespace ranges {
 namespace ztd { namespace ranges {
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __rng_detail {
-		template <typename _Ty>
-		class __is_std_span : public ::std::false_type { };
+	template <typename _Ty>
+	class is_span : public ::std::false_type { };
 
-		template <typename _Ty, decltype(::ztd::ranges::dynamic_extent) _N>
-		class __is_std_span<::ztd::ranges::span<_Ty, _N>> : public ::std::true_type { };
+	template <typename _Ty, decltype(::ztd::ranges::dynamic_extent) _N>
+	class is_span<::ztd::ranges::span<_Ty, _N>> : public ::std::true_type { };
 
-		template <typename _Ty>
-		inline constexpr bool __is_std_span_v = __is_std_span<_Ty>::value;
-	} // namespace __rng_detail
+	template <typename _Ty>
+	inline constexpr bool is_span_v = is_span<_Ty>::value;
 
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::ranges

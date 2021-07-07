@@ -1014,7 +1014,7 @@ namespace nonstd { namespace span_lite {
 			extent_type OtherExtent span_REQUIRES_T(((Extent == dynamic_extent || Extent == OtherExtent)
 			     && std::is_convertible<OtherElementType (*)[], element_type (*)[]>::value))>
 		span_constexpr_exp span(span<OtherElementType, OtherExtent> const& other) span_noexcept
-		: data_(reinterpret_cast<pointer>(other.data())),
+		: data_(static_cast<pointer>(other.data())),
 		  size_(other.size()) {
 			span_EXPECTS(OtherExtent == dynamic_extent || other.size() == to_size(OtherExtent));
 		}

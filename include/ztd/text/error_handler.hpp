@@ -52,6 +52,7 @@
 #include <ztd/text/detail/transcode_one.hpp>
 
 #include <ztd/ranges/range.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 #include <ztd/idk/ebco.hpp>
 
 #include <climits>

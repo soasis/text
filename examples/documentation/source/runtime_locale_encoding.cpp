@@ -30,8 +30,12 @@
 
 #include <ztd/text.hpp>
 
-#include <cstddef>
 #if !defined(_LIBCPP_VERSION)
+// This example doesn't work on Apple/libc++ because they don't have
+// standard C or C++ headers.
+
+#include <cstddef>
+#if defined(__has_include) && __has_include(<cuchar>)
 #include <cuchar>
 #define UCHAR_ACCESS ::std::
 #else
@@ -257,3 +261,5 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
+#endif

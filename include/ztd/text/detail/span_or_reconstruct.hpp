@@ -50,31 +50,44 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _Input>
 		constexpr bool __span_or_reconstruct_noexcept() {
-			using _UInput = remove_cvref_t<_Input>;
-			if constexpr (::std::is_array_v<_UInput> && ::std::is_lvalue_reference_v<_Input>) {
+			using _CVInput = ::std::remove_reference_t<_Input>;
+			using _UInput  = remove_cvref_t<_Input>;
+			if constexpr (is_specialization_of_v<_UInput,
+				              ::std::basic_string_view> || ::ztd::ranges::is_span_v<_UInput>) {
 				return true;
 			}
-			else if constexpr (ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<_Input>>) {
-				return true;
+			else if constexpr (ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<_CVInput>>) {
+				using _Ty  = ::ztd::ranges::range_value_type_t<_UInput>;
+				using _Tag = ::std::in_place_type_t<::ztd::ranges::span<_Ty>>;
+				return ::ztd::ranges::__rng_detail::__is_cascade_range_reconstruct_noexcept<_Tag, _Input>();
 			}
 			else {
-				return noexcept(
-					::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::declval<_Input>()));
+				using _Tag = ::std::in_place_type_t<_UInput>;
+				return ::ztd::ranges::__rng_detail::__is_cascade_range_reconstruct_noexcept<_Tag, _Input>();
 			}
 		}
 
 		template <typename _Input>
 		constexpr bool __string_view_or_span_or_reconstruct_noexcept() {
-			using _VInput = ::std::remove_reference_t<_Input>;
-			using _UInput = remove_cvref_t<_Input>;
+			using _CVInput = ::std::remove_reference_t<_Input>;
+			using _UInput  = remove_cvref_t<_Input>;
 			if constexpr (
 				::std::is_array_v<
-				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_VInput>> && ::std::is_lvalue_reference_v<_Input>) {
-				return true;
+				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_CVInput>> && ::std::is_lvalue_reference_v<_Input>) {
+				using _CharTy = ::std::remove_extent_t<_UInput>;
+				if constexpr (is_char_traitable_v<_CharTy>) {
+					return ::std::is_nothrow_constructible_v<::std::basic_string_view<_CharTy>, _Input>;
+				}
+				else {
+					using _Ty  = ::std::remove_extent_t<_CVInput>;
+					using _Tag = ::std::in_place_type_t<::ztd::ranges::span<const _Ty>>;
+					using _It  = ranges::range_iterator_t<_Input>;
+					using _Sen = ranges::range_iterator_t<_Input>;
+					return ::ztd::ranges::__rng_detail::__is_cascade_reconstruct_noexcept<_Tag, _It, _Sen>();
+				}
 			}
 			else {
-				return noexcept(
-					::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::declval<_Input>()));
+				return __span_or_reconstruct_noexcept<_Input>();
 			}
 		}
 
@@ -82,12 +95,14 @@ namespace ztd { namespace text {
 		constexpr auto __span_or_reconstruct(_Input&& __input) noexcept(__span_or_reconstruct_noexcept<_Input>()) {
 			using _VInput = ::std::remove_reference_t<_Input>;
 			using _UInput = remove_cvref_t<_Input>;
-			if constexpr (
-				ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<
-				     _Input>> && !is_specialization_of_v<_UInput, ::std::basic_string_view> && !::ztd::ranges::__rng_detail::__is_std_span_v<_UInput>) {
-				using _Ty = ::std::remove_extent_t<_VInput>;
-				return ::ztd::ranges::reconstruct(::std::in_place_type<::ztd::ranges::span<_Ty>>,
-					ranges::ranges_adl::adl_begin(__input), ranges::ranges_adl::adl_end(__input));
+			if constexpr (is_specialization_of_v<_UInput,
+				              ::std::basic_string_view> || ::ztd::ranges::is_span_v<_UInput>) {
+				return __input;
+			}
+			else if constexpr (ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<_VInput>>) {
+				using _Ty = ::std::remove_reference_t<::ztd::ranges::range_reference_t<_VInput>>;
+				return ::ztd::ranges::reconstruct(
+					::std::in_place_type<::ztd::ranges::span<_Ty>>, ::std::forward<_Input>(__input));
 			}
 			else {
 				return ::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::forward<_Input>(__input));
@@ -97,39 +112,24 @@ namespace ztd { namespace text {
 		template <typename _Input>
 		constexpr auto __string_view_or_span_or_reconstruct(_Input&& __input) noexcept(
 			__string_view_or_span_or_reconstruct_noexcept<_Input>()) {
-			using _VInput = ::std::remove_reference_t<_Input>;
-			using _UInput = remove_cvref_t<_Input>;
+			using _CVInput = ::std::remove_reference_t<_Input>;
+			using _UInput  = remove_cvref_t<_Input>;
+			// try to catch string literals / arrays
 			if constexpr (
 				::std::is_array_v<
-				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_VInput>> && ::std::is_lvalue_reference_v<_Input>) {
+				     _UInput> && ::std::is_const_v<::std::remove_extent_t<_CVInput>> && ::std::is_lvalue_reference_v<_Input>) {
 				using _CharTy = ::std::remove_extent_t<_UInput>;
 				if constexpr (is_char_traitable_v<_CharTy>) {
 					return ::std::basic_string_view<_CharTy>(::std::forward<_Input>(__input));
 				}
 				else {
-					using _Ty = ::std::remove_extent_t<_VInput>;
-					return ::ztd::ranges::reconstruct(::std::in_place_type<::ztd::ranges::span<_Ty>>,
+					using _Ty = ::std::remove_extent_t<_CVInput>;
+					return ::ztd::ranges::reconstruct(::std::in_place_type<::ztd::ranges::span<const _Ty>>,
 						ranges::ranges_adl::adl_begin(__input), ranges::ranges_adl::adl_end(__input));
 				}
 			}
 			else {
-				if constexpr (
-					ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<
-					     _Input>> && !is_specialization_of_v<_UInput, ::std::basic_string_view> && !::ztd::ranges::__rng_detail::__is_std_span_v<_UInput>) {
-					using _CharTy = ranges::range_value_type_t<_Input>;
-					if constexpr (is_char_traitable_v<_CharTy>) {
-						return ::ztd::ranges::reconstruct(::std::in_place_type<::std::basic_string_view<_CharTy>>,
-							ranges::ranges_adl::adl_begin(__input), ranges::ranges_adl::adl_end(__input));
-					}
-					else {
-						return ::ztd::ranges::reconstruct(::std::in_place_type<::ztd::ranges::span<_CharTy>>,
-							ranges::ranges_adl::adl_begin(__input), ranges::ranges_adl::adl_end(__input));
-					}
-				}
-				else {
-					return ::ztd::ranges::reconstruct(
-						::std::in_place_type<_UInput>, ::std::forward<_Input>(__input));
-				}
+				return __span_or_reconstruct(::std::forward<_Input>(__input));
 			}
 		}
 

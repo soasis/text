@@ -57,87 +57,109 @@ namespace ztd { namespace ranges {
 
 	namespace __rng_detail {
 
+		class __reconstruct_fn;
+
+		template <typename _It, typename _Sen>
+		static constexpr bool __is_cascade_iterator_reconstruct_noexcept() noexcept {
+			if constexpr (((::std::is_class_v<_It> || ::std::is_enum_v<_It>)
+				              || (::std::is_class_v<_Sen> || ::std::is_enum_v<_Sen>))
+				&& is_tag_invocable_v<__reconstruct_fn, _It, _Sen>) {
+				return is_nothrow_tag_invocable_v<__reconstruct_fn, _It, _Sen>;
+			}
+			else {
+				return ::std::is_nothrow_constructible_v<subrange<remove_cvref_t<_It>, remove_cvref_t<_Sen>>, _It,
+					_Sen>;
+			}
+		}
+
+		template <typename _InPlace, typename _It, typename _Sen>
+		static constexpr bool __is_cascade_reconstruct_noexcept() noexcept {
+			return is_tag_invocable_v<__reconstruct_fn, _InPlace, _It, _Sen>
+				? is_nothrow_tag_invocable_v<__reconstruct_fn, _InPlace, _It, _Sen>
+				: __is_cascade_iterator_reconstruct_noexcept<_It, _Sen>();
+		}
+
+		template <typename _InPlace, typename _Range, typename _It, typename _Sen>
+		static constexpr bool __is_cascade_range_iterator_reconstruct_noexcept() noexcept {
+			return is_tag_invocable_v<__reconstruct_fn, _InPlace, _Range, _It, _Sen>
+				? is_nothrow_tag_invocable_v<__reconstruct_fn, _InPlace, _Range, _It, _Sen>
+				: __is_cascade_reconstruct_noexcept<_InPlace, _It, _Sen>();
+		}
+
+		template <typename _InPlace, typename _Range>
+		static constexpr bool __is_cascade_range_reconstruct_noexcept() noexcept {
+			return __is_cascade_range_iterator_reconstruct_noexcept<_InPlace, _Range, range_iterator_t<_Range>,
+				range_sentinel_t<_Range>>();
+		}
+
+		template <typename _InPlaceOrIt, typename _RangeOrSen>
+		static constexpr bool __is_cascade_range_reconstruct_or_iterator_reconstruct_noexcept() noexcept {
+			if constexpr (is_specialization_of_v<remove_cvref_t<_InPlaceOrIt>, ::std::in_place_type_t>) {
+				return __is_cascade_range_reconstruct_noexcept<_InPlaceOrIt, _RangeOrSen>();
+			}
+			else {
+				return __is_cascade_iterator_reconstruct_noexcept<_InPlaceOrIt, _RangeOrSen>();
+			}
+		}
+
 		class __reconstruct_fn : public ::ztd::hijack::token {
-		private:
-			template <typename _TagOrIt, typename _RangeOrSen>
-			static constexpr bool __range_reconstruct_or_iterator_reconstruct_noexcept() noexcept {
-				if constexpr (is_tag_invocable_v<__reconstruct_fn, _TagOrIt, _RangeOrSen>) {
-					return is_nothrow_tag_invocable_v<__reconstruct_fn, _TagOrIt, _RangeOrSen>;
-				}
-				else if constexpr (is_specialization_of_v<remove_cvref_t<_TagOrIt>, ::std::in_place_type_t>) {
-					return __range_iterator_reconstruct_noexcept<_TagOrIt, _RangeOrSen,
-						decltype(ranges_adl::adl_begin(::std::declval<_RangeOrSen>())),
-						decltype(ranges_adl::adl_end(::std::declval<_RangeOrSen>()))>();
-				}
-				else {
-					return ::std::is_nothrow_constructible_v<
-						subrange<remove_cvref_t<_TagOrIt>, remove_cvref_t<_RangeOrSen>>, _TagOrIt, _RangeOrSen>;
-				}
-			}
-
-			template <typename _Tag, typename _It, typename _Sen>
-			static constexpr bool __reconstruct_noexcept() noexcept {
-				return is_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_Tag>, _It, _Sen>
-					? is_nothrow_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_Tag>, _It, _Sen>
-					: __range_reconstruct_or_iterator_reconstruct_noexcept<_It, _Sen>();
-			}
-
-			template <typename _Tag, typename _Range, typename _It, typename _Sen>
-			static constexpr bool __range_iterator_reconstruct_noexcept() noexcept {
-				return is_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_Tag>, _Range, _It, _Sen>
-					? is_nothrow_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_Tag>, _Range, _It, _Sen>
-					: __reconstruct_noexcept<_Tag, _It, _Sen>();
-			}
-
 		public:
-			template <typename _Tag, typename _It, typename _Sen>
-			constexpr auto operator()(::std::in_place_type_t<_Tag> __ty, _It&& __iterator, _Sen&& __sentinel) const
-				noexcept(__reconstruct_noexcept<_Tag, _It, _Sen>()) {
-				if constexpr (is_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_Tag>, _It, _Sen>) {
+			template <typename _InPlaceTag, typename _It, typename _Sen>
+			constexpr auto operator()(
+				::std::in_place_type_t<_InPlaceTag> __inplace, _It&& __iterator, _Sen&& __sentinel) const
+				noexcept(__is_cascade_reconstruct_noexcept<::std::in_place_type_t<_InPlaceTag>, _It, _Sen>()) {
+				if constexpr (is_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_InPlaceTag>, _It,
+					              _Sen>) {
 					return ::ztd::tag_invoke(
-						*this, __ty, ::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
+						*this, __inplace, ::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
 				}
 				else {
+					(void)__inplace;
 					return (*this)(::std::forward<_It>(__iterator), ::std::forward<_Sen>(__sentinel));
 				}
 			}
 
-			template <typename _Tag, typename _Range, typename _It, typename _Sen>
-			constexpr decltype(auto) operator()(::std::in_place_type_t<_Tag> __tag, _Range&& __range, _It&& __it,
-				_Sen&& __sen) const noexcept(__range_iterator_reconstruct_noexcept<_Tag, _Range, _It, _Sen>()) {
-				if constexpr (is_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_Tag>, _Range, _It,
+			template <typename _InPlaceTag, typename _Range, typename _It, typename _Sen>
+			constexpr decltype(auto) operator()(
+				::std::in_place_type_t<_InPlaceTag> __inplace, _Range&& __range, _It&& __it, _Sen&& __sen) const
+				noexcept(__is_cascade_range_iterator_reconstruct_noexcept<::std::in_place_type_t<_InPlaceTag>,
+				     _Range, _It, _Sen>()) {
+				if constexpr (is_tag_invocable_v<__reconstruct_fn, ::std::in_place_type_t<_InPlaceTag>, _Range, _It,
 					              _Sen>) {
-					return ::ztd::tag_invoke(*this, __tag, ::std::forward<_Range>(__range),
+					return ::ztd::tag_invoke(*this, __inplace, ::std::forward<_Range>(__range),
 						::std::forward<_It>(__it), ::std::forward<_Sen>(__sen));
 				}
 				else {
-					return (*this)(__tag, ::std::forward<_It>(__it), ::std::forward<_Sen>(__sen));
+					return (*this)(__inplace, ::std::forward<_It>(__it), ::std::forward<_Sen>(__sen));
 				}
 			}
 
-			template <typename _TagOrIt, typename _RangeOrSen>
+			template <typename _InPlaceOrIt, typename _RangeOrSen>
 			constexpr decltype(auto) operator()(
-				_TagOrIt&& __tag_or_iterator, _RangeOrSen&& __range_or_sentinel) const
-				noexcept(__range_reconstruct_or_iterator_reconstruct_noexcept<_TagOrIt, _RangeOrSen>()) {
-				if constexpr (is_specialization_of_v<remove_cvref_t<_TagOrIt>, ::std::in_place_type_t>) {
-					if constexpr (is_tag_invocable_v<__reconstruct_fn, _TagOrIt, _RangeOrSen>) {
-						return ::ztd::tag_invoke(*this, ::std::forward<_TagOrIt>(__tag_or_iterator),
+				_InPlaceOrIt&& __inplace_or_iterator, _RangeOrSen&& __range_or_sentinel) const
+				noexcept(
+				     __is_cascade_range_reconstruct_or_iterator_reconstruct_noexcept<_InPlaceOrIt, _RangeOrSen>()) {
+				if constexpr (is_specialization_of_v<remove_cvref_t<_InPlaceOrIt>, ::std::in_place_type_t>) {
+					if constexpr (is_tag_invocable_v<__reconstruct_fn, _InPlaceOrIt, _RangeOrSen>) {
+						return ::ztd::tag_invoke(*this, ::std::forward<_InPlaceOrIt>(__inplace_or_iterator),
 							::std::forward<_RangeOrSen>(__range_or_sentinel));
 					}
 					else {
-						return (*this)(::std::forward<_TagOrIt>(__tag_or_iterator),
+						return (*this)(::std::forward<_InPlaceOrIt>(__inplace_or_iterator),
 							::std::forward<_RangeOrSen>(__range_or_sentinel),
-							ranges_adl::adl_begin(__range_or_sentinel),
-							ranges_adl::adl_end(__range_or_sentinel));
+							ranges_adl::adl_begin(::std::forward<_RangeOrSen>(__range_or_sentinel)),
+							ranges_adl::adl_end(::std::forward<_RangeOrSen>(__range_or_sentinel)));
 					}
 				}
-				else if constexpr (is_tag_invocable_v<__reconstruct_fn, _TagOrIt, _RangeOrSen>) {
-					return ::ztd::tag_invoke(*this, ::std::forward<_TagOrIt>(__tag_or_iterator),
+				else if constexpr (((::std::is_class_v<_InPlaceOrIt> || ::std::is_enum_v<_InPlaceOrIt>)
+					                   || (::std::is_class_v<_RangeOrSen> || ::std::is_enum_v<_RangeOrSen>))
+					&& is_tag_invocable_v<__reconstruct_fn, _InPlaceOrIt, _RangeOrSen>) {
+					return ::ztd::tag_invoke(*this, ::std::forward<_InPlaceOrIt>(__inplace_or_iterator),
 						::std::forward<_RangeOrSen>(__range_or_sentinel));
 				}
 				else {
-					return subrange<remove_cvref_t<_TagOrIt>, remove_cvref_t<_RangeOrSen>>(
-						::std::forward<_TagOrIt>(__tag_or_iterator),
+					return subrange<remove_cvref_t<_InPlaceOrIt>, remove_cvref_t<_RangeOrSen>>(
+						::std::forward<_InPlaceOrIt>(__inplace_or_iterator),
 						::std::forward<_RangeOrSen>(__range_or_sentinel));
 				}
 			}
@@ -155,6 +177,37 @@ namespace ztd { namespace ranges {
 		/// questions about what is in the list for ADL and drive up compile-times.
 		inline constexpr __rng_detail::__reconstruct_fn reconstruct = {};
 	} // namespace _c
+
+	template <typename _It, typename _Sen>
+	inline constexpr bool is_iterator_reconstructible_v
+		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
+
+	template <typename _Tag, typename _It, typename _Sen>
+	inline constexpr bool is_reconstructible_v = is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _It, _Sen>;
+
+	template <typename _Tag, typename _Range, typename _It, typename _Sen>
+	inline constexpr bool is_range_iterator_reconstructible_v
+		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range, _It, _Sen>;
+
+	template <typename _Tag, typename _Range>
+	inline constexpr bool is_range_reconstructible_v
+		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range>;
+
+	template <typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_iterator_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
+
+	template <typename _Tag, typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _It, _Sen>;
+
+	template <typename _Tag, typename _Range, typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_range_iterator_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range, _It, _Sen>;
+
+	template <typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_range_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
 
 	template <typename _Range, typename _It = ranges::range_iterator_t<remove_cvref_t<_Range>>,
 		typename _Sen = ranges::range_sentinel_t<remove_cvref_t<_Range>>>
@@ -209,7 +262,7 @@ namespace ztd { namespace hijack {
 				return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);
 			}
 #endif
-			return ::std::basic_string_view<_Ty, _Traits>(idk_adl::adl_to_address(__iterator), __ptr_size);
+			return ::std::basic_string_view<_Ty, _Traits>(::ztd::idk_adl::adl_to_address(__iterator), __ptr_size);
 		}
 		else {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
@@ -219,7 +272,7 @@ namespace ztd { namespace hijack {
 			}
 #endif
 			return ::std::basic_string_view<_Ty, _Traits>(
-				idk_adl::adl_to_address(__iterator), static_cast<_SizeType>(__sentinel));
+				::ztd::idk_adl::adl_to_address(__iterator), static_cast<_SizeType>(__sentinel));
 		}
 	}
 

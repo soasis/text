@@ -42,7 +42,6 @@
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
-
 #include <ztd/text/detail/replacement.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 
@@ -143,10 +142,10 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto decode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-			using _UInputRange                  = remove_cvref_t<_InputRange>;
-			using _UOutputRange                 = remove_cvref_t<_OutputRange>;
-			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-			using _Result                       = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, state>;
+			using _UInputRange   = remove_cvref_t<_InputRange>;
+			using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
+			using _Result        = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 			auto __init   = ranges::ranges_adl::adl_begin(__input);
@@ -226,10 +225,10 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto encode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-			using _UInputRange                  = remove_cvref_t<_InputRange>;
-			using _UOutputRange                 = remove_cvref_t<_OutputRange>;
-			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-			using _Result                       = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, state>;
+			using _UInputRange   = remove_cvref_t<_InputRange>;
+			using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
+			using _Result        = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 			auto __init   = ranges::ranges_adl::adl_begin(__input);
