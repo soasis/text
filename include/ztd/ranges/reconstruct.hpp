@@ -158,6 +158,7 @@ namespace ztd { namespace ranges {
 						::std::forward<_RangeOrSen>(__range_or_sentinel));
 				}
 				else {
+					// static_assert(ztd::always_false_v<_InPlaceOrIt>, "fuck off");
 					return subrange<remove_cvref_t<_InPlaceOrIt>, remove_cvref_t<_RangeOrSen>>(
 						::std::forward<_InPlaceOrIt>(__inplace_or_iterator),
 						::std::forward<_RangeOrSen>(__range_or_sentinel));
@@ -177,51 +178,6 @@ namespace ztd { namespace ranges {
 		/// questions about what is in the list for ADL and drive up compile-times.
 		inline constexpr __rng_detail::__reconstruct_fn reconstruct = {};
 	} // namespace _c
-
-	template <typename _It, typename _Sen>
-	inline constexpr bool is_iterator_reconstructible_v
-		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
-
-	template <typename _Tag, typename _It, typename _Sen>
-	inline constexpr bool is_reconstructible_v = is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _It, _Sen>;
-
-	template <typename _Tag, typename _Range, typename _It, typename _Sen>
-	inline constexpr bool is_range_iterator_reconstructible_v
-		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range, _It, _Sen>;
-
-	template <typename _Tag, typename _Range>
-	inline constexpr bool is_range_reconstructible_v
-		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range>;
-
-	template <typename _It, typename _Sen>
-	inline constexpr bool is_nothrow_iterator_reconstructible_v
-		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
-
-	template <typename _Tag, typename _It, typename _Sen>
-	inline constexpr bool is_nothrow_reconstructible_v
-		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _It, _Sen>;
-
-	template <typename _Tag, typename _Range, typename _It, typename _Sen>
-	inline constexpr bool is_nothrow_range_iterator_reconstructible_v
-		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range, _It, _Sen>;
-
-	template <typename _It, typename _Sen>
-	inline constexpr bool is_nothrow_range_reconstructible_v
-		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
-
-	template <typename _Range, typename _It = ranges::range_iterator_t<remove_cvref_t<_Range>>,
-		typename _Sen = ranges::range_sentinel_t<remove_cvref_t<_Range>>>
-	using reconstruct_t
-		= decltype(ranges::reconstruct(::std::declval<::std::in_place_type_t<remove_cvref_t<_Range>>>(),
-		     ::std::declval<_It>(), ::std::declval<_Sen>()));
-
-	template <typename _Range>
-	using range_reconstruct_t = decltype(ranges::reconstruct(
-		::std::declval<::std::in_place_type_t<remove_cvref_t<_Range>>>(), ::std::declval<_Range>()));
-
-	template <typename _Tag, typename _Range = _Tag>
-	using tag_range_reconstruct_t = decltype(ranges::reconstruct(
-		::std::declval<::std::in_place_type_t<remove_cvref_t<_Tag>>>(), ::std::declval<_Range>()));
 
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::ranges
@@ -277,6 +233,57 @@ namespace ztd { namespace hijack {
 	}
 
 }} // namespace ztd::hijack
+
+namespace ztd { namespace ranges {
+	ZTD_RANGES_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	template <typename _It, typename _Sen>
+	inline constexpr bool is_iterator_reconstructible_v
+		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
+
+	template <typename _Tag, typename _It, typename _Sen>
+	inline constexpr bool is_reconstructible_v = is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _It, _Sen>;
+
+	template <typename _Tag, typename _Range, typename _It, typename _Sen>
+	inline constexpr bool is_range_iterator_reconstructible_v
+		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range, _It, _Sen>;
+
+	template <typename _Tag, typename _Range>
+	inline constexpr bool is_range_reconstructible_v
+		= is_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range>;
+
+	template <typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_iterator_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
+
+	template <typename _Tag, typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _It, _Sen>;
+
+	template <typename _Tag, typename _Range, typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_range_iterator_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _Tag, _Range, _It, _Sen>;
+
+	template <typename _It, typename _Sen>
+	inline constexpr bool is_nothrow_range_reconstructible_v
+		= is_nothrow_tag_invocable_v<__rng_detail::__reconstruct_fn, _It, _Sen>;
+
+	template <typename _Range, typename _It = ranges::range_iterator_t<remove_cvref_t<_Range>>,
+		typename _Sen = ranges::range_sentinel_t<remove_cvref_t<_Range>>>
+	using reconstruct_t
+		= decltype(ranges::reconstruct(::std::declval<::std::in_place_type_t<remove_cvref_t<_Range>>>(),
+		     ::std::declval<_It>(), ::std::declval<_Sen>()));
+
+	template <typename _Range>
+	using range_reconstruct_t = decltype(ranges::reconstruct(
+		::std::declval<::std::in_place_type_t<remove_cvref_t<_Range>>>(), ::std::declval<_Range>()));
+
+	template <typename _Tag, typename _Range = _Tag>
+	using tag_range_reconstruct_t = decltype(ranges::reconstruct(
+		::std::declval<::std::in_place_type_t<remove_cvref_t<_Tag>>>(), ::std::declval<_Range>()));
+
+	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::ranges
 
 #include <ztd/epilogue.hpp>
 

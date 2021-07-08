@@ -625,7 +625,9 @@ namespace ztd { namespace text {
 			auto __this_cache_begin  = this->_M_cache.data();
 			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
 			::ztd::ranges::span<value_type, _MaxValues> __cache_view(this->_M_cache);
-			_IntermediateCodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
+			_IntermediateCodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
+			::ztd::ranges::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>> __intermediate(
+				__intermediate_storage);
 			if constexpr (_IsInputOrOutput) {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
 					::std::move(__this_input_range), this->from_encoding(), __cache_view, this->to_encoding(),
