@@ -55,13 +55,13 @@ int main(int, char*[]) {
 
 	// View the desired input file as UTF-16, in Little Endian format,
 	// where the source is given to us as `char`
-	ztd::text::decode_view<ztd::text::basic_utf16_le<char>, istreambuf_view> decode_view(input_file_view);
+	ztd::text::decode_view<ztd::text::basic_utf16_le<char>, istreambuf_view> decoding_view(input_file_view);
 
 	// Iterate over all the code points
 	// And print them out!
 	std::cout << "Code Points:" << std::endl;
 
-	for (const auto& code_point : decode_view) {
+	for (const auto code_point : decoding_view) {
 		std::cout << std::hex << (int)code_point << " ";
 		if (code_point == U'\n') {
 			std::cout << std::endl;

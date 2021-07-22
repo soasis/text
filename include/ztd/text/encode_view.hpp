@@ -182,7 +182,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Constructs an encoding_view from one of its iterators, reconstituting the range.
 		///
-		/// @param[in] __it A previously-made decode_view iterator.
+		/// @param[in] __it A previously-made encode_view iterator.
 		//////
 		constexpr encode_view(iterator __it) noexcept(::std::is_nothrow_move_constructible_v<iterator>)
 		: _M_it(::std::move(__it)) {
