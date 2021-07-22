@@ -61,6 +61,18 @@ Their work was groundbreaking when it first came about and employed similar conc
 
 
 
+Helping Hands
+-------------
+
+Whether it's just a little bit of time, a point towards the right direction, or some ideas, this library builds upon a lot of collective knowledge and effort. Here we list some of the filks who have spent some time doing this best to make sure we have the greatest text library on the planet for C++:
+
+- CopperSpice; Talking over many of their design struggles with trying to make better text in CopperSpice/Qt (https://www.youtube.com/watch?v=w_kD-qAkoH0)
+- `Luna <https://github.com/lunasorcery>`_ & `Lambda Kitten <https://github.com/emilazy>`_: Kick-starting better support for Clang / Apple (https://twitter.com/lambdakitten/status/1418240846638485510)
+- Much of rmf and `Henri Sivonen's <https://hsivonen.fi/>`_ writings and thoughts on the subjects of Unicode.
+- All of `Tom Honermann <https://github.com/tahonermann>`_'s previous work on Unicode, Text Processing, and Standardization.
+
+
+
 Charitable Contributions
 ------------------------
 
