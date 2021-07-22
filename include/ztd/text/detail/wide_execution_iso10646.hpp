@@ -30,12 +30,12 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
-#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
+#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP
+#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/utf16.hpp>
+#include <ztd/text/execution.hpp>
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/error_handler.hpp>
@@ -43,16 +43,12 @@
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/empty_state.hpp>
-#include <ztd/text/detail/windows.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/span.hpp>
 
-#include <ztd/text/detail/windows.hpp>
-
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-
+#include <cwchar>
 #include <iterator>
 #include <utility>
 
@@ -61,28 +57,18 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	/// @{
-	//////
-
 	namespace __impl {
-
 		//////
-		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding, as it exists on
-		/// Windows. The wide execution encoding is typically associated with the locale, which is tied to the C
-		/// standard library's setlocale function.
+		/// @brief The wide execution encoding, as envisioned by ISO 10646. Typically UTF-32 with native endianness.
 		///
-		/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c
-		/// ZTD_TEXT_USE_CUNEICODE and @c ZTD_TEXT_USE_ICONV is not defined, this object may use the C Standard
-		/// Library to perform transcoding if certain platform facilities are disabled or not available (e.g., a
-		/// Windows-like machine without the Windows SDK). If this is the case, the C Standard Library has fundamental
-		/// limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output. This object
-		/// uses UTF-16 directly on Windows when possible to avoid some of the platform-specific shenanigans.
+		/// @remarks This is generally only turned on when the Standard Definition is turn oned ( @c
+		/// __STDC_ISO_10646__ ). It effectively uses UTF-32 since that's the only encoding that can meet the original
+		/// requirement of the C Standard and C Standard Library with respect to what happens with individual @c
+		/// wchar_t objects.
 		//////
-		class __wide_execution_windows : private basic_utf16<wchar_t> {
+		class __wide_execution_iso10646 : private basic_utf32<wchar_t, char32_t> {
 		private:
-			using __base_t = basic_utf16<wchar_t>;
+			using __base_t = basic_utf32<wchar_t, char32_t>;
 
 		public:
 			using __base_t::code_point;
@@ -114,6 +100,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif
-
-#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
+#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP

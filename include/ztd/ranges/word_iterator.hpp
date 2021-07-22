@@ -108,8 +108,14 @@ namespace ztd { namespace ranges {
 
 	} // namespace __rng_detail
 
+	//////
+	/// @brief The sentinel type to be paired with a ztd::ranges::word_iterator
+	//////
 	using word_sentinel = ranges::default_sentinel_t;
 
+	//////
+	/// @brief An iterator that composes words out of the bits of a provided underlying stored range.
+	//////
 	template <typename _Word, typename _Range, endian _Endian>
 	class word_iterator
 	: private __rng_detail::__word_iterator_storage<_Word, range_reconstruct_t<remove_cvref_t<_Range>>,

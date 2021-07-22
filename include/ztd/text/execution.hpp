@@ -35,12 +35,53 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/windows.hpp>
+#include <ztd/text/no_encoding.hpp>
 
+#include <ztd/text/detail/execution_cuchar.hpp>
+#include <ztd/text/detail/execution_mac_os.hpp>
+#include <ztd/text/detail/execution_iconv.hpp>
+
+#include <ztd/prologue.hpp>
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	//////
+	/// @addtogroup ztd_text_encodings Encodings
+	/// @{
+	//////
+
+	//////
+	/// @brief The Encoding that represents the "Execution" (narrow locale-based) encoding. The execution encoding is
+	/// typically associated with the locale, which is tied to the C standard library's setlocale function.
+	///
+	/// @remarks Use of this type is subject to the C Standard Library or platform defaults. Some locales (such as the
+	/// Big5 Hong King Supplementary Character Set (Big5-HKSCS)) are broken when accessed without @c
+	/// ZTD_TEXT_USE_CUNEICODE beingdefined, due to fundamental design issues in the C Standard Library and bugs in
+	/// glibc/musl libc's current locale encoding support. On Apple, this is cuurrently assumed to be UTF-8 since they
+	/// do not support the @c <cuchar> or @c <uchar.h> headers.
+	//////
+	using execution =
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
-#include <ztd/text/detail/execution_uchar.hpp>
+		__impl::__execution_cuchar
+#elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
+		__impl::__execution_iconv
+#elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
+		__impl::__execution_mac_os
 #else
-#include <ztd/text/detail/execution_non_uchar.hpp>
+		no_encoding<char, unicode_code_point>
+#error \
+     "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
 #endif
+		;
+
+	//////
+	/// @}
+	//////
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_EXECUTION_HPP

@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/detail/execution_cuchar.hpp>
+#include <ztd/text/detail/wide_execution_iso10646.hpp>

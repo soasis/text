@@ -31,5 +31,4 @@
 Wide Execution
 ==============
 
-.. doxygenclass:: ztd::text::wide_execution
-	:members:
+.. doxygentypedef:: ztd::text::wide_execution

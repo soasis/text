@@ -69,52 +69,100 @@ namespace ztd { namespace ranges {
 		};
 	} // namespace __rng_detail
 
+	//////
+	/// @brief An output iterator that does absolutely nothing and swallows up all output operations into the void.
+	//////
 	class blackhole_iterator {
 	public:
+		//////
+		/// @brief The iterator category. All blackhole iterators are the weakest kind: output iterators.
+		//////
 		using iterator_category = ::std::output_iterator_tag;
-		using difference_type   = ::std::ptrdiff_t;
-		using pointer           = __rng_detail::__blackhole*;
-		using value_type        = __rng_detail::__blackhole;
-		using reference         = __rng_detail::__blackhole;
+		//////
+		/// @brief Standard @c std::ptrdiff_t @c difference_type definition.
+		//////
+		using difference_type = ::std::ptrdiff_t;
+		//////
+		/// @brief Mostly-useless pointer definition. Points to implementation-defined black hole type.
+		//////
+		using pointer = __rng_detail::__blackhole*;
+		//////
+		/// @brief An implementation-defined blackhole type that simply consumes everything and does nothing.
+		//////
+		using value_type = __rng_detail::__blackhole;
+		//////
+		/// @brief An implementation-defined blackhole type that simply consumes everything and does nothing.
+		//////
+		using reference = __rng_detail::__blackhole;
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator operator++(int) const {
 			auto __copy = *this;
 			++__copy;
 			return __copy;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator& operator+=(difference_type) {
 			return *this;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator& operator-=(difference_type) {
 			return *this;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator operator+(difference_type) {
 			return *this;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator operator-(difference_type) {
 			return *this;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr difference_type operator-(blackhole_iterator) {
 			return 0;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator& operator++() {
 			return *this;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator operator--(int) const {
 			return *this;
 		}
 
+		//////
+		/// @brief Does absolutely nothing.
+		//////
 		constexpr blackhole_iterator& operator--() {
 			return *this;
 		}
 
+		//////
+		/// @brief Returns the unspeakable blackhole reference type.
+		//////
 		constexpr reference operator*() const {
 			return reference {};
 		}

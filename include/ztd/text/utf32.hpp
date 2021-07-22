@@ -69,6 +69,9 @@ namespace ztd { namespace text {
 		template <typename _Derived = void, typename _CodeUnit = char32_t, typename _CodePoint = unicode_code_point,
 			bool __validate_decodable_as = true>
 		class __utf32_with : public __utf32_tag {
+		private:
+			using __self_t = ::std::conditional_t<::std::is_void_v<_Derived>, __utf32_with, _Derived>;
+
 		public:
 			//////
 			/// @brief Whether or not this encoding that can encode all of Unicode.
@@ -114,10 +117,6 @@ namespace ztd { namespace text {
 			//////
 			inline static constexpr ::std::size_t max_code_units = 1;
 
-		private:
-			using __self_t = typename ::std::conditional<::std::is_void_v<_Derived>, __utf32_with, _Derived>::type;
-
-		public:
 			//////
 			/// @brief Decodes a single complete unit of information as code points and produces a result with the
 			/// input and output ranges moved past what was successfully read and written; or, produces an error and

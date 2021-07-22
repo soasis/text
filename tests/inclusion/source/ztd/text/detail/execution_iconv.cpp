@@ -28,23 +28,4 @@
 //
 // ============================================================================>
 
-#pragma once
-
-#ifndef ZTD_TEXT_DETAIL_EXECUTION_NON_UCHAR_HPP
-#define ZTD_TEXT_DETAIL_EXECUTION_NON_UCHAR_HPP
-
-#include <ztd/text/version.hpp>
-
-#if ZTD_IS_OFF(ZTD_CUCHAR_I_) && ZTD_IS_OFF(ZTD_UCHAR_I_)
-
-#if ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-// TODO: we can likely save ourselves by using the iconv encoding instead.
-#include <ztd/text/iconv_encoding.hpp>
-#endif
-
-#error \
-     "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
-
-#endif
-
-#endif // ZTD_TEXT_DETAIL_EXECUTION_NON_UCHAR_HPP
+#include <ztd/text/detail/execution_iconv.hpp>

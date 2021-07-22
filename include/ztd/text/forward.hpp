@@ -58,6 +58,15 @@ namespace ztd { namespace text {
 		template <typename, typename, typename, bool>
 		class __utf32_with;
 
+		class __execution_cuchar;
+		class __execution_mac_os;
+		class __execution_iconv;
+
+		class __wide_execution_windows;
+		class __wide_execution_iso10646;
+		class __iconv_wide_execution;
+		class __wide_execution_cwchar;
+
 		class __unicode_code_point;
 		class __unicode_scalar_value;
 	} // namespace __impl
@@ -84,8 +93,6 @@ namespace ztd { namespace text {
 	template <typename, typename>
 	class basic_ascii;
 	using ascii = basic_ascii<char, unicode_code_point>;
-	class execution;
-	class wide_execution;
 	template <typename, typename>
 	class basic_utf8;
 	template <typename, typename>
@@ -95,6 +102,30 @@ namespace ztd { namespace text {
 	using utf8  = basic_utf8<uchar8_t, unicode_code_point>;
 	using utf16 = basic_utf16<char16_t, unicode_code_point>;
 	using utf32 = basic_utf32<char32_t, unicode_code_point>;
+
+	using execution =
+#if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
+		__impl::__execution_cuchar
+#elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
+		__impl::__execution_iconv
+#elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
+		__impl::__execution_mac_os
+#else
+		no_encoding<char, unicode_code_point>
+#endif
+		;
+
+	using wide_execution =
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+		__impl::__wide_execution_windows
+#elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
+		__impl::__iconv_wide_execution
+#elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE_I_)
+		__impl::__wide_execution_iso10646
+#else
+		__impl::__wide_execution_cwchar
+#endif
+		;
 
 	class nfc;
 	class nfd;

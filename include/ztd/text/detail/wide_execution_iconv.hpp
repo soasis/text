@@ -28,4 +28,15 @@
 //
 // ============================================================================>
 
-#include <ztd/text/detail/execution_cuchar.hpp>
+#pragma once
+
+#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
+#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
+
+#include <ztd/text/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
+// TODO: implement!
+#endif
+
+#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP

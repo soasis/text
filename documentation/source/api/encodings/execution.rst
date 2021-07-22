@@ -31,5 +31,4 @@
 Execution
 =========
 
-.. doxygenclass:: ztd::text::execution
-	:members:
+.. doxygentypedef:: ztd::text::execution

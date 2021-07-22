@@ -75,6 +75,9 @@ namespace ztd { namespace text {
 			bool __overlong_allowed = false, bool __surrogates_allowed = false,
 			bool __use_overlong_null_only = false>
 		class __utf8_with : public __utf8_tag {
+		private:
+			using __self_t = ::std::conditional_t<::std::is_void_v<_Derived>, __utf8_with, _Derived>;
+
 		public:
 			//////
 			/// @brief Whether or not this encoding that can encode all of Unicode.
@@ -120,10 +123,6 @@ namespace ztd { namespace text {
 			//////
 			inline static constexpr ::std::size_t max_code_units = __overlong_allowed ? 6 : 4;
 
-		private:
-			using __self_t = ::std::conditional_t<::std::is_void_v<_Derived>, __utf8_with, _Derived>;
-
-		public:
 			//////
 			/// @brief Encodes a single complete unit of information as code units and produces a result with the
 			/// input and output ranges moved past what was successfully read and written; or, produces an error and

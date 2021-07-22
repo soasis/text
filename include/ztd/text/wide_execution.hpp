@@ -35,12 +35,51 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/windows.hpp>
-
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 #include <ztd/text/detail/wide_execution_windows.hpp>
+#include <ztd/text/detail/wide_execution_iso10646.hpp>
+#include <ztd/text/detail/wide_execution_iconv.hpp>
+#include <ztd/text/detail/wide_execution_cwchar.hpp>
+
+#include <ztd/prologue.hpp>
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	//////
+	/// @addtogroup ztd_text_encodings Encodings
+	/// @{
+	//////
+
+	//////
+	/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. The wide execution
+	/// encoding is typically associated with the locale, which is tied to the C standard library's setlocale function.
+	///
+	/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c ZTD_TEXT_USE_CUNEICODE or
+	/// @c ZTD_TEXT_ICONV are not defined, this object may use the C Standard Library to perform transcoding if certain
+	/// platform facilities are disabled or not available. If this is the case, the C Standard Library has fundamental
+	/// limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output. This object uses
+	/// UTF-16 directly on Windows when possible to avoid some of the platform-specific shenanigans. It will attempt to
+	/// do UTF-32 conversions where possible as well, relying on C Standard definitions.
+	//////
+	using wide_execution =
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+		__impl::__wide_execution_windows
+#elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
+		__impl::__iconv_wide_execution
+#elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE_I_)
+		__impl::__wide_execution_iso10646
 #else
-#include <ztd/text/detail/wide_execution_non_windows.hpp>
+		__impl::__wide_execution_cwchar
 #endif
+		;
+
+	//////
+	/// @}
+	//////
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+#include <ztd/epilogue.hpp>
 
 #endif // ZTD_TEXT_WIDE_EXECUTION_HPP
