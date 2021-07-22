@@ -292,22 +292,18 @@ namespace ztd { namespace text {
 				return basic_utf16<_CharType> {};
 			}
 			else if constexpr (_Id == __encoding_id::__utf16le) {
-				// TODO: beef up encoding_scheme to handle this better...!
 				return basic_utf16_le<_CharType> {};
 			}
 			else if constexpr (_Id == __encoding_id::__utf16be) {
-				// TODO: beef up encoding_scheme to handle this better...!
 				return basic_utf16_be<_CharType> {};
 			}
 			else if constexpr (_Id == __encoding_id::__utf32) {
 				return basic_utf32<_CharType> {};
 			}
 			else if constexpr (_Id == __encoding_id::__utf32le) {
-				// TODO: beef up encoding_scheme to handle this better...!
 				return basic_utf32_le<_CharType> {};
 			}
 			else if constexpr (_Id == __encoding_id::__utf32be) {
-				// TODO: beef up encoding_scheme to handle this better...!
 				return basic_utf32_be<_CharType> {};
 			}
 			else if constexpr (_Id == __encoding_id::__ascii) {

@@ -36,6 +36,8 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/utf8.hpp>
+#include <ztd/text/is_unicode_encoding.hpp>
+#include <ztd/text/is_full_range_representable.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -61,10 +63,20 @@ namespace ztd { namespace text {
 		public:
 			using __base_t::code_point;
 			using __base_t::code_unit;
-			using __base_t::is_decode_injective;
-			using __base_t::is_encode_injective;
-			using __base_t::is_unicode_encoding;
 			using __base_t::state;
+
+			//////
+			/// @brief Whether or not this encoding is a unicode encoding or not.
+			//////
+			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<__base_t>>;
+			//////
+			/// @brief Whether or not this encoding's @c decode_one step is injective or not.
+			//////
+			using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__base_t>>;
+			//////
+			/// @brief Whether or not this encoding's @c encode_one step is injective or not.
+			//////
+			using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__base_t>>;
 
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
