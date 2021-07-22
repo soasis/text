@@ -31,24 +31,29 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
 
-#include <clocale>
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-int main(int argc, char* argv[]) {
-#ifdef _WIN32
-	char* res = std::setlocale(LC_ALL, ".65001");
-	if (res == nullptr) {
-		std::cerr << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
-		return -1;
-	}
-#else
-	char* res = std::setlocale(LC_ALL, "en_US.utf8");
-	if (res == nullptr) {
-		std::cerr << "cannot set the locale-based encoding in non-Windows to UTF8" << std::endl;
-		return -1;
-	}
-#endif
+#include <clocale>
 
+struct static_hook {
+	static_hook() {
+#ifdef _WIN32
+		char* res = std::setlocale(LC_ALL, ".65001");
+		if (res == nullptr) {
+			std::cout << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
+		}
+#elif defined(macintosh) || defined(Macintosh) || (__APPLE__)
+		// who knows what the hell goes on in Apple: assume UTF-8
+#else
+		char* res = std::setlocale(LC_ALL, "en_US.utf8");
+		if (res == nullptr) {
+			std::cout << "cannot set the locale-based encoding in non-Windows to UTF8" << std::endl;
+		}
+#endif
+	}
+} inline ztd_text_tests_utf8_startup {};
+
+int main(int argc, char* argv[]) {
 	int result = Catch::Session().run(argc, argv);
 	return result;
 }

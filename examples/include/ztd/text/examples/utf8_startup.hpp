@@ -43,6 +43,8 @@ struct static_hook {
 		if (res == nullptr) {
 			std::cout << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
 		}
+#elif defined(macintosh) || defined(Macintosh) || (__APPLE__)
+		// who knows what the hell goes on in Apple: assume UTF-8
 #else
 		char* res = std::setlocale(LC_ALL, "en_US.utf8");
 		if (res == nullptr) {
