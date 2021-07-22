@@ -262,4 +262,9 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+
+#else
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
+	return 0;
+}
 #endif

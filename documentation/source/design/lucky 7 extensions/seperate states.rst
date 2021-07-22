@@ -36,13 +36,13 @@ It is no secret that encoding and decoding may carrying with them separate state
 .. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
-	:lines: 46-47,55-73,233
+	:lines: 56-57,65-84,246
 
 This is the proper way to initialize a ``std::mbstate_t`` from the C standard library. Then, you can use it! Here's a complete implementation using the new ``encode_state`` and ``decode_state`` types:
 
 .. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
-	:lines: 46,116-233
+	:lines: 56,127-246
 
 This allows you to maintain 2 different states, initialized in 2 different ways, one for each of the ``encode_one`` and ``decode_one`` paths.

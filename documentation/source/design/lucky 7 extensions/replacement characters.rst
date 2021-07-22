@@ -47,7 +47,7 @@ These functions return a contiguous range of either ``code_unit``\ s or ``code_p
 .. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
-	:lines: 46-47,101-114,233
+	:lines: 56-57,112-125,246
 
 If the given replacement range is empty, then nothing is inserted at all (as this is a deliberate choice from the user. See the next section for how to have this function but graciously return "no replacements" for given runtime conditions).
 
