@@ -192,7 +192,7 @@ namespace ztd { namespace ranges {
 			/// @brief Constructs a ztd::text::subrange containing a defaulted iterator and a defaulted sentinel.
 			///
 			//////
-			constexpr __subrange() noexcept = default;
+			constexpr __subrange() = default;
 
 			//////
 			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by @p __range's @c begin()
