@@ -195,6 +195,47 @@ namespace ztd { namespace text {
 			__ascii
 		};
 
+		inline constexpr std::string_view to_name(__encoding_id __id) noexcept {
+			switch (__id) {
+			case __encoding_id::__unknown:
+				return "unknown";
+			case __encoding_id::__utf7imap:
+				return "utf7imap";
+			case __encoding_id::__utf7:
+				return "utf7";
+			case __encoding_id::__utfebcdic:
+				return "utfebcdic";
+			case __encoding_id::__utf8:
+				return "utf8";
+			case __encoding_id::__mutf8:
+				return "mutf8";
+			case __encoding_id::__wtf8:
+				return "wtf8";
+			case __encoding_id::__utf16:
+				return "utf16";
+			case __encoding_id::__utf16le:
+				return "utf16le";
+			case __encoding_id::__utf16be:
+				return "utf16be";
+			case __encoding_id::__utf32:
+				return "utf32";
+			case __encoding_id::__utf32le:
+				return "utf32le";
+			case __encoding_id::__utf32be:
+				return "utf32be";
+			case __encoding_id::__gb18030:
+				return "gb18030";
+			case __encoding_id::__utf1:
+				return "utf1";
+			case __encoding_id::__cesu8:
+				return "cesu8";
+			case __encoding_id::__ascii:
+				return "ascii";
+			default:
+				return "unknown";
+			}
+		}
+
 		inline constexpr __encoding_id __to_encoding_id(::std::string_view __name) {
 			if (__is_encoding_name_equal(__name, "UTF-8")) {
 				return __encoding_id::__utf8;

@@ -201,7 +201,7 @@ namespace ztd { namespace ranges {
 		/// @remarks This function call only works if the underlying iterator and sentinal types are copyable.
 		//////
 		[[nodiscard]] constexpr unbounded_view next() const& noexcept(
-			::std::is_nothrow_copy_constructible_v<iterator>&& noexcept(ranges::advance(this->_M_it))) {
+			::std::is_nothrow_copy_constructible_v<iterator>&& noexcept(ranges::advance(::std::declval<iterator&>()))) {
 			auto __it = this->_M_it;
 			ranges::advance(__it);
 			return unbounded_view(::std::move(__it));
@@ -214,7 +214,7 @@ namespace ztd { namespace ranges {
 		/// function call will move the iterators underlying this object.
 		//////
 		[[nodiscard]] constexpr unbounded_view next() && noexcept(
-			::std::is_nothrow_move_constructible_v<iterator>&& noexcept(ranges::advance(this->_M_it))) {
+			::std::is_nothrow_move_constructible_v<iterator>&& noexcept(ranges::advance(::std::declval<iterator&>()))) {
 			iterator __it = ::std::move(this->_M_it);
 			ranges::advance(__it);
 			return unbounded_view(::std::move(__it));
@@ -228,7 +228,7 @@ namespace ztd { namespace ranges {
 		/// @remarks This function call only works if the underlying iterator and sentinal types are copyable.
 		//////
 		[[nodiscard]] constexpr unbounded_view next(difference_type __diff) const& noexcept(
-			::std::is_nothrow_copy_constructible_v<iterator>&& noexcept(ranges::advance(this->_M_it, __diff))) {
+			::std::is_nothrow_copy_constructible_v<iterator>&& noexcept(ranges::advance(::std::declval<iterator&>(), __diff))) {
 			auto __it = this->_M_it;
 			ranges::advance(__it, __diff);
 			return unbounded_view(::std::move(__it));
@@ -243,7 +243,7 @@ namespace ztd { namespace ranges {
 		/// function call will move the iterators underlying this object.
 		//////
 		[[nodiscard]] constexpr unbounded_view next(difference_type __diff) && noexcept(
-			::std::is_nothrow_move_constructible_v<iterator>&& noexcept(ranges::advance(this->_M_it, __diff))) {
+			::std::is_nothrow_move_constructible_v<iterator>&& noexcept(ranges::advance(::std::declval<iterator&>(), __diff))) {
 			iterator __it = ::std::move(this->_M_it);
 			ranges::advance(__it, __diff);
 			return unbounded_view(::std::move(__it));
@@ -257,7 +257,7 @@ namespace ztd { namespace ranges {
 		/// @remarks This function call requires that the underlying iterator are bidirectional.
 		//////
 		[[nodiscard]] constexpr unbounded_view prev(difference_type __diff = 1) const noexcept(
-			::std::is_nothrow_copy_constructible_v<iterator>&& noexcept(ranges::recede(this->_M_it, __diff))) {
+			::std::is_nothrow_copy_constructible_v<iterator>&& noexcept(ranges::recede(::std::declval<iterator&>(), __diff))) {
 			auto __it = this->_M_it;
 			ranges::recede(__it, __diff);
 			return unbounded_view(::std::move(__it));
@@ -270,7 +270,7 @@ namespace ztd { namespace ranges {
 		/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 		//////
 		constexpr unbounded_view& advance(difference_type __diff = 1) noexcept(
-			noexcept(ranges::advance(this->_M_it, __diff))) {
+			noexcept(ranges::advance(::std::declval<iterator&>(), __diff))) {
 			ranges::advance(this->_M_it, __diff);
 			return *this;
 		}

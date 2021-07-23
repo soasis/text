@@ -51,6 +51,13 @@
 
 namespace ztd { namespace text { namespace tests {
 
+	inline constexpr bool wide_is_utf32 = ztd::text::__txt_detail::__is_encoding_name_equal(
+		ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-32");
+	inline constexpr bool wide_is_utf16 = ztd::text::__txt_detail::__is_encoding_name_equal(
+		ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-16");
+	inline constexpr bool wide_is_utf8 = ztd::text::__txt_detail::__is_encoding_name_equal(
+		ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-8");
+
 	template <typename Container>
 	inline ztd::ranges::span<const std::byte> as_bytes(Container& c) {
 		return ztd::ranges::as_bytes(
@@ -1560,27 +1567,24 @@ namespace ztd { namespace text { namespace tests {
 	inline constexpr const std::basic_string_view<ztd::uchar8_t> u8_unicode_sequence_truth_little_endian
 		= u8_unicode_sequence_truth_native_endian;
 
-	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_native_endian
-		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
+	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_native_endian = wide_is_utf32
 		? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
-			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
-	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_big_endian
-		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
-		? (ztd::endian::native == ztd::endian::big ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
-			                                      : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
-		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::endian::native == ztd::endian::big
-			        ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
-			        : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
-			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
-	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_little_endian
-		= ((sizeof(wchar_t) * CHAR_BIT) >= 32)
+		: ((wide_is_utf16) ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
+			              : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
+	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_big_endian    = (wide_is_utf32)
+		   ? (ztd::endian::native == ztd::endian::big ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
+			                                         : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+		   : ((wide_is_utf16) ? (ztd::endian::native == ztd::endian::big
+			           ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
+			           : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
+			                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
+	inline constexpr const std::basic_string_view<wchar_t> w_unicode_sequence_truth_little_endian = (wide_is_utf32)
 		? (ztd::endian::native == ztd::endian::little ? x_u32_unicode_sequence_truth_native_endian_storage<wchar_t>
 			                                         : x_u32_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
-		: ((sizeof(wchar_t) * CHAR_BIT >= 16) ? (ztd::endian::native == ztd::endian::little
+		: ((wide_is_utf16) ? (ztd::endian::native == ztd::endian::little
 			        ? x_u16_unicode_sequence_truth_native_endian_storage<wchar_t>
 			        : x_u16_unicode_sequence_truth_reverse_endian_storage<wchar_t>)
-			                                 : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
+			              : x_u8_unicode_sequence_truth_native_endian_storage<wchar_t>);
 
 	inline constexpr const std::basic_string_view<char> unicode_sequence_truth_native_endian
 		= x_u8_unicode_sequence_truth_native_endian_storage<char>;

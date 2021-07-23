@@ -28,6 +28,19 @@
 //
 // ============================================================================>
 
+#include <ztd/text.hpp>
+
+#include <iostream>
+
 int main() {
+	std::cout << "=== Encoding Names ===" << std::endl;
+	std::cout << "Literal Encoding: "
+	          << ztd::text::__txt_detail::to_name(
+	                  ztd::text::__txt_detail::__to_encoding_id(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_()))
+	          << std::endl;
+	std::cout << "Wide Literal Encoding: "
+	          << ztd::text::__txt_detail::to_name(
+	                  ztd::text::__txt_detail::__to_encoding_id(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_()))
+	          << std::endl;
 	return 0;
 }

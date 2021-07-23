@@ -33,6 +33,7 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
+#include <iostream>
 #include <clocale>
 
 struct static_hook {
@@ -43,7 +44,7 @@ struct static_hook {
 			std::cout << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
 		}
 #elif defined(macintosh) || defined(Macintosh) || (__APPLE__)
-		// who knows what the hell goes on in Apple: assume UTF-8
+		// who knows what the hell goes on in Apple: assume UTF-8 already
 #else
 		char* res = std::setlocale(LC_ALL, "en_US.utf8");
 		if (res == nullptr) {
@@ -54,6 +55,15 @@ struct static_hook {
 } inline ztd_text_tests_utf8_startup {};
 
 int main(int argc, char* argv[]) {
+	std::cout << "=== Encoding Names ===" << std::endl;
+	std::cout << "Literal Encoding: "
+	          << ztd::text::__txt_detail::to_name(
+	                  ztd::text::__txt_detail::__to_encoding_id(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_()))
+	          << std::endl;
+	std::cout << "Wide Literal Encoding: "
+	          << ztd::text::__txt_detail::to_name(
+	                  ztd::text::__txt_detail::__to_encoding_id(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_()))
+	          << std::endl;
 	int result = Catch::Session().run(argc, argv);
 	return result;
 }
