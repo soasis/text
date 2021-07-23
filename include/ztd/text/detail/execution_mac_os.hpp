@@ -120,7 +120,7 @@ namespace ztd { namespace text {
 				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-				// just go straight to UTF8
+				// just go straight from UTF8
 				__base_t __base_encoding {};
 				__txt_detail::__progress_handler<!__call_error_handler, __execution_mac_os>
 					__intermediate_handler {};
@@ -131,8 +131,8 @@ namespace ztd { namespace text {
 					if (__intermediate_result.error_code != encoding_error::ok) {
 						__execution_mac_os __self {};
 						return __error_handler(__self, ::std::move(__intermediate_result),
-							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
-							     __intermediate_handler._M_code_points_size));
+							::ztd::ranges::span<code_unit>(__intermediate_handler._M_code_units.data(),
+							     __intermediate_handler._M_code_units_size));
 					}
 				}
 				return __intermediate_result;
