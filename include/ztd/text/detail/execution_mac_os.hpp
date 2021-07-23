@@ -37,7 +37,13 @@
 
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
+#include <ztd/text/is_ignorable_error_handler.hpp>
+#include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
+#include <ztd/text/encode_result.hpp>
+#include <ztd/text/decode_result.hpp>
+#include <ztd/text/type_traits.hpp>
+#include <ztd/text/detail/progress_handler.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -95,8 +101,79 @@ namespace ztd { namespace text {
 			//////
 			inline static constexpr ::std::size_t max_code_units = MB_LEN_MAX;
 
-			using __base_t::decode_one;
-			using __base_t::encode_one;
+			//////
+			/// @brief Decodes a single complete unit of information as code points and produces a result with the
+			/// input and output ranges moved past what was successfully read and written; or, produces an error and
+			/// returns the input and output ranges untouched.
+			///
+			/// @param[in] __input The input view to read code uunits from.
+			/// @param[in] __output The output view to write code points into.
+			/// @param[in] __error_handler The error handler to invoke if encoding fails.
+			/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this
+			/// is effectively a runtime encoding and therefore it is important to preserve and manage this state.
+			///
+			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
+			/// reconstructed output range, error handler, and a reference to the passed-in state.
+			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
+			static constexpr auto decode_one(
+				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
+				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
+				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
+
+				// just go straight to UTF8
+				__base_t __base_encoding {};
+				__txt_detail::__progress_handler<!__call_error_handler, __execution_mac_os>
+					__intermediate_handler {};
+				auto __intermediate_result = __base_encoding.decode_one(::std::forward<_InputRange>(__input),
+					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
+
+				if constexpr (__call_error_handler) {
+					if (__intermediate_result.error_code != encoding_error::ok) {
+						__execution_mac_os __self {};
+						return __error_handler(__self, ::std::move(__intermediate_result),
+							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
+							     __intermediate_handler._M_code_points_size));
+					}
+				}
+				return __intermediate_result;
+			}
+
+			//////
+			/// @brief Encodes a single complete unit of information as code units and produces a result with the
+			/// input and output ranges moved past what was successfully read and written; or, produces an error and
+			/// returns the input and output ranges untouched.
+			///
+			/// @param[in] __input The input view to read code uunits from.
+			/// @param[in] __output The output view to write code points into.
+			/// @param[in] __error_handler The error handler to invoke if encoding fails.
+			/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this
+			/// is effectively a runtime encoding and therefore it is important to preserve and manage this state.
+			///
+			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
+			/// reconstructed output range, error handler, and a reference to the passed-in state.
+			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
+			static constexpr auto encode_one(
+				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
+				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
+				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
+
+				// just go straight to UTF8
+				__base_t __base_encoding {};
+				__txt_detail::__progress_handler<!__call_error_handler, __execution_mac_os>
+					__intermediate_handler {};
+				auto __intermediate_result = __base_encoding.encode_one(::std::forward<_InputRange>(__input),
+					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
+
+				if constexpr (__call_error_handler) {
+					if (__intermediate_result.error_code != encoding_error::ok) {
+						__execution_mac_os __self {};
+						return __error_handler(__self, ::std::move(__intermediate_result),
+							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
+							     __intermediate_handler._M_code_points_size));
+					}
+				}
+				return __intermediate_result;
+			}
 		};
 
 	} // namespace __impl
