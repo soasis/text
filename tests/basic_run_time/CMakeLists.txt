@@ -45,6 +45,7 @@ target_compile_options(ztd.text.tests.basic_run_time
 	${--disable-permissive}
 	${--warn-pedantic}
 	${--warn-all}
+	${--warn-extra}
 	${--warn-errors})
 target_include_directories(ztd.text.tests.basic_run_time
 	PRIVATE 

@@ -57,12 +57,40 @@ namespace ztd { namespace text {
 			: __encoding_base_t(__encoding), __error_handler_base_t(__error_handler) {
 			}
 
-			template <typename _UnderlyingEncoding, typename _Result, typename _Progress>
-			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _Progress&& __progress) const
+			template <typename _UnderlyingEncoding, typename _Result, typename _InputProgress,
+				typename _OutputProgress>
+			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _InputProgress&& __input_progress,
+				_OutputProgress&& __output_progress) const& // clang-format hack
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
-				     ::std::forward<_Result>(__result), ::std::forward<_Progress>(__progress)))) {
+				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
+				     ::std::forward<_OutputProgress>(__output_progress)))) {
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
-					::std::forward<_Result>(__result), ::std::forward<_Progress>(__progress));
+					::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
+					::std::forward<_OutputProgress>(__output_progress));
+			}
+
+			template <typename _UnderlyingEncoding, typename _Result, typename _InputProgress,
+				typename _OutputProgress>
+			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _InputProgress&& __input_progress,
+				_OutputProgress&& __output_progress) & // clang-format hack
+				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
+				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
+				     ::std::forward<_OutputProgress>(__output_progress)))) {
+				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
+					::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
+					::std::forward<_OutputProgress>(__output_progress));
+			}
+
+			template <typename _UnderlyingEncoding, typename _Result, typename _InputProgress,
+				typename _OutputProgress>
+			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _InputProgress&& __input_progress,
+				_OutputProgress&& __output_progress) && // clang-format hack
+				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
+				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
+				     ::std::forward<_OutputProgress>(__output_progress)))) {
+				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
+					::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
+					::std::forward<_OutputProgress>(__output_progress));
 			}
 		};
 

@@ -98,6 +98,7 @@ static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::ascii>);
 static_assert(ztd::text::is_code_units_replaceable_v<ztd::text::ascii>);
 static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::ascii>);
 static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::ascii>);
+
 using ascii_es = ztd::text::encoding_scheme<ztd::text::ascii>;
 static_assert(ztd::text::is_decode_injective_v<ascii_es>);
 static_assert(!ztd::text::is_encode_injective_v<ascii_es>);
@@ -116,19 +117,11 @@ static_assert(ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>
           : !ztd::text::is_encode_injective_v<ztd::text::wide_literal>);
 static_assert(ztd::text::is_decode_injective_v<ztd::text::wide_literal>);
 
-static_assert(ztd::text::is_unicode_encoding_v<ztd::text::execution>
-          ? ztd::text::is_encode_injective_v<ztd::text::execution>
-          : !ztd::text::is_encode_injective_v<ztd::text::execution>);
-static_assert(ztd::text::is_unicode_encoding_v<ztd::text::execution>
-          ? ztd::text::is_decode_injective_v<ztd::text::execution>
-          : !ztd::text::is_decode_injective_v<ztd::text::execution>);
+static_assert(!ztd::text::is_encode_injective_v<ztd::text::execution>);
+static_assert(!ztd::text::is_decode_injective_v<ztd::text::execution>);
 
-static_assert(ztd::text::is_unicode_encoding_v<ztd::text::wide_execution>
-          ? ztd::text::is_encode_injective_v<ztd::text::wide_execution>
-          : !ztd::text::is_encode_injective_v<ztd::text::wide_execution>);
-static_assert(ztd::text::is_unicode_encoding_v<ztd::text::wide_execution>
-          ? ztd::text::is_decode_injective_v<ztd::text::wide_execution>
-          : !ztd::text::is_decode_injective_v<ztd::text::wide_execution>);
+static_assert(!ztd::text::is_encode_injective_v<ztd::text::wide_execution>);
+static_assert(!ztd::text::is_decode_injective_v<ztd::text::wide_execution>);
 
 static_assert(!ztd::text::is_decode_injective_v<ztd::text::no_encoding>);
 static_assert(!ztd::text::is_encode_injective_v<ztd::text::no_encoding>);

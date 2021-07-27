@@ -189,7 +189,7 @@ namespace ztd { namespace text {
 	/// from the given @p __encode_state.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
-	/// @param[in] __encode_state A preexisting state from the decoder.
+	/// @param[in] __encode_state A preexisting state from the encoder.
 	//////
 	template <typename _Encoding>
 	constexpr decode_state_t<remove_cvref_t<_Encoding>> make_decode_state_with(
@@ -198,7 +198,7 @@ namespace ztd { namespace text {
 		using _DecodeState = decode_state_t<_UEncoding>;
 		using _EncodeState = encode_state_t<_UEncoding>;
 		if constexpr (is_decode_state_independent_v<_UEncoding>) {
-			if constexpr (::std::is_constructible_v<_EncodeState, const _DecodeState&>) {
+			if constexpr (::std::is_constructible_v<_DecodeState, const _EncodeState&>) {
 				(void)__encoding;
 				return _DecodeState(__encode_state);
 			}
@@ -209,7 +209,7 @@ namespace ztd { namespace text {
 			}
 		}
 		else {
-			if constexpr (::std::is_constructible_v<_EncodeState, const _UEncoding&, const _DecodeState&>) {
+			if constexpr (::std::is_constructible_v<_DecodeState, const _UEncoding&, const _EncodeState&>) {
 				return _DecodeState(__encoding, __encode_state);
 			}
 			else {
@@ -250,6 +250,76 @@ namespace ztd { namespace text {
 			}
 			else {
 				(void)__decode_state;
+				return _EncodeState(__encoding);
+			}
+		}
+	}
+
+	//////
+	/// @brief Constructs the @c decode_state of the given encoding, based on whether or not the encoding and state
+	/// meet the criteria of ztd::text::is_decode_state_independent_v or whether it can be created by copy construction
+	/// from the given @p __encode_state.
+	///
+	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
+	/// @param[in] __decode_state A preexisting state from the decoder.
+	//////
+	template <typename _Encoding>
+	constexpr decode_state_t<remove_cvref_t<_Encoding>> copy_decode_state_with(
+		_Encoding& __encoding, const decode_state_t<remove_cvref_t<_Encoding>>& __decode_state) noexcept {
+		using _UEncoding   = remove_cvref_t<_Encoding>;
+		using _DecodeState = decode_state_t<_UEncoding>;
+		if constexpr (is_decode_state_independent_v<_UEncoding>) {
+			if constexpr (::std::is_constructible_v<_DecodeState, const _DecodeState&>) {
+				(void)__encoding;
+				return _DecodeState(__decode_state);
+			}
+			else {
+				(void)__encoding;
+				(void)__decode_state;
+				return _DecodeState();
+			}
+		}
+		else {
+			if constexpr (::std::is_constructible_v<_DecodeState, const _UEncoding&, const _DecodeState&>) {
+				return _DecodeState(__encoding, __decode_state);
+			}
+			else {
+				(void)__decode_state;
+				return _DecodeState(__encoding);
+			}
+		}
+	}
+
+	//////
+	/// @brief Constructs the @c encode_state of the given encoding, based on whether or not the encoding and state
+	/// meet the criteria of ztd::text::is_encode_state_independent_v or whether it can be created by copy construction
+	/// from the given @p __encode_state.
+	///
+	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
+	/// @param[in] __encode_state A preexisting state from the encoder to attempt to copy.
+	//////
+	template <typename _Encoding>
+	constexpr encode_state_t<remove_cvref_t<_Encoding>> copy_encode_state_with(
+		_Encoding& __encoding, const encode_state_t<remove_cvref_t<_Encoding>>& __encode_state) noexcept {
+		using _UEncoding   = remove_cvref_t<_Encoding>;
+		using _EncodeState = encode_state_t<_UEncoding>;
+		if constexpr (is_encode_state_independent_v<_UEncoding>) {
+			if constexpr (::std::is_constructible_v<_EncodeState, const _EncodeState&>) {
+				(void)__encoding;
+				return _EncodeState(__encode_state);
+			}
+			else {
+				(void)__encoding;
+				(void)__encode_state;
+				return _EncodeState();
+			}
+		}
+		else {
+			if constexpr (::std::is_constructible_v<_EncodeState, const _UEncoding&, const _EncodeState&>) {
+				return _EncodeState(__encoding, __encode_state);
+			}
+			else {
+				(void)__encode_state;
 				return _EncodeState(__encoding);
 			}
 		}

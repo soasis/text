@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		http://..www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,7 +49,7 @@ The reason this happens is because we can detect, at compile time, that the conv
 
 Since this library is trying to prevent :term:`Mojibake <mojibake>` and other encoding problems, you are required to tag any potentially-lossy encoding with an error handler, to be explicit and acknowledge that you may or may not be ruining someone's day:
 
-.. literalinclude:: /../../examples/documentation/source/error_handler.replacement.ascii.cpp
+.. literalinclude:: /../../examples/documentation/snippets/source/error_handler.replacement.ascii.cpp
 	:language: cpp
 	:linenos:
 	:emphasize-lines: 15-16

@@ -41,6 +41,8 @@
 #include <ztd/text/code_unit.hpp>
 
 #include <ztd/ranges/adl.hpp>
+#include <ztd/ranges/span.hpp>
+#include <ztd/ranges/algorithm.hpp>
 
 #include <array>
 #include <type_traits>
@@ -53,52 +55,74 @@ namespace ztd { namespace text {
 
 		template <bool _AssumeValid, typename _DesiredEncoding>
 		class __progress_handler {
+		private:
+			using _CodePoint = code_point_t<_DesiredEncoding>;
+			using _CodeUnit  = code_unit_t<_DesiredEncoding>;
+
 		public:
 			using assume_valid = ::std::integral_constant<bool, _AssumeValid>;
-
-			::std::array<code_point_t<_DesiredEncoding>, max_code_points_v<_DesiredEncoding>> _M_code_points;
-			::std::size_t _M_code_points_size;
-			::std::array<code_unit_t<_DesiredEncoding>, max_code_units_v<_DesiredEncoding>> _M_code_units;
-			::std::size_t _M_code_units_size;
 
 			constexpr __progress_handler() noexcept
 			: _M_code_points(), _M_code_points_size(), _M_code_units(), _M_code_units_size() {
 			}
 
-			template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-				typename _Progress>
-			constexpr auto operator()(const _Encoding&, encode_result<_InputRange, _OutputRange, _State> __result,
-				const _Progress& __progress) noexcept {
-				_M_code_points_size = ranges::ranges_adl::adl_size(__progress);
-				// avoid needing potentially non-constexpr ::std::copy
-#ifdef __cpp_lib_constexpr_algorithms
-				::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress), this->_M_code_points_size,
-					ranges::ranges_adl::adl_begin(this->_M_code_points));
-#else
-				for (::std::size_t __index = 0; __index < _M_code_points_size; ++__index) {
-					_M_code_points[__index] = __progress[__index];
+			constexpr ::ztd::ranges::span<const _CodePoint> _M_code_points_progress() const noexcept {
+				return ::ztd::ranges::span<const _CodePoint>(
+					this->_M_code_points.data(), this->_M_code_points_size);
+			}
+
+			constexpr ::ztd::ranges::span<const _CodeUnit> _M_code_units_progress() const noexcept {
+				return ::ztd::ranges::span<const _CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+			}
+
+			constexpr ::ztd::ranges::span<_CodePoint> _M_code_points_progress() noexcept {
+				return ::ztd::ranges::span<_CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
+			}
+
+			constexpr ::ztd::ranges::span<_CodeUnit> _M_code_units_progress() noexcept {
+				return ::ztd::ranges::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+			}
+
+			constexpr ::std::size_t _M_code_points_progress_size() const noexcept {
+				return this->_M_code_points_size;
+			}
+
+			constexpr ::std::size_t _M_code_units_progress_size() const noexcept {
+				return this->_M_code_units_size;
+			}
+
+			template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+			constexpr auto operator()(const _Encoding&, _Result __result, const _InputProgress& __input_progress,
+				const _OutputProgress& __output_progress) noexcept {
+				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
 				}
-#endif
+				else {
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+				}
 				return __result;
 			}
 
-			template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-				typename _Progress>
-			constexpr auto operator()(const _Encoding&, decode_result<_InputRange, _OutputRange, _State> __result,
-				const _Progress& __progress) noexcept {
-				_M_code_units_size = ranges::ranges_adl::adl_size(__progress);
-#ifdef __cpp_lib_constexpr_algorithms
-				::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress), this->_M_code_units_size,
-					ranges::ranges_adl::adl_begin(this->_M_code_units));
-#else
-				// avoid needing potentially non-constexpr ::std::copy
-				auto __first = ranges::ranges_adl::adl_cbegin(__progress);
-				for (::std::size_t __index = 0; __index < _M_code_units_size; (void)++__index, (void)++__first) {
-					_M_code_units[__index] = *__first;
-				}
-#endif
-				return __result;
+			constexpr void clear() noexcept {
+				this->_M_code_points_size = 0;
+				this->_M_code_units_size  = 0;
 			}
+
+		private:
+			::std::array<_CodePoint, max_code_points_v<_DesiredEncoding>> _M_code_points;
+			::std::size_t _M_code_points_size;
+			::std::array<_CodeUnit, max_code_units_v<_DesiredEncoding>> _M_code_units;
+			::std::size_t _M_code_units_size;
 		};
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

@@ -168,20 +168,22 @@ namespace ztd { namespace text {
 		static inline constexpr ::std::size_t max_code_units = _MaxCodeUnits;
 
 	private:
-		using __decode_result                 = decode_result<_DecodeCodeUnits, _DecodeCodePoints, decode_state>;
-		using __encode_result                 = encode_result<_EncodeCodePoints, _EncodeCodeUnits, encode_state>;
-		using __count_decodable_result        = count_result<_DecodeCodeUnits, decode_state>;
-		using __count_encodable_result        = count_result<_EncodeCodePoints, encode_state>;
-		using __validate_decodable_as_result  = validate_result<_DecodeCodeUnits, decode_state>;
-		using __validate_encodable_as_result  = validate_result<_EncodeCodePoints, encode_state>;
-		using __decode_error_handler          = ::std::function<__decode_result(
-               const any_encoding_with&, __decode_result, const ::ztd::ranges::span<const code_unit>&)>;
-		using __encode_error_handler          = ::std::function<__encode_result(
-               const any_encoding_with&, __encode_result, const ::ztd::ranges::span<const code_point>&)>;
-		using __count_decodable_error_handler = ::std::function<__decode_result(
-			const any_encoding_with&, __decode_result, const ::ztd::ranges::span<const code_point>&)>;
-		using __count_encodable_error_handler = ::std::function<__encode_result(
-			const any_encoding_with&, __encode_result, const ::ztd::ranges::span<const code_unit>&)>;
+		using __decode_result                = decode_result<_DecodeCodeUnits, _DecodeCodePoints, decode_state>;
+		using __encode_result                = encode_result<_EncodeCodePoints, _EncodeCodeUnits, encode_state>;
+		using __count_decodable_result       = count_result<_DecodeCodeUnits, decode_state>;
+		using __count_encodable_result       = count_result<_EncodeCodePoints, encode_state>;
+		using __validate_decodable_as_result = validate_result<_DecodeCodeUnits, decode_state>;
+		using __validate_encodable_as_result = validate_result<_EncodeCodePoints, encode_state>;
+		using __decode_error_handler = ::std::function<__decode_result(const any_encoding_with&, __decode_result,
+			const ::ztd::ranges::span<const code_unit>&, const ::ztd::ranges::span<const code_point>&)>;
+		using __encode_error_handler = ::std::function<__encode_result(const any_encoding_with&, __encode_result,
+			const ::ztd::ranges::span<const code_point>&, const ::ztd::ranges::span<const code_unit>&)>;
+		using __count_decodable_error_handler
+			= ::std::function<__decode_result(const any_encoding_with&, __decode_result,
+			     const ::ztd::ranges::span<const code_unit>&, const ::ztd::ranges::span<const code_point>&)>;
+		using __count_encodable_error_handler
+			= ::std::function<__encode_result(const any_encoding_with&, __encode_result,
+			     const ::ztd::ranges::span<const code_point>&, const ::ztd::ranges::span<const code_unit>&)>;
 
 		struct __erased_state {
 			virtual ~__erased_state() {

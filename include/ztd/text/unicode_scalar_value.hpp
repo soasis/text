@@ -49,7 +49,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	namespace __txt_impl {
 		//////
 		/// @brief A 32-bit value that is within the allowed 21 bits of Unicode and is not one of the Surrogate
 		/// values.
@@ -151,10 +151,10 @@ namespace ztd { namespace text {
 		constexpr bool operator<(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
 			return __left.value() < __right.value();
 		}
-	} // namespace __impl
+	} // namespace __txt_impl
 
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
-	using unicode_scalar_value = __impl::__unicode_scalar_value;
+	using unicode_scalar_value = __txt_impl::__unicode_scalar_value;
 #else
 	using unicode_scalar_value = char32_t;
 #endif
@@ -165,8 +165,8 @@ namespace ztd { namespace text {
 namespace std {
 
 	template <>
-	class char_traits<::ztd::text::__impl::__unicode_scalar_value> {
-		using char_type  = ::ztd::text::__impl::__unicode_scalar_value;
+	class char_traits<::ztd::text::__txt_impl::__unicode_scalar_value> {
+		using char_type  = ::ztd::text::__txt_impl::__unicode_scalar_value;
 		using int_type   = ::std::int_least32_t;
 		using pos_type   = ::std::streampos;
 		using off_type   = ::std::streamoff;

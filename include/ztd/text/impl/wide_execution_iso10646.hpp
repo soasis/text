@@ -30,16 +30,14 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
-#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
+#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP
+#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/utf16.hpp>
+#include <ztd/text/execution.hpp>
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
-#include <ztd/text/error_handler.hpp>
-#include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
@@ -49,10 +47,7 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/span.hpp>
 
-#include <ztd/text/detail/windows.hpp>
-
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-
+#include <cwchar>
 #include <iterator>
 #include <utility>
 
@@ -66,28 +61,37 @@ namespace ztd { namespace text {
 	/// @{
 	//////
 
-	namespace __impl {
+	namespace __txt_impl {
 
 		//////
-		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding, as it exists on
-		/// Windows. The wide execution encoding is typically associated with the locale, which is tied to the C
-		/// standard library's setlocale function.
+		/// @brief The wide execution encoding, as envisioned by ISO 10646. Typically UTF-32 with native endianness.
 		///
-		/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c
-		/// ZTD_TEXT_USE_CUNEICODE and @c ZTD_TEXT_USE_ICONV is not defined, this object may use the C Standard
-		/// Library to perform transcoding if certain platform facilities are disabled or not available (e.g., a
-		/// Windows-like machine without the Windows SDK). If this is the case, the C Standard Library has fundamental
-		/// limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output. This object
-		/// uses UTF-16 directly on Windows when possible to avoid some of the platform-specific shenanigans.
+		/// @remarks This is generally only turned on when the Standard Definition is turn oned ( @c
+		/// __STDC_ISO_10646__ ). It effectively uses UTF-32 since that's the only encoding that can meet the original
+		/// requirement of the C Standard and C Standard Library with respect to what happens with individual @c
+		/// wchar_t objects.
 		//////
-		class __wide_execution_windows : private basic_utf16<wchar_t> {
+		class __wide_execution_iso10646 : private __utf32_with<__wide_execution_iso10646, wchar_t, char32_t> {
 		private:
-			using __base_t = basic_utf16<wchar_t>;
+			using __base_t = __utf32_with<__wide_execution_iso10646, wchar_t, char32_t>;
 
 		public:
-			using __base_t::code_point;
-			using __base_t::code_unit;
-			using __base_t::state;
+			//////
+			/// @brief The code point type that is decoded to, and encoded from.
+			//////
+			using code_point = code_point_t<__base_t>;
+			//////
+			/// @brief The code unit type that is decoded from, and encoded to.
+			//////
+			using code_unit = code_unit_t<__base_t>;
+			//////
+			/// @brief The associated state for decode operations.
+			//////
+			using decode_state = decode_state_t<__base_t>;
+			//////
+			/// @brief The associated state for encode operations.
+			//////
+			using encode_state = encode_state_t<__base_t>;
 
 			//////
 			/// @brief Whether or not this encoding is a unicode encoding or not.
@@ -96,11 +100,11 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Whether or not this encoding's @c decode_one step is injective or not.
 			//////
-			using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__base_t>>;
+			using is_decode_injective = ::std::false_type;
 			//////
 			/// @brief Whether or not this encoding's @c encode_one step is injective or not.
 			//////
-			using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__base_t>>;
+			using is_encode_injective = ::std::false_type;
 
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
@@ -127,27 +131,12 @@ namespace ztd { namespace text {
 			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-			static constexpr auto decode_one(
-				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
-
-				// just go straight from UTF16
+			static constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output,
+				_ErrorHandler&& __error_handler, decode_state& __s) {
+				// just go straight from UTF32
 				__base_t __base_encoding {};
-				__txt_detail::__progress_handler<!__call_error_handler, __wide_execution_windows>
-					__intermediate_handler {};
-				auto __intermediate_result = __base_encoding.decode_one(::std::forward<_InputRange>(__input),
-					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
-
-				if constexpr (__call_error_handler) {
-					if (__intermediate_result.error_code != encoding_error::ok) {
-						__wide_execution_windows __self {};
-						return __error_handler(__self, ::std::move(__intermediate_result),
-							::ztd::ranges::span<code_unit>(__intermediate_handler._M_code_units.data(),
-							     __intermediate_handler._M_code_units_size));
-					}
-				}
-				return __intermediate_result;
+				return __base_encoding.decode_one(::std::forward<_InputRange>(__input),
+					::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
 			}
 
 			//////
@@ -164,37 +153,25 @@ namespace ztd { namespace text {
 			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-			static constexpr auto encode_one(
-				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
-
-				// just go straight to UTF16
+			static constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output,
+				_ErrorHandler&& __error_handler, encode_state& __s) {
+				// just go straight from UTF32
 				__base_t __base_encoding {};
-				__txt_detail::__progress_handler<!__call_error_handler, __wide_execution_windows>
-					__intermediate_handler {};
-				auto __intermediate_result = __base_encoding.encode_one(::std::forward<_InputRange>(__input),
-					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
-
-				if constexpr (__call_error_handler) {
-					if (__intermediate_result.error_code != encoding_error::ok) {
-						__wide_execution_windows __self {};
-						return __error_handler(__self, ::std::move(__intermediate_result),
-							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
-							     __intermediate_handler._M_code_points_size));
-					}
-				}
-				return __intermediate_result;
+				return __base_encoding.encode_one(::std::forward<_InputRange>(__input),
+					::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
 			}
 		};
 
-	} // namespace __impl
+	} // namespace __txt_impl
+
+	//////
+	/// @}
+	///
+	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
 #include <ztd/epilogue.hpp>
 
-#endif
-
-#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
+#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP

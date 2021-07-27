@@ -28,4 +28,26 @@
 //
 // ============================================================================>
 
-#include <ztd/text/detail/wide_execution_cwchar.hpp>
+#define CATCH_CONFIG_RUNNER
+#include <catch2/catch.hpp>
+
+#include <ztd/text/tests/basic_unicode_strings.hpp>
+
+#include <ztd/text/tests/utf8_startup.hpp>
+
+#include <iostream>
+#include <clocale>
+
+int main(int argc, char* argv[]) {
+	std::cout << "=== Encoding Names ===" << std::endl;
+	std::cout << "Literal Encoding: "
+	          << ztd::text::__txt_detail::to_name(
+	                  ztd::text::__txt_detail::__to_encoding_id(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_()))
+	          << std::endl;
+	std::cout << "Wide Literal Encoding: "
+	          << ztd::text::__txt_detail::to_name(
+	                  ztd::text::__txt_detail::__to_encoding_id(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_()))
+	          << std::endl;
+	int result = Catch::Session().run(argc, argv);
+	return result;
+}

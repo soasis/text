@@ -43,7 +43,8 @@ using ascii_encode_result = ztd::text::encode_result<
 
 ascii_encode_result my_printing_handler(const ztd::text::ascii& encoding,
      ascii_encode_result result,
-     ztd::ranges::span<const char32_t> unused_read_characters) noexcept {
+     ztd::ranges::span<const char32_t> unused_read_characters,
+     ztd::ranges::span<const char> unused_write_characters) noexcept {
 	(void)encoding;
 	// just printing some information
 	std::cout << "An error occurred.\n"
@@ -53,6 +54,9 @@ ascii_encode_result my_printing_handler(const ztd::text::ascii& encoding,
 	          << "\n"
 	          << "\t# of unused code points: "
 	          << unused_read_characters.size() << "\n"
+	          << "\n"
+	          << "\t# of unused code units: "
+	          << unused_write_characters.size() << "\n"
 	          << "\tInput units left: " << result.input.size() << "\n";
 	// setting the error to "ok"
 	// tells the algorithm to keep spinning,

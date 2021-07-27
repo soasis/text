@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,7 +44,7 @@ If your type always has a replacement character, regardless of the situation, it
 
 These functions return a contiguous range of either ``code_unit``\ s or ``code_point``\ s, typically a ``std::span<const code_unit>`` or a ``std::span<const code_point>``.
 
-.. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
+.. literalinclude:: /../../examples/documentation/snippets/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
 	:lines: 56-57,112-125,246

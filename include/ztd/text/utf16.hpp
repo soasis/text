@@ -52,7 +52,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	namespace __txt_impl {
 		//////
 		/// @brief Internal text_tag for detecting a ztd::text-derved UTF-16 type.
 		///
@@ -173,7 +173,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
 					}
 				}
 				else {
@@ -203,7 +203,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 1>(__units.data(), 1));
+							::ztd::ranges::span<code_unit, 1>(__units.data(), 1),
+							::ztd::ranges::span<code_point, 0>());
 					}
 				}
 				if constexpr (__call_error_handler) {
@@ -215,7 +216,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::incomplete_sequence),
-							::ztd::ranges::span<code_unit, 1>(__units.data(), 1));
+							::ztd::ranges::span<code_unit, 1>(__units.data(), 1),
+							::ztd::ranges::span<code_point, 0>());
 					}
 				}
 
@@ -231,7 +233,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 2>(__units.data(), 2));
+							::ztd::ranges::span<code_unit, 2>(__units.data(), 2),
+							::ztd::ranges::span<code_point, 0>());
 					}
 				}
 				*__outit = static_cast<code_point>(__txt_detail::__utf16_combine_surrogates(
@@ -295,7 +298,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
 					}
 				}
 				else {
@@ -317,7 +320,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1));
+							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
+							::ztd::ranges::span<code_unit, 0>());
 					}
 				}
 
@@ -326,14 +330,17 @@ namespace ztd { namespace text {
 					ranges::advance(__outit);
 				}
 				else {
-					auto normal = __point - __txt_detail::__normalizing_value;
-					auto lead   = __txt_detail::__first_lead_surrogate
-						+ ((normal & __txt_detail::__lead_surrogate_bitmask)
+					auto __normal = __point - __txt_detail::__normalizing_value;
+					auto __lead   = __txt_detail::__first_lead_surrogate
+						+ ((__normal & __txt_detail::__lead_surrogate_bitmask)
 						     >> __txt_detail::__lead_shifted_bits);
-					auto trail = __txt_detail::__first_trail_surrogate
-						+ (normal & __txt_detail::__trail_surrogate_bitmask);
+					auto __trail = __txt_detail::__first_trail_surrogate
+						+ (__normal & __txt_detail::__trail_surrogate_bitmask);
 
-					*__outit = static_cast<char16_t>(lead);
+					code_unit __lead16  = static_cast<code_unit>(static_cast<char16_t>(__lead));
+					code_unit __trail16 = static_cast<code_unit>(static_cast<char16_t>(__trail));
+
+					*__outit = __lead16;
 					ranges::advance(__outit);
 
 					if constexpr (__call_error_handler) {
@@ -345,10 +352,11 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::insufficient_output_space),
-								::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1));
+								::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
+								::ztd::ranges::span<code_unit, 1>(::std::addressof(__trail16), 1));
 						}
 					}
-					*__outit = static_cast<char16_t>(trail);
+					*__outit = __trail16;
 					ranges::advance(__outit);
 				}
 
@@ -359,7 +367,7 @@ namespace ztd { namespace text {
 					__s, encoding_error::ok);
 			}
 		};
-	} // namespace __impl
+	} // namespace __txt_impl
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
@@ -376,7 +384,7 @@ namespace ztd { namespace text {
 	/// @remarks This is a strict UTF-16 implementation that does not allow lone, unpaired surrogates either in or out.
 	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
-	class basic_utf16 : public __impl::__utf16_with<basic_utf16<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
+	class basic_utf16 : public __txt_impl::__utf16_with<basic_utf16<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
 	//////
 	/// @brief A UTF-16 Encoding that traffics in char16_t. See ztd::text::basic_utf16 for more details.

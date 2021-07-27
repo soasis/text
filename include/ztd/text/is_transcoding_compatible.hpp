@@ -59,7 +59,7 @@ namespace ztd { namespace text {
 			// provided those UTF-8 implementations have a sufficiently sized/aligned char that can be bit-copied.
 			|| (::std::is_same_v<remove_cvref_t<_From>, ascii>
 				&& (::std::is_same_v<remove_cvref_t<_To>, utf8>
-					|| ::std::is_base_of_v<__impl::__utf8_tag, remove_cvref_t<_To>>)
+					|| ::std::is_base_of_v<__txt_impl::__utf8_tag, remove_cvref_t<_To>>)
 				&& ((sizeof(code_unit_t<remove_cvref_t<_To>>) == sizeof(char))
 					&& (alignof(code_unit_t<remove_cvref_t<_To>>) == alignof(char)))
 			)

@@ -80,7 +80,9 @@ rst_prolog = """
 # C++ Index Configuration
 #
 cpp_index_common_prefix = [
-    'ztd::text::__impl::', 'ztd::text::__txt_detail::', 'ztd::text::', 'ztd::'
+    'ztd::text::__txt_impl::', 'ztd::text::__txt_detail::', 'ztd::text::',
+    'ztd::idk::', 'ztd::idk::__idk_detail'
+    'ztd::', 'ztd::__idk_detail'
 ]
 
 # Breathe Configuration

@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,14 +33,14 @@ Separate Encode/Decode States
 
 It is no secret that encoding and decoding may carrying with them separate states. While converting from a legacy encoding to Unicode may require maintenance of a shift state or code unit modifier, the opposite direction may not need any at all. Therefore, as an optimization, an encoding object can define both an ``encode_state`` and a ``decode_state``, seperate from each other. As an example, here is a (simplified) version of how :doc:`ztd::text::execution </api/encodings/execution>`, the encoding for the Locale-based Runtime Execution Encoding, has two seperate states that need to be initialized in different manners:
 
-.. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
+.. literalinclude:: /../../examples/documentation/snippets/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
 	:lines: 56-57,65-84,246
 
 This is the proper way to initialize a ``std::mbstate_t`` from the C standard library. Then, you can use it! Here's a complete implementation using the new ``encode_state`` and ``decode_state`` types:
 
-.. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
+.. literalinclude:: /../../examples/documentation/snippets/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
 	:lines: 56,127-246

@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,6 +36,9 @@ The ``assume_valid_handler`` is a Undefined-Behavior invoking error handler. If 
 .. warning::
 
 	⚠️ This should **only ever be used on the most trusted of input, ever, and that input should never come from a source that is a user or connected to ANY external input sources such as the Network, Shared Pipe, Inter-Procedural Call, or similar**. 
+
+
+Implementers of encodings within templates can check for a potentially ignorable error handler like this one using :doc:`ztd::text::is_ignorable_error_handler_v </api/is_ignorable_error_handler>`.
 
 .. doxygenclass:: ztd::text::assume_valid_handler
 	:members:

@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,6 +37,8 @@ A unicode scalar value is stored as an at least 32-bit value, but may occupy mor
 
 .. doxygentypedef:: ztd::text::unicode_scalar_value
 
+
+
 Internal Type
 -------------
 
@@ -44,5 +46,5 @@ Internal Type
 
 	|reserved_name|
 
-.. doxygenclass:: ztd::text::__impl::__unicode_scalar_value
+.. doxygenclass:: ztd::text::__txt_impl::__unicode_scalar_value
 	:members:

@@ -42,13 +42,12 @@
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
-#include <ztd/text/detail/replacement.hpp>
+#include <ztd/text/detail/replacement_units.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
-
-#include <array>
+#include <ztd/ranges/span.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -117,7 +116,7 @@ namespace ztd { namespace text {
 		/// @brief A range of code units representing the values to use when a replacement happen. For ASCII, this
 		/// must be '?' instead of the usual Unicode Replacement Character U'�'.
 		//////
-		static constexpr const ::std::array<code_unit, 1>& replacement_code_units() noexcept {
+		static constexpr ::ztd::ranges::span<const code_unit, 1> replacement_code_units() noexcept {
 			return __txt_detail::__question_mark_replacement_units<code_unit>;
 		}
 
@@ -164,13 +163,14 @@ namespace ztd { namespace text {
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
-					return __error_handler(ascii {},
+					ascii __self {};
+					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 						             ::std::move(__inlast)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::ranges::span<code_unit, 0>());
+						::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
 				}
 			}
 			else {
@@ -184,13 +184,15 @@ namespace ztd { namespace text {
 
 			if constexpr (__call_error_handler) {
 				if (static_cast<signed char>(__unit) < static_cast<signed char>(0)) {
-					return __error_handler(ascii {},
+					ascii __self {};
+					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 						             ::std::move(__inlast)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::invalid_sequence),
-						::ztd::ranges::span<code_unit, 1>(::std::addressof(__units[0]), 1));
+						::ztd::ranges::span<code_unit, 1>(::std::addressof(__units[0]), 1),
+						::ztd::ranges::span<code_point, 0>());
 				}
 			}
 
@@ -253,7 +255,7 @@ namespace ztd { namespace text {
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::ranges::span<code_point, 0>());
+						::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
 				}
 			}
 			else {
@@ -274,7 +276,8 @@ namespace ztd { namespace text {
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::invalid_sequence),
-						::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1));
+						::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
+						::ztd::ranges::span<code_unit, 0>());
 				}
 			}
 

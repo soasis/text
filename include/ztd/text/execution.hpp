@@ -37,9 +37,9 @@
 
 #include <ztd/text/no_encoding.hpp>
 
-#include <ztd/text/detail/execution_cuchar.hpp>
-#include <ztd/text/detail/execution_mac_os.hpp>
-#include <ztd/text/detail/execution_iconv.hpp>
+#include <ztd/text/impl/execution_cuchar.hpp>
+#include <ztd/text/impl/execution_mac_os.hpp>
+#include <ztd/text/impl/execution_iconv.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -63,11 +63,11 @@ namespace ztd { namespace text {
 	//////
 	using execution =
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
-		__impl::__execution_cuchar
+		__txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-		__impl::__execution_iconv
+		__txt_impl::__execution_iconv
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
-		__impl::__execution_mac_os
+		__txt_impl::__execution_mac_os
 #else
 		no_encoding<char, unicode_code_point>
 #error \

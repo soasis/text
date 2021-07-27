@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,7 +31,7 @@
 incomplete_handler
 ==================
 
-This error handler takes the ``ztd::text::encoding_error::incomplete_sequence`` error and uses it to read from the provided "progress" contiguous range provided as the third parameter to any error handler. This can be helpful in situations here incomplete input is not to be interpreted as an error, such as in situations with networking stacks, I/O reads (particularly, non-recoverable streams like ``std::istream_iterator``\ s), and other such storage cases.
+This error handler takes the ``ztd::text::encoding_error::incomplete_sequence`` error and uses it to read from the provided "progress" contiguous range provided as the third parameter to any error handler. This can be helpful in situations here incomplete input is not to be interpreted as an error, such as in situations with networking stacks, I/O reads (particularly, non-recoverable streams like ``std::istream_iterator``\ s or ``std::ostream_iterator``\ s), and other such storage cases.
 
 The data read but not used from an incomplete error during encode and decode operations is stored in the ``incomplete_handler`` object and can be accessed VIA the ``code_points`` and ``code_units`` functions.
 

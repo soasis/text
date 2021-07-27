@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,7 @@ Run-time
 
 If your encoding cannot know at compile time whether or not it is a unicode encoding (e.g., for type-erased encodings, complex wrapping encodings, or encodings which rely on external operating system resources), you can define a method instead. When applicable, this will be picked up by the :doc:`ztd::text::contains_unicode_encoding </api/contains_unicode_encoding>` function. Here is an example of a runtime, locale-based encoding using platform-knowledge to pick up what the encoding might be, and determine if it can handle working in Unicode:
 
-.. literalinclude:: /../../examples/documentation/source/runtime_locale_encoding.cpp
+.. literalinclude:: /../../examples/documentation/snippets/source/runtime_locale_encoding.cpp
 	:language: cpp
 	:linenos:
 	:lines: 46-47,75-99,233

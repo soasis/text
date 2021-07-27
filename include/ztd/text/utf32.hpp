@@ -51,7 +51,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	namespace __txt_impl {
 		//////
 		/// @brief Internal text_tag for detecting a ztd::text-derved UTF-32 type.
 		///
@@ -167,7 +167,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
 					}
 				}
 				else {
@@ -187,7 +187,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 1>(::std::addressof(__unit), 1));
+							::ztd::ranges::span<code_unit, 1>(::std::addressof(__unit), 1),
+							::ztd::ranges::span<code_point, 0>());
 					}
 				}
 
@@ -251,7 +252,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
 					}
 				}
 				else {
@@ -272,7 +273,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1));
+							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
+							::ztd::ranges::span<code_unit, 0>());
 					}
 				}
 
@@ -286,7 +288,7 @@ namespace ztd { namespace text {
 					__s, encoding_error::ok);
 			}
 		};
-	} // namespace __impl
+	} // namespace __txt_impl
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
@@ -303,7 +305,7 @@ namespace ztd { namespace text {
 	/// @remarks This is a strict UTF-32 implementation that does not allow lone, unpaired surrogates either in or out.
 	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
-	class basic_utf32 : public __impl::__utf32_with<basic_utf32<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
+	class basic_utf32 : public __txt_impl::__utf32_with<basic_utf32<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
 	//////
 	/// @brief A UTF-32 Encoding that traffics in char32_t. See ztd::text::basic_utf32 for more details.

@@ -49,14 +49,26 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		template <typename _ErrorHandler>
-		inline constexpr bool __is_careless_error_handler_v
-			= ::std::is_same_v<remove_cvref_t<_ErrorHandler>, default_handler>;
+		class __is_careless_error_handler
+		: public ::std::integral_constant<bool, ::std::is_same_v<remove_cvref_t<_ErrorHandler>, default_handler>> { };
+
+		template <typename _Byte, typename _UInputRange, typename _UOutputRange, typename _ErrorHandler>
+		class __is_careless_error_handler<__scheme_handler<_Byte, _UInputRange, _UOutputRange, _ErrorHandler>>
+		: public ::std::integral_constant<bool, __is_careless_error_handler<_ErrorHandler>::value> { };
+
+		template <typename _Encoding, typename _ErrorHandler>
+		class __is_careless_error_handler<__forwarding_handler<_Encoding, _ErrorHandler>>
+		: public ::std::integral_constant<bool, __is_careless_error_handler<_ErrorHandler>::value> { };
+
+		template <typename _ErrorHandler>
+		inline constexpr bool __is_careless_error_handler_v = __is_careless_error_handler<_ErrorHandler>::value;
 
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_encode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_encode_injective_v<_Encoding> : true> {
-		};
+			  __txt_detail::__is_careless_error_handler_v<remove_cvref_t<_ErrorHandler>>
+			       ? is_encode_injective_v<remove_cvref_t<_Encoding>>
+			       : true> { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		inline constexpr bool __is_encode_lossless_or_deliberate_v
@@ -65,8 +77,9 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _ErrorHandler>
 		class __is_decode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  __txt_detail::__is_careless_error_handler_v<_ErrorHandler> ? is_decode_injective_v<_Encoding> : true> {
-		};
+			  __txt_detail::__is_careless_error_handler_v<remove_cvref_t<_ErrorHandler>>
+			       ? is_decode_injective_v<remove_cvref_t<_Encoding>>
+			       : true> { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		inline constexpr bool __is_decode_lossless_or_deliberate_v
@@ -75,10 +88,11 @@ namespace ztd { namespace text {
 		template <typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler>
 		class __is_transcode_lossless_or_deliberate
 		: public ::std::integral_constant<bool,
-			  (__txt_detail::__is_careless_error_handler_v<_FromErrorHandler> ? is_decode_injective_v<_FromEncoding>
-			                                                                  : true)
-			       && (__txt_detail::__is_careless_error_handler_v<_ToErrorHandler>
-			                 ? is_encode_injective_v<_ToEncoding>
+			  (__txt_detail::__is_careless_error_handler_v<remove_cvref_t<_FromErrorHandler>>
+			            ? is_decode_injective_v<remove_cvref_t<_FromEncoding>>
+			            : true)
+			       && (__txt_detail::__is_careless_error_handler_v<remove_cvref_t<_ToErrorHandler>>
+			                 ? is_encode_injective_v<remove_cvref_t<_ToEncoding>>
 			                 : true)> { };
 
 		template <typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler>

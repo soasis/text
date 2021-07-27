@@ -59,8 +59,9 @@ namespace ztd { namespace text {
 			///
 			/// @param[in] __result The current state of the encode operation to pass through.
 			//////
-			template <typename _Encoding, typename _Result, typename _Progress>
-			constexpr auto operator()(const _Encoding&, _Result __result, const _Progress&) const {
+			template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+			constexpr auto operator()(
+				const _Encoding&, _Result __result, const _InputProgress&, const _OutputProgress&) const {
 				return __result;
 			}
 		};

@@ -49,7 +49,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	namespace __txt_impl {
 		//////
 		/// @brief A 32-bit value that is within the allowed 21 bits of Unicode. Can be one of the surrogate values.
 		///
@@ -146,10 +146,10 @@ namespace ztd { namespace text {
 		constexpr bool operator<(const __unicode_code_point& __left, const __unicode_code_point& __right) {
 			return __left.value() < __right.value();
 		}
-	} // namespace __impl
+	} // namespace __txt_impl
 
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
-	using unicode_code_point = ____impl::__unicode_code_point;
+	using unicode_code_point = ____txt_impl::__unicode_code_point;
 #else
 	// TODO: what are the merits of a strong type here?
 	using unicode_code_point = char32_t;
@@ -161,8 +161,8 @@ namespace ztd { namespace text {
 namespace std {
 
 	template <>
-	class char_traits<::ztd::text::__impl::__unicode_code_point> {
-		using char_type  = ::ztd::text::__impl::__unicode_code_point;
+	class char_traits<::ztd::text::__txt_impl::__unicode_code_point> {
+		using char_type  = ::ztd::text::__txt_impl::__unicode_code_point;
 		using int_type   = ::std::int_least32_t;
 		using pos_type   = ::std::streampos;
 		using off_type   = ::std::streamoff;
@@ -252,10 +252,10 @@ namespace std {
 
 namespace ztd {
 	template <>
-	class is_character<::ztd::text::__impl::__unicode_code_point> : public ::std::true_type { };
+	class is_character<::ztd::text::__txt_impl::__unicode_code_point> : public ::std::true_type { };
 
 	template <>
-	class is_char_traitable<::ztd::text::__impl::__unicode_code_point> : public std::true_type { };
+	class is_char_traitable<::ztd::text::__txt_impl::__unicode_code_point> : public std::true_type { };
 } // namespace ztd
 
 #include <ztd/epilogue.hpp>

@@ -64,13 +64,15 @@ struct shift_jis {
 	using sjis_encode_error_handler = std::function<sjis_encode_result(
 		const shift_jis&,
 		sjis_encode_result,
-		ztd::ranges::span<const code_point>
+		ztd::ranges::span<const code_point>,
+		ztd::ranges::span<const code_unit>
 	)>;
 
 	using sjis_decode_error_handler = std::function<sjis_decode_result(
 		const shift_jis&,
 		sjis_decode_result,
-		ztd::ranges::span<const code_unit>
+		ztd::ranges::span<const code_unit>,
+		ztd::ranges::span<const code_point>
 	)>;
 	// clang-format on
 

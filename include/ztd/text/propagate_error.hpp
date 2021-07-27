@@ -39,6 +39,8 @@
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/transcode_result.hpp>
 
+#include <ztd/prologue.hpp>
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
@@ -51,9 +53,13 @@ namespace ztd { namespace text {
 	constexpr auto propagate_error(_FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding, _Result&& __result,
 		_DecodeErrorHandler&& __decode_error_handler, _EncodeErrorHandler&& __encode_error_handler,
 		_FromProgress&& __from_progress, _ToProgress&& __to_progress) {
-		auto __decode_result           = __decode_error_handler(::std::forward<FromEncoding>(__from_encoding),
-               ::std::forward<_Result>(__result), __from_progress, __from_progress);
-		auto __corrected_encode_result = ();
+		(void)__from_encoding;
+		(void)__to_encoding;
+		(void)__decode_error_handler;
+		(void)__encode_error_handler;
+		(void)__from_progress;
+		(void)__to_progress;
+		return __result;
 	}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

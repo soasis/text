@@ -69,7 +69,7 @@ else:
 	a, b = os.path.splitext(single_file)
 	a = os.path.dirname(single_file)
 	forward_single_file = os.path.normpath(
-	    os.path.join(a + '/', 'forward' + b))
+	    os.path.join(a + '/text', 'forward' + b))
 
 single_file_dir = os.path.dirname(single_file)
 forward_single_file_dir = os.path.dirname(forward_single_file)

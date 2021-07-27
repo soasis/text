@@ -62,6 +62,9 @@
 #include <utility>
 #include <array>
 #include <system_error>
+#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
+#include <cstdlib>
+#endif
 
 #include <ztd/prologue.hpp>
 
@@ -107,9 +110,24 @@ namespace ztd { namespace text {
 		constexpr _Result&& __write_static_code_points_direct(
 			const _Encoding& __encoding, _Result&& __result) noexcept {
 			using _InputCodePoint = code_point_t<_Encoding>;
-			if constexpr (is_code_points_replaceable_v<_Encoding>) {
+			if constexpr (is_code_points_replaceable_v<_Encoding, decltype(__result.state)&>) {
+				return __txt_detail::__write_direct(__encoding, __encoding.replacement_code_points(__result.state),
+					::std::forward<_Result>(__result));
+			}
+			else if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				return __txt_detail::__write_direct(
 					__encoding, __encoding.replacement_code_points(), ::std::forward<_Result>(__result));
+			}
+			else if constexpr (is_code_points_maybe_replaceable_v<_Encoding, decltype(__result.state)&>) {
+				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_points(__result.state);
+				if (__maybe_code_points) {
+					return __txt_detail::__write_direct(__encoding,
+						*::std::forward<decltype(__maybe_code_points)>(__maybe_code_points),
+						::std::forward<_Result>(__result));
+				}
+				else {
+					return ::std::forward<_Result>(__result);
+				}
 			}
 			else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
 				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_points();
@@ -138,9 +156,24 @@ namespace ztd { namespace text {
 		constexpr _Result&& __write_static_code_units_direct(
 			const _Encoding& __encoding, _Result&& __result) noexcept {
 			using _InputCodeUnit = code_unit_t<_Encoding>;
-			if constexpr (is_code_units_replaceable_v<_Encoding>) {
+			if constexpr (is_code_units_replaceable_v<_Encoding, decltype(__result.state)&>) {
+				return __txt_detail::__write_direct(__encoding, __encoding.replacement_code_units(__result.state),
+					::std::forward<_Result>(__result));
+			}
+			else if constexpr (is_code_units_replaceable_v<_Encoding>) {
 				return __txt_detail::__write_direct(
 					__encoding, __encoding.replacement_code_units(), ::std::forward<_Result>(__result));
+			}
+			else if constexpr (is_code_units_maybe_replaceable_v<_Encoding, decltype(__result.state)&>) {
+				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_units(__result.state);
+				if (__maybe_code_points) {
+					return __txt_detail::__write_direct(__encoding,
+						*::std::forward<decltype(__maybe_code_points)>(__maybe_code_points),
+						::std::forward<_Result>(__result));
+				}
+				else {
+					return ::std::forward<_Result>(__result);
+				}
 			}
 			else if constexpr (is_code_units_maybe_replaceable_v<_Encoding>) {
 				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_units();
@@ -165,15 +198,36 @@ namespace ztd { namespace text {
 			}
 		}
 
-		template <typename _Encoding>
-		constexpr ::std::size_t __fill_replacement_code_point_static(const _Encoding& __encoding,
+		template <typename _Encoding, typename _State>
+		constexpr ::std::size_t __fill_replacement_code_point_static(const _Encoding& __encoding, _State& __state,
 			code_point_t<_Encoding> (&__replacement_code_points)[max_code_points_v<_Encoding>]) {
 			using _InputCodePoint = code_point_t<_Encoding>;
-			if constexpr (is_code_points_replaceable_v<_Encoding>) {
+			if constexpr (is_code_points_replaceable_v<_Encoding, _State&>) {
+				::std::size_t __replacement_index = 0;
+				for (const auto& __element : __encoding.replacement_code_points(__state)) {
+					__replacement_code_points[__replacement_index] = static_cast<_InputCodePoint>(__element);
+					++__replacement_index;
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				::std::size_t __replacement_index = 0;
 				for (const auto& __element : __encoding.replacement_code_points()) {
 					__replacement_code_points[__replacement_index] = static_cast<_InputCodePoint>(__element);
 					++__replacement_index;
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_code_points_maybe_replaceable_v<_Encoding, _State&>) {
+				::std::size_t __replacement_index  = 0;
+				decltype(auto) __maybe_code_points = __encoding.maybe_replacement_code_points(__state);
+				if (__maybe_code_points) {
+					decltype(auto) __code_points
+						= *::std::forward<decltype(__maybe_code_points)>(__maybe_code_points);
+					for (const auto& __element : __code_points) {
+						__replacement_code_points[__replacement_index] = static_cast<_InputCodePoint>(__element);
+						++__replacement_index;
+					}
 				}
 				return __replacement_index;
 			}
@@ -201,15 +255,36 @@ namespace ztd { namespace text {
 			}
 		}
 
-		template <typename _Encoding>
-		constexpr ::std::size_t __fill_replacement_code_unit_static(const _Encoding& __encoding,
+		template <typename _Encoding, typename _State>
+		constexpr ::std::size_t __fill_replacement_code_unit_static(const _Encoding& __encoding, _State& __state,
 			code_unit_t<_Encoding> (&__replacement_code_units)[max_code_units_v<_Encoding>]) {
 			using _InputCodeUnit = code_unit_t<_Encoding>;
-			if constexpr (is_code_units_replaceable_v<_Encoding>) {
+			if constexpr (is_code_units_replaceable_v<_Encoding, _State&>) {
+				::std::size_t __replacement_index = 0;
+				for (const auto& __element : __encoding.replacement_code_units(__state)) {
+					__replacement_code_units[__replacement_index] = static_cast<_InputCodeUnit>(__element);
+					++__replacement_index;
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_code_units_replaceable_v<_Encoding>) {
 				::std::size_t __replacement_index = 0;
 				for (const auto& __element : __encoding.replacement_code_units()) {
 					__replacement_code_units[__replacement_index] = static_cast<_InputCodeUnit>(__element);
 					++__replacement_index;
+				}
+				return __replacement_index;
+			}
+			else if constexpr (is_code_units_maybe_replaceable_v<_Encoding, _State&>) {
+				::std::size_t __replacement_index = 0;
+				decltype(auto) __maybe_code_units = __encoding.maybe_replacement_code_units(__state);
+				if (__maybe_code_units) {
+					decltype(auto) __code_units
+						= *::std::forward<decltype(__maybe_code_units)>(__maybe_code_units);
+					for (const auto& __element : __code_units) {
+						__replacement_code_units[__replacement_index] = static_cast<_InputCodeUnit>(__element);
+						++__replacement_index;
+					}
 				}
 				return __replacement_index;
 			}
@@ -250,7 +325,42 @@ namespace ztd { namespace text {
 	/// possible encoding and decoding in a general sense. However: IT IS ALSO EXTREMELY DANGEROUS AND CAN INVOKE
 	/// UNDEFINED BEHAVIOR IF YOUR TEXT IS, IN FACT, MESSED UP. PLEASE DO NOT USE THIS WITHOUT A GOOD REASON!
 	//////
-	class assume_valid_handler : public __txt_detail::__pass_through_handler_with<true> { };
+	class assume_valid_handler {
+	public:
+		//////
+		/// @brief A type that is true when calling code can not call this function and ignore it, and false when
+		/// it cannot ignore it. See ztd::text::assume_valid_handler for details.
+		//////
+		using assume_valid = ::std::integral_constant<bool,
+#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
+			true
+#else
+			false
+#endif
+			>;
+
+		//////
+		/// @brief A handler for either decode or encode results that simply passes the result type back through
+		/// with no changes made.
+		///
+		/// @param[in] __result The current state of the encode operation to pass through.
+		//////
+		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+		constexpr auto operator()(
+			const _Encoding&, _Result __result, const _InputProgress&, const _OutputProgress&) const {
+#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
+			ZTD_TEXT_ASSERT_MESSAGE_I_(
+				"You have invoked the ztd::text::assume_valid handler, and tripped undefined behavior. This means "
+				"you violated the covenant between you, the compiler, this library, and every piece of code that "
+				"depends depends on you. It is highly suggested that ztd::text::assume_valid_handler is not used "
+				"except for the most extremely secure cases. If you cannot properly grok your threat model or what "
+				"may or may not be external, please do not use this type!",
+				false);
+			::std::abort();
+#endif
+			return __result;
+		}
+	};
 
 	//////
 	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
@@ -270,8 +380,8 @@ namespace ztd { namespace text {
 	/// maybe_replacement_code_units() function. If either is present, they are expected to return a @c std::optional
 	/// of a contiguous range. If it is engaged (the @c std::optional is filled) it will be used. Otherwise, if it is
 	/// not engaged, then it will explicitly fall back to attempt to insert the default replacement character @c U+FFFD
-	/// (@c U'�') or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will be
-	/// inserted at all.
+	/// (<tt>U'�'</tt>) or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will
+	/// be inserted at all.
 	//////
 	class replacement_handler {
 	public:
@@ -279,14 +389,15 @@ namespace ztd { namespace text {
 		/// @brief The function call for inserting replacement code units at the point of failure, before returning
 		/// flow back to the caller of the encode operation.
 		///
-		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _Progress>
+			typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding,
-			encode_result<_InputRange, _OutputRange, _State> __result, const _Progress&) const noexcept {
+			encode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
+			const _OutputProgress&) const noexcept {
+			using _CodeUnit = code_unit_t<_Encoding>;
 			if (__result.error_code == encoding_error::insufficient_output_space) {
 				// BAIL
 				return __result;
@@ -299,12 +410,30 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			if constexpr (is_code_units_replaceable_v<_Encoding>) {
+			if constexpr (is_code_units_replaceable_v<_Encoding, _State&>) {
+				return __txt_detail::__write_direct(
+					__encoding, __encoding.replacement_code_units(__result.state), ::std::move(__result));
+			}
+			else if constexpr (is_code_units_replaceable_v<_Encoding>) {
 				return __txt_detail::__write_direct(
 					__encoding, __encoding.replacement_code_units(), ::std::move(__result));
 			}
+			else if constexpr (
+				!(is_code_points_maybe_replaceable_v<_Encoding,
+				       _State&> || is_code_points_maybe_replaceable_v<_Encoding>)&&is_unicode_code_point_v<_CodeUnit>) {
+				constexpr _CodeUnit __replacements[1] = { static_cast<_CodeUnit>(__txt_detail::__replacement) };
+				return __txt_detail::__write_direct(__encoding, __replacements, ::std::move(__result));
+			}
 			else {
-				if constexpr (is_code_units_maybe_replaceable_v<_Encoding>) {
+				if constexpr (is_code_units_maybe_replaceable_v<_Encoding, _State&>) {
+					auto __maybe_direct_replacement = __encoding.maybe_replacement_code_units(__result.state);
+					if (__maybe_direct_replacement) {
+						const auto& __direct_replacement = *__maybe_direct_replacement;
+						return __txt_detail::__write_direct(
+							__encoding, __direct_replacement, ::std::move(__result));
+					}
+				}
+				else if constexpr (is_code_units_maybe_replaceable_v<_Encoding>) {
 					auto __maybe_direct_replacement = __encoding.maybe_replacement_code_units();
 					if (__maybe_direct_replacement) {
 						const auto& __direct_replacement = *__maybe_direct_replacement;
@@ -315,7 +444,14 @@ namespace ztd { namespace text {
 				using _InputCodePoint = code_point_t<_Encoding>;
 				_InputCodePoint __replacement[max_code_points_v<_Encoding>] {};
 				::std::size_t __replacement_size = 0;
-				if constexpr (is_code_points_replaceable_v<_Encoding>) {
+				if constexpr (is_code_points_replaceable_v<_Encoding, _State&>) {
+					auto __replacement_code_units = __encoding.replacement_code_points(__result.state);
+					for (const auto& __element : __replacement_code_units) {
+						__replacement[__replacement_size] = __element;
+						++__replacement_size;
+					}
+				}
+				else if constexpr (is_code_points_replaceable_v<_Encoding>) {
 					auto __replacement_code_units = __encoding.replacement_code_points();
 					for (const auto& __element : __replacement_code_units) {
 						__replacement[__replacement_size] = __element;
@@ -323,15 +459,15 @@ namespace ztd { namespace text {
 					}
 				}
 				else {
-					__replacement_size
-						= __txt_detail::__fill_replacement_code_point_static(__encoding, __replacement);
+					__replacement_size = __txt_detail::__fill_replacement_code_point_static(
+						__encoding, __result.state, __replacement);
 				}
 
 				const ::ztd::ranges::span<const _InputCodePoint> __replacement_range(
 					__replacement, __replacement_size);
 
 				__txt_detail::__pass_through_handler __handler {};
-				encode_state_t<_Encoding> __state = make_encode_state(__encoding);
+				encode_state_t<_Encoding> __state = copy_encode_state_with(__encoding, __result.state);
 				auto __encresult                  = __txt_detail::__basic_encode_one<__txt_detail::__consume::__no>(
                          __replacement_range, __encoding, ::std::move(__result.output), __handler, __state);
 				__result.output = ::std::move(__encresult.output);
@@ -353,13 +489,12 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		///
-		/// @remarks TODO: describe the replacement process thoroughly and fix this!
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _Progress>
+			typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding,
-			decode_result<_InputRange, _OutputRange, _State> __result, const _Progress&) const noexcept {
+			decode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
+			const _OutputProgress&) const noexcept {
 			using _CodePoint = code_point_t<_Encoding>;
 
 			if (__result.error_code == encoding_error::insufficient_output_space) {
@@ -373,17 +508,30 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			if constexpr (is_code_points_replaceable_v<_Encoding>) {
+			if constexpr (is_code_points_replaceable_v<_Encoding, _State&>) {
+				return __txt_detail::__write_direct(
+					__encoding, __encoding.replacement_code_points(__result.state), ::std::move(__result));
+			}
+			else if constexpr (is_code_points_replaceable_v<_Encoding>) {
 				return __txt_detail::__write_direct(
 					__encoding, __encoding.replacement_code_points(), ::std::move(__result));
 			}
-			else if constexpr (!is_code_points_maybe_replaceable_v<
-				                   _Encoding> && is_unicode_code_point_v<_CodePoint>) {
+			else if constexpr (
+				!(is_code_points_maybe_replaceable_v<_Encoding,
+				       _State&> || is_code_points_maybe_replaceable_v<_Encoding>)&&is_unicode_code_point_v<_CodePoint>) {
 				constexpr _CodePoint __replacements[1] = { static_cast<_CodePoint>(__txt_detail::__replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::move(__result));
 			}
 			else {
-				if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
+				if constexpr (is_code_points_maybe_replaceable_v<_Encoding, _State&>) {
+					auto __maybe_direct_replacement = __encoding.maybe_replacement_code_points(__result.state);
+					if (__maybe_direct_replacement) {
+						const auto& __direct_replacement = *__maybe_direct_replacement;
+						return __txt_detail::__write_direct(
+							__encoding, __direct_replacement, ::std::move(__result));
+					}
+				}
+				else if constexpr (is_code_points_maybe_replaceable_v<_Encoding>) {
 					auto __maybe_direct_replacement = __encoding.maybe_replacement_code_points();
 					if (__maybe_direct_replacement) {
 						const auto& __direct_replacement = *__maybe_direct_replacement;
@@ -394,7 +542,14 @@ namespace ztd { namespace text {
 				using _InputCodeUnit = code_unit_t<_Encoding>;
 				_InputCodeUnit __replacement[max_code_units_v<_Encoding>] {};
 				::std::size_t __replacement_size = 0;
-				if constexpr (is_code_units_replaceable_v<_Encoding>) {
+				if constexpr (is_code_units_replaceable_v<_Encoding, _State&>) {
+					auto __replacement_code_units = __encoding.replacement_code_units(__result.state);
+					for (const auto& __element : __replacement_code_units) {
+						__replacement[__replacement_size] = __element;
+						++__replacement_size;
+					}
+				}
+				else if constexpr (is_code_units_replaceable_v<_Encoding>) {
 					auto __replacement_code_units = __encoding.replacement_code_units();
 					for (const auto& __element : __replacement_code_units) {
 						__replacement[__replacement_size] = __element;
@@ -402,15 +557,15 @@ namespace ztd { namespace text {
 					}
 				}
 				else {
-					__replacement_size
-						= __txt_detail::__fill_replacement_code_unit_static(__encoding, __replacement);
+					__replacement_size = __txt_detail::__fill_replacement_code_unit_static(
+						__encoding, __result.state, __replacement);
 				}
 
 				const ::ztd::ranges::span<const _InputCodeUnit> __replacement_range(
 					__replacement, __replacement_size);
 
 				__txt_detail::__pass_through_handler __handler {};
-				decode_state_t<_Encoding> __state = make_decode_state(__encoding);
+				decode_state_t<_Encoding> __state = copy_decode_state_with(__encoding, __result.state);
 				auto __decresult                  = __txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
                          __replacement_range, __encoding, ::std::move(__result.output), __handler, __state);
 				__result.output = ::std::move(__decresult.output);
@@ -441,9 +596,10 @@ namespace ztd { namespace text {
 		///
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _Progress>
+			typename _InputProgress, typename _OutputProgress>
 		constexpr encode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
-			encode_result<_InputRange, _OutputRange, _State> __result, const _Progress&) const noexcept(false) {
+			encode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
+			const _OutputProgress&) const noexcept(false) {
 			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
 		}
 
@@ -452,9 +608,10 @@ namespace ztd { namespace text {
 		///
 		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _Progress>
+			typename _InputProgress, typename _OutputProgress>
 		constexpr decode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
-			decode_result<_InputRange, _OutputRange, _State> __result, const _Progress&) const noexcept(false) {
+			decode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
+			const _OutputProgress&) const noexcept(false) {
 			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
 		}
 	};
@@ -553,29 +710,37 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		/// @param[in] __progress Any unused code units that were read before the failure occurred. These will be
-		/// stored in this handler.
+		/// @param[in] __input_progress Any code units or code points that were read but not yet used before the
+		/// failure occurred. These will be stored in this handler.
+		/// @param[in] __output_progress Any code points or code units that have not yet been written before the
+		/// failure occurred. These will be stored in this handler.
 		//////
-		template <typename _Result, typename _Progress>
-		constexpr auto operator()(const _Encoding& __encoding, _Result __result, const _Progress& __progress) const
-			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result, const _Progress&>) {
+		template <typename _Result, typename _InputProgress, typename _OutputProgress>
+		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
+			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
+			     const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {
 				// it's incomplete and we are okay with that
 				if constexpr (is_specialization_of_v<_Result, decode_result>) {
-					// save the read code units
-					::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress),
-						ranges::ranges_adl::adl_cend(__progress), this->_M_code_units.data());
-					this->_M_code_units_size = ranges::ranges_adl::adl_size(__progress);
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
 				}
 				else {
-					// save the read code points
-					::std::copy_n(ranges::ranges_adl::adl_cbegin(__progress),
-						ranges::ranges_adl::adl_cend(__progress), this->_M_code_points.data());
-					this->_M_code_points_size = ranges::ranges_adl::adl_size(__progress);
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
 				}
 				return __result;
 			}
-			return this->get_value()(__encoding, ::std::move(__result), __progress);
+			return this->get_value()(__encoding, ::std::move(__result), __input_progress, __output_progress);
 		}
 
 		//////
@@ -619,7 +784,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The underlying error handler type.
-		///
 		//////
 		using error_handler = __error_handler_base_t;
 

@@ -52,6 +52,7 @@
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/span.hpp>
+#include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>
 #include <vector>
@@ -109,6 +110,9 @@ namespace ztd { namespace text {
 		using _InitialInput          = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
 		using _InitialOutput         = ranges::range_reconstruct_t<_Output>;
 		using _UFromEncoding         = remove_cvref_t<_FromEncoding>;
+		using _UToEncoding           = remove_cvref_t<_ToEncoding>;
+		using _UFromErrorHandler     = remove_cvref_t<_FromErrorHandler>;
+		using _UToErrorHandler       = remove_cvref_t<_ToErrorHandler>;
 		using _IntermediateCodePoint = code_point_t<_UFromEncoding>;
 		constexpr ::std::size_t _IntermediateCodePointMax = max_code_points_v<_UFromEncoding>;
 		using _IntermediateStorage                        = _IntermediateCodePoint[_IntermediateCodePointMax];
@@ -118,6 +122,11 @@ namespace ztd { namespace text {
                __from_error_handler, __to_error_handler, __from_state, __to_state, ::std::declval<_Intermediate&>()));
 		using _WorkingInput  = decltype(::std::declval<_Result>().input);
 		using _WorkingOutput = decltype(::std::declval<_Result>().output);
+
+		static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_UFromEncoding, _UFromErrorHandler>,
+			ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_);
+		static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_UToEncoding, _UToErrorHandler>,
+			ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
 
 		_WorkingInput __working_input(
 			__txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input)));
@@ -399,6 +408,14 @@ namespace ztd { namespace text {
                     ::std::declval<_IntermediateInput>(), __from_error_handler, __from_state));
 			using _WorkingInput       = decltype(::std::declval<_DecodeResult>().input);
 
+			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
+				              remove_cvref_t<_FromErrorHandler>>,
+				ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_);
+			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<remove_cvref_t<_ToEncoding>,
+				              remove_cvref_t<_ToErrorHandler>>,
+				ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
+
+
 			_WorkingInput __working_input(
 				__txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input)));
 			_IntermediateOutputValueType __intermediate_output_storage[_IntermediateOutputMax] {};
@@ -409,26 +426,7 @@ namespace ztd { namespace text {
 					     __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);
 				_IntermediateOutput __intermediate_output(
 					__intermediate_initial.data(), __result.output.data() - __intermediate_initial.data());
-				using _SpanIterator = typename _IntermediateOutput::iterator;
-				if constexpr (is_detected_v<ranges::detect_insert_bulk, _OutputContainer, _SpanIterator,
-					              _SpanIterator>) {
-					// inserting in bulk
-					// can be faster, more performant,
-					// save us some coding too
-					__output.insert(__output.cend(), __intermediate_output.begin(), __intermediate_output.end());
-				}
-				else {
-					// O O F! we have to insert one at a time.
-					for (auto&& __intermediate_code_unit : __intermediate_output) {
-						if constexpr (is_detected_v<ranges::detect_push_back, _OutputContainer,
-							              _IntermediateOutputValueType>) {
-							__output.push_back(__intermediate_code_unit);
-						}
-						else {
-							__output.insert(__output.cend(), __intermediate_code_unit);
-						}
-					}
-				}
+				ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
 				if (__result.error_code == encoding_error::insufficient_output_space) {
 					// loop around, we've got S P A C E for more
 					__working_input = ::std::move(__result.input);

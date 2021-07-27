@@ -72,6 +72,13 @@ namespace ztd { namespace ranges {
 			}
 
 			template <typename _ArgInIt, typename _ArgOutIt,
+				::std::enable_if_t<::std::is_convertible_v<const _InItOrRange&,
+				     _ArgInIt>&& ::std::is_convertible_v<const _OutItOrRange&, _ArgOutIt>>* = nullptr>
+			constexpr operator __in_out_result<_ArgInIt, _ArgOutIt>() & {
+				return { in, out };
+			}
+
+			template <typename _ArgInIt, typename _ArgOutIt,
 				::std::enable_if_t<::std::is_convertible_v<_InItOrRange,
 				     _ArgInIt>&& ::std::is_convertible_v<_OutItOrRange, _ArgOutIt>>* = nullptr>
 			constexpr operator __in_out_result<_ArgInIt, _ArgOutIt>() && {

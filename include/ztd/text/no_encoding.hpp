@@ -154,7 +154,7 @@ namespace ztd { namespace text {
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::ranges::span<code_unit, 0>());
+						::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
 				}
 			}
 			else {
@@ -224,7 +224,7 @@ namespace ztd { namespace text {
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::ranges::span<code_point, 0>());
+						::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
 				}
 			}
 			else {

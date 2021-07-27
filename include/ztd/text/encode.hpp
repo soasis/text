@@ -49,6 +49,7 @@
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/span.hpp>
+#include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>
 #include <vector>
@@ -63,8 +64,8 @@ namespace ztd { namespace text {
 	/// @addtogroup ztd_text_encode ztd::text::encode[_into]
 	/// @brief These functions convert from a view of input code points into a view of output code units using
 	/// either the inferred or specified encoding. If no error handler is provided, the equivalent of the
-	/// ztd::text::default_handler is used by default. If no associated state is provided for the encoding, one will be
-	/// created with automatic storage duration (as a "stack" variable) for the provided encoding.
+	/// ztd::text::default_handler is used by default. If no associated state is provided for the encoding, one
+	/// will be created with automatic storage duration (as a "stack" variable) for the provided encoding.
 	/// @{
 	//////
 
@@ -101,10 +102,7 @@ namespace ztd { namespace text {
 		using _UErrorHandler      = remove_cvref_t<_ErrorHandler>;
 
 		static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_UEncoding, _UErrorHandler>,
-			"This encode is a lossy, non-injective operation. This means you may lose data that you did not "
-			"intend "
-			"to lose; specify a 'handler' error handler parameter to encode(in, encoding, handler, ...) or "
-			"encode_into(in, encoding, out, handler, ...) explicitly in order to bypass this.");
+			ZTD_TEXT_LOSSY_ENCODE_MESSAGE_I_);
 
 		_WorkingInput __working_input
 			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
@@ -179,56 +177,83 @@ namespace ztd { namespace text {
 			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
 			// Well, SHIT. Write into temporary, then serialize one-by-one/bulk to output.
 			// I'll admit, this is HELLA work to support...
-			using _UEncoding = remove_cvref_t<_Encoding>;
+			using _UEncoding     = remove_cvref_t<_Encoding>;
+			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 			constexpr ::std::size_t __intermediate_buffer_max
-				= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>)
+				= ZTD_TEXT_INTERMEDIATE_ENCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>)
 				     < max_code_units_v<_UEncoding>
 				? max_code_units_v<_UEncoding>
-				: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>);
+				: ZTD_TEXT_INTERMEDIATE_ENCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>);
 			using _IntermediateValueType = code_unit_t<_UEncoding>;
-			using _IntermediateInput     = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+			using _IntermediateInput     = __string_view_or_span_or_reconstruct_t<_Input>;
 			using _InitialOutput         = ::ztd::ranges::span<_IntermediateValueType, __intermediate_buffer_max>;
 			using _Output                = ::ztd::ranges::span<_IntermediateValueType>;
 			using _Result                = decltype(__encoding.encode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
 			using _WorkingInput          = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
-			_WorkingInput __working_input
-				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_UEncoding, _UErrorHandler>,
+				ZTD_TEXT_LOSSY_ENCODE_MESSAGE_I_);
+
+			// We MUST use a temporary error handler
+			// as well as a pass-throuugh handler if we end up with lots of intermediary input
+			__progress_handler<is_ignorable_error_handler_v<_UErrorHandler>, _UEncoding> __intermediate_handler {};
+			__progress_handler<is_ignorable_error_handler_v<_UErrorHandler>, _UEncoding>
+				__unused_intermediate_handler {};
+
+			_WorkingInput __working_input = __string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 			_IntermediateValueType __intermediate_translation_buffer[__intermediate_buffer_max] {};
+
 			for (;;) {
 				// Ignore "out of output" errors and do our best to recover properly along the way...
 				_InitialOutput __intermediate_initial_output(__intermediate_translation_buffer);
-				auto __result = encode_into(::std::move(__working_input), ::std::forward<_Encoding>(__encoding),
-					__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
+				auto __result = encode_into(::std::move(__working_input), __encoding, __intermediate_initial_output,
+					__intermediate_handler, __state);
 				_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());
-				using _SpanIterator = typename _Output::iterator;
-				if constexpr (is_detected_v<ranges::detect_insert_bulk, _OutputContainer, _SpanIterator,
-					              _SpanIterator>) {
-					// inserting in bulk
-					// can be faster, more performant,
-					// save us some coding too
-					__output.insert(__output.cend(), __intermediate_output.begin(), __intermediate_output.end());
-				}
-				else {
-					// O O F! we have to insert one at a time.
-					for (auto&& __intermediate_code_unit : __intermediate_output) {
-						if constexpr (is_detected_v<ranges::detect_push_back, _OutputContainer,
-							              _IntermediateValueType>) {
-							__output.push_back(__intermediate_code_unit);
-						}
-						else {
-							__output.insert(__output.cend(), __intermediate_code_unit);
+				ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
+				if (__result.error_code == encoding_error::insufficient_output_space) {
+					if (__intermediate_handler._M_code_units_progress_size() != 0) {
+						// add any partially-unwritten characters to our output
+						ranges::__rng_detail::__container_insert_bulk(
+							__output, __intermediate_handler._M_code_units_progress());
+					}
+					else if (__intermediate_handler._M_code_points_progress_size() != 0) {
+						// make sure to empty any read-but-unused characters here...!
+						auto __unused_input_progress = __intermediate_handler._M_code_points_progress();
+						_InitialOutput __unused_input_intermediate_initial_output(
+							__intermediate_translation_buffer);
+						auto __unused_input_result = encode_into(__unused_input_progress, __encoding,
+							__unused_input_intermediate_initial_output, __unused_intermediate_handler, __state);
+						_Output __unused_input_intermediate_output(
+							__unused_input_intermediate_initial_output.data(),
+							__unused_input_result.output.data());
+						ranges::__rng_detail::__container_insert_bulk(
+							__output, __unused_input_intermediate_output);
+						if (__unused_input_result.error_code != encoding_error::ok) {
+							// mill result through actual error handler!
+							// adjust for the amount of code points potentially read from the input of
+							// the unused buffer.
+							::std::size_t __progress_offset
+								= __unused_input_result.input.data() - __unused_input_progress.data();
+							auto __final_progress
+								= __intermediate_handler._M_code_points_progress().subspan(__progress_offset);
+							auto __error_result = ::std::forward<_ErrorHandler>(__error_handler)(
+								::std::forward<_Encoding>(__encoding), ::std::move(__result), __final_progress,
+								__unused_intermediate_handler._M_code_units_progress());
+							return __error_result;
 						}
 					}
-				}
-				if (__result.error_code == encoding_error::insufficient_output_space) {
 					// loop around, we've got S P A C E for more
 					__working_input = ::std::move(__result.input);
 					continue;
 				}
 				if (__result.error_code != encoding_error::ok) {
-					return __result;
+					// mill result through actual error handler!
+					auto __error_result
+						= ::std::forward<_ErrorHandler>(__error_handler)(::std::forward<_Encoding>(__encoding),
+						     ::std::move(__result), __intermediate_handler._M_code_points_progress(),
+						     __intermediate_handler._M_code_units_progress());
+					return __error_result;
 				}
 				if (ranges::ranges_adl::adl_empty(__result.input)) {
 					return __result;

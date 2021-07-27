@@ -45,8 +45,8 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _Type>
-	class is_unicode_scalar_value
-	: public ::std::integral_constant<bool, ::std::is_same_v<remove_cvref_t<_Type>, __impl::__unicode_scalar_value>> {
+	class is_unicode_scalar_value : public ::std::integral_constant<bool,
+		                                ::std::is_same_v<remove_cvref_t<_Type>, __txt_impl::__unicode_scalar_value>> {
 	};
 
 	template <typename _Type>
@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 	class is_unicode_code_point
 	: public ::std::integral_constant<bool,
 		  ::std::is_same_v<remove_cvref_t<_Type>,
-		       char32_t> || ::std::is_same_v<remove_cvref_t<_Type>, __impl::__unicode_code_point> || is_unicode_scalar_value_v<_Type>> {
+		       char32_t> || ::std::is_same_v<remove_cvref_t<_Type>, __txt_impl::__unicode_code_point> || is_unicode_scalar_value_v<_Type>> {
 	};
 
 	template <typename _Type>

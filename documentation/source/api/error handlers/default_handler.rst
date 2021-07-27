@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,6 +32,8 @@ default_handler
 ===============
 
 The default handler for all operations. A class type that simply wraps :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` unless configured otherwise. You can change it to throw by default (NOT recommended) by using :ref:`ZTD_TEXT_DEFAULT_HANDLER_THROWS <config-ZTD_TEXT_DEFAULT_HANDLER_THROWS>`.
+
+Using this type, implicitly or explicitly, signals to ztd.text that you would like it to gently admonish you if any part of a conversion could be potentially lossy (valid data is put in, but it cannot be handled by the desired encode/decode/transcode operation).
 
 .. doxygenclass:: ztd::text::default_handler
 	:members:

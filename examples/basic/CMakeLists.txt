@@ -64,6 +64,7 @@ foreach (example_source_name ${ztd.text.examples.basic.sources})
 		${--disable-permissive}
 		${--warn-pedantic}
 		${--warn-all}
+		${--warn-extra}
 		${--warn-errors}
 	)
 	

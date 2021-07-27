@@ -60,6 +60,7 @@ target_compile_options(ztd.text.examples.shift_jis
 	${--disable-permissive}
 	${--warn-pedantic}
 	${--warn-all}
+	${--warn-extra}
 	${--warn-errors}
 )
 target_include_directories(ztd.text.examples.shift_jis

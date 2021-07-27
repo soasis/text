@@ -54,7 +54,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 			return error_handler(*this,
 			     sjis_encode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		*out_it = static_cast<code_unit>(code);
 		++out_it;
@@ -67,7 +67,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 			return error_handler(*this,
 			     sjis_encode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		*out_it = static_cast<code_unit>(0x5C);
 		++out_it;
@@ -80,7 +80,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 			return error_handler(*this,
 			     sjis_encode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		*out_it = static_cast<code_unit>(0x7E);
 		++out_it;
@@ -93,7 +93,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 			return error_handler(*this,
 			     sjis_encode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		code_point intermediate = (code - 0xFF61);
 		*out_it                 = static_cast<code_unit>(intermediate + 0xA1);
@@ -120,7 +120,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 			return error_handler(*this,
 			     sjis_encode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		++out_it;
 		if (out_it == out_last) {
@@ -128,7 +128,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 			return error_handler(*this,
 			     sjis_encode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		*out_first = static_cast<code_unit>(first + first_offset);
 		*out_it    = static_cast<code_unit>(second + second_offset);
@@ -140,7 +140,7 @@ shift_jis::sjis_encode_result shift_jis::encode_one(ztd::ranges::span<const code
 	return error_handler(*this,
 	     sjis_encode_result(std::move(input), std::move(output), current_state,
 	          ztd::text::encoding_error::insufficient_output_space),
-	     input_span());
+	     input_span(), output_span());
 }
 
 shift_jis::sjis_decode_result shift_jis::decode_one(ztd::ranges::span<const shift_jis::code_unit> input,
@@ -168,7 +168,7 @@ shift_jis::sjis_decode_result shift_jis::decode_one(ztd::ranges::span<const shif
 			return error_handler(*this,
 			     sjis_decode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		*out_it = code;
 		++out_it;
@@ -182,7 +182,7 @@ shift_jis::sjis_decode_result shift_jis::decode_one(ztd::ranges::span<const shif
 			return error_handler(*this,
 			     sjis_decode_result(std::move(input), std::move(output), current_state,
 			          ztd::text::encoding_error::insufficient_output_space),
-			     input_span());
+			     input_span(), output_span());
 		}
 		*out_it = code;
 		++out_it;
@@ -224,5 +224,5 @@ shift_jis::sjis_decode_result shift_jis::decode_one(ztd::ranges::span<const shif
 	return error_handler(*this,
 	     sjis_decode_result(std::move(input), std::move(output), current_state,
 	          ztd::text::encoding_error::insufficient_output_space),
-	     input_span());
+	     input_span(), output_span());
 }

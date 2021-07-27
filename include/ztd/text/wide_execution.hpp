@@ -35,10 +35,10 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/wide_execution_windows.hpp>
-#include <ztd/text/detail/wide_execution_iso10646.hpp>
-#include <ztd/text/detail/wide_execution_iconv.hpp>
-#include <ztd/text/detail/wide_execution_cwchar.hpp>
+#include <ztd/text/impl/wide_execution_windows.hpp>
+#include <ztd/text/impl/wide_execution_iso10646.hpp>
+#include <ztd/text/impl/wide_execution_iconv.hpp>
+#include <ztd/text/impl/wide_execution_cwchar.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -63,13 +63,13 @@ namespace ztd { namespace text {
 	//////
 	using wide_execution =
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-		__impl::__wide_execution_windows
+		__txt_impl::__wide_execution_windows
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-		__impl::__iconv_wide_execution
+		__txt_impl::__iconv_wide_execution
 #elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE_I_)
-		__impl::__wide_execution_iso10646
+		__txt_impl::__wide_execution_iso10646
 #else
-		__impl::__wide_execution_cwchar
+		__txt_impl::__wide_execution_cwchar
 #endif
 		;
 

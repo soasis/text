@@ -207,7 +207,7 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const wide_literal, remove_cvref_t<_ErrorHandler>>
+			__txt_detail::__forwarding_handler<const wide_literal, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
 			return this->__base_t::get_value().decode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
@@ -271,7 +271,7 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const wide_literal, remove_cvref_t<_ErrorHandler>>
+			__txt_detail::__forwarding_handler<const wide_literal, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
 			return this->__base_t::get_value().encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);

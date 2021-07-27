@@ -40,7 +40,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	namespace __txt_impl {
 		//////
 		/// @internal
 		///
@@ -68,29 +68,29 @@ namespace ztd { namespace text {
 		//////
 		template <bool _IsCompatibility>
 		struct __nfd { };
-	} // namespace __impl
+	} // namespace __txt_impl
 
 
 	//////
 	/// @brief The Normalization Form C (Canonical, Composed, from Unicode Technical Report #5).
 	///
 	//////
-	class nfc : public __impl::__nfc<false> { };
+	class nfc : public __txt_impl::__nfc<false> { };
 	//////
 	/// @brief The Normalization Form D (Canonical, Decomposed, from Unicode Technical Report #5).
 	///
 	//////
-	class nfd : public __impl::__nfd<false> { };
+	class nfd : public __txt_impl::__nfd<false> { };
 	//////
 	/// @brief The Normalization Form KC (Compatibility, Composed, from Unicode Technical Report #5).
 	///
 	//////
-	class nfkc : public __impl::__nfc<true> { };
+	class nfkc : public __txt_impl::__nfc<true> { };
 	//////
 	/// @brief The Normalization Form KD (Compatibility, Decomposed, from Unicode Technical Report #5).
 	///
 	//////
-	class nfkd : public __impl::__nfd<true> { };
+	class nfkd : public __txt_impl::__nfd<true> { };
 	//////
 	/// @brief The Normalization Form C, Stream-Safe (Fast Composed, Contiguous, from Unicode Technical Report #5).
 	///

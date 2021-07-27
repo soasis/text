@@ -28,29 +28,5 @@
 #
 # ============================================================================>
 
-file(GLOB_RECURSE ztd.text.examples.documentation.sources LIST_DIRECTORIES false 
-	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/source CONFIGURE_DEPENDS 
-	source/*.cpp)
-
-foreach (example_source_name ${ztd.text.examples.documentation.sources})
-	set(example_source_file source/${example_source_name})
-	set(example_target ztd.text.examples.documentation.${example_source_name})
-	add_executable(${example_target} ${example_source_file})
-	target_compile_options(${example_target}
-		PRIVATE
-		${--utf8-literal-encoding}
-		${--utf8-source-encoding}
-		${--disable-permissive}
-		${--warn-pedantic}
-		${--warn-all}
-		${--warn-errors})
-
-	target_link_libraries(${example_target}
-		PRIVATE
-		ztd::text
-		${CMAKE_DL_LIBS}
-	)
-	if (ZTD_TEXT_TESTS)
-		add_test(NAME ${example_target} COMMAND ${example_target})
-	endif()
-endforeach()
+add_subdirectory(compile_fails)
+add_subdirectory(snippets)

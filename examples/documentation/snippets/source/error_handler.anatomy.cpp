@@ -49,10 +49,13 @@ struct my_error_handler {
 	     // Second Parameter, encode-specific
 	     ztd::text::encode_result<Input, Output, State> result,
 	     // Third Parameter
-	     code_point_span<Encoding> progress) const noexcept {
+	     code_point_span<Encoding> input_progress,
+	     // Fourth Parameter
+	     code_unit_span<Encoding> output_progress) const noexcept {
 		// ... implementation here!
 		(void)encoding;
-		(void)progress;
+		(void)input_progress;
+		(void)output_progress;
 		return result;
 	}
 
@@ -66,10 +69,13 @@ struct my_error_handler {
 	     // Second Parameter, decode-specific
 	     ztd::text::decode_result<Input, Output, State> result,
 	     // Third Parameter
-	     code_unit_span<Encoding> progress) const noexcept {
+	     code_unit_span<Encoding> input_progress,
+	     // Fourth Parameter
+	     code_point_span<Encoding> output_progress) const noexcept {
 		// ... implementation here!
 		(void)encoding;
-		(void)progress;
+		(void)input_progress;
+		(void)output_progress;
 		return result;
 	}
 };

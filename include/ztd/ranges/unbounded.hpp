@@ -290,7 +290,7 @@ namespace ztd { namespace ranges {
 		/// @remarks This function call requires that the underlying iterator are bidirectional.
 		//////
 		constexpr unbounded_view& recede(difference_type __diff = 1) noexcept(
-			noexcept(ranges::recede(this->_M_it, __diff))) {
+			noexcept(ranges::recede(::std::declval<iterator&>(), ::std::declval<difference_type>()))) {
 			ranges::recede(this->_M_it, __diff);
 			return *this;
 		}

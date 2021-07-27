@@ -46,6 +46,7 @@ target_compile_options(ztd.text.tests.basic_compile_time
 	${--disable-permissive}
 	${--warn-pedantic}
 	${--warn-all}
+	${--warn-extra}
 	${--warn-errors}
 	${--template-debugging-mode}
 	${--extra-constexpr-depth}

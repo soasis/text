@@ -47,6 +47,7 @@ target_compile_options(ztd.text.examples.boost_text
 	${--disable-permissive}
 	${--warn-pedantic}
 	${--warn-all}
+	${--warn-extra}
 	${--warn-errors})
 
 target_include_directories(ztd.text.examples.boost_text

@@ -18,7 +18,7 @@
 .. file except in compliance with the License. You may obtain a copy of the
 .. License at
 ..
-..		http:..www.apache.org/licenses/LICENSE-2.0
+.. 		https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,7 +40,7 @@ When interfacing with range types such as :doc:`ztd::text::decode_view </api/vie
 
 They can change the conversion and other operations happen works. Consider, for example, this piece of code which translates from Korean UTF-8 to ASCII:
 
-.. literalinclude:: /../../examples/documentation/source/error_handler.replacement.ascii.cpp
+.. literalinclude:: /../../examples/documentation/compile_fails/source/error_handler.replacement.ascii.cpp
 	:language: cpp
 	:linenos:
 	:start-after: // ============================================================================>

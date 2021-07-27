@@ -30,46 +30,77 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_EXECUTION_MAC_OS_HPP
-#define ZTD_TEXT_DETAIL_EXECUTION_MAC_OS_HPP
+#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
+#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/utf8.hpp>
-#include <ztd/text/is_unicode_encoding.hpp>
+#include <ztd/text/utf16.hpp>
+#include <ztd/text/encode_result.hpp>
+#include <ztd/text/decode_result.hpp>
+#include <ztd/text/error_handler.hpp>
+#include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
-#include <ztd/text/encode_result.hpp>
-#include <ztd/text/decode_result.hpp>
 #include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
+
+#include <ztd/ranges/range.hpp>
+#include <ztd/ranges/span.hpp>
+
+#include <ztd/text/detail/windows.hpp>
+
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+
+#include <iterator>
+#include <utility>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	//////
+	/// @addtogroup ztd_text_encodings Encodings
+	/// @{
+	//////
+
+	namespace __txt_impl {
+
 		//////
-		/// @brief The default execution ("locale") encoding for Mac OS.
+		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding, as it exists on
+		/// Windows. The wide execution encoding is typically associated with the locale, which is tied to the C
+		/// standard library's setlocale function.
 		///
-		/// @remarks Note that for all intents and purposes, Mac OS demands that all text is in UTF-8. However, on Big
-		/// Sur, Catalina, and a few other platforms locale functionality and data has been either forgotten/left
-		/// behind or intentionally kept in place on these devices. It may be possible that with very dedicated hacks
-		/// one can still change the desired default encoding from UTF-8 to something else in the majority of Apple
-		/// text. Their documentation states that all text "should" be UTF-8, but very explicitly goes out of its way
-		/// to not make that hard guarantee. Since it is a BSD-like system and they left plenty of that data behind
-		/// from C libraries, this may break in extremely obscure cases. Please be careful on Apple machines!
+		/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c
+		/// ZTD_TEXT_USE_CUNEICODE and @c ZTD_TEXT_USE_ICONV is not defined, this object may use the C Standard
+		/// Library to perform transcoding if certain platform facilities are disabled or not available (e.g., a
+		/// Windows-like machine without the Windows SDK). If this is the case, the C Standard Library has fundamental
+		/// limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output. This object
+		/// uses UTF-16 directly on Windows when possible to avoid some of the platform-specific shenanigans.
 		//////
-		class __execution_mac_os : private basic_utf8<char, char32_t> {
+		class __wide_execution_windows : private basic_utf16<wchar_t> {
 		private:
-			using __base_t = basic_utf8<char, char32_t>;
+			using __base_t = basic_utf16<wchar_t>;
 
 		public:
-			using __base_t::code_point;
-			using __base_t::code_unit;
-			using __base_t::state;
+			//////
+			/// @brief The code point type that is decoded to, and encoded from.
+			//////
+			using code_point = code_point_t<__base_t>;
+			//////
+			/// @brief The code unit type that is decoded from, and encoded to.
+			//////
+			using code_unit = code_unit_t<__base_t>;
+			//////
+			/// @brief The associated state for decode operations.
+			//////
+			using decode_state = decode_state_t<__base_t>;
+			//////
+			/// @brief The associated state for encode operations.
+			//////
+			using encode_state = encode_state_t<__base_t>;
 
 			//////
 			/// @brief Whether or not this encoding is a unicode encoding or not.
@@ -78,28 +109,22 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Whether or not this encoding's @c decode_one step is injective or not.
 			//////
-			using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__base_t>>;
+			using is_decode_injective = ::std::false_type;
 			//////
 			/// @brief Whether or not this encoding's @c encode_one step is injective or not.
 			//////
-			using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__base_t>>;
+			using is_encode_injective = ::std::false_type;
 
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
 			///
-			/// @remarks There are encodings for which one input can produce 3 code points (some Tamil encodings) and
-			/// there are rumours of an encoding that can produce 7 code points from a handful of input. We use a
-			/// protective/conservative 8, here, to make sure ABI isn't broken later.
 			//////
-			inline static constexpr ::std::size_t max_code_points = 8;
+			inline static constexpr const ::std::size_t max_code_units = 8;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
 			///
-			/// @remarks This is bounded by the platform's @c MB_LEN_MAX macro, which is an integral constant
-			/// expression representing the maximum value of output all C locales can produce from a single complete
-			/// operation.
 			//////
-			inline static constexpr ::std::size_t max_code_units = MB_LEN_MAX;
+			inline static constexpr const ::std::size_t max_code_points = 8;
 
 			//////
 			/// @brief Decodes a single complete unit of information as code points and produces a result with the
@@ -117,25 +142,15 @@ namespace ztd { namespace text {
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
+				using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 
-				// just go straight from UTF8
+				// just go straight from UTF32
 				__base_t __base_encoding {};
-				__txt_detail::__progress_handler<!__call_error_handler, __execution_mac_os>
-					__intermediate_handler {};
-				auto __intermediate_result = __base_encoding.decode_one(::std::forward<_InputRange>(__input),
+				__wide_execution_windows __self {};
+				__txt_detail::__forwarding_handler<const __wide_execution_windows, _CVErrorHandler>
+					__intermediate_handler(__self, __error_handler);
+				return __base_encoding.decode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
-
-				if constexpr (__call_error_handler) {
-					if (__intermediate_result.error_code != encoding_error::ok) {
-						__execution_mac_os __self {};
-						return __error_handler(__self, ::std::move(__intermediate_result),
-							::ztd::ranges::span<code_unit>(__intermediate_handler._M_code_units.data(),
-							     __intermediate_handler._M_code_units_size));
-					}
-				}
-				return __intermediate_result;
 			}
 
 			//////
@@ -154,31 +169,30 @@ namespace ztd { namespace text {
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto encode_one(
 				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
-				using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
+				using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 
-				// just go straight to UTF8
+				// just go straight from UTF32
 				__base_t __base_encoding {};
-				__txt_detail::__progress_handler<!__call_error_handler, __execution_mac_os>
-					__intermediate_handler {};
-				auto __intermediate_result = __base_encoding.encode_one(::std::forward<_InputRange>(__input),
+				__wide_execution_windows __self {};
+				__txt_detail::__forwarding_handler<const __wide_execution_windows, _CVErrorHandler>
+					__intermediate_handler(__self, __error_handler);
+				return __base_encoding.encode_one(::std::forward<_InputRange>(__input),
 					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
-
-				if constexpr (__call_error_handler) {
-					if (__intermediate_result.error_code != encoding_error::ok) {
-						__execution_mac_os __self {};
-						return __error_handler(__self, ::std::move(__intermediate_result),
-							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
-							     __intermediate_handler._M_code_points_size));
-					}
-				}
-				return __intermediate_result;
 			}
 		};
 
-	} // namespace __impl
+	} // namespace __txt_impl
+
+	//////
+	/// @}
+	///
+	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#endif // ZTD_TEXT_DETAIL_EXECUTION_MAC_OS_HPP
+#include <ztd/epilogue.hpp>
+
+#endif
+
+#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP

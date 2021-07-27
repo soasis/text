@@ -213,24 +213,10 @@ namespace ztd { namespace text {
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
 				              remove_cvref_t<_FromErrorHandler>>,
-				"The decode (input) portion of this transcode is a lossy, non-injective operation. This means "
-				"you "
-				"may lose data that you did not intend to lose; specify an 'in_handler' error handler "
-				"parameter to "
-				"transcode[_to](in, in_encoding, out_encoding, in_handler, ...) or transcode_into(in, "
-				"in_encoding, "
-				"out, "
-				"out_encoding, in_handler, ...) explicitly in order to bypass this.");
+				ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_);
 			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<remove_cvref_t<_ToEncoding>,
 				              remove_cvref_t<_ToErrorHandler>>,
-				"The encode (output) portion of this transcode is a lossy, non-injective operation. This "
-				"means you "
-				"may lose data that you did not intend to lose; specify an 'out_handler' error handler "
-				"parameter "
-				"to transcode[_to](in, in_encoding, out_encoding, in_handler, out_handler, ...) or "
-				"transcode_into(in, "
-				"in_encoding, out, out_encoding, in_handler, out_handler, ...) explicitly in order to bypass "
-				"this.");
+				ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
 			// TODO: is_range_convertible_to_v<DecodeCodePoint, EncodeCodePoint> ?
 			// static_assert(::std::is_convertible_v<>, "The intermediary codepoint types are not trivially
 			// convertible to one another");

@@ -46,7 +46,7 @@
 #include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
-#include <ztd/text/encoding_scheme.hpp>
+#include <ztd/text/detail/scheme_handler.hpp>
 
 #include <ztd/idk/endian.hpp>
 #include <ztd/idk/ebco.hpp>
@@ -64,36 +64,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		template <typename _Byte, typename _UInputRange, typename _UOutputRange, typename _ErrorHandler>
-		class __scheme_decode_handler {
-		private:
-			::ztd::reference_wrapper<_ErrorHandler> _M_handler;
-
-		public:
-			constexpr __scheme_decode_handler(_ErrorHandler& __handler) noexcept : _M_handler(__handler) {
-			}
-
-			template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _Progress>
-			constexpr auto operator()(const _Encoding& __encoding, decode_result<_Input, _Output, _State> __result,
-				const _Progress& __progress) const noexcept(::std::is_nothrow_invocable_v<_ErrorHandler&,
-				const _Encoding&, decode_result<_Input, _Output, _State>, const _Progress&>) {
-				if constexpr (::std::is_invocable_v<_ErrorHandler&, const _Encoding,
-					              decode_result<_Input, _Output, _State>, _Progress>) {
-					return this->_M_handler.get()(__encoding, ::std::move(__result), __progress);
-				}
-				else {
-					using _ProgressPointer = ranges::range_pointer_t<_Progress>;
-					using _ProgressWord    = ranges::range_value_type_t<_Progress>;
-					_Byte* __byte_progress_data
-						= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__progress.data()));
-					auto __byte_progress_size
-						= (ranges::ranges_adl::adl_size(__progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
-					::ztd::ranges::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
-					return this->_M_handler.get()(__encoding, ::std::move(__result), __byte_progress);
-				}
-			}
-		};
-
 		template <typename _Super, bool = is_code_units_maybe_replaceable_v<typename _Super::encoding_type>>
 		class __maybe_replacement_code_units_es { };
 
@@ -408,19 +378,19 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			decode_state& __s) const {
-			using _UInputRange   = remove_cvref_t<_InputRange>;
-			using _UOutputRange  = remove_cvref_t<_OutputRange>;
-			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
+			using _UInputRange    = remove_cvref_t<_InputRange>;
+			using _UOutputRange   = remove_cvref_t<_OutputRange>;
+			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 			using _Result    = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
 			using _InByteIt  = ranges::word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
 			using _InByteSen = ranges::word_sentinel;
 
 			ranges::subrange<_InByteIt, _InByteSen> __inbytes(
 				_InByteIt(::std::forward<_InputRange>(__input)), _InByteSen());
-			__txt_detail::__scheme_decode_handler<_Byte, _UInputRange, _UOutputRange, _UErrorHandler>
-				__scheme_handler(__error_handler);
+			__txt_detail::__scheme_handler<_Byte, _UInputRange, _UOutputRange, _CVErrorHandler>
+				__intermediate_handler(__error_handler);
 			auto __result = this->base().decode_one(
-				::std::move(__inbytes), ::std::forward<_OutputRange>(__output), __scheme_handler, __s);
+				::std::move(__inbytes), ::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
 			return _Result(ranges::reconstruct(
 				               ::std::in_place_type<_UInputRange>, ::std::move(__result.input).begin().range()),
 				ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
@@ -448,16 +418,19 @@ namespace ztd { namespace text {
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			encode_state& __s) const {
-			using _UInputRange  = remove_cvref_t<_InputRange>;
-			using _UOutputRange = remove_cvref_t<_OutputRange>;
+			using _UInputRange    = remove_cvref_t<_InputRange>;
+			using _UOutputRange   = remove_cvref_t<_OutputRange>;
+			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 			using _Result     = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
 			using _OutByteIt  = ranges::word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
 			using _OutByteSen = ranges::word_sentinel;
 
 			ranges::subrange<_OutByteIt, _OutByteSen> __outwords(
 				_OutByteIt(::std::forward<_OutputRange>(__output)), _OutByteSen());
-			auto __result = this->base().encode_one(::std::forward<_InputRange>(__input), __outwords,
-				::std::forward<_ErrorHandler>(__error_handler), __s);
+			__txt_detail::__scheme_handler<_Byte, _UInputRange, _UOutputRange, _CVErrorHandler>
+				__intermediate_handler(__error_handler);
+			auto __result = this->base().encode_one(
+				::std::forward<_InputRange>(__input), __outwords, __intermediate_handler, __s);
 			return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__result.input)),
 				ranges::reconstruct(
 				     ::std::in_place_type<_UOutputRange>, ::std::move(__result.output).begin().range()),

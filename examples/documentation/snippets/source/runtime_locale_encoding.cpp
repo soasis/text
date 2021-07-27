@@ -133,10 +133,15 @@ private:
 	          ztd::ranges::span<code_unit>, encode_state>;
 	using rtl_decode_error_handler
 	     = std::function<rtl_decode_result(const runtime_locale&,
-	          rtl_decode_result, ztd::ranges::span<const char>)>;
+	          rtl_decode_result, ztd::ranges::span<const char>,
+	          ztd::ranges::span<const char32_t>)>;
 	using rtl_encode_error_handler
 	     = std::function<rtl_encode_result(const runtime_locale&,
-	          rtl_encode_result, ztd::ranges::span<const char32_t>)>;
+	          rtl_encode_result, ztd::ranges::span<const char32_t>,
+	          ztd::ranges::span<const char>)>;
+
+	using empty_code_unit_span  = ztd::ranges::span<const code_unit, 0>;
+	using empty_code_point_span = ztd::ranges::span<const code_point, 0>;
 
 public:
 	rtl_decode_result decode_one(ztd::ranges::span<const code_unit> input,
@@ -144,14 +149,12 @@ public:
 	     rtl_decode_error_handler error_handler,
 	     decode_state& current // decode-based state
 	) const {
-		using empty_span = ztd::ranges::span<const code_unit, 0>;
-
 		if (output.size() < 1) {
 			return error_handler(*this,
 			     rtl_decode_result(input, output, current,
 			          ztd::text::encoding_error::
 			               insufficient_output_space),
-			     empty_span());
+			     empty_code_unit_span(), empty_code_point_span());
 		}
 		std::size_t result = UCHAR_ACCESS mbrtoc32(output.data(),
 		     input.data(), input.size(), &current.c_stdlib_state);
@@ -172,14 +175,14 @@ public:
 			return error_handler(*this,
 			     rtl_decode_result(input, output, current,
 			          ztd::text::encoding_error::incomplete_sequence),
-			     empty_span());
+			     empty_code_unit_span(), empty_code_point_span());
 			break;
 		case (std::size_t)-1:
 			// invalid sequence!
 			return error_handler(*this,
 			     rtl_decode_result(input, output, current,
 			          ztd::text::encoding_error::invalid_sequence),
-			     empty_span());
+			     empty_code_unit_span(), empty_code_point_span());
 		}
 		// everything as fine, then
 		return rtl_decode_result(
@@ -192,8 +195,6 @@ public:
 	     rtl_encode_error_handler error_handler,
 	     encode_state& current // encode-based state
 	) const {
-		using empty_span = ztd::ranges::span<const code_point, 0>;
-
 		// saved, in case we need to go
 		// around mulitple times to get
 		// an output character
@@ -217,7 +218,7 @@ public:
 				return error_handler(*this,
 				     rtl_encode_result(original_input, output, current,
 				          ztd::text::encoding_error::invalid_sequence),
-				     empty_span());
+				     empty_code_point_span(), empty_code_unit_span());
 			}
 			else if (result == (std::size_t)0) {
 				// this means nothing was output
@@ -233,7 +234,7 @@ public:
 				     rtl_encode_result(original_input, output, current,
 				          ztd::text::encoding_error::
 				               insufficient_output_space),
-				     empty_span());
+				     empty_code_point_span(), empty_code_unit_span());
 			}
 			::std::memcpy(output.data(), intermediate_buffer,
 			     sizeof(*intermediate_buffer) * result);

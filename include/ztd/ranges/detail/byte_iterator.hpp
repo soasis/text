@@ -36,9 +36,9 @@
 #include <ztd/ranges/version.hpp>
 
 #include <ztd/ranges/range.hpp>
-#include <ztd/text/type_traits.hpp>
 
 #include <ztd/idk/endian.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <cstddef>
 #include <limits>

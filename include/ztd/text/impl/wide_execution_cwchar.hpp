@@ -57,11 +57,6 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	/// @{
-	//////
-
 	namespace __txt_detail {
 
 		class __wide_execution_decode_state {
@@ -103,7 +98,12 @@ namespace ztd { namespace text {
 		};
 	} // namespace __txt_detail
 
-	namespace __impl {
+	//////
+	/// @addtogroup ztd_text_encodings Encodings
+	/// @{
+	//////
+
+	namespace __txt_impl {
 
 		//////
 		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. This iteration uses
@@ -268,8 +268,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, __result.error_code),
-							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
-							     __intermediate_handler._M_code_points_size));
+							__intermediate_handler._M_code_points_progress(),
+							__intermediate_handler._M_code_units_progress());
 					}
 				}
 
@@ -287,8 +287,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
-							     __intermediate_handler._M_code_points_size));
+							__intermediate_handler._M_code_points_progress(),
+							__intermediate_handler._M_code_units_progress());
 					}
 				}
 				else if (__res == static_cast<::std::size_t>(-2)) {
@@ -300,8 +300,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::incomplete_sequence),
-							::ztd::ranges::span<code_point>(__intermediate_handler._M_code_points.data(),
-							     __intermediate_handler._M_code_points_size));
+							__intermediate_handler._M_code_points_progress(),
+							__intermediate_handler._M_code_units_progress());
 					}
 				}
 				*__outit = __units[0];
@@ -371,7 +371,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
 					}
 				}
 
@@ -399,7 +399,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count));
+								::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count),
+								::ztd::ranges::span<code_point, 0>());
 						}
 					}
 					else {
@@ -420,7 +421,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count));
+								::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count),
+								::ztd::ranges::span<code_point, 0>());
 						}
 					}
 					else if (__res == 0) {
@@ -441,7 +443,8 @@ namespace ztd { namespace text {
 										     ::std::forward<_OutputRange>(__output), __s,
 										     encoding_error::incomplete_sequence),
 										::ztd::ranges::span<code_unit>(
-										     ::std::addressof(__units[0]), __units_count));
+										     ::std::addressof(__units[0]), __units_count),
+										::ztd::ranges::span<code_point, 0>());
 								}
 							}
 							continue;
@@ -453,10 +456,10 @@ namespace ztd { namespace text {
 				}
 
 				execution __exec {};
-				__txt_detail::__pass_through_handler_with<!__call_error_handler> __exec_handler {};
+				__txt_detail::__pass_through_handler_with<!__call_error_handler> __intermediate_handler {};
 				::ztd::ranges::span<char, __state_max> __intermediate_input(__intermediate_buffer, __state_max);
 				auto __result = __exec.decode_one(__intermediate_input, ::std::forward<_OutputRange>(__output),
-					__exec_handler, __s.__narrow_state);
+					__intermediate_handler, __s.__narrow_state);
 				if constexpr (__call_error_handler) {
 					if (__result.error_code != encoding_error::ok) {
 						__wide_execution_cwchar __self {};
@@ -464,7 +467,8 @@ namespace ztd { namespace text {
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 							             ::std::move(__inlast)),
 							     ::std::move(__result.output), __s, __result.error_code),
-							::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count));
+							::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count),
+							__intermediate_handler.__M_code_points_progress());
 					}
 				}
 				return _Result(ranges::reconstruct(
@@ -472,7 +476,12 @@ namespace ztd { namespace text {
 					::std::move(__result.output), __s, __result.error_code);
 			}
 		};
-	} // namespace __impl
+	} // namespace __txt_impl
+
+	//////
+	/// @}
+	///
+	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

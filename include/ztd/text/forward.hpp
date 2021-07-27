@@ -44,14 +44,21 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		class __empty_state;
+
+		template <typename, typename, typename, typename>
+		class __scheme_handler;
+		template <bool, typename>
+		class __progress_handler;
+		template <typename, typename>
+		class __forwarding_handler;
 	} // namespace __txt_detail
 
-	namespace __impl {
+	namespace __txt_impl {
 		class __utf8_tag;
 		class __utf16_tag;
 		class __utf32_tag;
 
-		template <typename, typename, typename, bool, bool, bool>
+		template <typename, typename, typename, typename, typename, bool, bool, bool>
 		class __utf8_with;
 		template <typename, typename, typename, bool>
 		class __utf16_with;
@@ -69,16 +76,16 @@ namespace ztd { namespace text {
 
 		class __unicode_code_point;
 		class __unicode_scalar_value;
-	} // namespace __impl
+	} // namespace __txt_impl
 
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
-	using unicode_code_point = __impl::__unicode_code_point;
+	using unicode_code_point = __txt_impl::__unicode_code_point;
 #else
 	using unicode_code_point   = char32_t;
 #endif
 
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
-	using unicode_scalar_value = __impl::__unicode_scalar_value;
+	using unicode_scalar_value = __txt_impl::__unicode_scalar_value;
 #else
 	using unicode_scalar_value = char32_t;
 #endif
@@ -105,11 +112,11 @@ namespace ztd { namespace text {
 
 	using execution =
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
-		__impl::__execution_cuchar
+		__txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-		__impl::__execution_iconv
+		__txt_impl::__execution_iconv
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
-		__impl::__execution_mac_os
+		__txt_impl::__execution_mac_os
 #else
 		no_encoding<char, unicode_code_point>
 #endif
@@ -117,13 +124,13 @@ namespace ztd { namespace text {
 
 	using wide_execution =
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-		__impl::__wide_execution_windows
+		__txt_impl::__wide_execution_windows
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-		__impl::__iconv_wide_execution
+		__txt_impl::__iconv_wide_execution
 #elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE_I_)
-		__impl::__wide_execution_iso10646
+		__txt_impl::__wide_execution_iso10646
 #else
-		__impl::__wide_execution_cwchar
+		__txt_impl::__wide_execution_cwchar
 #endif
 		;
 

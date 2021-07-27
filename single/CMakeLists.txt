@@ -58,7 +58,7 @@ add_library(ztd::text::single ALIAS ztd.text.single)
 set_target_properties(ztd.text.single
 	PROPERTIES
 	EXPORT_NAME ztd::text::single)
-target_include_directories(ztd.text
+target_include_directories(ztd.text.single
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/single>)

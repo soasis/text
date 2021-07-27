@@ -47,12 +47,13 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		template <typename _Type>
+		template <typename _Type, typename... _Args>
 		using __detect_is_code_units_maybe_replaceable
-			= decltype(::std::declval<const _Type&>().maybe_replacement_code_units());
+			= decltype(::std::declval<const _Type&>().maybe_replacement_code_units(::std::declval<_Args>()...));
 
-		template <typename _Type>
-		using __detect_is_code_units_replaceable = decltype(::std::declval<const _Type&>().replacement_code_units());
+		template <typename _Type, typename... _Args>
+		using __detect_is_code_units_replaceable
+			= decltype(::std::declval<const _Type&>().replacement_code_units(::std::declval<_Args>()...));
 
 	} // namespace __txt_detail
 
@@ -65,16 +66,16 @@ namespace ztd { namespace text {
 	/// maybe_replacement_code_units() on it that can be called from a @c const -qualified @c _Type which returns
 	/// a @c std::optional containing a contiguous view of code units.
 	//////
-	template <typename _Type>
+	template <typename _Type, typename... _Args>
 	class is_code_units_maybe_replaceable
-	: public is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type> { };
+	: public is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type, _Args...> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_code_units_maybe_replaceable
 	///
 	//////
-	template <typename _Type>
-	inline constexpr bool is_code_units_maybe_replaceable_v = is_code_units_maybe_replaceable<_Type>::value;
+	template <typename _Type, typename... _Args>
+	inline constexpr bool is_code_units_maybe_replaceable_v = is_code_units_maybe_replaceable<_Type, _Args...>::value;
 
 	//////
 	/// @brief Checks whether the given encoding type returns a maybe-replacement range of code units.
@@ -85,15 +86,16 @@ namespace ztd { namespace text {
 	/// replacement_code_units() on it that can be called from a @c const -qualified @c _Type which returns
 	/// a contiguous view of code units.
 	//////
-	template <typename _Type>
-	class is_code_units_replaceable : public is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type> { };
+	template <typename _Type, typename... _Args>
+	class is_code_units_replaceable
+	: public is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type, _Args...> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_code_units_replaceable
 	///
 	//////
-	template <typename _Type>
-	inline constexpr bool is_code_units_replaceable_v = is_code_units_replaceable<_Type>::value;
+	template <typename _Type, typename... _Args>
+	inline constexpr bool is_code_units_replaceable_v = is_code_units_replaceable<_Type, _Args...>::value;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
