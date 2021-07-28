@@ -203,7 +203,9 @@ namespace ztd { namespace ranges {
 						__rng_detail::__reverse(__write_storage_first, __write_storage_last);
 					}
 					else {
-						// TODO: what about middle endian or some such??
+						// What about middle endian or some such??
+						// No way to detect in "constexpr" properly: just cry.
+						static_assert(always_false_constant_v<endian, _Endian>);
 					}
 				}
 				auto& __base_range = this->_M_base_range();

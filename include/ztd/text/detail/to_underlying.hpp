@@ -54,7 +54,6 @@ namespace ztd { namespace text {
 				return __to_underlying(__value);
 			}
 			else {
-				// TODO: verify integral-ness?
 				return __value;
 			}
 		}

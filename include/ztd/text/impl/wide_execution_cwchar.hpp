@@ -64,8 +64,6 @@ namespace ztd { namespace text {
 			::std::mbstate_t __wide_state;
 			decode_state_t<execution> __narrow_state;
 
-			// TODO: states need to be split into 2
-			// different states, optionally...
 			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {
 				char __ghost_space[MB_LEN_MAX];
 #if ZTD_IS_ON(ZTD_LIBVCXX_I_)
@@ -86,8 +84,6 @@ namespace ztd { namespace text {
 			::std::mbstate_t __wide_state;
 			encode_state_t<execution> __narrow_state;
 
-			// TODO: states need to be split into 2
-			// different states, optionally...
 			__wide_execution_encode_state() noexcept : __wide_state(), __narrow_state() {
 				wchar_t __ghost_space[2];
 				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);

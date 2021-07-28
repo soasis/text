@@ -36,9 +36,10 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/type_traits.hpp>
-
 #include <ztd/text/detail/assert.hpp>
 #include <ztd/text/detail/unicode.hpp>
+
+#include <ztd/ranges/algorithm.hpp>
 
 #include <string>
 #include <utility>
@@ -172,25 +173,25 @@ namespace std {
 		using off_type   = ::std::streamoff;
 		using state_type = ::std::mbstate_t;
 
-		static /*constexpr*/ char_type* copy(
+		static constexpr char_type* copy(
 		     char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
-			// TODO: constexpr. right now illegal cast
-			return reinterpret_cast<char_type*>(::std::char_traits<char32_t>::copy(
-			     reinterpret_cast<char32_t*>(__destination), reinterpret_cast<const char32_t*>(__source), __count));
+			(void)::ztd::ranges::__rng_detail::__copy_n_unsafe(__source, __count, __destination);
+			return __destination;
 		}
 
-		static /*constexpr*/ char_type* move(
+		static constexpr char_type* move(
 		     char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
-			// TODO: constexpr. right now illegal cast
-			return reinterpret_cast<char_type*>(::std::char_traits<char32_t>::move(
-			     reinterpret_cast<char32_t*>(__destination), reinterpret_cast<const char32_t*>(__source), __count));
+			(void)::ztd::ranges::__rng_detail::__copy_n_unsafe(__source, __count, __destination);
+			return __destination;
 		}
 
-		ZTD_NODISCARD_I_ static /*constexpr*/ int compare(
+		ZTD_NODISCARD_I_ static constexpr int compare(
 		     const char_type* __left, const char_type* __right, ::std::size_t __count) noexcept {
-			// TODO: constexpr. right now illegal cast
-			return ::std::char_traits<char32_t>::compare(
-			     reinterpret_cast<const char32_t*>(__left), reinterpret_cast<const char32_t*>(__right), __count);
+			if (__count == 0) {
+				return 0;
+			}
+			return ::ztd::ranges::__rng_detail::__lexicographical_compare_three_way_basic(
+			     __left, __left + __count, __right, __right + __count);
 		}
 
 		ZTD_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {

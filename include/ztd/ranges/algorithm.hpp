@@ -315,6 +315,54 @@ namespace ztd { namespace ranges {
 				_OutRange(::std::move(__out_first), ::std::move(__out_last)) };
 		}
 
+		template <typename _First0, typename _Last0, typename _First1, typename _Last1>
+		constexpr int __lexicographical_compare_three_way_basic(
+			_First0 __first0, _Last0 __last0, _First1 __first1, _Last1 __last1) {
+			for (; (__first0 != __last0) && (__first1 != __last1); ++__first0, (void)++__first1) {
+				if (*__first0 < *__first1)
+					return -1;
+				if (*__first1 < *__first0)
+					return 1;
+			}
+			bool __range0_exhausted = (__first0 == __last0);
+			bool __range1_exhausted = (__first1 != __last1);
+			if (__range0_exhausted && __range1_exhausted) {
+				return 0;
+			}
+			else if (__range0_exhausted) {
+				return -1;
+			}
+			else {
+				return 1;
+			}
+		}
+
+		template <typename _First0, typename _Last0, typename _First1, typename _Last1>
+		constexpr bool __lexicographical_compare(_First0 __first0, _Last0 __last0, _First1 __first1, _Last1 __last1) {
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+			return ::std::ranges::lexicographical_compare(
+				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1))
+#else
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_)
+			if constexpr (::std::is_same_v<_First0, _Last0> && ::std::is_same_v<_First1, _Last1>) {
+				return ::std::lexicographical_compare(
+					::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
+			}
+			else
+#else
+			{
+				for (; (__first0 != __last0) && (__first1 != __last1); ++__first0, (void)++__first1) {
+					if (*__first0 < *__first1)
+						return true;
+					if (*__first1 < *__first0)
+						return false;
+				}
+				return (__first0 == __last0) && (__first1 != __last1);
+			}
+#endif
+#endif
+		}
+
 	} // namespace __rng_detail
 
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_

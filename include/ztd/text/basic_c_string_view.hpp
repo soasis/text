@@ -247,7 +247,6 @@ namespace ztd { namespace text {
 			return __it;
 		}
 
-		// TODO: properly re-implement all of these methods to exclude the null terminator!!
 		using __base_t::compare;
 
 		using __base_t::copy;

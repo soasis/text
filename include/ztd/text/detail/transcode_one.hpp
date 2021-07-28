@@ -115,9 +115,6 @@ namespace ztd { namespace text {
 					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)),
 					__state, __intermediate_result.error_code, __intermediate_result.handled_errors);
 			}
-			else if constexpr (always_false_v<_Input>) {
-				// TODO: this branch SHOULD check for conditions conducive to ranges::unbounded_view...
-			}
 			else {
 				return __encoding.decode_one(
 					::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __error_handler, __state);
@@ -169,9 +166,6 @@ namespace ztd { namespace text {
 					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)),
 					__state, __intermediate_result.error_code, __intermediate_result.handled_errors);
 			}
-			else if constexpr (always_false_v<_Input>) {
-				// TODO: this branch SHOULD check for conditions conducive to ranges::unbounded_view...
-			}
 			else {
 				return __encoding.encode_one(
 					::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __error_handler, __state);
@@ -217,10 +211,6 @@ namespace ztd { namespace text {
 			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<remove_cvref_t<_ToEncoding>,
 				              remove_cvref_t<_ToErrorHandler>>,
 				ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
-			// TODO: is_range_convertible_to_v<DecodeCodePoint, EncodeCodePoint> ?
-			// static_assert(::std::is_convertible_v<>, "The intermediary codepoint types are not trivially
-			// convertible to one another");
-
 
 			_WorkingIntermediate __working_output = __span_or_reconstruct(__intermediate);
 			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),

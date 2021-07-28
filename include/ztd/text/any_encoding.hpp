@@ -411,9 +411,6 @@ namespace ztd { namespace text {
 				return ::ztd::text::contains_unicode_encoding(__real_encoding);
 			}
 
-			// TODO: use proper wrapping handlers,
-			// not the pass-through handlers here (so that the functions get called correctly)
-
 			// modifiers: single operations
 			virtual __decode_result __decode_one(const any_encoding_with& __self, _DecodeCodeUnits __input,
 				_DecodeCodePoints __output, __decode_error_handler __error_handler,

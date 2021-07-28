@@ -380,8 +380,9 @@ namespace ztd { namespace text {
 		if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
 			using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
 			if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-				auto __output_size_hint = ranges::ranges_adl::adl_size(__input);
-				__output_size_hint *= max_code_points_v<_UEncoding>;
+				_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
+				__output_size_hint *= (max_code_points_v<_UEncoding> > 1) ? (max_code_points_v<_UEncoding> / 2)
+					                                                     : max_code_points_v<_UEncoding>;
 				__output.reserve(__output_size_hint);
 			}
 		}

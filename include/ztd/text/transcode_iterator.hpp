@@ -197,9 +197,7 @@ namespace ztd { namespace text {
 		using value_type = code_unit_t<_ToEncoding>;
 		//////
 		/// @brief A pointer type to the value_type.
-		///
 		//////
-		// TODO: is there such a thing?
 		using pointer = value_type*;
 		//////
 		/// @brief The value returned from derefencing the iterator.

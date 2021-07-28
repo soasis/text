@@ -452,8 +452,8 @@ namespace ztd { namespace text {
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
 				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-					// TODO: better estimates
-					__output.reserve(ranges::ranges_adl::adl_size(__input));
+					_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
+					__output.reserve(__output_size_hint);
 				}
 			}
 			if constexpr (__txt_detail::__is_decode_range_category_output_v<_UFromEncoding>) {
@@ -516,8 +516,8 @@ namespace ztd { namespace text {
 		if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
 			using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
 			if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-				// TODO: better estimates
-				__output.reserve(ranges::ranges_adl::adl_size(__input));
+				_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
+				__output.reserve(__output_size_hint);
 			}
 		}
 
