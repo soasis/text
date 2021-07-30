@@ -36,7 +36,7 @@ file(GLOB_RECURSE ztd.text.tests.basic_run_time.sources
 add_executable(ztd.text.tests.basic_run_time ${ztd.text.tests.basic_run_time.sources})
 target_compile_definitions(ztd.text.tests.basic_run_time
 	PRIVATE
-	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
+	ZTD_CXX_COMPILE_TIME_ENCODING_NAME="UTF-8"
 )
 target_compile_options(ztd.text.tests.basic_run_time
 	PRIVATE

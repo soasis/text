@@ -35,7 +35,7 @@ The ``wide_literal`` encoding handles C and C++ wide string literals (``L"🐶"`
 
 If the library cannot figure out the wide literal encoding, the code will typically error with a ``static_assert``, loudly, that it cannot use the functions on the type when you attempt to do anything with them because it may mangle whatever input or output you are expecting.
 
-If you know the encoding of wide literals for your project (you provide the command line switch, or similar), then you can define a :ref:`configuration macro named ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME <config-ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME>` to be a string literal of your type, such as ``"UTF-16"`` or ``"EUC-TW"``.
+If you know the encoding of wide literals for your project (you provide the command line switch, or similar), then you can define a :ref:`configuration macro named ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME <config-ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME>` to be a string literal of your type, such as ``"UTF-16"`` or ``"EUC-TW"``.
 
 If the library does not recognize the encoding and cannot transcode it properly, it will also loudly warn you that it does not understand the encoding of the literal (in which case, file an issue about it and we will add it to the list of acceptable wide literal encodings).
 

@@ -51,7 +51,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		inline constexpr __encoding_id __literal_id = __to_encoding_id(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_GET_I_());
+		inline constexpr __encoding_id __literal_id = __to_encoding_id(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_GET_I_());
 		using __literal                             = decltype(__select_encoding<char, __literal_id>());
 	} // namespace __txt_detail
 
@@ -164,7 +164,7 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
-#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
+#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_I_) \
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
@@ -188,7 +188,7 @@ namespace ztd { namespace text {
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
-			"[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+			"[[ Please read! ]] This text encoding (" ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
 			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
 			
@@ -224,7 +224,7 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
-#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_I_) \
+#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_I_) \
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
@@ -248,7 +248,7 @@ namespace ztd { namespace text {
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
-			"[[ Please read! ]] This text encoding (" ZTD_TEXT_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+			"[[ Please read! ]] This text encoding (" ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
 			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
 			

@@ -57,7 +57,7 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		inline constexpr __encoding_id __wide_literal_id
-			= __to_encoding_id(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_());
+			= __to_encoding_id(ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_());
 		using __wide_literal = decltype(__select_encoding<wchar_t, __wide_literal_id>());
 	} // namespace __txt_detail
 
@@ -170,7 +170,7 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
-#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
+#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
@@ -198,7 +198,7 @@ namespace ztd { namespace text {
 			static_assert(always_true_v<_Input>
 				&& !is_specialization_of_v<__base_t, basic_no_encoding>,
 			"[[ Please read! ]] This text encoding ("
-			ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+			ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
 			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
 			
@@ -234,7 +234,7 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
-#if ZTD_IS_OFF(ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
+#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_I_) \
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
@@ -262,7 +262,7 @@ namespace ztd { namespace text {
 			static_assert(always_true_v<_Input>
 				&& !is_specialization_of_v<__base_t, basic_no_encoding>,
 			"[[ Please read! ]] This text encoding ("
-			ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
+			ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
 			"supported because it hasn't yet been implemented! You can see all the encodings we have "
 			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
 			

@@ -38,7 +38,7 @@ file(GLOB ztd.text.examples.boost_text.sources source/*.cpp)
 add_executable(ztd.text.examples.boost_text ${ztd.text.examples.boost_text.sources})
 target_compile_definitions(ztd.text.examples.boost_text
 	PRIVATE
-	ZTD_TEXT_COMPILE_TIME_ENCODING_NAME="UTF-8"
+	ZTD_CXX_COMPILE_TIME_ENCODING_NAME="UTF-8"
 )
 target_compile_options(ztd.text.examples.boost_text
 	PRIVATE

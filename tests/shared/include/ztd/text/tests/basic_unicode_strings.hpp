@@ -52,11 +52,11 @@
 namespace ztd { namespace text { namespace tests {
 
 	inline constexpr bool wide_is_utf32 = ztd::text::__txt_detail::__is_encoding_name_equal(
-		ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-32");
+		ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-32");
 	inline constexpr bool wide_is_utf16 = ztd::text::__txt_detail::__is_encoding_name_equal(
-		ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-16");
+		ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-16");
 	inline constexpr bool wide_is_utf8 = ztd::text::__txt_detail::__is_encoding_name_equal(
-		ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-8");
+		ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_(), "UTF-8");
 
 	template <typename Container>
 	inline ztd::ranges::span<const std::byte> as_bytes(Container& c) {

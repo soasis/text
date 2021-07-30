@@ -88,9 +88,9 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Default: off.
 	- Not turned on by-default under any conditions.
 
-.. _config-ZTD_TEXT_COMPILE_TIME_ENCODING_NAME:
+.. _config-ZTD_CXX_COMPILE_TIME_ENCODING_NAME:
 
-- ``ZTD_TEXT_COMPILE_TIME_ENCODING_NAME``
+- ``ZTD_CXX_COMPILE_TIME_ENCODING_NAME``
 	- Gives the :doc:`ztd::text::literal encoding</api/encodings/literal>` a name that matches what the encoding of string literals (``"👍"``) are.
 	- Overrides any of library's heuristics and shenanigans to determine the string literal encoding.
 	- If this does not match the actual string literal encoding, it can cause |ub|.
@@ -106,9 +106,9 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Not turned on by-default under any conditions.
 	- **Please don't use this unless you have some really, really weird setup that requires messing everything up...**
 
-.. _config-ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME:
+.. _config-ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME:
 
-- ``ZTD_TEXT_COMPILE_TIME_WIDE_ENCODING_NAME``
+- ``ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME``
 	- Gives the :doc:`ztd::text::wide_literal encoding</api/encodings/wide_literal>` a name that matches what the encoding of wide string literals (``L"👍"``) are.
 	- Overrides any of library's heuristics and shenanigans to determine the wide string literal encoding.
 	- If this does not match the actual wide string literal encoding, it can cause |ub|.
