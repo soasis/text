@@ -41,6 +41,7 @@
 
 // clang-foramt off
 
+#include <clocale>
 #if ZTD_IS_ON(ZTD_LANGINFO_I_)
 extern "C" {
 #include <langinfo.h>
@@ -50,9 +51,6 @@ extern "C" {
 extern "C" {
 #include <nl_langinfo.h>
 }
-#else
-// we got nothing, so cstdlib it is
-#include <clocale>
 #endif
 
 // clang-format on

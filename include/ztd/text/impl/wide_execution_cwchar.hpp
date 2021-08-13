@@ -53,6 +53,9 @@
 #include <cwchar>
 #include <iterator>
 #include <utility>
+#if ZTD_IS_ON(ZTD_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
+#include <clocale>
+#endif
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
