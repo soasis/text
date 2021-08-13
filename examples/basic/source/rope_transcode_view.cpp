@@ -55,7 +55,7 @@ int main(int, char*[]) {
 	// View the char-based UTF-8 of the rope
 	// as a sequence of UTF-16 characters
 	using utf16_from_utf8_rope
-	     = ztd::text::transcode_view<ztd::text::basic_utf8<char>, ztd::text::utf16, rope_subrange>;
+	     = ztd::text::transcode_view<ztd::text::compat_utf8_t, ztd::text::utf16_t, rope_subrange>;
 	utf16_from_utf8_rope transcoded_rope_view(rope_view);
 
 	std::cout << "UTF-16 Code Units, from the Rope:" << std::endl;
