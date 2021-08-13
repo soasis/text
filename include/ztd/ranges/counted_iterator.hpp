@@ -232,11 +232,10 @@ namespace ztd { namespace ranges {
 	//////
 	/// @brief A counted iterator that stores an iterator plus a count, which is used to iterator over the
 	/// specified count of elements. Useful for algorithms wherein the iterator is not random access but still
-	/// works on a given iterator and a size (e.g., the @c std::ranges::copy algorithm).
+	/// works on a given iterator and a size (e.g., the `std::ranges::copy` algorithm).
 	///
-	/// @tparam _It The Iterator to wrap. The count is a @c difference_type that is associated with the Iterator.
-	/// (The
-	/// @c difference_type is usually a signed type such as the @c ptrdiff_t type.)
+	/// @tparam _It The Iterator to wrap. The count is a `difference_type` that is associated with the Iterator.
+	/// (The `difference_type` is usually a signed type such as the `ptrdiff_t` type.)
 	//////
 	template <typename _It>
 	using counted_iterator =

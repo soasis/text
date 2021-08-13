@@ -59,18 +59,12 @@ namespace ztd { namespace ranges {
 	public:
 		//////
 		/// @brief The iterator type.
-		///
-		//////
 		using iterator = _It;
 		//////
 		/// @brief The iterator type that can iterate indefinitely (or some approximation thereof).
-		///
-		//////
 		using const_iterator = iterator;
 		//////
 		/// @brief The sentinel type, an infinity type that compares equal to nothing.
-		///
-		//////
 		using sentinel = unreachable_sentinel_t;
 		//////
 		/// @brief The const sentinel type.
@@ -80,8 +74,6 @@ namespace ztd { namespace ranges {
 		using const_sentinel = sentinel;
 		//////
 		/// @brief The pointer type related to the iterator.
-		///
-		//////
 		using pointer = ranges::iterator_pointer_t<iterator>;
 		//////
 		/// @brief The const pointer type related to the iterator.
@@ -91,8 +83,6 @@ namespace ztd { namespace ranges {
 		using const_pointer = pointer;
 		//////
 		/// @brief The reference type for this range.
-		///
-		//////
 		using reference = ranges::iterator_reference_t<iterator>;
 		//////
 		/// @brief The const reference type for this range.
@@ -102,18 +92,12 @@ namespace ztd { namespace ranges {
 		using const_reference = reference;
 		//////
 		/// @brief The value type for this range.
-		///
-		//////
 		using value_type = ranges::iterator_value_type_t<iterator>;
 		//////
 		/// @brief The difference type that results from iterator subtraction (not practical for this range).
-		///
-		//////
 		using difference_type = ranges::iterator_difference_type_t<iterator>;
 		//////
 		/// @brief The iterator concept - no matter what, this is a forward range at best.
-		///
-		//////
 		using iterator_concept = ::std::conditional_t<
 			::ztd::ranges::is_iterator_concept_or_better_v<::std::forward_iterator_tag, iterator>,
 			::std::forward_iterator_tag, ranges::iterator_concept_t<iterator>>;
@@ -127,8 +111,6 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief Constructs an unbounded_view using the specified iterator value iterator and an infinity sentinel.
-		///
-		//////
 		constexpr unbounded_view(iterator __it) noexcept(::std::is_nothrow_move_constructible_v<iterator>)
 		: _M_it(::std::move(__it)) {
 		}
@@ -177,9 +159,6 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief The reconstruct extension point for re-creating this type from its iterator and sentinel.
-		///
-		///
-		//////
 		constexpr friend unbounded_view tag_invoke(ztd::tag_t<::ztd::ranges::reconstruct>,
 			::std::in_place_type_t<unbounded_view>, iterator __iterator,
 			sentinel) noexcept(::std::is_nothrow_move_constructible_v<iterator>) {
@@ -189,7 +168,7 @@ namespace ztd { namespace ranges {
 		//////
 		/// @brief Checks whether this ztd::ranges::unbounded_view is empty.
 		///
-		/// @remarks This can prevent needing to call @c begin() which may be beneficial for move-only iterators. This
+		/// @remarks This can prevent needing to call `begin()` which may be beneficial for move-only iterators. This
 		/// is always false for a ztd::ranges::unbounded_view.
 		//////
 		constexpr bool empty() const noexcept {
@@ -197,7 +176,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Produces a copy of the unbounded_view and advances the @c begin() iterator by 1.
+		/// @brief Produces a copy of the unbounded_view and advances the `begin()` iterator by 1.
 		///
 		/// @remarks This function call only works if the underlying iterator and sentinal types are copyable.
 		//////
@@ -210,7 +189,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Produces a copy of the unbounded_view and advances the @c begin() iterator by 1.
+		/// @brief Produces a copy of the unbounded_view and advances the `begin()` iterator by 1.
 		///
 		/// @remarks This function call can be more efficient and allows working with move-only iterators. This
 		/// function call will move the iterators underlying this object.
@@ -224,7 +203,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Produces a copy of the unbounded_view and advances the @c begin() iterator by @p __diff.
+		/// @brief Produces a copy of the unbounded_view and advances the `begin()` iterator by `__diff`.
 		///
 		/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 		///
@@ -239,7 +218,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Produces a copy of the unbounded_view and advances the @c begin() iterator by @p __diff.
+		/// @brief Produces a copy of the unbounded_view and advances the `begin()` iterator by `__diff`.
 		///
 		/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 		///
@@ -255,7 +234,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Produces a copy of the unbounded_view and recedes the @c begin() iterator by @p __diff.
+		/// @brief Produces a copy of the unbounded_view and recedes the `begin()` iterator by `__diff`.
 		///
 		/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 		///
@@ -270,7 +249,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Advances the @c begin() iterator of this ztd::ranges::unbounded_view by @p __diff or just @c 1 if
+		/// @brief Advances the `begin()` iterator of this ztd::ranges::unbounded_view by `__diff` or just `1` if
 		/// the argument is not specified.
 		///
 		/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
@@ -282,7 +261,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Recedes the @c begin() iterator of this ztd::ranges::unbounded_view by @p __diff or just @c 1 if
+		/// @brief Recedes the `begin()` iterator of this ztd::ranges::unbounded_view by `__diff` or just `1` if
 		/// the argument is not specified.
 		///
 		/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.

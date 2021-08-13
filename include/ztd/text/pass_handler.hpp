@@ -51,8 +51,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of pass_handler_t for ease of use.
-	///
-	//////
 	inline constexpr pass_handler_t pass_handler = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

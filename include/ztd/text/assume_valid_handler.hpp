@@ -93,8 +93,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the assume_valid_handler_t type for ease of use.
-	///
-	//////
 	inline constexpr assume_valid_handler_t assume_valid_handler = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

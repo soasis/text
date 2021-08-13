@@ -69,8 +69,6 @@ namespace ztd { namespace text {
 		_Input input;
 		//////
 		/// @brief Whether or not the specified input is valid or not.
-		///
-		//////
 		bool valid;
 
 		//////
@@ -98,8 +96,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The result of validation operations (such as ztd_text_validate_decodable_as and
 	/// ztd_text_validate_encodable_as).
-	///
-	//////
+
 	template <typename _Input, typename _State>
 	class validate_result : public stateless_validate_result<_Input> {
 	private:
@@ -108,8 +105,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
-		///
-		//////
 		::ztd::reference_wrapper<_State> state;
 
 		//////
@@ -128,8 +123,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The result of a transcoding validation operations (e.g. from ztd_text_validate_transcodable_as).
-	///
-	//////
 	template <typename _Input, typename _DecodeState, typename _EncodeState>
 	class validate_transcode_result : public stateless_validate_result<_Input> {
 	private:
@@ -138,13 +131,9 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
-		///
-		//////
 		::ztd::reference_wrapper<_DecodeState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for validating the input.
-		///
-		//////
 		::ztd::reference_wrapper<_EncodeState> to_state;
 
 		//////

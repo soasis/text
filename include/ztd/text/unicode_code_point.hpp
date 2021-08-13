@@ -53,15 +53,12 @@ namespace ztd { namespace text {
 	namespace __txt_impl {
 		//////
 		/// @brief A 32-bit value that is within the allowed 21 bits of Unicode. Can be one of the surrogate values.
-		///
-		//////
 		class __unicode_code_point {
 		public:
 			//////
 			/// @brief Constructs a code point value of indeterminate value (if no parentheses/brackets are provided)
 			/// or with the value 0 (if parentheses/brackets are provided for intentional value initialization).
-			///
-			//////
+
 			__unicode_code_point() noexcept = default;
 
 			//////
@@ -84,32 +81,25 @@ namespace ztd { namespace text {
 			//////
 			/// @brief An explicit conversion to a typical char32_t value, bit-compatible with a normal code point
 			/// value.
-			///
-			//////
+
 			constexpr explicit operator char32_t() const noexcept {
 				return this->_M_scalar;
 			}
 
 			//////
 			/// @brief Retrieves the underlying value.
-			///
-			//////
 			constexpr const char32_t& value() const& noexcept {
 				return this->_M_scalar;
 			}
 
 			//////
 			/// @brief Retrieves the underlying value.
-			///
-			//////
 			constexpr char32_t& value() & noexcept {
 				return this->_M_scalar;
 			}
 
 			//////
 			/// @brief Retrieves the underlying value.
-			///
-			//////
 			constexpr char32_t&& value() && noexcept {
 				return ::std::move(this->_M_scalar);
 			}

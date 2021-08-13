@@ -46,53 +46,37 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @brief A basic_c_string_view for a @c char sequence.
-	///
-	//////
+	/// @brief A basic_c_string_view for a `char` sequence.
 	using c_string_view = basic_c_string_view<char>;
 	//////
-	/// @brief A basic_c_string_view for a @c wchar_t sequence.
-	///
-	//////
+	/// @brief A basic_c_string_view for a `wchar_t` sequence.
 	using wc_string_view = basic_c_string_view<wchar_t>;
 	//////
-	/// @brief A basic_c_string_view for a @c char8_t sequence.
-	///
-	//////
+	/// @brief A basic_c_string_view for a `char8_t` sequence.
 	using u8c_string_view = basic_c_string_view<uchar8_t>;
 	//////
-	/// @brief A basic_c_string_view for a @c char16_t sequence.
-	///
-	//////
+	/// @brief A basic_c_string_view for a `char16_t` sequence.
 	using u16c_string_view = basic_c_string_view<char16_t>;
 	//////
-	/// @brief A basic_c_string_view for a @c char32_t sequence.
-	///
-	//////
+	/// @brief A basic_c_string_view for a `char32_t` sequence.
 	using u32c_string_view = basic_c_string_view<char32_t>;
 
 	inline namespace literals { inline namespace string_view_literals {
 		//////
 		/// @brief A literal suffix to obtain a ztd::text::c_string_view from a @c "abc" string literal.
-		///
-		//////
 		inline constexpr c_string_view operator"" _csv(const char* __str, size_t __len) noexcept {
 			return c_string_view(__str, __len);
 		}
 
 		//////
-		/// @brief A literal suffix to obtain a ztd::text::wc_string_view from a @c L"abc" string literal.
-		///
-		//////
+		/// @brief A literal suffix to obtain a ztd::text::wc_string_view from a `L`"abc" string literal.
 		inline constexpr wc_string_view operator"" _wcsv(const wchar_t* __str, size_t __len) noexcept {
 			return wc_string_view(__str, __len);
 		}
 
 #if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 		//////
-		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a @c u8"abc" string literal.
-		///
-		//////
+		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a `u8`"abc" string literal.
 		inline constexpr u8c_string_view operator"" _u8csv(const char8_t* __str, size_t __len) noexcept {
 			if constexpr (::std::is_same_v<uchar8_t, char8_t>) {
 				return u8c_string_view(__str, __len);
@@ -103,26 +87,20 @@ namespace ztd { namespace text {
 		}
 #else
 		//////
-		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a @c u8"abc" string literal.
-		///
-		//////
+		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a `u8`"abc" string literal.
 		inline u8c_string_view operator"" _u8csv(const char* __str, size_t __len) noexcept {
 			return u8c_string_view(reinterpret_cast<const uchar8_t*>(__str), __len);
 		}
 #endif // char8_t hacks
 
 		//////
-		/// @brief A literal suffix to obtain a ztd::text::u16c_string_view from a @c u"abc" string literal.
-		///
-		//////
+		/// @brief A literal suffix to obtain a ztd::text::u16c_string_view from a `u`"abc" string literal.
 		inline constexpr u16c_string_view operator"" _u16csv(const char16_t* __str, size_t __len) noexcept {
 			return u16c_string_view(__str, __len);
 		}
 
 		//////
-		/// @brief A literal suffix to obtain a ztd::text::u32c_string_view from a @c U"abc" string literal.
-		///
-		//////
+		/// @brief A literal suffix to obtain a ztd::text::u32c_string_view from a `U`"abc" string literal.
 		inline constexpr u32c_string_view operator"" _u32csv(const char32_t* __str, size_t __len) noexcept {
 			return u32c_string_view(__str, __len);
 		}

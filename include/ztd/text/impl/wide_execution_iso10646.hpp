@@ -77,44 +77,33 @@ namespace ztd { namespace text {
 
 		public:
 			//////
-			/// @brief The code point type that is decoded to, and encoded from.
-			//////
+			///@brief The code point type that is decoded to, and encoded from.
 			using code_point = code_point_t<__base_t>;
 			//////
-			/// @brief The code unit type that is decoded from, and encoded to.
-			//////
+			///@brief The code unit type that is decoded from, and encoded to.
 			using code_unit = code_unit_t<__base_t>;
 			//////
-			/// @brief The associated state for decode operations.
-			//////
+			///@brief The associated state for decode operations.
 			using decode_state = decode_state_t<__base_t>;
 			//////
-			/// @brief The associated state for encode operations.
-			//////
+			///@brief The associated state for encode operations.
 			using encode_state = encode_state_t<__base_t>;
 
 			//////
-			/// @brief Whether or not this encoding is a unicode encoding or not.
-			//////
+			///@brief Whether or not this encoding is a unicode encoding or not.
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<__base_t>>;
 			//////
-			/// @brief Whether or not this encoding's @c decode_one step is injective or not.
-			//////
+			///@brief Whether or not this encoding's `decode_one` step is injective or not.
 			using is_decode_injective = ::std::false_type;
 			//////
-			/// @brief Whether or not this encoding's @c encode_one step is injective or not.
-			//////
+			///@brief Whether or not this encoding's `encode_one` step is injective or not.
 			using is_encode_injective = ::std::false_type;
 
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
-			///
-			//////
 			inline static constexpr const ::std::size_t max_code_units = 8;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
-			///
-			//////
 			inline static constexpr const ::std::size_t max_code_points = 8;
 
 			//////
@@ -166,8 +155,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -108,16 +108,16 @@ namespace ztd { namespace text {
 			/// @brief The chosen type for the given code unit.
 			///
 			/// @remarks The default encodings for code unit types are as follows
-			/// - @c char ➡ ztd::text::(runtime), ztd::text::literal_t (compiletime)
-			/// - @c wchar_t ➡ ztd::text::(runtime), ztd::text::wide_literal_t (compiletime)
-			/// - @c char8_t ➡ ztd::text::utf8
-			/// - @c ztd::uchar8_t ➡ ztd::text::utf8_t (if different from @c char8_t type)
-			/// - @c std::byte ➡ ztd::text::basic_utf8<std::byte>
-			/// - @c signed char ➡ ztd::text::basic_ascii<signed char>
-			/// - @c char16_t ➡ ztd::text::utf16
-			/// - @c char32_t ➡ ztd::text::utf32
-			/// - @c unicode_code_point ➡ ztd::text::utf32_t (if different from @c char32_t type)
-			/// - @c unicode_scalar_value ➡ ztd::text::utf32_t (if different from @c char32_t type)
+			/// - `char` ➡ ztd::text::(runtime), ztd::text::literal_t (compiletime)
+			/// - `wchar_t` ➡ ztd::text::(runtime), ztd::text::wide_literal_t (compiletime)
+			/// - `char8_t` ➡ ztd::text::utf8
+			/// - `ztd::uchar8_t` ➡ ztd::text::utf8_t (if different from `char8_t` type)
+			/// - `std::byte` ➡ ztd::text::basic_utf8<std::byte>
+			/// - `signed` char ➡ ztd::text::basic_ascii<signed char>
+			/// - `char16_t` ➡ ztd::text::utf16
+			/// - `char32_t` ➡ ztd::text::utf32
+			/// - `unicode_code_point` ➡ ztd::text::utf32_t (if different from `char32_t` type)
+			/// - `unicode_scalar_value` ➡ ztd::text::utf32_t (if different from `char32_t` type)
 			//////
 			using type = _ChosenType;
 		};
@@ -133,9 +133,9 @@ namespace ztd { namespace text {
 			/// @brief The chosen type for the given code unit.
 			///
 			/// @remarks The default encodings for code point types are as follows
-			/// - @c char32_t ➡ ztd::text::utf8
-			/// - @c unicode_code_point ➡ ztd::text::utf8
-			/// - @c unicode_scalar_value ➡ ztd::text::utf8
+			/// - `char32_t` ➡ ztd::text::utf8
+			/// - `unicode_code_point` ➡ ztd::text::utf8
+			/// - `unicode_scalar_value` ➡ ztd::text::utf8
 			//////
 			using type = utf8_t;
 		};
@@ -156,7 +156,7 @@ namespace ztd { namespace text {
 	class default_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, false> { };
 
 	//////
-	/// @brief A @c typename alias for ztd::text::default_code_unit_encoding.
+	/// @brief A `typename` alias for ztd::text::default_code_unit_encoding.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
@@ -174,7 +174,7 @@ namespace ztd { namespace text {
 	class default_consteval_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, true> { };
 
 	//////
-	/// @brief A @c typename alias for ztd::text::default_consteval_code_unit_encoding.
+	/// @brief A `typename` alias for ztd::text::default_consteval_code_unit_encoding.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
 	//////
@@ -191,7 +191,7 @@ namespace ztd { namespace text {
 	class default_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, false> { };
 
 	//////
-	/// @brief A @c typename alias for ztd::text::default_code_point_encoding.
+	/// @brief A `typename` alias for ztd::text::default_code_point_encoding.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////
@@ -209,7 +209,7 @@ namespace ztd { namespace text {
 	class default_consteval_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, true> { };
 
 	//////
-	/// @brief A @c typename alias for ztd::text::default_consteval_code_point_encoding.
+	/// @brief A `typename` alias for ztd::text::default_consteval_code_point_encoding.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
 	//////

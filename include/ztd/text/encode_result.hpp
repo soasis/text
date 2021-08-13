@@ -78,8 +78,6 @@ namespace ztd { namespace text {
 		_Output output;
 		//////
 		/// @brief The kind of error that occured, if any.
-		///
-		//////
 		encoding_error error_code;
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
@@ -129,7 +127,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not any errors were handled.
 		///
-		/// @returns Simply checks whether @c handled_errors is greater than 0.
+		/// @returns Simply checks whether `handled_errors` is greater than 0.
 		//////
 		constexpr bool errors_were_handled() const noexcept {
 			return this->handled_errors > 0;
@@ -148,8 +146,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The state of the associated Encoding used for decoding input code points to code units.
-		///
-		//////
 		_State& state;
 
 		//////
@@ -199,7 +195,7 @@ namespace ztd { namespace text {
 		::ztd::span<code_unit_t<_Encoding>>, encode_state_t<_Encoding>>;
 
 	//////
-	/// @brief A type alias to produce a concrete error handler for the encoding result of the specified @p _Encoding
+	/// @brief A type alias to produce a concrete error handler for the encoding result of the specified `_Encoding`
 	/// type.
 	///
 	/// @tparam _Encoding The encoding to base this error handler off of.
@@ -212,8 +208,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	namespace __txt_detail {
 		template <typename _Input, typename _Output, typename _State>

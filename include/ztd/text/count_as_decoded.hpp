@@ -76,10 +76,10 @@ namespace ztd { namespace text {
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
-	/// to the provided @p __state.
+	/// to the provided `__state`.
 	///
 	/// @remarks This method will not check any ADL extension points. A combination of implementation techniques will
-	/// be used to count code units, with a loop over the @c .encode call into an intermediate, unseen buffer being the
+	/// be used to count code units, with a loop over the `.encode` call into an intermediate, unseen buffer being the
 	/// most basic choice.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
@@ -160,9 +160,9 @@ namespace ztd { namespace text {
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
-	/// to the provided @p __state.
+	/// to the provided `__state`.
 	///
-	/// @remarks This method will first check if an ADL Extension Point @c text_count_as_encoded is callable with
+	/// @remarks This method will first check if an ADL Extension Point `text_count_as_encoded` is callable with
 	/// the given arguments. If it is, then that method will be used to do the work after forwarding all four arguments
 	/// to that function call. Otherwise, this defers to ztd::text::basic_count_as_encoded.
 	//////
@@ -197,7 +197,7 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
 	/// @remarks This method will call ztd::text::count_as_encoded(Input, Encoding, ErrorHandler, State) with an
-	/// @c state created by ztd::text::make_encode_state(Encoding).
+	/// `state` created by ztd::text::make_encode_state(Encoding).
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto count_as_encoded(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
@@ -220,7 +220,7 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
 	/// @remarks This method will call ztd::text::count_as_encoded(Input, Encoding, ErrorHandler) by creating an
-	/// @c error_handler similar to ztd::text::default_handler_t.
+	/// `error_handler` similar to ztd::text::default_handler_t.
 	//////
 	template <typename _Input, typename _Encoding>
 	constexpr auto count_as_encoded(_Input&& __input, _Encoding&& __encoding) {
@@ -237,7 +237,7 @@ namespace ztd { namespace text {
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
-	/// @remarks Calls ztd::text::count_as_encoded(Input, Encoding) with an @c encoding that is derived from
+	/// @remarks Calls ztd::text::count_as_encoded(Input, Encoding) with an `encoding` that is derived from
 	/// ztd::text::default_code_unit_encoding.
 	//////
 	template <typename _Input>
@@ -262,8 +262,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

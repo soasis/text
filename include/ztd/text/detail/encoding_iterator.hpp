@@ -110,60 +110,51 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief The underlying range type.
-			///
-			//////
+
 			using range_type = _Range;
 			//////
 			/// @brief The base iterator type.
-			///
-			//////
+
 			using iterator = _BaseIterator;
 			//////
 			/// @brief The encoding type used for transformations.
-			///
-			//////
+
 			using encoding_type = _Encoding;
 			//////
 			/// @brief The error handler when an encode operation fails.
-			///
-			//////
+
 			using error_handler_type = _ErrorHandler;
 			//////
 			/// @brief The state type used for encode operations.
-			///
-			//////
+
 			using state_type = remove_cvref_t<_State>;
 			//////
 			/// @brief The strength of the iterator category, as defined in relation to the base.
-			///
-			//////
+
 			using iterator_category = ::std::conditional_t<
 				ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 				::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
 				ranges::iterator_category_t<_BaseIterator>>;
 			//////
 			/// @brief The strength of the iterator concept, as defined in relation to the base.
-			///
-			//////
+
 			using iterator_concept = ::std::conditional_t<
 				ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 				::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
 				ranges::iterator_concept_t<_BaseIterator>>;
 			//////
 			/// @brief The object type that gets output on every dereference.
-			///
-			//////
+
 			using value_type = ::std::conditional_t<_EncodeOrDecode == __transaction::__encode,
 				code_unit_t<_Encoding>, code_point_t<_Encoding>>;
 			//////
 			/// @brief A pointer type to the value_type.
-			///
-			//////
+
 			using pointer = value_type*;
 			//////
 			/// @brief The value returned from derefencing the iterator.
 			///
-			/// @remarks This is a proxy iterator, so the @c reference is a non-reference @c value_type.
+			/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
 			//////
 			using reference = value_type;
 			//////
@@ -318,8 +309,7 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief The input range used to construct this object.
-			///
-			//////
+
 			constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
 				     ? ::std::is_nothrow_copy_constructible_v<range_type>
 				     : ::std::is_nothrow_move_constructible_v<range_type>) {
@@ -409,8 +399,7 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
-			///
-			//////
+
 			friend constexpr bool operator==(const _Derived& __it, const __encoding_sentinel_t&) {
 				if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
 					return __it._M_base_is_empty()
@@ -425,16 +414,14 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
-			///
-			//////
+
 			friend constexpr bool operator==(const __encoding_sentinel_t& __sen, const _Derived& __it) {
 				return __it == __sen;
 			}
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
-			///
-			//////
+
 			friend constexpr bool operator!=(const _Derived& __it, const __encoding_sentinel_t&) {
 				if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
 					return !__it._M_base_is_empty()
@@ -449,8 +436,7 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
-			///
-			//////
+
 			friend constexpr bool operator!=(const __encoding_sentinel_t& __sen, const _Derived& __it) noexcept {
 				return __it != __sen;
 			}

@@ -110,13 +110,11 @@ namespace ztd { namespace text {
 		invalid_sequence = 0x04,
 		//////
 		/// leading code unit is wrong
-		///
-		//////
+		
 		invalid_sequence = 0x05,
 		//////
 		/// leading code units were correct, trailing code units were wrong
-		///
-		//////
+		
 		invalid_sequence = 0x06
 #endif
 	};
@@ -178,8 +176,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

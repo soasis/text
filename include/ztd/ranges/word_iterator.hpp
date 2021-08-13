@@ -109,13 +109,11 @@ namespace ztd { namespace ranges {
 	} // namespace __rng_detail
 
 	//////
-	/// @brief The sentinel type to be paired with a ztd::ranges::word_iterator
-	//////
+	///@brief The sentinel type to be paired with a ztd::ranges::word_iterator
 	using word_sentinel = ranges::default_sentinel_t;
 
 	//////
-	/// @brief An iterator that composes words out of the bits of a provided underlying stored range.
-	//////
+	///@brief An iterator that composes words out of the bits of a provided underlying stored range.
 	template <typename _Word, typename _Range, endian _Endian>
 	class word_iterator
 	: private __rng_detail::__word_iterator_storage<_Word, range_reconstruct_t<remove_cvref_t<_Range>>,
@@ -295,44 +293,34 @@ namespace ztd { namespace ranges {
 
 	public:
 		//////
-		/// @brief The underlying range type.
-		//////
+		///@brief The underlying range type.
 		using range_type = _URange;
 		//////
-		/// @brief The underlying iterator type.
-		//////
+		///@brief The underlying iterator type.
 		using iterator = __base_iterator;
 		//////
-		/// @brief The underlying sentinel type.
-		//////
+		///@brief The underlying sentinel type.
 		using sentinel = __base_sentinel;
 		//////
-		/// @brief The advertised iterator category.
-		//////
+		///@brief The advertised iterator category.
 		using iterator_category = iterator_category_t<__base_iterator>;
 		//////
-		/// @brief The advertised iterator concept.
-		//////
+		///@brief The advertised iterator concept.
 		using iterator_concept = iterator_concept_t<__base_iterator>;
 		//////
-		/// @brief The difference_type for iterator distances.
-		//////
+		///@brief The difference_type for iterator distances.
 		using difference_type = __difference_type;
 		//////
-		/// @brief The pointer for address-of operations.
-		//////
+		///@brief The pointer for address-of operations.
 		using pointer = _Word*;
 		//////
-		/// @brief The value_type.
-		//////
+		///@brief The value_type.
 		using value_type = __value_type;
 		//////
-		/// @brief The non-const-qualified reference type.
-		//////
+		///@brief The non-const-qualified reference type.
 		using reference = ::std::conditional_t<_IsInput, value_type&, __word_reference>;
 		//////
-		/// @brief The const-qualified reference type.
-		//////
+		///@brief The const-qualified reference type.
 		using const_reference = ::std::conditional_t<_IsInput, const value_type&, __word_reference>;
 
 	private:
@@ -368,8 +356,7 @@ namespace ztd { namespace ranges {
 
 	public:
 		//////
-		/// @brief Default default constructor.
-		//////
+		///@brief Default default constructor.
 		constexpr word_iterator() = default;
 
 		//////
@@ -392,25 +379,20 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Default copy constructor.
-		//////
+		///@brief Default copy constructor.
 		word_iterator(const word_iterator&) = default;
 		//////
-		/// @brief Default move constructor.
-		//////
+		///@brief Default move constructor.
 		word_iterator(word_iterator&&) = default;
 		//////
-		/// @brief Default copy assignment.
-		//////
+		///@brief Default copy assignment.
 		word_iterator& operator=(const word_iterator&) = default;
 		//////
-		/// @brief Default move assignment.
-		//////
+		///@brief Default move assignment.
 		word_iterator& operator=(word_iterator&&) = default;
 
 		//////
-		/// @brief Retrieves the underlying range.
-		//////
+		///@brief Retrieves the underlying range.
 		constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
 			     ? ::std::is_nothrow_copy_constructible_v<range_type>
 			     : ::std::is_nothrow_move_constructible_v<range_type>) {
@@ -423,22 +405,19 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Retrieves the underlying range.
-		//////
+		///@brief Retrieves the underlying range.
 		constexpr range_type range() const& noexcept(::std::is_nothrow_copy_constructible_v<range_type>) {
 			return this->__base_storage_t::get_value();
 		}
 
 		//////
-		/// @brief Retrieves the underlying range.
-		//////
+		///@brief Retrieves the underlying range.
 		constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
 			return ::std::move(this->__base_storage_t::get_value());
 		}
 
 		//////
-		/// @brief Shifts the iterator over by +1.
-		//////
+		///@brief Shifts the iterator over by +1.
 		constexpr word_iterator operator++(int) const noexcept(_S_copy_noexcept() && _S_advance_noexcept()) {
 			auto __copy = *this;
 			++__copy;
@@ -446,8 +425,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Shifts the iterator over by +1.
-		//////
+		///@brief Shifts the iterator over by +1.
 		constexpr word_iterator& operator++() noexcept(_S_advance_noexcept()) {
 			if constexpr (_IsInput) {
 				// force read on next dereference
@@ -464,8 +442,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Shifts an iterator by -1.
-		//////
+		///@brief Shifts an iterator by -1.
 		template <typename _Strawman = range_type>
 		constexpr ::std::enable_if_t<
 			is_range_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _Strawman>, word_iterator>
@@ -476,8 +453,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Shifts an iterator over by -1.
-		//////
+		///@brief Shifts an iterator over by -1.
 		template <typename _Strawman = range_type>
 		constexpr ::std::enable_if_t<
 			is_range_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _Strawman>, word_iterator&>
@@ -487,7 +463,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Returns an iterator whose positioned is shifted over by @c __by .
+		/// @brief Returns an iterator whose positioned is shifted over by `__by` .
 		///
 		/// @param[in] __by The amount to shift the iterator's position by.
 		//////
@@ -501,7 +477,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Shifts the iterator's position over by @c __by .
+		/// @brief Shifts the iterator's position over by `__by` .
 		///
 		/// @param[in] __by The amount to shift the iterator's position by.
 		//////
@@ -534,7 +510,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Returns an iterator whose positioned is shifted over by @c __by .
+		/// @brief Returns an iterator whose positioned is shifted over by `__by` .
 		///
 		/// @param[in] __by The amount to decrement the iterator's position.
 		//////
@@ -548,7 +524,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief Shifts the position of the iterator over by @c __by .
+		/// @brief Shifts the position of the iterator over by `__by` .
 		///
 		/// @param[in] __by The amount to decrement the iterator's position.
 		//////
@@ -568,7 +544,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief References the value at the offset @c __index.
+		/// @brief References the value at the offset `__index.`
 		///
 		/// @param[in] __index The offset to index into.
 		///
@@ -584,7 +560,7 @@ namespace ztd { namespace ranges {
 		}
 
 		//////
-		/// @brief References the value at the offset @c __index.
+		/// @brief References the value at the offset `__index.`
 		///
 		/// @param[in] __index The offset to index into.
 		///

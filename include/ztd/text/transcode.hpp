@@ -91,13 +91,13 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in]     __to_error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
-	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
 	///
-	/// @result A ztd::text::transcode_result object that contains references to @p __from_state and @p
+	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
 	///
-	/// @remark This function detects whether or not the ADL extension point @c text_transcode can be called with the
+	/// @remark This function detects whether or not the ADL extension point `text_transcode` can be called with the
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
@@ -171,13 +171,13 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in]     __to_error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
-	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
 	///
-	/// @result A ztd::text::transcode_result object that contains references to @p __from_state and @p
+	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
 	///
-	/// @remark This function detects whether or not the ADL extension point @c text_transcode can be called with the
+	/// @remark This function detects whether or not the ADL extension point `text_transcode` can be called with the
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
@@ -223,13 +223,13 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	///
 	/// @result A ztd::text::stateless_transcode_result object.
 	///
-	/// @remarks This function calls the base reference, the ztd::text::transcode_into after creating a @c to_state
+	/// @remarks This function calls the base reference, the ztd::text::transcode_into after creating a `to_state`
 	/// from ztd::text::make_encode_state. The result from this function returns a
 	/// ztd::text::stateless_transcode_result as opposed to a ztd::text::transcode_result because the state
 	/// information is on the stack, and returning the state in those types by reference will result in references to
@@ -266,10 +266,10 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
 	///
-	/// @remarks This function creates a decode state @c from_state by calling ztd::text::make_decode_state. The
+	/// @remarks This function creates a decode state `from_state` by calling ztd::text::make_decode_state. The
 	/// result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -302,9 +302,9 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
 	///
-	/// @remarks This function creates an @c to_error_handler from a class like ztd::text::default_handler_t, but that
+	/// @remarks This function creates an `to_error_handler` from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective. The result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
@@ -335,7 +335,7 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @remarks This function creates an @c from_error_handler from a class like ztd::text::default_handler_t, but
+	/// @remarks This function creates an `from_error_handler` from a class like ztd::text::default_handler_t, but
 	/// that is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are
 	/// not injective. The result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
@@ -362,9 +362,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from the
 	/// intermediate code points.
 	///
-	/// @remarks This function creates both: a @c from_error_handler using a ztd::text::default_handler_t that is
-	/// marked as careless to pass to the next function overload; and, a @c from_encoding to interpret the @p __input
-	/// by checking the @p __input 's @c value_type. This matters for lossy conversions that are not injective. The
+	/// @remarks This function creates both: a `from_error_handler` using a ztd::text::default_handler_t that is
+	/// marked as careless to pass to the next function overload; and, a `from_encoding` to interpret the `__input`
+	/// by checking the `__input` 's `value_type.` This matters for lossy conversions that are not injective. The
 	/// result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -486,7 +486,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -494,15 +494,15 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
-	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
 	///
-	/// @returns A ztd::text::transcode_result object that contains references to @p __from_state and @p
-	/// __to_state and an @c output parameter that contains the @p _OutputContainer specified. If the container has a
-	/// @c container.reserve function, it is and some multiple of the input's size is used to pre-size the container,
-	/// to aid with @c push_back / @c insert reallocation pains.
+	/// @returns A ztd::text::transcode_result object that contains references to `__from_state` and @p
+	/// __to_state and an `output` parameter that contains the `_OutputContainer` specified. If the container has a
+	/// `container.reserve` function, it is and some multiple of the input's size is used to pre-size the container,
+	/// to aid with `push_back` / `insert` reallocation pains.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
@@ -545,7 +545,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -553,12 +553,12 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
-	/// parameter that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an `container.output`
+	/// parameter that contains the `_OutputContainer` specified.
 	///
 	/// @remarks A default state for the encode step of the operation is create using ztd::text::make_encode_state. The
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
@@ -585,7 +585,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -593,11 +593,11 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
-	/// parameter that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an `container.output`
+	/// parameter that contains the `_OutputContainer` specified.
 	///
 	/// @remarks A default state for the decode step of the operation is create using ztd::text::make_decode_state. The
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
@@ -624,7 +624,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -632,12 +632,12 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
-	/// parameter that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an `container.output`
+	/// parameter that contains the `_OutputContainer` specified.
 	///
-	/// @remarks A @c to_error_handler for the encode step of the operation is created using default construction of a
+	/// @remarks A `to_error_handler` for the encode step of the operation is created using default construction of a
 	/// ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must be
 	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
@@ -659,7 +659,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -668,10 +668,10 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
-	/// parameter that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an `container.output`
+	/// parameter that contains the `_OutputContainer` specified.
 	///
-	/// @remarks A @c from_error_handler for the encode step of the operation is created using default construction of
+	/// @remarks A `from_error_handler` for the encode step of the operation is created using default construction of
 	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
@@ -690,17 +690,17 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @returns A ztd::text::stateless_transcode_result object that contains references to an @c container.output
-	/// parameter that contains the @p _OutputContainer specified.
+	/// @returns A ztd::text::stateless_transcode_result object that contains references to an `container.output`
+	/// parameter that contains the `_OutputContainer` specified.
 	///
-	/// @remarks A @c from_error_handler for the encode step of the operation is created using default construction of
+	/// @remarks A `from_error_handler` for the encode step of the operation is created using default construction of
 	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
@@ -734,7 +734,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -742,12 +742,12 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
-	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
 	///
-	/// @returns An @p _OutputContainer with the result, regardless of whether an error occurs or not. If you are
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
@@ -786,7 +786,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -794,15 +794,15 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	///
-	/// @returns An @p _OutputContainer with the result, regardless of whether an error occurs or not. If you are
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates an @c to_state for the encoding step of the operation using
+	/// @remarks This function creates an `to_state` for the encoding step of the operation using
 	/// ztd::text::make_encode_state.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
@@ -826,7 +826,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -834,14 +834,14 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
 	///
-	/// @returns An @p _OutputContainer with the result, regardless of whether an error occurs or not. If you are
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates an @c from_state for the encoding step of the operation using
+	/// @remarks This function creates an `from_state` for the encoding step of the operation using
 	/// ztd::text::make_decode_state.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
@@ -865,7 +865,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -873,13 +873,13 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
 	///
-	/// @returns An @p _OutputContainer with the result, regardless of whether an error occurs or not. If you are
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates a @c to_error_handler from a class like ztd::text::default_handler_t, but that
+	/// @remarks This function creates a `to_error_handler` from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective.
 	//////
@@ -900,7 +900,7 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -909,11 +909,11 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @returns An @p _OutputContainer with the result, regardless of whether an error occurs or not. If you are
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates a @c from_error_handler from a class like ztd::text::default_handler_t, but that
+	/// @remarks This function creates a `from_error_handler` from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective.
 	//////
@@ -931,21 +931,21 @@ namespace ztd { namespace text {
 	/// success.
 	///
 	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a @c std::vector of some sort.
+	/// std::basic_string or a `std::vector` of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @returns An @p _OutputContainer with the result, regardless of whether an error occurs or not. If you are
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates both: a @c from_error_handler from a class like ztd::text::default_handler_t,
-	/// but that is marked as careless since you did not explicitly provide it; and, a @c from_encoding derived from
+	/// @remarks This function creates both: a `from_error_handler` from a class like ztd::text::default_handler_t,
+	/// but that is marked as careless since you did not explicitly provide it; and, a `from_encoding` derived from
 	/// the @p
-	/// "__input"'s @c value_type. The careless marking matters for lossy conversions that are not injective.
+	/// "__input"'s `value_type.` The careless marking matters for lossy conversions that are not injective.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _ToEncoding>
 	constexpr auto transcode(_Input&& __input, _ToEncoding&& __to_encoding) {
@@ -971,8 +971,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

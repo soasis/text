@@ -78,7 +78,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief Checks whether or not the decoding step for @p _Type is injective (cannot possibly lose information
+	/// @brief Checks whether or not the decoding step for `_Type` is injective (cannot possibly lose information
 	/// regardless of whatever valid input is put in).
 	///
 	/// @tparam _Type The encoding type to check.
@@ -91,13 +91,11 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_decode_injective.
-	///
-	//////
 	template <typename _Type>
 	inline constexpr bool is_decode_injective_v = is_decode_injective<_Type>::value;
 
 	//////
-	/// @brief Checks whether or not the encoding step for @p _Type is injective (cannot possibly lose information
+	/// @brief Checks whether or not the encoding step for `_Type` is injective (cannot possibly lose information
 	/// regardless of whatever valid input is put in).
 	///
 	/// @tparam _Type The encoding type to check.
@@ -110,15 +108,11 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_encode_injective.
-	///
-	//////
 	template <typename _Type>
 	inline constexpr bool is_encode_injective_v = is_encode_injective<_Type>::value;
 
 	//////
-	/// @brief Checks whether a decode operation with @p _From piped to a decode operation with @p _To is
-	///
-	//////
+	/// @brief Checks whether a decode operation with `_From` piped to a decode operation with `_To` is
 	template <typename _From, typename _To>
 	class is_full_range_representable_between
 	: public ::std::integral_constant<bool,
@@ -126,23 +120,17 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_full_range_representable_between.
-	///
-	//////
 	template <typename _From, typename _To>
 	inline constexpr bool is_full_range_representable_bewtween_v
 		= is_full_range_representable_between<_From, _To>::value;
 
 	//////
 	/// @brief An alias for ztd::text::is_full_range_representable_between<_Type, _Type>.
-	///
-	//////
 	template <typename _Type>
 	using is_full_range_representable = is_full_range_representable_between<_Type, _Type>;
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_full_range_representable_between<_Type, _Type>.
-	///
-	//////
 	template <typename _Type>
 	inline constexpr bool is_full_range_representable_v = is_full_range_representable<_Type>::value;
 

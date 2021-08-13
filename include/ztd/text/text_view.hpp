@@ -48,38 +48,24 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A view for examining text in the locale, runtime-based encoding.
-	///
-	//////
 	using text_view = basic_text_view<execution_t>;
 	//////
 	/// @brief A view for examining text in the locale, runtime-based wide encoding.
-	///
-	//////
 	using wtext_view = basic_text_view<wide_execution_t>;
 	//////
 	/// @brief A view for examining text in the string literal_t encoding.
-	///
-	//////
 	using ltext_view = basic_text_view<literal_t>;
 	//////
 	/// @brief A view for examining text in the wide string literal_t encoding.
-	///
-	//////
 	using wltext_view = basic_text_view<wide_literal_t>;
 	//////
 	/// @brief A view for examining text in the UTF-8 encoding.
-	///
-	//////
 	using u8text_view = basic_text_view<utf8_t>;
 	//////
 	/// @brief A view for examining text in the UTF-16 encoding.
-	///
-	//////
 	using u16text_view = basic_text_view<utf16_t>;
 	//////
 	/// @brief A view for examining text in the UTF-32 encoding.
-	///
-	//////
 	using u32text_view = basic_text_view<utf32_t>;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

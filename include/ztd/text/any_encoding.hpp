@@ -90,10 +90,10 @@ namespace ztd { namespace text {
 	/// @brief An encoding class which has the given encode output and input, as well as the decode input and output
 	/// ranges, provided as fixed types alongside the maximum number of code units put in and pushed out.
 	///
-	/// @tparam _EncodeCodeUnits The output of @c encode_one and related operations.
-	/// @tparam _EncodeCodePoints The input of @c encode_one and related operations.
-	/// @tparam _DecodeCodeUnits The input of @c decode_one and related operations.
-	/// @tparam _DecodeCodePoints The output of @c decode_one and related operations.
+	/// @tparam _EncodeCodeUnits The output of `encode_one` and related operations.
+	/// @tparam _EncodeCodePoints The input of `encode_one` and related operations.
+	/// @tparam _DecodeCodeUnits The input of `decode_one` and related operations.
+	/// @tparam _DecodeCodePoints The output of `decode_one` and related operations.
 	/// @tparam _MaxCodeUnits The maximum number of code units that can be output through a given operation. Directly
 	/// related to the maximum_code_units inline constexpr variable definition.
 	/// @tparam _MaxCodePoints The maximum number of code points that can be output through a given operation. Directly
@@ -101,9 +101,9 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This class is generally interacted with by using its derivate class, ztd::text::any_byte_encoding, and
 	/// its convenience alias, ztd::text::any_encoding. This class's use is recommended only for power users who have
-	/// encoding ranges that cannot be interacted with through @c ztd::span and therefore need other ways. We
+	/// encoding ranges that cannot be interacted with through `ztd::span` and therefore need other ways. We
 	/// are looking into ways to produce a ranges::subrange<any_iterator> as a completely generic range to aid those
-	/// individuals who do not want to deal in just @c ztd::span s.
+	/// individuals who do not want to deal in just `ztd::span` s.
 	//////
 	template <typename _EncodeCodeUnits, typename _EncodeCodePoints, typename _DecodeCodeUnits,
 		typename _DecodeCodePoints, ::std::size_t _MaxCodeUnits = __txt_detail::__default_max_code_units_any_encoding,
@@ -115,7 +115,7 @@ namespace ztd { namespace text {
 
 	public:
 		//////
-		/// @brief The state that can be used between calls to @c decode.
+		/// @brief The state that can be used between calls to `decode.`
 		///
 		/// @remarks This is an opaque struct with no members. It follows the "encoding-dependent state" model, which
 		/// means it has a constructor that takes an ztd::text::any_encoding_with so it can properly initialize its
@@ -123,7 +123,7 @@ namespace ztd { namespace text {
 		//////
 		using decode_state = any_decode_state;
 		//////
-		/// @brief The state that can be used between calls to @c encode.
+		/// @brief The state that can be used between calls to `encode.`
 		///
 		/// @remarks This is an opaque struct with no members. It follows the "encoding-dependent state" model, which
 		/// means it has a constructor that takes an ztd::text::any_encoding_with so it can properly initialize its
@@ -163,8 +163,6 @@ namespace ztd { namespace text {
 		static inline constexpr ::std::size_t max_code_points = _MaxCodePoints;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
-		///
-		//////
 		static inline constexpr ::std::size_t max_code_units = _MaxCodeUnits;
 
 	private:
@@ -237,40 +235,28 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The state for any encoding's decode state.
-		///
-		//////
 		class any_decode_state {
 		public:
 			//////
 			/// @brief Creates a state properly initialized from the stored encoding.
-			///
-			//////
 			any_decode_state(const any_encoding_with& __encoding)
 			: _M_state(__encoding._M_storage->__create_decode_state()) {
 			}
 
 			//////
 			/// @brief You cannot copy construct an any_decode_state.
-			///
-			//////
 			any_decode_state(const any_decode_state&) = delete;
 
 			//////
 			/// @brief You cannot copy assign an any_decode_state.
-			///
-			//////
 			any_decode_state& operator=(const any_decode_state&) = delete;
 
 			//////
 			/// @brief Move constructs an any_decode_state.
-			///
-			//////
 			any_decode_state(any_decode_state&&) = default;
 
 			//////
 			/// @brief Move assigns an any_decode_state.
-			///
-			//////
 			any_decode_state& operator=(any_decode_state&&) = default;
 
 			__erased_state* _M_get_erased_state() const noexcept {
@@ -286,40 +272,28 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The state for any encoding's encode state.
-		///
-		//////
 		class any_encode_state {
 		public:
 			//////
 			/// @brief Creates a state properly initialized from the stored encoding.
-			///
-			//////
 			any_encode_state(const any_encoding_with& __encoding)
 			: _M_state(__encoding._M_storage->__create_encode_state()) {
 			}
 
 			//////
 			/// @brief You cannot copy construct an any_encode_state.
-			///
-			//////
 			any_encode_state(const any_encode_state&) = delete;
 
 			//////
 			/// @brief You cannot copy assign an any_encode_state.
-			///
-			//////
 			any_encode_state& operator=(const any_encode_state&) = delete;
 
 			//////
 			/// @brief Move constructs an any_encode_state.
-			///
-			//////
 			any_encode_state(any_encode_state&&) = default;
 
 			//////
 			/// @brief Move assigns an any_encode_state.
-			///
-			//////
 			any_encode_state& operator=(any_encode_state&&) = default;
 
 			__erased_state* _M_get_erased_state() const noexcept {
@@ -720,8 +694,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief Cannot default-construct a ztd::text::any_encoding_with object.
-		///
-		//////
 		any_encoding_with() = delete;
 
 		//////
@@ -743,10 +715,10 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::any_encoding_with with the encoding type specified in the @p __tag
+		/// @brief Constructs a ztd::text::any_encoding_with with the encoding type specified in the `__tag`
 		/// argument.
 		///
-		/// @tparam _Encoding The Encoding specified by the @p __tag argument.
+		/// @tparam _Encoding The Encoding specified by the `__tag` argument.
 		///
 		/// @param[in] __tag The type marker that informs the ztd::text::any_encoding_with what encoding object to
 		/// store.
@@ -760,14 +732,10 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Cannot copy-construct a ztd::text::any_encoding_with object.
-		///
-		//////
 		any_encoding_with(const any_encoding_with&) = delete;
 
 		//////
 		/// @brief Cannot copy-assign a ztd::text::any_encoding_with object.
-		///
-		//////
 		any_encoding_with& operator=(const any_encoding_with&) = delete;
 
 		//////
@@ -792,11 +760,11 @@ namespace ztd { namespace text {
 		/// @brief Retrieves the replacement code points for when conversions fail and
 		/// ztd::text::replacement_handler_t (or equivalent) needs to make a substitution.
 		///
-		/// @return A @c std::optional of @c ztd::span of @c const @c code_point\ s. The returned @c
-		/// std::optional value is engaged (has a value) if the stored encoding has a valid @c replacement_code_points
-		/// function and it can be called. If it does not, then the library checks to see if the @c
-		/// maybe_replacement_code_points function exists, and returns the @c std::optional from that type directly.
-		/// If neither are present, an unengaged @c std::optional is returned.
+		/// @return A `std::optional` of `ztd::span` of `const code_point`s. The returned `std::optional`
+		/// value is engaged (has a value) if the stored encoding has a valid `replacement_code_points`
+		/// function and it can be called. If it does not, then the library checks to see if the
+		/// `maybe_replacement_code_points` function exists, and returns the `std::optional` from that type
+		/// directly. If neither are present, an unengaged `std::optional` is returned.
 		//////
 		::std::optional<::ztd::span<const code_point>> maybe_replacement_code_points() const noexcept {
 			return this->_M_storage->__maybe_replacement_code_points();
@@ -806,11 +774,11 @@ namespace ztd { namespace text {
 		/// @brief Retrieves the replacement code units for when conversions fail and ztd::text::replacement_handler_t
 		/// (or equivalent) needs to make a substitution.
 		///
-		/// @return A @c std::optional of @c ztd::span of @c const @c code_unit s. The returned @c
-		/// std::optional value is engaged (has a value) if the stored encoding has a valid @c replacement_code_units
+		/// @return A `std::optional` of `ztd::span` of `const code_unit`s. The returned `std::optional`
+		/// value is engaged (has a value) if the stored encoding has a valid `replacement_code_units`
 		/// function and it can be called. If it does not, then the library checks to see if the @c
-		/// maybe_replacement_code_units function exists, and returns the @c std::optional from that type directly. If
-		/// neither are present, an unengaged @c std::optional is returned.
+		/// maybe_replacement_code_units function exists, and returns the `std::optional` from that type directly. If
+		/// neither are present, an unengaged `std::optional` is returned.
 		//////
 		::std::optional<::ztd::span<const code_unit>> maybe_replacement_code_units() const noexcept {
 			return this->_M_storage->__maybe_replacement_code_units();
@@ -1068,12 +1036,12 @@ namespace ztd { namespace text {
 		::ztd::span<_DecodeCodeUnit>, ::ztd::span<_DecodeCodePoint>, _MaxCodeUnits, _MaxCodePoints>;
 
 	//////
-	/// @brief An encoding type that wraps up other encodings to specifically traffic in the given @p _Byte type
-	/// provided, which is typically set to @c std::byte .
+	/// @brief An encoding type that wraps up other encodings to specifically traffic in the given `_Byte` type
+	/// provided, which is typically set to `std::byte` .
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is either <tt>unsigned char</tt> or @c std::byte .
+	/// @tparam _Byte The byte type to use. Typically, this is either <tt>unsigned char</tt> or `std::byte` .
 	///
-	/// @remarks This type traffics solely in @c std::span s, which for most people is fine. Others may want to
+	/// @remarks This type traffics solely in `std::span` s, which for most people is fine. Others may want to
 	/// interface with different iterator types (e.g., from a custom Rope implementation or other). For those, one must
 	/// first create ranges that can operate with those iterators, then use them themselves. (It's not an ideal process
 	/// at the moment, and we are looking to make this experience better.) It is recommended to use the provided
@@ -1088,8 +1056,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief Cannot default-construct a ztd::text::any_byte_encoding object.
-		///
-		//////
 		any_byte_encoding() = delete;
 
 		//////
@@ -1147,14 +1113,10 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Cannot copy-construct a ztd::text::any_byte_encoding object.
-		///
-		//////
 		any_byte_encoding(const any_byte_encoding&) = delete;
 
 		//////
 		/// @brief Cannot copy-assign a ztd::text::any_byte_encoding object.
-		///
-		//////
 		any_byte_encoding& operator=(const any_byte_encoding&) = delete;
 
 		//////
@@ -1177,18 +1139,16 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The canonical erased encoding type which uses a @c std::byte as its code unit type and an @c
+	/// @brief The canonical erased encoding type which uses a `std::byte` as its code unit type and an @c
 	/// unicode_code_point as its code point type, with spans for input and output operations.
 	///
-	/// @remarks If the input encoding does not match @c std::byte, it will be first wrapped in a
+	/// @remarks If the input encoding does not match `std::byte`, it will be first wrapped in a
 	/// ztd::text::encoding_scheme first.
 	//////
 	using any_encoding = any_byte_encoding<::std::byte>;
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -47,22 +47,16 @@ namespace ztd { namespace ranges {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
 	//////
 	/// @brief A sentinel that cannot compare equal to any other iterator and thus results in infinitely long ranges.
-	///
-	//////
 	using default_sentinel_t = ::std::default_sentinel_t;
 #else
 	//////
 	/// @brief A sentinel that cannot compare equal to any other iterator and thus results in infinitely long ranges.
-	///
-	//////
 	struct default_sentinel_t { };
 #endif
 
 
 	//////
 	/// @brief An available and usable ztd::text::default_sentinel for ease of use.
-	///
-	//////
 	inline constexpr default_sentinel_t default_sentinel = {};
 
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_

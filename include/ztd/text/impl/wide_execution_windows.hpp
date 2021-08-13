@@ -74,7 +74,7 @@ namespace ztd { namespace text {
 		/// standard library's setlocale function.
 		///
 		/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c
-		/// ZTD_TEXT_USE_CUNEICODE and @c ZTD_TEXT_USE_ICONV is not defined, this object may use the C Standard
+		/// ZTD_TEXT_USE_CUNEICODE and `ZTD_TEXT_USE_ICONV` is not defined, this object may use the C Standard
 		/// Library to perform transcoding if certain platform facilities are disabled or not available (e.g., a
 		/// Windows-like machine without the Windows SDK). If this is the case, the C Standard Library has fundamental
 		/// limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output. This object
@@ -107,23 +107,19 @@ namespace ztd { namespace text {
 			//////
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<__base_t>>;
 			//////
-			/// @brief Whether or not this encoding's @c decode_one step is injective or not.
+			/// @brief Whether or not this encoding's `decode_one` step is injective or not.
 			//////
 			using is_decode_injective = ::std::false_type;
 			//////
-			/// @brief Whether or not this encoding's @c encode_one step is injective or not.
+			/// @brief Whether or not this encoding's `encode_one` step is injective or not.
 			//////
 			using is_encode_injective = ::std::false_type;
 
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
-			///
-			//////
 			inline static constexpr const ::std::size_t max_code_units = 8;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
-			///
-			//////
 			inline static constexpr const ::std::size_t max_code_points = 8;
 
 			//////
@@ -185,8 +181,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

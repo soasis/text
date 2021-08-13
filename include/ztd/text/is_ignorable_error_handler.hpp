@@ -137,16 +137,16 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief Whether or not the given @p _Type is an error handler that can be ignored.
+	/// @brief Whether or not the given `_Type` is an error handler that can be ignored.
 	///
 	/// @tparam _Type the Error Handling type to chec.
 	///
-	/// @remarks An error handler type can mark itself as ignorable by using a @c using @c assume_valid @c =
-	/// @c std::integral_constant<bool, @c value> where @c value determines if the type's error handling callback can
+	/// @remarks An error handler type can mark itself as ignorable by using a `using` `assume_valid` @c =
+	/// `std::integral_constant`<bool, `value`> where `value` determines if the type's error handling callback can
 	/// be ignored. This is what ztd::text::assume_valid does. Being configurable means templated error handlers can
 	/// select whether or not they should be ignorable based on compile time, safe conditions that you can make up
 	/// (including checking Macros or other environment data as a means of determining whether or not validity should
-	/// be ignored.) If this results in a type derived from @c std::true_type and the encoder object using it
+	/// be ignored.) If this results in a type derived from `std::true_type` and the encoder object using it
 	/// encounters an error, then it is Undefined Behavior what occurs afterwards.
 	//////
 	template <typename _Type>
@@ -154,19 +154,17 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_ignorable_error_handler.
-	///
-	//////
 	template <typename _Type>
 	inline constexpr bool is_ignorable_error_handler_v = is_ignorable_error_handler<_Type>::value;
 
 	//////
-	/// @brief Whether or not the given @p _Encoding and @p _Input with the provided @p _ErrorHandler will always
+	/// @brief Whether or not the given `_Encoding` and `_Input` with the provided `_ErrorHandler` will always
 	/// return ztd::text::encoding_error::ok for any failure that is not related to an output being too small
 	/// (ztd::text::encoding_error::insufficient_output_space).
 	///
-	/// @tparam _Encoding The encoding type whose @c decode_one function will be used with the error handler.
-	/// @tparam _Input The input range that will be used with the @c decode_one function of the encoding.
-	/// @tparam _ErrorHandler The error handler that will be called with the given @p _Encoding object and @p _Input
+	/// @tparam _Encoding The encoding type whose `decode_one` function will be used with the error handler.
+	/// @tparam _Input The input range that will be used with the `decode_one` function of the encoding.
+	/// @tparam _ErrorHandler The error handler that will be called with the given `_Encoding` object and `_Input`
 	/// range.
 	///
 	/// @remarks This is a compile time assertion. If the encoding may exhibit different behavior at runtime based on
@@ -180,25 +178,18 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::decode_error_handler_always_returns_ok_v
-	///
-	//////
 	template <typename _Encoding, typename _ErrorHandler>
 	inline constexpr bool decode_error_handler_always_returns_ok_v
 		= decode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;
 
 	//////
-	/// @brief Whether or not the given @p _Type is an error handler that can be ignored.
-	///
-	///
-	//////
+	/// @brief Whether or not the given `_Type` is an error handler that can be ignored.
 	template <typename _Encoding, typename _ErrorHandler>
 	class encode_error_handler_always_returns_ok
 	: public __txt_detail::__encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::decode_error_handler_always_returns_ok_v
-	///
-	//////
 	template <typename _Encoding, typename _ErrorHandler>
 	inline constexpr bool encode_error_handler_always_returns_ok_v
 		= encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;

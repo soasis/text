@@ -82,8 +82,6 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief Whether or not this encoding that can encode all of Unicode.
-			///
-			//////
 			using is_unicode_encoding = ::std::true_type;
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an empty
@@ -534,14 +532,10 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A UTF-8 Encoding that traffics in uchar8_t. See ztd::text::basic_utf8 for more details.
-	///
-	//////
 	using utf8_t = basic_utf8<uchar8_t>;
 
 	//////
 	/// @brief An instance of the UTF-8 encoding for ease of use.
-	///
-	//////
 	inline constexpr utf8_t utf8 = {};
 
 	//////
@@ -552,8 +546,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the compatibility UTF-8 encoding for ease of use.
-	///
-	//////
 	inline constexpr compat_utf8_t compat_utf8 = {};
 
 	//////
@@ -580,8 +572,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the WTF-8 type for ease of use.
-	///
-	//////
 	inline constexpr wtf8_t wtf8 = {};
 
 	//////
@@ -602,15 +592,11 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A Modified UTF-8 Encoding that traffics in char8_t. See ztd::text::basic_mutf8 for more details.
-	///
-	//////
 	using mutf8_t = basic_mutf8<uchar8_t>;
 
 
 	//////
 	/// @brief An instance of the MUTF-8 type for ease of use.
-	///
-	//////
 	inline constexpr mutf8_t mutf8 = {};
 
 
@@ -632,8 +618,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

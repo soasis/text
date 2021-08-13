@@ -75,44 +75,36 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief Retrieves the @c decode_state of the encoding type if it has one, or the @c state type of the
+	/// @brief Retrieves the `decode_state` of the encoding type if it has one, or the `state` type of the
 	/// encoding.
 	//////
 	template <typename _Type>
 	class decode_state {
 	public:
 		//////
-		/// @brief The @c decode_state type or @c state type on a given encoding type.
-		///
-		//////
+		/// @brief The `decode_state` type or `state` type on a given encoding type.
 		using type = typename __txt_detail::__decode_state<remove_cvref_t<_Type>>::type;
 	};
 
 	//////
 	/// @brief Typename alias for ztd::text::decode_state.
-	///
-	//////
 	template <typename _Type>
 	using decode_state_t = typename decode_state<_Type>::type;
 
 	//////
-	/// @brief Retrieves the @c encode_state of the encoding type if it has one, or the @c state type of the
+	/// @brief Retrieves the `encode_state` of the encoding type if it has one, or the `state` type of the
 	/// encoding.
 	//////
 	template <typename _Type>
 	class encode_state {
 	public:
 		//////
-		/// @brief The @c encode_state type or @c state type on a given encoding type.
-		///
-		//////
+		/// @brief The `encode_state` type or `state` type on a given encoding type.
 		using type = typename __txt_detail::__encode_state<remove_cvref_t<_Type>>::type;
 	};
 
 	//////
 	/// @brief Typename alias for ztd::text::encode_state.
-	///
-	//////
 	template <typename _Type>
 	using encode_state_t = typename encode_state<_Type>::type;
 
@@ -132,21 +124,21 @@ namespace ztd { namespace text {
 		= !::std::is_constructible_v<_Type, _Encoding> && ::std::is_default_constructible_v<_Type>;
 
 	//////
-	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the
+	/// @brief Whether or not the encoding's `decode_state` can be constructed without information from the
 	/// encoding itself.
 	//////
 	template <typename _Encoding>
 	inline constexpr bool is_decode_state_independent_v = is_state_independent_v<_Encoding, decode_state_t<_Encoding>>;
 
 	//////
-	/// @brief Whether or not the encoding's @c decode_state can be constructed without information from the
+	/// @brief Whether or not the encoding's `decode_state` can be constructed without information from the
 	/// encoding itself.
 	//////
 	template <typename _Encoding>
 	inline constexpr bool is_encode_state_independent_v = is_state_independent_v<_Encoding, encode_state_t<_Encoding>>;
 
 	//////
-	/// @brief Constructs the @c decode_state of the given encoding, based on whether or not the encoding and state
+	/// @brief Constructs the `decode_state` of the given encoding, based on whether or not the encoding and state
 	/// meet the criteria of ztd::text::is_decode_state_independent_v.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
@@ -165,7 +157,7 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Constructs the @c encode_state of the given encoding, based on whether or not the encoding and state
+	/// @brief Constructs the `encode_state` of the given encoding, based on whether or not the encoding and state
 	/// meet the criteria of ztd::text::is_encode_state_independent_v.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
@@ -184,9 +176,9 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Constructs the @c decode_state of the given encoding, based on whether or not the encoding and state
+	/// @brief Constructs the `decode_state` of the given encoding, based on whether or not the encoding and state
 	/// meet the criteria of ztd::text::is_decode_state_independent_v or whether it can be created by copy construction
-	/// from the given @p __encode_state.
+	/// from the given `__encode_state`.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __encode_state A preexisting state from the encoder.
@@ -220,9 +212,9 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Constructs the @c encode_state of the given encoding, based on whether or not the encoding and state
+	/// @brief Constructs the `encode_state` of the given encoding, based on whether or not the encoding and state
 	/// meet the criteria of ztd::text::is_encode_state_independent_v or whether it can be created by copy construction
-	/// from the given @p __decode_state.
+	/// from the given `__decode_state`.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __decode_state A preexisting state from the decoder.
@@ -256,9 +248,9 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Constructs the @c decode_state of the given encoding, based on whether or not the encoding and state
+	/// @brief Constructs the `decode_state` of the given encoding, based on whether or not the encoding and state
 	/// meet the criteria of ztd::text::is_decode_state_independent_v or whether it can be created by copy construction
-	/// from the given @p __encode_state.
+	/// from the given `__encode_state`.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __decode_state A preexisting state from the decoder.
@@ -291,9 +283,9 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Constructs the @c encode_state of the given encoding, based on whether or not the encoding and state
+	/// @brief Constructs the `encode_state` of the given encoding, based on whether or not the encoding and state
 	/// meet the criteria of ztd::text::is_encode_state_independent_v or whether it can be created by copy construction
-	/// from the given @p __encode_state.
+	/// from the given `__encode_state`.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __encode_state A preexisting state from the encoder to attempt to copy.

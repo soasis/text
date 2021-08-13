@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 		/// @brief The state that can be used between calls to the encoder and decoder.
 		///
 		/// @remarks It is an empty struct because there is no shift state to preserve between complete units of
-		/// encoded information. It is also only @c state and not separately @c decode_state and @c encode_state
+		/// encoded information. It is also only `state` and not separately `decode_state` and `encode_state`
 		/// because one type suffices for both.
 		//////
 		using state = __txt_detail::__empty_state;
@@ -104,8 +104,6 @@ namespace ztd { namespace text {
 		using is_encode_injective = ::std::false_type;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
-		///
-		//////
 		inline static constexpr const ::std::size_t max_code_units = 1;
 		//////
 		/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
@@ -305,14 +303,10 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the ascii_t type for ease of use.
-	///
-	//////
 	inline constexpr ascii_t ascii = {};
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

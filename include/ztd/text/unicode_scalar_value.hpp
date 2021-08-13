@@ -56,15 +56,14 @@ namespace ztd { namespace text {
 		/// values.
 		///
 		/// @remarks The invariant is enforced with an assertion in normal modes, and can optionally be enforced by
-		/// turning on @c ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT.
+		/// turning on `ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT.`
 		//////
 		class alignas(alignof(char32_t)) __unicode_scalar_value {
 		public:
 			//////
 			/// @brief Constructs a scalar value of indeterminate value (if no parentheses/brackets are provided) or
 			/// with the value 0 (if parentheses/brackets are provided for intentional value initialization).
-			///
-			//////
+
 			__unicode_scalar_value() noexcept = default;
 
 			//////
@@ -89,32 +88,25 @@ namespace ztd { namespace text {
 			//////
 			/// @brief An explicit conversion to a typical char32_t value, bit-compatible with a normal code point
 			/// value.
-			///
-			//////
+
 			constexpr explicit operator char32_t() const noexcept {
 				return this->_M_scalar;
 			}
 
 			//////
 			/// @brief Retrieves the underlying value.
-			///
-			//////
 			constexpr const char32_t& value() const& noexcept {
 				return this->_M_scalar;
 			}
 
 			//////
 			/// @brief Retrieves the underlying value.
-			///
-			//////
 			constexpr char32_t& value() & noexcept {
 				return this->_M_scalar;
 			}
 
 			//////
 			/// @brief Retrieves the underlying value.
-			///
-			//////
 			constexpr char32_t&& value() && noexcept {
 				return ::std::move(this->_M_scalar);
 			}

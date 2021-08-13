@@ -73,17 +73,17 @@ namespace ztd { namespace text {
 	/// @param[in] __to_encoding The encoding that is going to be used to encode the intermediary output.
 	/// @param[in] __from_error_handler The error handler to invoke when an intermediary decoding operation fails.
 	/// @param[in] __to_error_handler The error handler to invoke when the final encoding operation fails.
-	/// @param[in,out] __from_state The state attached to the @p __from_encoding that will be used for the intermediary
+	/// @param[in,out] __from_state The state attached to the `__from_encoding` that will be used for the intermediary
 	/// decode step.
-	/// @param[in,out] __to_state The state related to the @p __to_encoding that will be used for the final encoding
+	/// @param[in,out] __to_state The state related to the `__to_encoding` that will be used for the final encoding
 	/// step.
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
-	/// to the provided @p __from_state and @p __to_state .
+	/// to the provided `__from_state` and `__to_state` .
 	///
 	/// @remarks This method will not check any ADL extension points. A combination of implementation techniques will
-	/// be used to count code units, with a loop over the @c .encode_one / @c .decode_one call into an intermediate,
+	/// be used to count code units, with a loop over the `.encode_one` / `.decode_one` call into an intermediate,
 	/// unseen buffer being the most basic choice.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
@@ -181,16 +181,16 @@ namespace ztd { namespace text {
 	/// @param[in] __to_encoding The encoding that is going to be used to encode the intermediary output.
 	/// @param[in] __from_error_handler The error handler to invoke when an intermediary decoding operation fails.
 	/// @param[in] __to_error_handler The error handler to invoke when the final encoding operation fails.
-	/// @param[in,out] __from_state The state attached to the @p __from_encoding that will be used for the intermediary
+	/// @param[in,out] __from_state The state attached to the `__from_encoding` that will be used for the intermediary
 	/// decode step.
-	/// @param[in,out] __to_state The state related to the @p __to_encoding that will be used for the final encoding
+	/// @param[in,out] __to_state The state related to the `__to_encoding` that will be used for the final encoding
 	/// step.
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
-	/// to the provided @p __from_state and @p __to_state .
+	/// to the provided `__from_state` and `__to_state` .
 	///
-	/// @remarks This method checks for the ADL extension point @c text_count_as_transcoded . It will be called if it
+	/// @remarks This method checks for the ADL extension point `text_count_as_transcoded` . It will be called if it
 	/// is possible. Otherwise, this function will defer to ztd::text::basic_count_as_transcoded.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
@@ -233,14 +233,14 @@ namespace ztd { namespace text {
 	/// @param[in] __to_encoding The encoding that is going to be used to encode the intermediary output.
 	/// @param[in] __from_error_handler The error handler to invoke when an intermediary decoding operation fails.
 	/// @param[in] __to_error_handler The error handler to invoke when the final encoding operation fails.
-	/// @param[in,out] __from_state The state attached to the @p __from_encoding that will be used for the intermediary
+	/// @param[in,out] __from_state The state attached to the `__from_encoding` that will be used for the intermediary
 	/// decode step.
 	///
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
-	/// from_error_handler, to_error_handler, from_state, to_state) with an @c to_state created by
+	/// from_error_handler, to_error_handler, from_state, to_state) with an `to_state` created by
 	/// ztd::text::make_encode_state(to_encoding).
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
@@ -277,7 +277,7 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
-	/// from_error_handler, to_error_handler, from_state) with an @c from_state created by
+	/// from_error_handler, to_error_handler, from_state) with an `from_state` created by
 	/// ztd::text::make_decode_state(from_encoding).
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
@@ -309,7 +309,7 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
-	/// from_error_handler, to_error_handler) by creating an @c to_error_handler similar to
+	/// from_error_handler, to_error_handler) by creating an `to_error_handler` similar to
 	/// ztd::text::default_handler_t.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler>
@@ -335,7 +335,7 @@ namespace ztd { namespace text {
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
 	/// @remarks This method will call ztd::text::count_as_transcoded(Input, Encoding, ErrorHandler) by creating
-	/// an @c error_handler similar to ztd::text::default_handler_t.
+	/// an `error_handler` similar to ztd::text::default_handler_t.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto count_as_transcoded(
@@ -357,7 +357,7 @@ namespace ztd { namespace text {
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
-	/// @remarks Calls ztd::text::count_as_transcoded(Input, Encoding) with an @c encoding that is derived from
+	/// @remarks Calls ztd::text::count_as_transcoded(Input, Encoding) with an `encoding` that is derived from
 	/// ztd::text::default_code_unit_encoding.
 	//////
 	template <typename _Input, typename _ToEncoding>
@@ -384,8 +384,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

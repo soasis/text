@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 	/// @tparam _Encoding The encoding to store any input and presented text as.
 	/// @tparam _NormalizationForm The normalization form to impose on the stored text's sequences.
 	/// @tparam _Range The range type that will be stored within this ztd::text::basic_text_view and examined using the
-	/// iterators, following the @p _Encoding type decoding procedure.
+	/// iterators, following the `_Encoding` type decoding procedure.
 	/// @tparam _ErrorHandler The default error handler to use for any and all operations on text. Generally, most
 	/// operations will provide room to override this.
 	///
@@ -71,28 +71,18 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The type that this view is wrapping.
-		///
-		//////
 		using range_type = _Range;
 		//////
 		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
-		///
-		//////
 		using encoding_type = _Encoding;
 		//////
 		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
-		///
-		//////
 		using state_type = encode_state_t<_Encoding>;
 		//////
 		/// @brief The normalization form type this view is imposing on top of the encoded sequence.
-		///
-		//////
 		using normalization_type = _NormalizationForm;
 		//////
 		/// @brief The error handling type used by default for any problems in conversions.
-		///
-		//////
 		using error_handler_type = _ErrorHandler;
 
 	private:
@@ -117,7 +107,7 @@ namespace ztd { namespace text {
 		/// @param[in] __state The state to use for this code point view.
 		/// @param[in] __error_handler The error handler to look at the code points for this code point view.
 		///
-		/// @remarks Moves the provided @p __state in as the "starting point".
+		/// @remarks Moves the provided `__state` in as the "starting point".
 		//////
 		template <typename _ViewErrorHandler>
 		constexpr _CodePointView<_ViewErrorHandler> code_points(
@@ -131,7 +121,7 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __state The state to use for this code point view.
 		///
-		/// @remarks Moves the provided @c __state in as the "starting point".
+		/// @remarks Moves the provided `__state` in as the "starting point".
 		//////
 		constexpr _CodePointView<> code_points(state_type __state) const noexcept {
 			return _CodePointView<>(
@@ -141,7 +131,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Returns a view over the code points of this type, decoding "on the fly"/"lazily".
 		///
-		/// @remarks Copies the stored @c state within the ztd::text::basic_text_view to perform the code point
+		/// @remarks Copies the stored `state` within the ztd::text::basic_text_view to perform the code point
 		/// iteration process.
 		//////
 		constexpr _CodePointView<> code_points() const noexcept {
@@ -150,24 +140,18 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Access the storage as an r-value reference.
-		///
-		//////
 		constexpr range_type&& base() && noexcept {
 			return ::std::move(this->_M_storage);
 		}
 
 		//////
 		/// @brief Access the storage as a const-qualified l-value reference.
-		///
-		//////
 		constexpr const range_type& base() const& noexcept {
 			return this->_M_storage;
 		}
 
 		//////
 		/// @brief Access the storage as an l-value reference.
-		///
-		//////
 		constexpr range_type& base() & noexcept {
 			return this->_M_storage;
 		}

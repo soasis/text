@@ -54,8 +54,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A sentinel type for ztd::text::basic_c_string_view. Provides additional type safety.
-	///
-	//////
 	template <typename _Sentinel>
 	class basic_c_string_sentinel : private ebco<_Sentinel> {
 	private:

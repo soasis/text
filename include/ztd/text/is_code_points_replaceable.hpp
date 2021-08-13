@@ -62,9 +62,9 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _Type The type to check for the proper function call.
 	///
-	/// @remarks The @c value boolean is true if the given @p _Type has a function named @c
-	/// maybe_replacement_code_points() on it that can be called from a @c const -qualified @p _Type object which
-	/// returns a @c std::optional containing a contiguous view of code points.
+	/// @remarks The `value` boolean is true if the given `_Type` has a function named @c
+	/// maybe_replacement_code_points() on it that can be called from a `const` -qualified `_Type` object which
+	/// returns a `std::optional` containing a contiguous view of code points.
 	//////
 	template <typename _Type, typename... _Args>
 	class is_code_points_maybe_replaceable
@@ -72,8 +72,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_code_points_maybe_replaceable
-	///
-	//////
 	template <typename _Type, typename... _Args>
 	inline constexpr bool is_code_points_maybe_replaceable_v
 		= is_code_points_maybe_replaceable<_Type, _Args...>::value;
@@ -83,8 +81,8 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _Type The type to check for the proper function call.
 	///
-	/// @remarks The @c value boolean is true if the given @p _Type has a function named @c
-	/// replacement_code_points() on it that can be called from a @c const -qualified @c _Type object which returns a
+	/// @remarks The `value` boolean is true if the given `_Type` has a function named @c
+	/// replacement_code_points() on it that can be called from a `const` -qualified `_Type` object which returns a
 	/// contiguous view of code points.
 	//////
 	template <typename _Type, typename... _Args>
@@ -93,8 +91,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_code_points_replaceable
-	///
-	//////
 	template <typename _Type, typename... _Args>
 	inline constexpr bool is_code_points_replaceable_v = is_code_points_replaceable<_Type, _Args...>::value;
 

@@ -77,8 +77,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the execution_t type for ease of use.
-	///
-	//////
 	inline constexpr execution_t execution = {};
 
 	//////

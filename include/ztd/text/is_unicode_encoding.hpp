@@ -80,8 +80,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_unicode_encoding.
-	///
-	//////
 	template <typename _Type>
 	inline constexpr bool is_unicode_encoding_v = is_unicode_encoding<_Type>::value;
 
@@ -90,9 +88,9 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __encoding The encoding to query.
 	///
-	/// @remarks This function first checks if there is a function called @c contains_unicode_encoding . If it is
+	/// @remarks This function first checks if there is a function called `contains_unicode_encoding` . If it is
 	/// present, then it returns the value of that function directly. Otherwise, it checks if
-	/// ztd::text::is_unicode_encoding_v is true for the provided @p __encoding . If that's the case, then @c true is
+	/// ztd::text::is_unicode_encoding_v is true for the provided `__encoding` . If that's the case, then `true` is
 	/// returned. Otherwise, it assumes the encoding is not a Unicode-compatible encoding and returns false.
 	//////
 	template <typename _Encoding>

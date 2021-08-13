@@ -57,13 +57,11 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A sentinel type that can be used to compare with a ztd::text::transcode_iterator.
-	///
-	//////
 	using transcode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
 	//////
 	/// @brief A transcoding iterator that takes an input of code units and provides an output over the code units of
-	/// the desired @p _ToEncoding after converting from the @p _FromEncoding in a fashion that will never produce a
+	/// the desired `_ToEncoding` after converting from the `_FromEncoding` in a fashion that will never produce a
 	/// ztd::text::encoding_error::insufficient_output error.
 	///
 	/// @tparam _FromEncoding The encoding to read the underlying range of code points as.
@@ -76,8 +74,8 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This type produces proxies as their reference type, and are only readable, not writable iterators. The
 	/// type will also try many different shortcuts for decoding the input and encoding the intermediates,
-	/// respectively, including invoking a few customization points for either @c decode_one or @c encode_one . It
-	/// may also call @c transcode_one to bypass having to do the round-trip through two encodings, which an encoding
+	/// respectively, including invoking a few customization points for either `decode_one` or `encode_one` . It
+	/// may also call `transcode_one` to bypass having to do the round-trip through two encodings, which an encoding
 	/// pair that a developer is interested in can use to do the conversion more quickly. The view presents code units
 	/// one at a time, regardless of how many code units are output by one decode operation. This means if, for
 	/// example, one (1) UTF-16 code unit becomes two (2) UTF-8 code units, it will present each code unit one at a
@@ -136,64 +134,42 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The underlying range type.
-		///
-		//////
 		using range_type = _Range;
 		//////
 		/// @brief The base iterator type.
-		///
-		//////
 		using iterator_type = _BaseIterator;
 		//////
 		/// @brief The encoding type used for decoding to intermediate code point storage.
-		///
-		//////
 		using from_encoding_type = _FromEncoding;
 		//////
 		/// @brief The encoding type used for encoding to the final code units storage.
-		///
-		//////
 		using to_encoding_type = _ToEncoding;
 		//////
 		/// @brief The error handler when a decode operation fails.
-		///
-		//////
 		using from_error_handler_type = _FromErrorHandler;
 		//////
 		/// @brief The error handler when an encode operation fails.
-		///
-		//////
 		using to_error_handler_type = _ToErrorHandler;
 		//////
 		/// @brief The state type used for decode operations.
-		///
-		//////
 		using from_state_type = remove_cvref_t<_FromState>;
 		//////
 		/// @brief The state type used for encode operations.
-		///
-		//////
 		using to_state_type = remove_cvref_t<_ToState>;
 		//////
 		/// @brief The strength of the iterator category, as defined in relation to the base.
-		///
-		//////
 		using iterator_category = ::std::conditional_t<
 			::ztd::ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 			::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
 			ranges::iterator_category_t<_BaseIterator>>;
 		//////
 		/// @brief The strength of the iterator concept, as defined in relation to the base.
-		///
-		//////
 		using iterator_concept = ::std::conditional_t<
 			::ztd::ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 			::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
 			ranges::iterator_concept_t<_BaseIterator>>;
 		//////
 		/// @brief The object type that gets output on every dereference.
-		///
-		//////
 		using value_type = code_unit_t<_ToEncoding>;
 		//////
 		/// @brief A pointer type to the value_type.
@@ -202,7 +178,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The value returned from derefencing the iterator.
 		///
-		/// @remarks This is a proxy iterator, so the @c reference is a non-reference @c value_type.
+		/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
 		//////
 		using reference = value_type;
 		//////
@@ -239,13 +215,9 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Copy constructs a transcode_iterator.
-		///
-		//////
 		constexpr transcode_iterator(const transcode_iterator&) = default;
 		//////
 		/// @brief Move constructs a transcode_iterator.
-		///
-		//////
 		constexpr transcode_iterator(transcode_iterator&&) = default;
 
 		//////
@@ -262,7 +234,7 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
 		//////
 		constexpr transcode_iterator(range_type __range, to_encoding_type __to_encoding)
 		: transcode_iterator(::std::move(__range), from_encoding_type {}, ::std::move(__to_encoding)) {
@@ -272,8 +244,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call `decode_one` or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
 		//////
 		constexpr transcode_iterator(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding)
@@ -285,8 +257,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call `decode_one` or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		//////
@@ -302,8 +274,8 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		/// @param[in] __from_encoding The encoding object to call @c decode_one or equivalent functionality on.
-		/// @param[in] __to_encoding The encoding object to call @c encode_one or equivalent functionality on.
+		/// @param[in] __from_encoding The encoding object to call `decode_one` or equivalent functionality on.
+		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		/// @param[in] __from_state The state to user for the decode operation.
@@ -326,13 +298,9 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Copy assigns- a transcode_iterator.
-		///
-		//////
 		constexpr transcode_iterator& operator=(const transcode_iterator&) = default;
 		//////
 		/// @brief Move assigns a transcode_iterator.
-		///
-		//////
 		constexpr transcode_iterator& operator=(transcode_iterator&&) = default;
 
 		// observers
@@ -375,80 +343,60 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The decoding ("from") state object.
-		///
-		//////
 		constexpr const from_state_type& from_state() const {
 			return this->__base_from_state_t::_M_get_state();
 		}
 
 		//////
 		/// @brief The decoding ("from") state object.
-		///
-		//////
 		constexpr from_state_type& from_state() {
 			return this->__base_from_state_t::_M_get_state();
 		}
 
 		//////
 		/// @brief The encoding ("to") state object.
-		///
-		//////
 		constexpr const to_state_type& to_state() const {
 			return this->__base_to_state_t::_M_get_state();
 		}
 
 		//////
 		/// @brief The encoding ("to") state object.
-		///
-		//////
 		constexpr to_state_type& to_state() {
 			return this->__base_to_state_t::_M_get_state();
 		}
 
 		//////
 		/// @brief The error handler object.
-		///
-		//////
 		constexpr const from_error_handler_type& from_handler() const {
 			return this->__base_from_error_handler_t::get_value();
 		}
 
 		//////
 		/// @brief The error handler object.
-		///
-		//////
 		constexpr from_error_handler_type& from_handler() {
 			return this->__base_from_error_handler_t::get_value();
 		}
 
 		//////
 		/// @brief The error handler object.
-		///
-		//////
 		constexpr const to_error_handler_type& to_handler() const& noexcept {
 			return this->__base_to_error_handler_t::get_value();
 		}
 
 		//////
 		/// @brief The error handler object.
-		///
-		//////
 		constexpr to_error_handler_type& to_handler() & noexcept {
 			return this->__base_to_error_handler_t::get_value();
 		}
 
 		//////
 		/// @brief The error handler object.
-		///
-		//////
 		constexpr to_error_handler_type&& to_handler() && noexcept {
 			return ::std::move(this->__base_to_error_handler_t::get_value());
 		}
 
 		//////
 		/// @brief The input range used to construct this object.
-		///
-		//////
 		constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
 			     ? ::std::is_nothrow_copy_constructible_v<range_type>
 			     : ::std::is_nothrow_move_constructible_v<range_type>) {
@@ -462,16 +410,12 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The input range used to construct this object.
-		///
-		//////
 		constexpr range_type range() const& noexcept(::std::is_nothrow_copy_constructible_v<range_type>) {
 			return this->__base_range_t::get_value();
 		}
 
 		//////
 		/// @brief The input range used to construct this object.
-		///
-		//////
 		constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
 			return ::std::move(this->__base_range_t::get_value());
 		}
@@ -547,8 +491,6 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Compares whether or not this iterator has truly reached the end.
-		///
-		//////
 		friend constexpr bool operator==(const transcode_iterator& __it, const transcode_sentinel_t&) {
 			if constexpr (__it._IsCursorless || (__it._IsInputOrOutput && __it._IsSingleValueType)) {
 				return __it._M_base_is_empty()
@@ -563,16 +505,12 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Compares whether or not this iterator has truly reached the end.
-		///
-		//////
 		friend constexpr bool operator==(const transcode_sentinel_t& __sen, const transcode_iterator& __it) {
 			return __it == __sen;
 		}
 
 		//////
 		/// @brief Compares whether or not this iterator has truly reached the end.
-		///
-		//////
 		friend constexpr bool operator!=(const transcode_iterator& __it, const transcode_sentinel_t&) {
 			if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
 				return !__it._M_base_is_empty()
@@ -587,8 +525,6 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Compares whether or not this iterator has truly reached the end.
-		///
-		//////
 		friend constexpr bool operator!=(const transcode_sentinel_t& __sen, const transcode_iterator& __it) {
 			return !(__sen == __it);
 		}
@@ -671,8 +607,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

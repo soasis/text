@@ -91,13 +91,13 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in]     __to_error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
-	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
 	///
-	/// @result A ztd::text::transcode_result object that contains references to @p __from_state and @p
+	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
 	///
-	/// @remark This function detects whether or not the ADL extension point @c text_transcode can be called with the
+	/// @remark This function detects whether or not the ADL extension point `text_transcode` can be called with the
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
@@ -156,13 +156,13 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in]     __to_error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
-	/// @param[in,out] __to_state A reference to the associated state for the @p __to_encoding 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
 	///
-	/// @result A ztd::text::transcode_result object that contains references to @p __from_state and @p
+	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
 	///
-	/// @remark This function detects whether or not the ADL extension point @c text_transcode_one can be called with
+	/// @remark This function detects whether or not the ADL extension point `text_transcode_one` can be called with
 	/// the provided parameters. If so, it will use that ADL extension point over the default implementation.
 	/// Otherwise, it will loop over the two encodings and attempt to transcode by first decoding the input code units
 	/// to code points, then encoding the intermediate code points to the desired, output code units.
@@ -208,13 +208,13 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
-	/// @param[in,out] __from_state A reference to the associated state for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	///
 	/// @result A ztd::text::stateless_transcode_result object.
 	///
-	/// @remarks This function calls the base reference, the ztd::text::transcode_into after creating a @c to_state
+	/// @remarks This function calls the base reference, the ztd::text::transcode_into after creating a `to_state`
 	/// from ztd::text::make_encode_state. The result from this function returns a
 	/// ztd::text::stateless_transcode_result as opposed to a ztd::text::transcode_result because the state
 	/// information is on the stack, and returning the state in those types by reference will result in references to
@@ -251,10 +251,10 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
-	/// @param[in]     __to_error_handler The error handler for the @p __to_encoding 's encode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
 	///
-	/// @remarks This function creates a decode state @c from_state by calling ztd::text::make_decode_state. The
+	/// @remarks This function creates a decode state `from_state` by calling ztd::text::make_decode_state. The
 	/// result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -287,9 +287,9 @@ namespace ztd { namespace text {
 	/// intermediate code points.
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
-	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
 	///
-	/// @remarks This function creates an @c to_error_handler from a class like ztd::text::default_handler_t, but that
+	/// @remarks This function creates an `to_error_handler` from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective. The result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
@@ -320,7 +320,7 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @remarks This function creates an @c from_error_handler from a class like ztd::text::default_handler_t, but
+	/// @remarks This function creates an `from_error_handler` from a class like ztd::text::default_handler_t, but
 	/// that is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are
 	/// not injective. The result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
@@ -347,9 +347,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from the
 	/// intermediate code points.
 	///
-	/// @remarks This function creates both: a @c from_error_handler using a ztd::text::default_handler_t that is
-	/// marked as careless to pass to the next function overload; and, a @c from_encoding to interpret the @p __input
-	/// by checking the @p __input 's @c value_type. This matters for lossy conversions that are not injective. The
+	/// @remarks This function creates both: a `from_error_handler` using a ztd::text::default_handler_t that is
+	/// marked as careless to pass to the next function overload; and, a `from_encoding` to interpret the `__input`
+	/// by checking the `__input` 's `value_type.` This matters for lossy conversions that are not injective. The
 	/// result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -369,8 +369,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

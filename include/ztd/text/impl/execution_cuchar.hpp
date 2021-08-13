@@ -144,7 +144,7 @@ namespace ztd { namespace text {
 			/// operation.
 			///
 			/// @remarks Please note that char can be either signed or unsigned, and so generally can result in bad
-			/// results when promoted to a plain @c int when working with code units or working with the C Standard
+			/// results when promoted to a plain `int` when working with code units or working with the C Standard
 			/// Library.
 			//////
 			using code_unit = char;
@@ -178,7 +178,7 @@ namespace ztd { namespace text {
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
 			///
-			/// @remarks This is bounded by the platform's @c MB_LEN_MAX macro, which is an integral constant
+			/// @remarks This is bounded by the platform's `MB_LEN_MAX` macro, which is an integral constant
 			/// expression representing the maximum value of output all C locales can produce from a single complete
 			/// operation.
 			//////
@@ -197,8 +197,8 @@ namespace ztd { namespace text {
 			/// @brief Returns whether or not this encoding is a unicode encoding.
 			///
 			/// @remarks This function operates at runtime and queries the existing locale through a variety of
-			/// platform-specific means (such as @c nl_langinfo for POSIX, ACP probing on Windows, or fallin back to
-			/// @c std::setlocale name checking otherwise).
+			/// platform-specific means (such as `nl_langinfo` for POSIX, ACP probing on Windows, or fallin back to
+			/// `std::setlocale` name checking otherwise).
 			//////
 			static bool contains_unicode_encoding() noexcept {
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
@@ -235,7 +235,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
 			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
-			/// implementation and what it chooses. If @c ZTD_TEXT_USE_CUNEICODE is defined, the ztd.cuneicode
+			/// implementation and what it chooses. If `ZTD_TEXT_USE_CUNEICODE` is defined, the ztd.cuneicode
 			/// library may be used to fulfill this functionality.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
@@ -441,7 +441,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
 			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
-			/// implementation and what it chooses. If @c ZTD_TEXT_USE_CUNEICODE is defined, the ztd.cuneicode
+			/// implementation and what it chooses. If `ZTD_TEXT_USE_CUNEICODE` is defined, the ztd.cuneicode
 			/// library may be used to fulfill this functionality.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
@@ -709,8 +709,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -42,13 +42,9 @@ namespace ztd { namespace ranges {
 
 	//////
 	/// @brief A sentinel that cannot compare equal to any other iterator and thus results in infinitely long ranges.
-	///
-	//////
 	class unreachable_sentinel_t {
 		//////
 		/// @brief Equality comparison. Always false.
-		///
-		//////
 		template <typename _Left>
 		friend constexpr bool operator==(const _Left&, const unreachable_sentinel_t&) {
 			return false;
@@ -56,8 +52,6 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief Equality comparison. Always false.
-		///
-		//////
 		template <typename _Right>
 		friend constexpr bool operator==(const unreachable_sentinel_t&, const _Right&) {
 			return false;
@@ -65,8 +59,6 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief Inequality comparison. Always true.
-		///
-		//////
 		template <typename _Left>
 		friend constexpr bool operator!=(const _Left&, const unreachable_sentinel_t&) {
 			return true;
@@ -74,8 +66,6 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief Inequality comparison. Always true.
-		///
-		//////
 		template <typename _Right>
 		friend constexpr bool operator!=(const unreachable_sentinel_t&, const _Right&) {
 			return true;
@@ -84,8 +74,6 @@ namespace ztd { namespace ranges {
 
 	//////
 	/// @brief An available and usable ztd::text::unreachable_sentinel_t for ease of use.
-	///
-	//////
 	inline constexpr unreachable_sentinel_t unreachable_sentinel = {};
 
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_

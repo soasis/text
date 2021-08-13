@@ -63,18 +63,12 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief An enumeration that helps determine whether a subrange has size information or not.
-		///
-		//////
 		enum class __subrange_kind : bool {
 			//////
 			/// @brief Does not have a size (or does not have a size that can be computed in O(1)).
-			///
-			//////
 			unsized,
 			//////
 			/// @brief Has a size that can be computed in O(1).
-			///
-			//////
 			sized
 		};
 
@@ -101,11 +95,11 @@ namespace ztd { namespace ranges {
 
 		//////
 		/// @brief A utility class to aid in trafficking iterator pairs (or, possibly, and iterator and sentinel pair)
-		/// through the API to provide a generic, basic "range" type. Attempts to mimic @c std::ranges::subrange on
+		/// through the API to provide a generic, basic "range" type. Attempts to mimic `std::ranges::subrange` on
 		/// platforms where it is not available.
 		///
 		/// @tparam _It The iterator type.
-		/// @tparam _Sen The sentinel type, defaulted to @p _It.
+		/// @tparam _Sen The sentinel type, defaulted to `_It`.
 		/// @tparam _Kind Whether or not this is a "Sized Subrange": that is, that a calculation for the size of the
 		/// subrange can be done in O(1) time and is available.
 		//////
@@ -121,85 +115,57 @@ namespace ztd { namespace ranges {
 
 		public:
 			//////
-			/// @brief The @c iterator type for this subrange, dictated by the template parameter @p _It.
-			///
-			//////
+			/// @brief The `iterator` type for this subrange, dictated by the template parameter `_It`.
 			using iterator = _It;
 			//////
-			/// @brief The @c const_iterator type for this subrange, dictated by the template parameter @p _It.
-			///
-			//////
+			/// @brief The `const_iterator` type for this subrange, dictated by the template parameter `_It`.
 			using const_iterator = iterator;
 			//////
-			/// @brief The @c sentinel type for this subrange, dictated by the template parameter @p _Sen.
-			///
-			//////
+			/// @brief The `sentinel` type for this subrange, dictated by the template parameter `_Sen`.
 			using sentinel = _Sen;
 			//////
-			/// @brief The @c const_sentinel type for this subrange, dictated by the template parameter @p _Sen.
-			///
-			//////
+			/// @brief The `const_sentinel` type for this subrange, dictated by the template parameter `_Sen`.
 			using const_sentinel = sentinel;
 			//////
-			/// @brief The iterator category. Same as the iterator category for @p _It.
-			///
-			//////
+			/// @brief The iterator category. Same as the iterator category for `_It`.
 			using iterator_category = ::std::conditional_t<is_iterator_contiguous_iterator_v<iterator>,
 				contiguous_iterator_tag, ranges::iterator_category_t<iterator>>;
 			//////
-			/// @brief The iterator concept. Same as the iterator concept for @p _It.
-			///
-			//////
+			/// @brief The iterator concept. Same as the iterator concept for `_It`.
 			using iterator_concept = ::std::conditional_t<is_iterator_contiguous_iterator_v<iterator>,
 				contiguous_iterator_tag, ranges::iterator_concept_t<iterator>>;
 			//////
-			/// @brief The @c pointer type. Same as the @c pointer type for @p _It.
-			///
-			//////
+			/// @brief The `pointer` type. Same as the `pointer` type for `_It`.
 			using pointer = ranges::iterator_pointer_t<iterator>;
 			//////
-			/// @brief The @c const_pointer type. Same as the @c const_pointer type for @p _It.
-			///
-			//////
+			/// @brief The `const_pointer` type. Same as the `const_pointer` type for `_It`.
 			using const_pointer = pointer;
 			//////
-			/// @brief The @c reference type. Same as the @c reference type for @p _It.
-			///
-			//////
+			/// @brief The `reference` type. Same as the `reference` type for `_It`.
 			using reference = ranges::iterator_reference_t<iterator>;
 			//////
-			/// @brief The @c const_reference type. Same as the @c const_reference type for @p _It.
-			///
-			//////
+			/// @brief The `const_reference` type. Same as the `const_reference` type for `_It`.
 			using const_reference = reference;
 			//////
-			/// @brief The @c value_type. Same as the @c value_type for @p _It.
-			///
-			//////
+			/// @brief The `value_type.` Same as the `value_type` for `_It`.
 			using value_type = ranges::iterator_value_type_t<iterator>;
 			//////
-			/// @brief The @c difference_type. Same as the @c difference_type for @p _It.
-			///
-			//////
+			/// @brief The `difference_type.` Same as the `difference_type` for `_It`.
 			using difference_type = ranges::iterator_difference_type_t<iterator>;
 			//////
-			/// @brief The @c size_type. Same as the @c size_type for @p _It.
-			///
-			//////
+			/// @brief The `size_type.` Same as the `size_type` for `_It`.
 			using size_type = _SizeType;
 
 			//////
 			/// @brief Constructs a ztd::text::subrange containing a defaulted iterator and a defaulted sentinel.
-			///
-			//////
 			constexpr __subrange() = default;
 
 			//////
-			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by @p __range's @c begin()
+			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by `__range`'s `begin()`
 			/// and
-			/// @c end() values.
+			/// `end()` values.
 			///
-			/// @param[in] __range The Range to get the @c begin() and @c end() out of to initialize the subrange's
+			/// @param[in] __range The Range to get the `begin()` and `end()` out of to initialize the subrange's
 			/// iterators.
 			//////
 			template <typename _Range,
@@ -211,11 +177,11 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by @p __range's @c begin()
+			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by `__range`'s `begin()`
 			/// and
-			/// @c end() values.
+			/// `end()` values.
 			///
-			/// @param[in] __range The Range to get the @c begin() and @c end() out of to initialize the subrange's
+			/// @param[in] __range The Range to get the `begin()` and `end()` out of to initialize the subrange's
 			/// iterators.
 			/// @param[in] __size The size to construct with.
 			//////
@@ -229,12 +195,12 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by @p __range's @c begin()
+			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by `__range`'s `begin()`
 			/// and
-			/// @c end() values.
+			/// `end()` values.
 			///
-			/// @param[in] __it An iterator value to @c std::move in.
-			/// @param[in] __sen A sentinel value to @c std::move in.
+			/// @param[in] __it An iterator value to `std::move` in.
+			/// @param[in] __sen A sentinel value to `std::move` in.
 			//////
 			constexpr __subrange(iterator __it, sentinel __sen) noexcept(
 				::std::is_nothrow_move_constructible_v<iterator>&& ::std::is_nothrow_move_constructible_v<sentinel>)
@@ -243,9 +209,9 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by @p __range's @c begin()
+			/// @brief Constructs a ztd::text::subrange with its begin and end constructed by `__range`'s `begin()`
 			/// and
-			/// @c end() values.
+			/// `end()` values.
 			///
 			/// @param[in] __it An iterator value to construct with.
 			/// @param[in] __sen A sentinel value to construct with.
@@ -261,8 +227,6 @@ namespace ztd { namespace ranges {
 
 			//////
 			/// @brief The stored begin iterator.
-			///
-			//////
 			constexpr iterator begin() & noexcept {
 				if constexpr (::std::is_copy_constructible_v<iterator>) {
 					return this->_M_it;
@@ -274,40 +238,30 @@ namespace ztd { namespace ranges {
 
 			//////
 			/// @brief The stored begin iterator.
-			///
-			//////
 			constexpr iterator begin() const& noexcept {
 				return this->_M_it;
 			}
 
 			//////
 			/// @brief The stored begin iterator.
-			///
-			//////
 			constexpr iterator begin() && noexcept {
 				return ::std::move(this->_M_it);
 			}
 
 			//////
 			/// @brief The stored end iterator.
-			///
-			//////
 			constexpr const sentinel& end() const& noexcept {
 				return this->_M_sen;
 			}
 
 			//////
 			/// @brief The stored end iterator.
-			///
-			//////
 			constexpr sentinel& end() & noexcept {
 				return this->_M_sen;
 			}
 
 			//////
 			/// @brief The stored end iterator.
-			///
-			//////
 			constexpr sentinel&& end() && noexcept {
 				return ::std::move(this->_M_sen);
 			}
@@ -315,7 +269,7 @@ namespace ztd { namespace ranges {
 			//////
 			/// @brief Whether or not this range is empty.
 			///
-			/// @returns @c begin() == @c end()
+			/// @returns `begin()` == `end()`
 			//////
 			constexpr bool empty() const noexcept {
 				return this->_M_it == this->_M_sen;
@@ -326,7 +280,7 @@ namespace ztd { namespace ranges {
 			///
 			/// @returns @code std::distance(begin(), end()) @endcode
 			///
-			/// @remarks This function call only works if the @p _Kind of this subrange is
+			/// @remarks This function call only works if the `_Kind` of this subrange is
 			/// ztd::text::subrange_kind::sized.
 			//////
 			template <__subrange_kind _Strawman                           = _Kind,
@@ -341,11 +295,11 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief A @c pointer to the range of elements.
+			/// @brief A `pointer` to the range of elements.
 			///
-			/// @returns @c std::addressof(*begin()).
+			/// @returns `std::addressof(`*begin()).
 			///
-			/// @remarks This function call only works if the @c iterator_concept is a @c contiguous_iterator_tag or
+			/// @remarks This function call only works if the `iterator_concept` is a `contiguous_iterator_tag` or
 			/// better.
 			//////
 			template <typename _Strawman                                           = _It,
@@ -355,7 +309,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Produces a copy of the subrange and advances the @c begin() iterator by 1.
+			/// @brief Produces a copy of the subrange and advances the `begin()` iterator by 1.
 			///
 			/// @remarks This function call only works if the underlying iterator and sentinal types are copyable.
 			//////
@@ -369,7 +323,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Produces a copy of the subrange and advances the @c begin() iterator by 1.
+			/// @brief Produces a copy of the subrange and advances the `begin()` iterator by 1.
 			///
 			/// @remarks This function call can be more efficient and allows working with move-only iterators. This
 			/// function call will move the iterators underlying this object.
@@ -384,7 +338,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Produces a copy of the subrange and advances the @c begin() iterator by @p __diff.
+			/// @brief Produces a copy of the subrange and advances the `begin()` iterator by `__diff`.
 			///
 			/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 			///
@@ -400,7 +354,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Produces a copy of the subrange and advances the @c begin() iterator by @p __diff.
+			/// @brief Produces a copy of the subrange and advances the `begin()` iterator by `__diff`.
 			///
 			/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 			///
@@ -417,7 +371,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Produces a copy of the subrange and recedes the @c begin() iterator by @p __diff.
+			/// @brief Produces a copy of the subrange and recedes the `begin()` iterator by `__diff`.
 			///
 			/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
 			///
@@ -433,7 +387,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Advances the @c begin() iterator of this ztd::text::subrange by @p __diff or just @c 1 if the
+			/// @brief Advances the `begin()` iterator of this ztd::text::subrange by `__diff` or just `1` if the
 			/// argument is not specified.
 			///
 			/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
@@ -445,7 +399,7 @@ namespace ztd { namespace ranges {
 			}
 
 			//////
-			/// @brief Recedes the @c begin() iterator of this ztd::text::subrange by @p __diff or just @c 1 if the
+			/// @brief Recedes the `begin()` iterator of this ztd::text::subrange by `__diff` or just `1` if the
 			/// argument is not specified.
 			///
 			/// @param[in] __diff The amount to move this iterator by. Can be positive or negative.
@@ -489,14 +443,10 @@ namespace ztd { namespace ranges {
 #else
 	//////
 	/// @brief The type of subrange, sized or unsized.
-	///
-	//////
 	using subrange_kind = __rng_detail::__subrange_kind;
 
 	//////
 	/// @brief A general-purpose iterator-sentinel (or iterator-sentinel-size) container.
-	///
-	//////
 	template <typename _It, typename _Sen = _It,
 		subrange_kind _Kind = is_sized_sentinel_for_v<_It, _Sen> ? subrange_kind::sized : subrange_kind::unsized>
 	using subrange = ::ztd::ranges::__rng_detail::__subrange<_It, _Sen, _Kind>;
@@ -509,8 +459,6 @@ namespace ztd { namespace ranges {
 
 	//////
 	/// @brief Decomposes a range into its two iterators and returns it as a ztd::text::subrange.
-	///
-	//////
 	template <typename _Range>
 	constexpr __rng_detail::__subrange_for_t<_Range> make_subrange(_Range&& __range) noexcept(
 		::std::is_nothrow_constructible_v<_Range, __rng_detail::__subrange_for_t<_Range>>) {
@@ -519,8 +467,6 @@ namespace ztd { namespace ranges {
 
 	//////
 	/// @brief Takes two iterators and returns them as a ztd::text::subrange.
-	///
-	//////
 	template <typename _It, typename _Sen>
 	constexpr subrange<remove_cvref_t<_It>, remove_cvref_t<_Sen>> make_subrange(_It&& __it, _Sen&& __sen) noexcept(
 		::std::is_nothrow_constructible_v<subrange<remove_cvref_t<_It>, remove_cvref_t<_Sen>>, _It, _Sen>) {

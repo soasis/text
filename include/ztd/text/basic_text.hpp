@@ -48,13 +48,13 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @brief A wrapper (container adapter) that takes the given @p _Encoding type and @p _NormalizationForm type and
-	/// imposes it over the given chosen @p _Container storage for the purposes of allowing users to examine the text.
+	/// @brief A wrapper (container adapter) that takes the given `_Encoding` type and `_NormalizationForm` type and
+	/// imposes it over the given chosen `_Container` storage for the purposes of allowing users to examine the text.
 	///
 	/// @tparam _Encoding The encoding to store any input and presented text as.
 	/// @tparam _NormalizationForm The normalization form to impose on the stored text's sequences.
 	/// @tparam _Container The container type that will be stored within this ztd::text::basic_text using the code
-	/// units from the @p _Encoding type.
+	/// units from the `_Encoding` type.
 	/// @tparam _ErrorHandler The default error handler to use for any and all operations on text. Generally, most
 	/// operations will provide room to override this.
 	//////
@@ -67,28 +67,18 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The type that this view is wrapping.
-		///
-		//////
 		using range_type = typename __base_t::range_type;
 		//////
 		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
-		///
-		//////
 		using encoding_type = typename __base_t::encoding_type;
 		//////
 		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
-		///
-		//////
 		using state_type = typename __base_t::state_type;
 		//////
 		/// @brief The normalization form type this view is imposing on top of the encoded sequence.
-		///
-		//////
 		using normalization_type = typename __base_t::normalization_type;
 		//////
 		/// @brief The error handling type used by default for any problems in conversions.
-		///
-		//////
 		using error_handler_type = typename __base_t::error_handler_type;
 
 		using __base_t::code_points;

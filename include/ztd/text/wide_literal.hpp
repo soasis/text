@@ -63,8 +63,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The encoding of wide string literal_ts ( e.g. @c "👍" ) at compile time.
-	///
-	//////
 	class wide_literal_t : private ebco<__txt_detail::__wide_literal, 0> {
 	private:
 		using __underlying_t = __txt_detail::__wide_literal;
@@ -89,13 +87,9 @@ namespace ztd { namespace text {
 		using code_point = code_point_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to encode_one.
-		///
-		//////
 		using encode_state = encode_state_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to decode_one.
-		///
-		//////
 		using decode_state = decode_state_t<__underlying_t>;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
@@ -114,39 +108,25 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The maximum number of code points a single complete operation of decoding can produce.
-		///
-		//////
 		inline static constexpr ::std::size_t max_code_points = 8;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
-		///
-		//////
 		inline static constexpr ::std::size_t max_code_units = 16;
 
 		//////
 		/// @brief Default constructs a ztd::text::wide_literal.
-		///
-		//////
 		constexpr wide_literal_t() noexcept = default;
 		//////
 		/// @brief Copy constructs a ztd::text::wide_literal.
-		///
-		//////
 		constexpr wide_literal_t(const wide_literal_t&) noexcept = default;
 		//////
 		/// @brief Move constructs a ztd::text::wide_literal.
-		///
-		//////
 		constexpr wide_literal_t(wide_literal_t&&) noexcept = default;
 		//////
 		/// @brief Copy assigns into a ztd::text::wide_literal_t object.
-		///
-		//////
 		constexpr wide_literal_t& operator=(const wide_literal_t&) noexcept = default;
 		//////
 		/// @brief Move assigns into a ztd::text::wide_literal_t object.
-		///
-		//////
 		constexpr wide_literal_t& operator=(wide_literal_t&&) noexcept = default;
 
 		//////
@@ -282,8 +262,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the wide_literal_t type for ease of use.
-	///
-	//////
 	inline constexpr wide_literal_t wide_literal = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

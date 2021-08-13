@@ -54,8 +54,8 @@ namespace ztd { namespace text {
 	/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. The wide execution
 	/// encoding is typically associated with the locale, which is tied to the C standard library's setlocale function.
 	///
-	/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c ZTD_TEXT_USE_CUNEICODE or
-	/// @c ZTD_TEXT_ICONV are not defined, this object may use the C Standard Library to perform transcoding if certain
+	/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If `ZTD_TEXT_USE_CUNEICODE` or
+	/// `ZTD_TEXT_ICONV` are not defined, this object may use the C Standard Library to perform transcoding if certain
 	/// platform facilities are disabled or not available. If this is the case, the C Standard Library has fundamental
 	/// limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output. This object uses
 	/// UTF-16 directly on Windows when possible to avoid some of the platform-specific shenanigans. It will attempt to
@@ -75,8 +75,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the wide_execution_t type for ease of use.
-	///
-	//////
 	inline constexpr wide_execution_t wide_execution = {};
 
 	//////

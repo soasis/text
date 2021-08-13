@@ -80,7 +80,7 @@ namespace ztd { namespace text {
 	/////
 
 	//////
-	/// @brief Checks whether or not the specified @p _From encoding can be transcoded to the @p _To encoding without
+	/// @brief Checks whether or not the specified `_From` encoding can be transcoded to the `_To` encoding without
 	/// by form of bit copying.
 	///
 	/// @tparam _From The encoding that is going to decode the input code units into the intermediate code points.
@@ -92,8 +92,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_transcoding_compatible.
-	///
-	//////
 	template <typename _From, typename _To>
 	constexpr bool is_bitwise_transcoding_compatible_v = is_bitwise_transcoding_compatible<_From, _To>::value;
 
@@ -111,7 +109,7 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief Checks whether or not the specified @p _From encoding can be transcoded to the @p _To encoding without
+	/// @brief Checks whether or not the specified `_From` encoding can be transcoded to the `_To` encoding without
 	/// invoking a lossy conversion when using the intermediate code points.
 	///
 	/// @tparam _From The encoding that is going to decode the input code units into the intermediate code points.
@@ -130,8 +128,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_transcoding_compatible.
-	///
-	//////
 	template <typename _From, typename _To>
 	constexpr bool is_transcoding_compatible_v = is_transcoding_compatible<_To, _From>::value;
 

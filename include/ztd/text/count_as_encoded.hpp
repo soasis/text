@@ -72,10 +72,10 @@ namespace ztd { namespace text {
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
-	/// to the provided @p __state.
+	/// to the provided `__state`.
 	///
 	/// @remarks This method does not call ADL extension points. It attempts a combination of implementation techniques
-	/// to count code units, with a loop over the @c .decode call into an intermediate, unseen buffer being the most
+	/// to count code units, with a loop over the `.decode` call into an intermediate, unseen buffer being the most
 	/// basic guaranteed implementation attempt.
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
@@ -162,9 +162,9 @@ namespace ztd { namespace text {
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
-	/// to the provided @p __state.
+	/// to the provided `__state`.
 	///
-	/// @remarks This method will first check if an ADL Extension Point @c text_count_as_decoded is callable with
+	/// @remarks This method will first check if an ADL Extension Point `text_count_as_decoded` is callable with
 	/// the given arguments. If it is, then that method will be used to do the work after forwarding all four arguments
 	/// to that function call. Otherwise, it defers to ztd::text::basic_count_as_decoded.
 	//////
@@ -197,7 +197,7 @@ namespace ztd { namespace text {
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
-	/// @remarks Calls ztd::text::count_as_decoded(Input, Encoding, ErrorHandler, State) with an @c state that is
+	/// @remarks Calls ztd::text::count_as_decoded(Input, Encoding, ErrorHandler, State) with an `state` that is
 	/// created by ztd::text::make_decode_state(Encoding).
 	//////
 	template <typename _Input, typename _Encoding, typename _ErrorHandler>
@@ -220,7 +220,7 @@ namespace ztd { namespace text {
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
-	/// @remarks Calls ztd::text::count_as_decoded(Input, Encoding, ErrorHandler) with an @c error_handler that is
+	/// @remarks Calls ztd::text::count_as_decoded(Input, Encoding, ErrorHandler) with an `error_handler` that is
 	/// similar to ztd::text::default_handler_t.
 	//////
 	template <typename _Input, typename _Encoding>
@@ -237,7 +237,7 @@ namespace ztd { namespace text {
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
 	///
-	/// @remarks Calls ztd::text::count_as_decoded(Input, Encoding) with an @c encoding that is derived from
+	/// @remarks Calls ztd::text::count_as_decoded(Input, Encoding) with an `encoding` that is derived from
 	/// ztd::text::default_code_unit_encoding.
 	//////
 	template <typename _Input>
@@ -262,8 +262,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

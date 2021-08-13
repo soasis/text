@@ -31,7 +31,16 @@
 replacement_handler
 ===================
 
-The ``replacement_handler_t`` is the go-to error handling class. It is also the :doc:`ztd::text::default_handler </api/error handlers/default_handler>`.
+The ``replacement_handler_t`` is the go-to error handling class. It is also the :doc:`ztd::text::default_handler </api/error handlers/default_handler>` unless configured otherwise.
+
+Replacement works by using several different hooks on the provided encoding objects, or by falling back to some defaults if certain conditions are met. The user-controllable hooks are:
+
+- ``encoding.replacement_code_units(...)``, a function (which can be ``static`` or ``constexpr``) that returns a range of code units to insert directly into an output stream on a failed ``encode`` operation. It can also be called as a secondary backup if an ``decode`` operation fails, whereupon it will use the values in the range to attempt ``decode``\ ing them into the output if possible. It can be empty, to indicate that nothing is to be inserted.
+- ``encoding.replacement_code_points(...)``, a function (which can be ``static`` or ``constexpr``) that returns a range of code points to insert directly into an output stream on a failed ``decode`` operation. It can also be called as a secondary backup if an ``encode`` operation fails, whereupon it will use the values in the range to attempt ``encode``\ ing them into the output if possible. It can be empty, to indicate that nothing is to be inserted.
+- ``encoding.maybe_replacement_code_units(...)``, a function (which can be ``static`` or ``constexpr``) that returns a maybe-range. If the expression ``if (maybe_returned_range)`` evaluates to ``true``, it will get the range returned by the function by performing a dereference of ``decltype(auto) returned_range = *maybe_returned_range;``. If the conditional expression does not evaluate to ``true``, it will assume that nothing can be returned from the function. This is useful for runtime-only encodings or encodings that wrap other encodings and may not have a replacement function. The dereferenced returned range is used exactly as its non-\ ``maybe`` counterpart.
+- ``encoding.maybe_replacement_code_points(...)``, a function (which can be ``static`` or ``constexpr``) that returns a maybe-range. If the expression ``if (maybe_returned_range)`` evaluates to ``true``, it will get the range returned by the function by performing a dereference of ``decltype(auto) returned_range = *maybe_returned_range;``. If the conditional expression does not evaluate to ``true``, it will assume that nothing can be returned from the function. This is useful for runtime-only encodings or encodings that wrap other encodings and may not have a replacement function. The dereferenced returned range is used exactly as its non-\ ``maybe`` counterpart.
+
+Each replacement handler can take the current ``encode_state``/\ ``decode_state`` parameter for its desired operation, if it so chooses. This will allow replacements to hook into the statefulness of any given encoding operation. It fill first call ``replacement_code_units(state)`` first, if it's well-formed. Otherwise, it will call ``replacement_code_units()``. It will do this with each of the 4 replacement functions mentioned above.
 
 .. doxygenvariable:: ztd::text::replacement_handler
 

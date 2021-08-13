@@ -97,11 +97,11 @@ namespace ztd { namespace text {
 			//////
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<__base_t>>;
 			//////
-			/// @brief Whether or not this encoding's @c decode_one step is injective or not.
+			/// @brief Whether or not this encoding's `decode_one` step is injective or not.
 			//////
 			using is_decode_injective = ::std::false_type;
 			//////
-			/// @brief Whether or not this encoding's @c encode_one step is injective or not.
+			/// @brief Whether or not this encoding's `encode_one` step is injective or not.
 			//////
 			using is_encode_injective = ::std::false_type;
 
@@ -116,7 +116,7 @@ namespace ztd { namespace text {
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
 			///
-			/// @remarks This is bounded by the platform's @c MB_LEN_MAX macro, which is an integral constant
+			/// @remarks This is bounded by the platform's `MB_LEN_MAX` macro, which is an integral constant
 			/// expression representing the maximum value of output all C locales can produce from a single complete
 			/// operation.
 			//////
@@ -169,8 +169,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

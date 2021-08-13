@@ -51,44 +51,30 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the utf16_le_t type for ease of use.
-	///
-	//////
 	inline constexpr utf16_le_t utf16_le = {};
 
 	//////
 	/// @brief An instance of the utf16_be_t type for ease of use.
-	///
-	//////
 	inline constexpr utf16_be_t utf16_be = {};
 
 	//////
 	/// @brief An instance of the utf16_ne_t type for ease of use.
-	///
-	//////
 	inline constexpr utf16_ne_t utf16_ne = {};
 
 	//////
 	/// @brief An instance of the utf32_le_t type for ease of use.
-	///
-	//////
 	inline constexpr utf32_le_t utf32_le = {};
 
 	//////
 	/// @brief An instance of the utf32_ne_t type for ease of use.
-	///
-	//////
 	inline constexpr utf32_be_t utf32_be = {};
 
 	//////
 	/// @brief An instance of the utf32_ne_t type for ease of use.
-	///
-	//////
 	inline constexpr utf32_ne_t utf32_ne = {};
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

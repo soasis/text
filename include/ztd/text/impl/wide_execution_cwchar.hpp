@@ -110,7 +110,7 @@ namespace ztd { namespace text {
 		///
 		/// @remarks Because this encoding uses the C Standard Library's functions, it is both slower and
 		/// effectively dangerous because it requires a roundtrip through the encoding to get to
-		/// UTF-32, and vice-versa. This is only used when @c wchar_t and its locale-based runtime encoding
+		/// UTF-32, and vice-versa. This is only used when `wchar_t` and its locale-based runtime encoding
 		/// cannot be determined to be UTF-32, UTF-16, or some other statically-known encoding. These conversions
 		/// may also be lossy.
 		//////
@@ -177,22 +177,18 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
-			///
-			//////
 			inline static constexpr const ::std::size_t max_code_units = 8;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
-			///
-			//////
 			inline static constexpr const ::std::size_t max_code_points = 8;
 
 			//////
 			/// @brief Returns whether or not this encoding is a unicode encoding.
 			///
 			/// @remarks This function operates at runtime and queries the existing locale through a variety of
-			/// platform-specific means (such as @c nl_langinfo for POSIX, ACP probing on Windows, or fallin
+			/// platform-specific means (such as `nl_langinfo` for POSIX, ACP probing on Windows, or fallin
 			/// back to
-			/// @c std::setlocale name checking otherwise).
+			/// `std::setlocale` name checking otherwise).
 			//////
 			static bool contains_unicode_encoding() noexcept {
 				execution_t __execution {};
@@ -346,7 +342,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete
 			/// unit of information (alongside std::mbstate_t usage). Whether or not the state is used is based
-			/// on the implementation and what it chooses. If @c ZTD_TEXT_USE_CUNEICODE is defined, the
+			/// on the implementation and what it chooses. If `ZTD_TEXT_USE_CUNEICODE` is defined, the
 			/// ztd.cuneicode library may be used to fulfill this functionality.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
@@ -497,8 +493,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -46,9 +46,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @brief The encode sentinel to use as the @c end value for a ztd::text::encode_iterator.
-	///
-	//////
+	/// @brief The encode sentinel to use as the `end` value for a ztd::text::encode_iterator.
 	using encode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
 	//////
@@ -79,53 +77,35 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The underlying range type.
-		///
-		//////
 		using range_type = typename __iterator_base_it::range_type;
 		//////
 		/// @brief The base iterator type.
-		///
-		//////
 		using iterator = typename __iterator_base_it::iterator;
 		//////
 		/// @brief The encoding type used for transformations.
-		///
-		//////
 		using encoding_type = typename __iterator_base_it::encoding_type;
 		//////
 		/// @brief The error handler when an encode operation fails.
-		///
-		//////
 		using error_handler_type = typename __iterator_base_it::error_handler_type;
 		//////
 		/// @brief The state type used for encode operations.
-		///
-		//////
 		using state_type = typename __iterator_base_it::state_type;
 		//////
 		/// @brief The strength of the iterator category, as defined in relation to the base.
-		///
-		//////
 		using iterator_category = typename __iterator_base_it::iterator_category;
 		//////
 		/// @brief The strength of the iterator concept, as defined in relation to the base.
-		///
-		//////
 		using iterator_concept = typename __iterator_base_it::iterator_concept;
 		//////
 		/// @brief The object type that gets output on every dereference.
-		///
-		//////
 		using value_type = typename __iterator_base_it::value_type;
 		//////
 		/// @brief A pointer type to the value_type.
-		///
-		//////
 		using pointer = typename __iterator_base_it::pointer;
 		//////
 		/// @brief The value returned from derefencing the iterator.
 		///
-		/// @remarks This is a proxy iterator, so the @c reference is a non-reference @c value_type.
+		/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
 		//////
 		using reference = typename __iterator_base_it::value_type;
 		//////
@@ -137,23 +117,17 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Default constructor. Defaulted.
-		///
-		//////
 		constexpr encode_iterator() = default;
 
 		//////
 		/// @brief Copy constructor. Defaulted.
-		///
-		//////
 		constexpr encode_iterator(const encode_iterator&) = default;
 		//////
 		/// @brief Move constructor. Defaulted.
-		///
-		//////
 		constexpr encode_iterator(encode_iterator&&) = default;
 
 		//////
-		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given @p __range.
+		/// @brief Constructs a ztd::text::decode_iterator from the explicitly given `__range`.
 		///
 		/// @param[in] __range The range value that will be read from.
 		///
@@ -167,7 +141,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given @p __range, and @p __encoding.
+		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given `__range`, and `__encoding`.
 		///
 		/// @param[in] __range The range value that will be read from.
 		/// @param[in] __encoding The encoding object to use.
@@ -180,7 +154,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given @p __range, and @p
+		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given `__range`, and @p
 		/// __error_handler.
 		///
 		/// @param[in] __range The range value that will be read from.
@@ -194,8 +168,8 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given @p __range, @p __encoding, and
-		/// @p __error_handler.
+		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given `__range`, `__encoding`, and
+		/// `__error_handler`.
 		///
 		/// @param[in] __range The range value that will be read from.
 		/// @param[in] __encoding The encoding object to use.
@@ -210,8 +184,8 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given @p __range, @p __encoding, @p
-		/// __error_handler and @p __state.
+		/// @brief Constructs a ztd::text::encode_iterator from the explicitly given `__range`, `__encoding`, @p
+		/// __error_handler and `__state`.
 		///
 		/// @param[in] __range The range value that will be read from.
 		/// @param[in] __encoding The encoding object to use.
@@ -229,13 +203,9 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Copy assignment operator. Defaulted.
-		///
-		//////
 		constexpr encode_iterator& operator=(const encode_iterator&) = default;
 		//////
 		/// @brief Move assignment operator. Defaulted.
-		///
-		//////
 		constexpr encode_iterator& operator=(encode_iterator&&) = default;
 	};
 

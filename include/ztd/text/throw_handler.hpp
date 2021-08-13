@@ -59,8 +59,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief Throws a ztd::text::encoding_error as an exception on an encode failure.
-		///
-		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _InputProgress, typename _OutputProgress>
 		constexpr encode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
@@ -71,8 +69,6 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Throws a ztd::text::encoding_error code as an exception on a decode failure.
-		///
-		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _InputProgress, typename _OutputProgress>
 		constexpr decode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
@@ -84,8 +80,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of throw_handler_t for ease of use.
-	///
-	//////
 	inline constexpr throw_handler_t throw_handler = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

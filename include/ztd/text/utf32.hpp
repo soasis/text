@@ -75,8 +75,6 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief Whether or not this encoding that can encode all of Unicode.
-			///
-			//////
 			using is_unicode_encoding = ::std::true_type;
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is an empty struct
@@ -113,8 +111,6 @@ namespace ztd { namespace text {
 			inline static constexpr ::std::size_t max_code_points = 1;
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
-			///
-			//////
 			inline static constexpr ::std::size_t max_code_units = 1;
 
 			//////
@@ -309,20 +305,14 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A UTF-32 Encoding that traffics in char32_t. See ztd::text::basic_utf32 for more details.
-	///
-	//////
 	using utf32_t = basic_utf32<char32_t>;
 
 	//////
 	/// @brief An instance of the UTF-32 encoding for ease of use.
-	///
-	//////
 	inline constexpr utf32_t utf32 = {};
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

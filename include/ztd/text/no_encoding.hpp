@@ -248,21 +248,15 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief A do-nothing encoding for @c char types of input.
-	///
-	//////
+	/// @brief A do-nothing encoding for `char` types of input.
 	using no_encoding = basic_no_encoding<char, unicode_code_point>;
 
 	//////
 	/// @brief A do-nothing encoding for ztd::text::unicode_code_point types of input.
-	///
-	//////
 	using no_codepoint_encoding = basic_no_encoding<unicode_code_point, unicode_code_point>;
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

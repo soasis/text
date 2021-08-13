@@ -71,13 +71,9 @@ namespace ztd { namespace text {
 		_Input input;
 		//////
 		/// @brief The number of code units or code points counted successfully, so far.
-		///
-		//////
 		::std::size_t count;
 		//////
 		/// @brief The kind of error that occured, if any.
-		///
-		//////
 		encoding_error error_code;
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
@@ -125,7 +121,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not any errors were handled.
 		///
-		/// @returns Simply checks whether @c handled_errors is greater than 0.
+		/// @returns Simply checks whether `handled_errors` is greater than 0.
 		//////
 		constexpr bool errors_were_handled() const noexcept {
 			return this->handled_errors > 0;
@@ -144,8 +140,6 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting.
-		///
-		//////
 		::ztd::reference_wrapper<_State> state;
 
 		//////
@@ -256,8 +250,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	namespace __txt_detail {
 		template <typename _Input, typename _State>

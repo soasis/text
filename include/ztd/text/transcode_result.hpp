@@ -77,8 +77,6 @@ namespace ztd { namespace text {
 		_Output output;
 		//////
 		/// @brief The kind of error that occured, if any.
-		///
-		//////
 		encoding_error error_code;
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
@@ -130,7 +128,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not any errors were handled.
 		///
-		/// @returns Simply checks whether @c handled_errors is greater than 0.
+		/// @returns Simply checks whether `handled_errors` is greater than 0.
 		//////
 		constexpr bool errors_were_handled() const noexcept {
 			return this->handled_errors > 0;
@@ -139,8 +137,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The result of transcoding operations (such as ztd_text_transcode).
-	///
-	//////
 	template <typename _Input, typename _Output, typename _FromState, typename _ToState>
 	class transcode_result : public stateless_transcode_result<_Input, _Output> {
 	private:

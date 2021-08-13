@@ -79,7 +79,7 @@ namespace ztd { namespace ranges {
 		//////
 		using iterator_category = ::std::output_iterator_tag;
 		//////
-		/// @brief Standard @c std::ptrdiff_t @c difference_type definition.
+		/// @brief Standard `std::ptrdiff_t` `difference_type` definition.
 		//////
 		using difference_type = ::std::ptrdiff_t;
 		//////

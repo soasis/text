@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief A view over a range of code points, presenting the code points as code units. Uses the @p _Encoding
+	/// @brief A view over a range of code points, presenting the code points as code units. Uses the `_Encoding`
 	/// specified to do so.
 	///
 	/// @tparam _Encoding The encoding to read the underlying range of code points as.
@@ -79,33 +79,21 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The iterator type for this view.
-		///
-		//////
 		using iterator = decode_iterator<_Encoding, _StoredRange, _ErrorHandler, _State>;
 		//////
 		/// @brief The sentinel type for this view.
-		///
-		//////
 		using sentinel = decode_sentinel_t;
 		//////
 		/// @brief The underlying range type.
-		///
-		//////
 		using range_type = _Range;
 		//////
 		/// @brief The encoding type used for transformations.
-		///
-		//////
 		using encoding_type = _Encoding;
 		//////
 		/// @brief The error handler when a decode operation fails.
-		///
-		//////
 		using error_handler_type = _ErrorHandler;
 		//////
 		/// @brief The state type used for decode operations.
-		///
-		//////
 		using state_type = decode_state_t<encoding_type>;
 
 		//////
@@ -172,37 +160,25 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Default constructor. Defaulted.
-		///
-		//////
 		constexpr decode_view() = default;
 
 		//////
 		/// @brief Copy constructor. Defaulted.
-		///
-		//////
 		constexpr decode_view(const decode_view&) = default;
 
 		//////
 		/// @brief Move constructor. Defaulted.
-		///
-		//////
 		constexpr decode_view(decode_view&&) = default;
 
 		//////
 		/// @brief Copy assignment operator. Defaulted.
-		///
-		//////
 		constexpr decode_view& operator=(const decode_view&) = default;
 		//////
 		/// @brief Move assignment operator. Defaulted.
-		///
-		//////
 		constexpr decode_view& operator=(decode_view&&) = default;
 
 		//////
 		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
-		///
-		//////
 		constexpr iterator begin() & noexcept {
 			if constexpr (::std::is_copy_constructible_v<iterator>) {
 				return this->_M_it;
@@ -214,24 +190,18 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
-		///
-		//////
 		constexpr iterator begin() const& noexcept {
 			return this->_M_it;
 		}
 
 		//////
 		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
-		///
-		//////
 		constexpr iterator begin() && noexcept {
 			return ::std::move(this->_M_it);
 		}
 
 		//////
 		/// @brief The end of the range. Uses a sentinel type and not a special iterator.
-		///
-		//////
 		constexpr sentinel end() const noexcept {
 			return sentinel();
 		}
@@ -256,8 +226,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

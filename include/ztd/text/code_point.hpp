@@ -50,23 +50,18 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Retrieves the code point type for the given type.
-	///
-	//////
 	template <typename _Type>
 	class code_point {
 	public:
 		//////
 		/// @brief The code point type for the given encoding type. If it does not exist, @c
 		/// ztd::text::unicode_code_point is assumed.
-		///
-		//////
+
 		using type = typename remove_cvref_t<_Type>::code_point;
 	};
 
 	//////
 	/// @brief A typename alias for ztd::text::code_point.
-	///
-	//////
 	template <typename _Type>
 	using code_point_t = typename code_point<_Type>::type;
 

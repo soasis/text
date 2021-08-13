@@ -66,8 +66,8 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief Validates the code points of the @p __input according to the @p __encoding with the given states @p
-	/// __encode_state and @p __decode_state.
+	/// @brief Validates the code points of the `__input` according to the `__encoding` with the given states @p
+	/// __encode_state and `__decode_state`.
 	///
 	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
@@ -196,15 +196,15 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code points of the @p __input according to the @p __encoding with the given states @p
-	/// __encode_state and @p __decode_state.
+	/// @brief Validates the code points of the `__input` according to the `__encoding` with the given states @p
+	/// __encode_state and `__decode_state`.
 	///
 	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
 	/// @param[in] __decode_state The state to use for the decoding portion of the validation check, if needed.
 	///
-	/// @remarks This functions checks to see if extension points for @c text_validate_encodable_as is available taking
+	/// @remarks This functions checks to see if extension points for `text_validate_encodable_as` is available taking
 	/// the available 4 parameters. If so, it calls this. Otherwise, it defers to doing a typical loop over the code
 	/// points to verify it can be encoded into code units, and then decoded into code points, with no errors.
 	//////
@@ -242,14 +242,14 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code points of the @p __input according to the @p __encoding with the given states @p
+	/// @brief Validates the code points of the `__input` according to the `__encoding` with the given states @p
 	/// "__encode_state".
 	///
 	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __encode_state The state for encoding to use.
 	///
-	/// @remarks This functions checks to see if extension points for @c text_validate_encodable_as is available taking
+	/// @remarks This functions checks to see if extension points for `text_validate_encodable_as` is available taking
 	/// the available 3 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_encodable_as.
 	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState>
@@ -281,7 +281,7 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code points of the @p __input according to the @p "__encoding".
+	/// @brief Validates the code points of the `__input` according to the @p "__encoding".
 	///
 	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
@@ -302,7 +302,7 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
 	///
-	/// @remarks This passes the default encoding as inferred from the discernible @c value_type of the input range
+	/// @remarks This passes the default encoding as inferred from the discernible `value_type` of the input range
 	/// input into the ztd::text::default_code_point_encoding.
 	//////
 	template <typename _Input>
@@ -327,8 +327,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

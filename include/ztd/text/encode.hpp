@@ -70,7 +70,7 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units into the
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
 	/// @p
 	/// __output view.
 	///
@@ -82,12 +82,12 @@ namespace ztd { namespace text {
 	/// the intermediate code points.
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's encode step.
+	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's encode step.
 	///
-	/// @result A ztd::text::encode_result object that contains references to @p __state.
+	/// @result A ztd::text::encode_result object that contains references to `__state`.
 	///
 	/// @remarks This function does not attempt to call any extension points for encoding. It simply uses the
-	/// encoding and attempts to encode by repeatedly calling the encoding's required @c encode_one function.
+	/// encoding and attempts to encode by repeatedly calling the encoding's required `encode_one` function.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto basic_encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
@@ -128,7 +128,7 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units into the
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
 	/// @p
 	/// __output view.
 	///
@@ -140,14 +140,14 @@ namespace ztd { namespace text {
 	/// the intermediate code points.
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's encode step.
+	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's encode step.
 	///
-	/// @result A ztd::text::encode_result object that contains references to @p __state.
+	/// @result A ztd::text::encode_result object that contains references to `__state`.
 	///
-	/// @remarks This function detects whether or not the ADL extension point @c text_encode can be called with
+	/// @remarks This function detects whether or not the ADL extension point `text_encode` can be called with
 	/// the provided parameters. If so, it will use that ADL extension point over the default implementation.
 	/// Otherwise, it will loop over the two encodings and attempt to encode by repeatedly calling the encoding's
-	/// required @c encode_one function.
+	/// required `encode_one` function.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
@@ -302,7 +302,7 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units into the
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
 	/// @p
 	/// __output view.
 	///
@@ -315,9 +315,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
-	/// @result A ztd::text::stateless_encode_result object that contains references to @p __state.
+	/// @result A ztd::text::stateless_encode_result object that contains references to `__state`.
 	///
-	/// @remarks Creates a default @c state using ztd::text::make_encode_state.
+	/// @remarks Creates a default `state` using ztd::text::make_encode_state.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler>
 	constexpr auto encode_into(
@@ -332,7 +332,7 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units into the
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
 	/// @p
 	/// __output view.
 	///
@@ -343,9 +343,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from
 	/// the intermediate code points.
 	///
-	/// @result A ztd::text::stateless_encode_result object that contains references to @p __state.
+	/// @result A ztd::text::stateless_encode_result object that contains references to `__state`.
 	///
-	/// @remarks Creates a default @c error_handler that is similar to ztd::text::default_handler_t, but marked as
+	/// @remarks Creates a default `error_handler` that is similar to ztd::text::default_handler_t, but marked as
 	/// careless.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output>
@@ -356,7 +356,7 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units into the
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
 	/// @p
 	/// __output view.
 	///
@@ -365,9 +365,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from
 	/// the intermediate code points.
 	///
-	/// @result A ztd::text::stateless_encode_result object that contains references to @p __state.
+	/// @result A ztd::text::stateless_encode_result object that contains references to `__state`.
 	///
-	/// @remarks Creates a default @c encoding by figuring out the @c value_type of the @p __input, then passing
+	/// @remarks Creates a default `encoding` by figuring out the `value_type` of the `__input`, then passing
 	/// that type into ztd::text::default_code_point_encoding_t. That encoding is that used to encode the input
 	/// code points, by default.
 	//////
@@ -392,8 +392,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
@@ -403,14 +403,14 @@ namespace ztd { namespace text {
 	/// output code units.
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's encode step.
+	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's encode step.
 	///
-	/// @result A ztd::text::encode_result object that contains references to @p __state and an output of type
-	/// @p _OutputContainer.
+	/// @result A ztd::text::encode_result object that contains references to `__state` and an output of type
+	/// `_OutputContainer`.
 	///
-	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
-	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to. The result is
-	/// then returned, with the @c .output value put into the container.
+	/// @remarks This function detects creates a container of type `_OutputContainer` and uses a typical @c
+	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to. The result is
+	/// then returned, with the `.output` value put into the container.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto encode_to(
@@ -446,8 +446,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
@@ -458,9 +458,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
-	/// @result A ztd::text::stateless_encode_result object whose output is of type @p _OutputContainer.
+	/// @result A ztd::text::stateless_encode_result object whose output is of type `_OutputContainer`.
 	///
-	/// @remarks This function creates a @c state using ztd::text::make_encode_state.
+	/// @remarks This function creates a `state` using ztd::text::make_encode_state.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
@@ -474,8 +474,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
@@ -484,9 +484,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __encoding The encoding that will be used to encode the input's code points into
 	/// output code units.
 	///
-	/// @result A ztd::text::stateless_encode_result object whose output is of type @p _OutputContainer.
+	/// @result A ztd::text::stateless_encode_result object whose output is of type `_OutputContainer`.
 	///
-	/// @remarks This function creates a @c handler using ztd::text::default_handler_t, but marks it as careless.
+	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding) {
@@ -496,17 +496,17 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.
 	///
-	/// @result A ztd::text::stateless_encode_result object whose output is of type @p _OutputContainer.
+	/// @result A ztd::text::stateless_encode_result object whose output is of type `_OutputContainer`.
 	///
-	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
+	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _OutputContainer, typename _Input>
@@ -530,8 +530,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
@@ -541,12 +541,12 @@ namespace ztd { namespace text {
 	/// output code units.
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
-	/// @param[in,out] __state A reference to the associated state for the @p __encoding 's encode step.
+	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's encode step.
 	///
-	/// @result An object of type @p _OutputContainer .
+	/// @result An object of type `_OutputContainer` .
 	///
-	/// @remarks This function detects creates a container of type @p _OutputContainer and uses a typical @c
-	/// std::back_inserter or @c std::push_back_inserter to fill in elements as it is written to.
+	/// @remarks This function detects creates a container of type `_OutputContainer` and uses a typical @c
+	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
 		typename _State>
@@ -572,8 +572,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
@@ -584,9 +584,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
-	/// @result An object of type @p _OutputContainer .
+	/// @result An object of type `_OutputContainer` .
 	///
-	/// @remarks This function creates a @c state using ztd::text::make_encode_state.
+	/// @remarks This function creates a `state` using ztd::text::make_encode_state.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
@@ -599,8 +599,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
@@ -609,9 +609,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __encoding The encoding that will be used to encode the input's code points into
 	/// output code units.
 	///
-	/// @result An object of type @p _OutputContainer .
+	/// @result An object of type `_OutputContainer` .
 	///
-	/// @remarks This function creates a @c handler using ztd::text::default_handler_t, but marks it as careless.
+	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding) {
@@ -621,17 +621,17 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code points of the given @p __input view through the encoding to code units in the
-	/// specified @p _OutputContainer type.
+	/// @brief Converts the code points of the given `__input` view through the encoding to code units in the
+	/// specified `_OutputContainer` type.
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.
 	///
-	/// @result An object of type @p _OutputContainer .
+	/// @result An object of type `_OutputContainer` .
 	///
-	/// @remarks This function creates an @c encoding by using the @c value_type of the @p __input which is then
+	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
 	template <typename _OutputContainer = void, typename _Input>
@@ -656,8 +656,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

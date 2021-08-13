@@ -318,12 +318,12 @@ namespace ztd { namespace text {
 	/// sequence.
 	///
 	/// @remarks This class hooks into the encodings passed as the first parameter to the error handling functions to
-	/// see if they define either @c replacement_code_points() or @c replacement_code_units() function. If so, they
+	/// see if they define either `replacement_code_points()` or `replacement_code_units()` function. If so, they
 	/// will call them and use the returned contiguous range to isnert code points or code units into the function. If
-	/// neither of these exist, then it checks for a definition of a @c maybe_replacement_code_points() or a @c
-	/// maybe_replacement_code_units() function. If either is present, they are expected to return a @c std::optional
-	/// of a contiguous range. If it is engaged (the @c std::optional is filled) it will be used. Otherwise, if it is
-	/// not engaged, then it will explicitly fall back to attempt to insert the default replacement character @c U+FFFD
+	/// neither of these exist, then it checks for a definition of a `maybe_replacement_code_points()` or a @c
+	/// maybe_replacement_code_units() function. If either is present, they are expected to return a `std::optional`
+	/// of a contiguous range. If it is engaged (the `std::optional` is filled) it will be used. Otherwise, if it is
+	/// not engaged, then it will explicitly fall back to attempt to insert the default replacement character `U`+FFFD
 	/// (<tt>U'�'</tt>) or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will
 	/// be inserted at all.
 	//////
@@ -525,14 +525,13 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A convenience variable for passing the replacement_handler_t handler to functions.
-	//////
 	inline constexpr replacement_handler_t replacement_handler = {};
 
 	//////
 	/// @brief This handler detects if the error code is an incomplete seqence, and sets the error code to being
 	/// okay before returning.
 	///
-	/// @tparam _Encoding The encoding type which dictates the @c code_unit and @c code_point buffers to store in
+	/// @tparam _Encoding The encoding type which dictates the `code_unit` and `code_point` buffers to store in
 	/// the handler to catch unused input from the last parameter of error handler invocations by the encoding.
 	/// @tparam _ErrorHandler An error handler to invoke if the encoding error code is @b NOT an incomplete
 	/// sequence.
@@ -550,14 +549,12 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The underlying error handler type.
-		///
-		//////
+
 		using error_handler = _ErrorHandler;
 
 		//////
 		/// @brief Constructs a ztd::text::incomplete_handler with a default-constructed internal error handler.
-		///
-		//////
+
 		constexpr incomplete_handler() noexcept(::std::is_nothrow_default_constructible_v<__error_handler_base_t>)
 		: __error_handler_base_t(), _M_code_points_size(), _M_code_units_size() {
 		}
@@ -594,31 +591,28 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Returns the base error handler that is called when a non-incomplete error occurs.
-		///
-		//////
+
 		constexpr _ErrorHandler& base() & noexcept {
 			return this->__error_handler_base_t::get_value();
 		}
 
 		//////
 		/// @brief Returns the base error handler that is called when a non-incomplete error occurs.
-		///
-		//////
+
 		constexpr const _ErrorHandler& base() const& noexcept {
 			return this->__error_handler_base_t::get_value();
 		}
 
 		//////
 		/// @brief Returns the base error handler that is called when a non-incomplete error occurs.
-		///
-		//////
+
 		constexpr _ErrorHandler&& base() && noexcept {
 			return this->__error_handler_base_t::get_value();
 		}
 
 		//////
 		/// @brief Checks if the __result.error_code is ztd::text::encoding_error::incomplete_sequence, it saves the
-		/// values from @p __progress and returns. Otherwise, invokes the provided error handler this object was
+		/// values from `__progress` and returns. Otherwise, invokes the provided error handler this object was
 		/// constructed with.
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
@@ -659,7 +653,7 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Checks if the __result.error_code is ztd::text::encoding_error::incomplete_sequence, it saves the
-		/// values from @p __progress and returns. Otherwise, invokes the provided error handler this object was
+		/// values from `__progress` and returns. Otherwise, invokes the provided error handler this object was
 		/// constructed with.
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
@@ -700,7 +694,7 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Checks if the __result.error_code is ztd::text::encoding_error::incomplete_sequence, it saves the
-		/// values from @p __progress and returns. Otherwise, invokes the provided error handler this object was
+		/// values from `__progress` and returns. Otherwise, invokes the provided error handler this object was
 		/// constructed with.
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
@@ -741,16 +735,14 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Returns the code units from the last incomplete decode operations.
-		///
-		//////
+
 		::ztd::span<_CodeUnit> code_units() const noexcept {
 			return ::ztd::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 		//////
 		/// @brief Returns the code points from the last incomplete encode operations.
-		///
-		//////
+
 		::ztd::span<_CodePoint> code_points() const noexcept {
 			return ::ztd::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
@@ -779,8 +771,7 @@ namespace ztd { namespace text {
 
 	public:
 		//////
-		/// @brief The underlying error handler type.
-		//////
+		///@brief The underlying error handler type.
 		using error_handler = __error_handler_base_t;
 
 		using __error_handler_base_t::__error_handler_base_t;
@@ -790,14 +781,12 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of the default_handler_t type for ease of use.
-	///
-	//////
+
 	inline constexpr default_handler_t default_handler = {};
 
 	//////
 	/// @brief An incomplete handler that uses the default handler underneath.
-	///
-	//////
+
 	using default_incomplete_handler_t = incomplete_handler<default_handler_t>;
 
 	namespace __txt_detail {

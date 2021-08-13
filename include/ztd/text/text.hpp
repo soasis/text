@@ -48,38 +48,24 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A container for storing text in the locale, runtime-based encoding.
-	///
-	//////
 	using text = basic_text<execution_t>;
 	//////
 	/// @brief A container for storing text in the locale, runtime-based wide encoding.
-	///
-	//////
 	using wtext = basic_text<wide_execution_t>;
 	//////
 	/// @brief A container for storing text in the string literal_t encoding.
-	///
-	//////
 	using ltext = basic_text<literal_t>;
 	//////
 	/// @brief A container for storing text in the wide string literal_t encoding.
-	///
-	//////
 	using wltext = basic_text<wide_literal_t>;
 	//////
 	/// @brief A container for storing text in the UTF-8 encoding.
-	///
-	//////
 	using u8text = basic_text<utf8_t>;
 	//////
 	/// @brief A container for storing text in the UTF-16 encoding.
-	///
-	//////
 	using u16text = basic_text<utf16_t>;
 	//////
 	/// @brief A container for storing text in the UTF-32 encoding.
-	///
-	//////
 	using u32text = basic_text<utf32_t>;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

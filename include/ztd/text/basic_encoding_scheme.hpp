@@ -179,8 +179,6 @@ namespace ztd { namespace text {
 	public:
 		///////
 		/// @brief The encoding type that this scheme wraps.
-		///
-		///////
 		using encoding_type = _Encoding;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
@@ -198,29 +196,29 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The state that can be used between calls to the decode function.
 		///
-		/// @remarks Even if the underlying encoding only has a single @c state type, we need to separate the two out
+		/// @remarks Even if the underlying encoding only has a single `state` type, we need to separate the two out
 		/// in order to generically handle all encodings. Therefore, the encoding_scheme will always have both
-		/// @c encode_state and @c decode_state.
+		/// `encode_state` and `decode_state.`
 		//////
 		using decode_state = decode_state_t<_UBaseEncoding>;
 		//////
 		/// @brief The state that can be used between calls to the encode function.
 		///
-		/// @remarks Even if the underlying encoding only has a single @c state type, we need to separate the two out
+		/// @remarks Even if the underlying encoding only has a single `state` type, we need to separate the two out
 		/// in order to generically handle all encodings. Therefore, the encoding_scheme will always have both
-		/// @c encode_state and @c decode_state.
+		/// `encode_state` and `decode_state.`
 		//////
 		using encode_state = encode_state_t<_UBaseEncoding>;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code point values.
 		///
-		/// @remarks Defers to what the underlying @c encoding_type does.
+		/// @remarks Defers to what the underlying `encoding_type` does.
 		//////
 		using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<_UBaseEncoding>>;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
-		/// @remarks Defers to what the underlying @c encoding_type does.
+		/// @remarks Defers to what the underlying `encoding_type` does.
 		//////
 		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<_UBaseEncoding>>;
 		//////
@@ -230,15 +228,11 @@ namespace ztd { namespace text {
 		inline static constexpr const ::std::size_t max_code_points = max_code_points_v<_UBaseEncoding>;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
-		///
-		//////
 		inline static constexpr const ::std::size_t max_code_units
 			= (max_code_units_v<_UBaseEncoding> * sizeof(_BaseCodeUnit)) / (sizeof(_Byte));
 
 		//////
 		/// @brief Constructs a ztd::text::encoding_scheme with the given arguments.
-		///
-		//////
 		using __base_t::__base_t;
 
 		//////
@@ -351,8 +345,6 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief Whether or not this encoding is some form of Unicode encoding.
-		///
-		//////
 		constexpr bool contains_unicode_encoding() const noexcept {
 			return ::ztd::text::contains_unicode_encoding(this->base());
 		}
@@ -441,7 +433,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or @c uchar.
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or `uchar.`
 	//////
 	template <typename _Byte>
 	using basic_utf16_le = encoding_scheme<utf16_t, endian::little, _Byte>;
@@ -449,7 +441,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt>.
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt>.
 	//////
 	template <typename _Byte>
 	using basic_utf16_be = encoding_scheme<utf16_t, endian::big, _Byte>;
@@ -457,33 +449,27 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt>.
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt>.
 	//////
 	template <typename _Byte>
 	using basic_utf16_ne = encoding_scheme<utf16_t, endian::native, _Byte>;
 
 	//////
 	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
-	///
-	//////
 	using utf16_le_t = basic_utf16_le<::std::byte>;
 
 	//////
 	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	///
-	//////
 	using utf16_be_t = basic_utf16_be<::std::byte>;
 
 	//////
 	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
-	///
-	//////
 	using utf16_ne_t = basic_utf16_ne<::std::byte>;
 
 	//////
 	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt> .
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
 	//////
 	template <typename _Byte>
 	using basic_utf32_le = encoding_scheme<utf32_t, endian::little, _Byte>;
@@ -491,7 +477,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt> .
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
 	//////
 	template <typename _Byte>
 	using basic_utf32_be = encoding_scheme<utf32_t, endian::big, _Byte>;
@@ -499,33 +485,25 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-32 encoding, in Native Endian format, with inputs as a sequence of bytes.
 	///
-	/// @tparam _Byte The byte type to use. Typically, this is @c std::byte or <tt>unsigned char</tt> .
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
 	//////
 	template <typename _Byte>
 	using basic_utf32_ne = encoding_scheme<utf32_t, endian::native, _Byte>;
 
 	//////
 	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
-	///
-	//////
 	using utf32_le_t = basic_utf32_le<::std::byte>;
 
 	//////
 	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	///
-	//////
 	using utf32_be_t = basic_utf32_be<::std::byte>;
 
 	//////
 	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	///
-	//////
 	using utf32_ne_t = basic_utf32_ne<::std::byte>;
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

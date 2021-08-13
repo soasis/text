@@ -65,8 +65,8 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief Validates the code units of the @p __input according to the @p __encoding with the given states @p
-	/// __decode_state and @p __encode_state to see if it can be turned into code points.
+	/// @brief Validates the code units of the `__input` according to the `__encoding` with the given states @p
+	/// __decode_state and `__encode_state` to see if it can be turned into code points.
 	///
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
@@ -181,15 +181,15 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code units of the @p __input according to the @p __encoding with the given states @p
-	/// __decode_state and @p __encode_state to see if it can be turned into code points.
+	/// @brief Validates the code units of the `__input` according to the `__encoding` with the given states @p
+	/// __decode_state and `__encode_state` to see if it can be turned into code points.
 	///
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __decode_state The state to use for the decoding portion of the validation check.
 	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
 	///
-	/// @remarks This functions checks to see if extension points for @c text_validate_decodable_as is available taking
+	/// @remarks This functions checks to see if extension points for `text_validate_decodable_as` is available taking
 	/// the available 4 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_decodable_as.
 	//////
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
@@ -226,14 +226,14 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code units of the @p __input according to the @p __encoding with the given state @p
+	/// @brief Validates the code units of the `__input` according to the `__encoding` with the given state @p
 	/// __decode_state to see if it can be turned into code points.
 	///
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __decode_state The state to use for the decoding portion of the validation check.
 	///
-	/// @remarks This functions checks to see if extension points for @c text_validate_decodable_as is available taking
+	/// @remarks This functions checks to see if extension points for `text_validate_decodable_as` is available taking
 	/// the available 3 parameters. If so, it calls this. Otherwise, it creates an encoding state through
 	/// ztd::text::make_encode_state before calling ztd::text::validate_decodable_as(__input, __encoding,
 	/// __decode_state,
@@ -268,13 +268,13 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code units of the @p __input according to the @p __encoding to see if they can be turned
+	/// @brief Validates the code units of the `__input` according to the `__encoding` to see if they can be turned
 	/// into code points.
 	///
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
 	///
-	/// @remarks This functions creates an encoding @c state through ztd::text::make_decode_state before calling
+	/// @remarks This functions creates an encoding `state` through ztd::text::make_decode_state before calling
 	/// the next overload of ztd::text::validate_decodable_as.
 	//////
 	template <typename _Input, typename _Encoding>
@@ -289,14 +289,14 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Validates the code units of the @p __input to see if it can be turned into code points.
+	/// @brief Validates the code units of the `__input` to see if it can be turned into code points.
 	///
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	///
 	/// @returns A ztd::text::stateless_validate_result detailing whether or not the input code points can be turned
 	/// into code units of the corresponding encoding.
 	///
-	/// @remarks This functions creates an @c encoding by passing the @c value_type of the @c __input range through
+	/// @remarks This functions creates an `encoding` by passing the `value_type` of the `__input` range through
 	/// ztd::text::default_code_unit_encoding.
 	//////
 	template <typename _Input>
@@ -321,8 +321,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	///
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -46,7 +46,7 @@ namespace ztd { namespace text {
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
 	///
-	/// @brief Type-trait like properties and helpers, with @c _t ( @c \::type ) and @c _v ( @c \::value ).
+	/// @brief Type-trait like properties and helpers, with `_t` ( @c \::type ) and `_v` ( @c \::value ).
 	///
 	/// @remarks These should be the go-to way to reference necessary type and constant static data out of encoding
 	/// objects when not interfacing with the well-defined, guaranteed members. For example, directly accessing the @c
@@ -56,22 +56,16 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Retrieves the code unit type for the given type.
-	///
-	//////
 	template <typename _Type>
 	class code_unit {
 	public:
 		//////
 		/// @brief The code unit type for the encoding type.
-		///
-		//////
 		using type = typename remove_cvref_t<_Type>::code_unit;
 	};
 
 	//////
 	/// @brief A typename alias for ztd::text::code_unit.
-	///
-	//////
 	template <typename _Type>
 	using code_unit_t = typename code_unit<_Type>::type;
 
