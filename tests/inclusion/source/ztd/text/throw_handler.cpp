@@ -28,32 +28,4 @@
 //
 // ============================================================================>
 
-#pragma once
-
-#ifndef ZTD_TEXT_TESTS_RESULT_COMPARE_HPP
-#define ZTD_TEXT_TESTS_RESULT_COMPARE_HPP
-
-#include <catch2/catch.hpp>
-
-namespace ztd { namespace text { namespace tests {
-
-	template <typename Result, typename Expected>
-	void compare_each(Result& result, Expected& expected) {
-		std::size_t result_size   = result.size();
-		std::size_t expected_size = expected.size();
-		for (std::size_t index = 0; index < expected_size; ++index) {
-			REQUIRE(result_size > index);
-			const auto& result_c   = result[index];
-			const auto& expected_c = expected[index];
-			if (result_c != expected_c) {
-				REQUIRE(result_c == expected_c);
-			}
-			REQUIRE(result_c == expected_c);
-		}
-		REQUIRE(result_size == expected_size);
-		REQUIRE(result == expected);
-	}
-
-}}} // namespace ztd::text::tests
-
-#endif // ZTD_TEXT_TESTS_RESULT_COMPARE_HPP
+#include <ztd/text/throw_handler.hpp>

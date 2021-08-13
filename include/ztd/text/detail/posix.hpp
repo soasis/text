@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/encoding_name.hpp>
+#include <ztd/idk/detail/encoding_name.hpp>
 
 #if ZTD_IS_ON(ZTD_PLATFORM_UNIX_I_)
 
@@ -65,14 +65,14 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail { namespace __posix {
 
-		inline __encoding_id __determine_active_code_page() noexcept {
+		inline __idk_detail::__encoding_id __determine_active_code_page() noexcept {
 #if ZTD_IS_ON(ZTD_LANGINFO_I_) || ZTD_IS_ON(ZTD_NL_LANGINFO_I_)
 			const char* __name = nl_langinfo(LC_CTYPE);
-			return __to_encoding_id(__name);
+			return __idk_detail::__to_encoding_id(__name);
 #else
 			// fallback to stdlib I guess?
 			const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
-			return __to_encoding_id(__ctype_name);
+			return __idk_detail::__to_encoding_id(__ctype_name);
 #endif
 		}
 

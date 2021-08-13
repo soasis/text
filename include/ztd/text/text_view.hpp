@@ -36,7 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/basic_text_view.hpp>
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <ztd/text/encoding.hpp>
 
 #include <string_view>
@@ -47,40 +47,40 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @brief A view for examining text in the locale, runtime-based execution encoding.
+	/// @brief A view for examining text in the locale, runtime-based encoding.
 	///
 	//////
-	using text_view = basic_text_view<execution>;
+	using text_view = basic_text_view<execution_t>;
 	//////
-	/// @brief A view for examining text in the locale, runtime-based wide execution encoding.
+	/// @brief A view for examining text in the locale, runtime-based wide encoding.
 	///
 	//////
-	using wtext_view = basic_text_view<wide_execution>;
+	using wtext_view = basic_text_view<wide_execution_t>;
 	//////
-	/// @brief A view for examining text in the string literal encoding.
+	/// @brief A view for examining text in the string literal_t encoding.
 	///
 	//////
-	using ltext_view = basic_text_view<literal>;
+	using ltext_view = basic_text_view<literal_t>;
 	//////
-	/// @brief A view for examining text in the wide string literal encoding.
+	/// @brief A view for examining text in the wide string literal_t encoding.
 	///
 	//////
-	using wltext_view = basic_text_view<wide_literal>;
+	using wltext_view = basic_text_view<wide_literal_t>;
 	//////
 	/// @brief A view for examining text in the UTF-8 encoding.
 	///
 	//////
-	using u8text_view = basic_text_view<utf8>;
+	using u8text_view = basic_text_view<utf8_t>;
 	//////
 	/// @brief A view for examining text in the UTF-16 encoding.
 	///
 	//////
-	using u16text_view = basic_text_view<utf16>;
+	using u16text_view = basic_text_view<utf16_t>;
 	//////
 	/// @brief A view for examining text in the UTF-32 encoding.
 	///
 	//////
-	using u32text_view = basic_text_view<utf32>;
+	using u32text_view = basic_text_view<utf32_t>;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

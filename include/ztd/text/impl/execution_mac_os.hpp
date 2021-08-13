@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 	namespace __txt_impl {
 
 		//////
-		/// @brief The default execution ("locale") encoding for Mac OS.
+		/// @brief The default ("locale") encoding for Mac OS.
 		///
 		/// @remarks Note that for all intents and purposes, Mac OS demands that all text is in UTF-8. However, on Big
 		/// Sur, Catalina, and a few other platforms locale functionality and data has been either forgotten/left

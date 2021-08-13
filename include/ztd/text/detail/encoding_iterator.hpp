@@ -49,7 +49,7 @@
 #include <ztd/ranges/subrange.hpp>
 #include <ztd/ranges/default_sentinel.hpp>
 #include <ztd/ranges/adl.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 #include <ztd/ranges/blackhole_iterator.hpp>
 
 #include <array>
@@ -69,7 +69,7 @@ namespace ztd { namespace text {
 			typename _ErrorHandler, typename _State>
 		class __encoding_iterator
 		: private ebco<remove_cvref_t<_Encoding>, 0>,
-		  private ebco<remove_cvref_t<_ErrorHandler>, 1>,
+		  private ebco<::std::remove_reference_t<_ErrorHandler>, 1>,
 		  private __state_storage<remove_cvref_t<unwrap_t<_Encoding>>, remove_cvref_t<_State>>,
 		  private __cursor_cache<(_EncodeOrDecode == __transaction::__decode
 			                              ? max_code_points_v<remove_cvref_t<unwrap_t<_Encoding>>>
@@ -348,7 +348,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
 			/// buffer, will never return an error. This is the case with specific encoding operations with
-			/// ztd::text::replacement_handler, or ztd::text::throw_handler.
+			/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
 			//////
 			constexpr encoding_error error_code() const noexcept {
 				if constexpr (_IsErrorless) {
@@ -483,7 +483,7 @@ namespace ztd { namespace text {
 				auto& __this_input_range = this->_M_range();
 				auto __this_cache_begin  = this->_M_cache.data();
 				[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
-				::ztd::ranges::span<value_type, _MaxValues> __cache_view(this->_M_cache);
+				::ztd::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 				if constexpr (_IsInputOrOutput) {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
 						::std::move(__this_input_range), this->encoding(), __cache_view, this->handler(),

@@ -38,7 +38,7 @@
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/encode_result.hpp>
 
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/reference_wrapper.hpp>
 
@@ -69,14 +69,12 @@ namespace ztd { namespace text {
 					}
 					else {
 						return ::std::is_nothrow_invocable_v<_ErrorHandler&, const _Encoding&,
-							decode_result<_Input, _Output, _State>, ::ztd::ranges::span<_Byte>,
-							const _OutputProgress&>;
+							decode_result<_Input, _Output, _State>, ::ztd::span<_Byte>, const _OutputProgress&>;
 					}
 				}
 				else {
 					return ::std::is_nothrow_invocable_v<_ErrorHandler&, const _Encoding&,
-						decode_result<_Input, _Output, _State>, ::ztd::ranges::span<_Byte>,
-						const _OutputProgress&>;
+						decode_result<_Input, _Output, _State>, ::ztd::span<_Byte>, const _OutputProgress&>;
 				}
 			}
 
@@ -93,14 +91,12 @@ namespace ztd { namespace text {
 					}
 					else {
 						return ::std::is_nothrow_invocable_v<_ErrorHandler&, const _Encoding&,
-							encode_result<_Input, _Output, _State>, const _InputProgress&,
-							::ztd::ranges::span<_Byte>>;
+							encode_result<_Input, _Output, _State>, const _InputProgress&, ::ztd::span<_Byte>>;
 					}
 				}
 				else {
 					return ::std::is_nothrow_invocable_v<_ErrorHandler&, const _Encoding&,
-						encode_result<_Input, _Output, _State>, const _InputProgress&,
-						::ztd::ranges::span<_Byte>>;
+						encode_result<_Input, _Output, _State>, const _InputProgress&, ::ztd::span<_Byte>>;
 				}
 			}
 
@@ -110,14 +106,14 @@ namespace ztd { namespace text {
 				encode_result<_Input, _Output, _State>&& __result, const _InputProgress& __input_progress,
 				const _OutputProgress& __output_progress) const
 				noexcept(::std::is_nothrow_invocable_v<_ErrorHandler&, const _Encoding&,
-				     encode_result<_Input, _Output, _State>, const _InputProgress&, ::ztd::ranges::span<_Byte>>) {
+				     encode_result<_Input, _Output, _State>, const _InputProgress&, ::ztd::span<_Byte>>) {
 				using _ProgressPointer = ranges::range_pointer_t<_OutputProgress>;
 				using _ProgressWord    = ranges::range_value_type_t<_OutputProgress>;
 				_Byte* __byte_progress_data
 					= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__output_progress.data()));
 				auto __byte_progress_size
 					= (ranges::ranges_adl::adl_size(__output_progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
-				::ztd::ranges::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
+				::ztd::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
 				return this->_M_handler.get()(__encoding, ::std::move(__result), __input_progress, __byte_progress);
 			}
 
@@ -127,14 +123,14 @@ namespace ztd { namespace text {
 				decode_result<_Input, _Output, _State>&& __result, const _InputProgress& __input_progress,
 				const _OutputProgress& __output_progress) const
 				noexcept(::std::is_nothrow_invocable_v<_ErrorHandler&, const _Encoding&,
-				     decode_result<_Input, _Output, _State>, ::ztd::ranges::span<_Byte>, const _OutputProgress&>) {
+				     decode_result<_Input, _Output, _State>, ::ztd::span<_Byte>, const _OutputProgress&>) {
 				using _ProgressPointer = ranges::range_pointer_t<_InputProgress>;
 				using _ProgressWord    = ranges::range_value_type_t<_InputProgress>;
 				_Byte* __byte_progress_data
 					= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__input_progress.data()));
 				auto __byte_progress_size
 					= (ranges::ranges_adl::adl_size(__input_progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
-				::ztd::ranges::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
+				::ztd::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
 				return this->_M_handler.get()(
 					__encoding, ::std::move(__result), __byte_progress, __output_progress);
 			}

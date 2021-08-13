@@ -31,9 +31,11 @@
 default_handler
 ===============
 
-The default handler for all operations. A class type that simply wraps :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` unless configured otherwise. You can change it to throw by default (NOT recommended) by using :ref:`ZTD_TEXT_DEFAULT_HANDLER_THROWS <config-ZTD_TEXT_DEFAULT_HANDLER_THROWS>`.
+The default handler for all operations. A class type that simply wraps :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` unless configured otherwise. You can change it to throw by default (NOT recommended) by using :ref:`ZTD_TEXT_DEFAULT_HANDLER_THROWS <config-ZTD_TEXT_DEFAULT_HANDLER_THROWS>`.
 
 Using this type, implicitly or explicitly, signals to ztd.text that you would like it to gently admonish you if any part of a conversion could be potentially lossy (valid data is put in, but it cannot be handled by the desired encode/decode/transcode operation).
 
-.. doxygenclass:: ztd::text::default_handler
+.. doxygenvariable:: ztd::text::default_handler
+
+.. doxygenclass:: ztd::text::default_handler_t
 	:members:

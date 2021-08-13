@@ -72,4 +72,4 @@ This is useful for encodings which provide runtime-erased wrappers or that wrap 
 The Default
 -----------
 
-When none of the above can happen, the :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` will attempt to insert a Unicode Replacement Character (�, ``U'\uFFFD'``) or the `'?'` character into the stream, in various ways. See :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` for more details on that process!
+When none of the above can happen, the :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` will attempt to insert a Unicode Replacement Character (�, ``U'\uFFFD'``) or the `'?'` character into the stream, in various ways. See :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` for more details on that process!

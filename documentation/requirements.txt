@@ -1,3 +1,6 @@
+sphinx==4.0.0
+sphinx_rtd_theme
 breathe
+myst_parser
 cmake
 ninja

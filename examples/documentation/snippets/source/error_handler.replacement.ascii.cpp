@@ -37,11 +37,11 @@ int main(int, char*[]) {
 	     // input
 	     u8"안녕",
 	     // from this encoding
-	     ztd::text::utf8 {},
+	     ztd::text::utf8,
 	     // to this encoding
-	     ztd::text::ascii {},
+	     ztd::text::ascii,
 	     // (1) error handler
-	     ztd::text::replacement_handler {});
+	     ztd::text::replacement_handler);
 
 	std::cout << my_ascii_string << std::endl; // (2)
 

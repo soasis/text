@@ -167,7 +167,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 				else {
@@ -187,8 +187,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 1>(::std::addressof(__unit), 1),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 1>(::std::addressof(__unit), 1),
+							::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -252,7 +252,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 					}
 				}
 				else {
@@ -273,8 +273,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+							::ztd::span<code_unit, 0>());
 					}
 				}
 
@@ -311,7 +311,13 @@ namespace ztd { namespace text {
 	/// @brief A UTF-32 Encoding that traffics in char32_t. See ztd::text::basic_utf32 for more details.
 	///
 	//////
-	using utf32 = basic_utf32<char32_t>;
+	using utf32_t = basic_utf32<char32_t>;
+
+	//////
+	/// @brief An instance of the UTF-32 encoding for ease of use.
+	///
+	//////
+	inline constexpr utf32_t utf32 = {};
 
 	//////
 	/// @}

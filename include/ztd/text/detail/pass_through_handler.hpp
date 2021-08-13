@@ -49,7 +49,7 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief A type that is true when calling code can not call this function and ignore it, and false when
-			/// it cannot ignore it. See ztd::text::assume_valid_handler for details.
+			/// it cannot ignore it. See ztd::text::assume_valid_handler_t for details.
 			//////
 			using assume_valid = ::std::integral_constant<bool, _AssumeVailidity>;
 

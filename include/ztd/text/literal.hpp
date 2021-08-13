@@ -51,26 +51,27 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		inline constexpr __encoding_id __literal_id = __to_encoding_id(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_GET_I_());
-		using __literal                             = decltype(__select_encoding<char, __literal_id>());
+		inline constexpr __idk_detail::__encoding_id __literal_id
+			= __idk_detail::__to_encoding_id(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_GET_I_());
+		using __literal = decltype(__select_encoding<char, __literal_id>());
 	} // namespace __txt_detail
 
 	//////
-	/// @brief The encoding of string literals ( e.g. @c "👍" ) at compile time.
+	/// @brief The encoding of string literal_ts ( e.g. @c "👍" ) at compile time.
 	///
 	//////
-	class literal : private ebco<__txt_detail::__literal> {
+	class literal_t : private ebco<__txt_detail::__literal> {
 	private:
 		using __underlying_t = __txt_detail::__literal;
 		using __base_t       = ebco<__underlying_t>;
 
 	public:
 		//////
-		/// @brief Whether or not this literal encoding is a Unicode Transformation Format, such as UTF-8,
+		/// @brief Whether or not this literal_t encoding is a Unicode Transformation Format, such as UTF-8,
 		/// UTF-EBCDIC, or GB18030.
 		//////
 		using is_unicode_encoding
-			= ::std::integral_constant<bool, __txt_detail::__is_unicode_encoding_id(__txt_detail::__literal_id)>;
+			= ::std::integral_constant<bool, __idk_detail::__is_unicode_encoding_id(__txt_detail::__literal_id)>;
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
@@ -94,7 +95,7 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
-		/// @remarks The decode step should always be injective because every encoding used for literals in C++
+		/// @remarks The decode step should always be injective because every encoding used for literal_ts in C++
 		/// needs to be capable of being represented by UCNs. Whether or not a platform is a jerk, who knows?
 		//////
 		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__underlying_t>>;
@@ -121,27 +122,27 @@ namespace ztd { namespace text {
 		/// @brief Default constructs a ztd::text::literal.
 		///
 		//////
-		constexpr literal() noexcept = default;
+		constexpr literal_t() noexcept = default;
 		//////
 		/// @brief Copy constructs a ztd::text::literal.
 		///
 		//////
-		constexpr literal(const literal&) noexcept = default;
+		constexpr literal_t(const literal_t&) noexcept = default;
 		//////
 		/// @brief Move constructs a ztd::text::literal.
 		///
 		//////
-		constexpr literal(literal&&) noexcept = default;
+		constexpr literal_t(literal_t&&) noexcept = default;
 		//////
-		/// @brief Copy assigns into a ztd::text::literal object.
+		/// @brief Copy assigns into a ztd::text::literal_t object.
 		///
 		//////
-		constexpr literal& operator=(const literal&) noexcept = default;
+		constexpr literal_t& operator=(const literal_t&) noexcept = default;
 		//////
-		/// @brief Move assigns into a ztd::text::literal object.
+		/// @brief Move assigns into a ztd::text::literal_t object.
 		///
 		//////
-		constexpr literal& operator=(literal&&) noexcept = default;
+		constexpr literal_t& operator=(literal_t&&) noexcept = default;
 
 		//////
 		/// @brief Decodes a single complete unit of information as code points and produces a result with the
@@ -168,8 +169,9 @@ namespace ztd { namespace text {
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
-				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string literal "
-				"encoding from the machine at compile time and you are trying to use the literal encoding "
+				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
+				"literal_t "
+				"encoding from the machine at compile time and you are trying to use the literal_t encoding "
 				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
 				"here (https://developercommunity.visualstudio.com/content/idea/1160821/"
 				"-compiler-feature-macro-for-narrow-literal-foo-enc.html) and leave a (strong, but very nicely "
@@ -179,7 +181,7 @@ namespace ztd { namespace text {
 
 				"God's Speed.\n\n"
 
-				"This could mangle all of your compile time string literal conversions you are performing. To "
+				"This could mangle all of your compile time string literal_t conversions you are performing. To "
 				"prevent that from happening, this error is being printed out, so that you have the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
@@ -197,7 +199,7 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const literal, ::std::remove_reference_t<_ErrorHandler>>
+			__txt_detail::__forwarding_handler<const literal_t, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
 			return this->__base_t::get_value().decode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
@@ -228,8 +230,9 @@ namespace ztd { namespace text {
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
-				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string literal "
-				"encoding from the machine at compile time and you are trying to use the literal encoding "
+				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
+				"literal_t "
+				"encoding from the machine at compile time and you are trying to use the literal_t encoding "
 				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
 				"here (https://developercommunity.visualstudio.com/content/idea/1160821/"
 				"-compiler-feature-macro-for-narrow-literal-foo-enc.html) and leave a (strong, but very nicely "
@@ -239,7 +242,7 @@ namespace ztd { namespace text {
 
 				"God's Speed.\n\n"
 
-				"This could mangle all of your compile time string literal conversions you are performing. To "
+				"This could mangle all of your compile time string literal_t conversions you are performing. To "
 				"prevent that from happening, this error is being printed out, so that you have the explicit "
 				"understanding that your life may indeed suck after doing this.\n\n"
 
@@ -257,12 +260,18 @@ namespace ztd { namespace text {
 			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
 			"ignore this error and we will get right on doing exactly that for you.");
 #endif
-			__txt_detail::__forwarding_handler<const literal, ::std::remove_reference_t<_ErrorHandler>>
+			__txt_detail::__forwarding_handler<const literal_t, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
 			return this->__base_t::get_value().encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 	};
+
+	//////
+	/// @brief An instance of the literal_t type for ease of use.
+	///
+	//////
+	inline constexpr literal_t literal = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

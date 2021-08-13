@@ -39,28 +39,28 @@
 #include <ztd/text/c_string_view.hpp>
 
 #include <ztd/text/type_traits.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 namespace ztd { namespace text { namespace tests {
 
 	template <typename Encoding>
 	constexpr auto constexpr_input_for() {
-		if constexpr (std::is_same_v<Encoding, ztd::text::ascii>) {
+		if constexpr (std::is_same_v<Encoding, ztd::text::ascii_t>) {
 			return basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::execution>) {
+		else if constexpr (std::is_same_v<Encoding, ztd::text::) {
 			return basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::wide_execution>) {
+		else if constexpr (std::is_same_v<Encoding, ztd::text::) {
 			return w_basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::utf8>) {
+		else if constexpr (std::is_same_v<Encoding, ztd::text::utf8_t>) {
 			return u8_basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::utf16>) {
+		else if constexpr (std::is_same_v<Encoding, ztd::text::utf16_t>) {
 			return u16_basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::utf32>) {
+		else if constexpr (std::is_same_v<Encoding, ztd::text::utf32_t>) {
 			return u32_basic_source_character_set;
 		}
 		else {

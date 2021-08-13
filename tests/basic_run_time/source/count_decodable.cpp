@@ -28,97 +28,90 @@
 //
 // ============================================================================>
 
-#include <ztd/text/count_decodable.hpp>
+#include <ztd/text/count_as_decoded.hpp>
 
 #include <catch2/catch.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-TEST_CASE("text/count_decodable/core", "basic usages of count_decodable function do not explode") {
-	std::size_t expected0 = std::size(ztd::text::tests::u32_basic_source_character_set);
-	std::size_t expected1 = std::size(ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+TEST_CASE("text/count_as_decoded/core", "basic usages of count_as_decoded function do not explode") {
+	std::size_t expected0 = std::size(ztd::tests::u32_basic_source_character_set);
+	std::size_t expected1 = std::size(ztd::tests::u32_unicode_sequence_truth_native_endian);
 	SECTION("execution") {
-		ztd::text::execution encoding {};
-		auto result0 = ztd::text::count_decodable(ztd::text::tests::basic_source_character_set, encoding);
+		ztd::text::execution_t encoding {};
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::basic_source_character_set, encoding);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1
-			     = ztd::text::count_decodable(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian, encoding);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("wide_execution") {
-		ztd::text::wide_execution encoding {};
-		auto result0 = ztd::text::count_decodable(ztd::text::tests::w_basic_source_character_set, encoding);
+		ztd::text::wide_execution_t encoding {};
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set, encoding);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1
-			     = ztd::text::count_decodable(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("literal") {
-		ztd::text::literal encoding {};
-		auto result0 = ztd::text::count_decodable(ztd::text::tests::basic_source_character_set, encoding);
+		ztd::text::literal_t encoding {};
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::basic_source_character_set, encoding);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1
-			     = ztd::text::count_decodable(ztd::text::tests::unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian, encoding);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("wide_literal") {
-		ztd::text::wide_literal encoding {};
-		auto result0 = ztd::text::count_decodable(ztd::text::tests::w_basic_source_character_set, encoding);
+		ztd::text::wide_literal_t encoding {};
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set, encoding);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1
-			     = ztd::text::count_decodable(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian, encoding);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("utf8") {
-		auto result0
-		     = ztd::text::count_decodable(ztd::text::tests::u8_basic_source_character_set, ztd::text::utf8 {});
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::u8_basic_source_character_set, ztd::text::utf8);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
-		auto result1 = ztd::text::count_decodable(
-		     ztd::text::tests::u8_unicode_sequence_truth_native_endian, ztd::text::utf8 {});
+		auto result1
+		     = ztd::text::count_as_decoded(ztd::tests::u8_unicode_sequence_truth_native_endian, ztd::text::utf8);
 		REQUIRE_FALSE(result1.errors_were_handled());
 		REQUIRE(result1.count == expected1);
 	}
 	SECTION("utf16") {
-		auto result0
-		     = ztd::text::count_decodable(ztd::text::tests::u16_basic_source_character_set, ztd::text::utf16 {});
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::u16_basic_source_character_set, ztd::text::utf16);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
-		auto result1 = ztd::text::count_decodable(
-		     ztd::text::tests::u16_unicode_sequence_truth_native_endian, ztd::text::utf16 {});
+		auto result1
+		     = ztd::text::count_as_decoded(ztd::tests::u16_unicode_sequence_truth_native_endian, ztd::text::utf16);
 		REQUIRE_FALSE(result1.errors_were_handled());
 		REQUIRE(result1.count == expected1);
 	}
 	SECTION("utf32") {
-		auto result0
-		     = ztd::text::count_decodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32 {});
+		auto result0 = ztd::text::count_as_decoded(ztd::tests::u32_basic_source_character_set, ztd::text::utf32);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
-		auto result1 = ztd::text::count_decodable(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32 {});
+		auto result1
+		     = ztd::text::count_as_decoded(ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32);
 		REQUIRE_FALSE(result1.errors_were_handled());
 		REQUIRE(result1.count == expected1);
 	}

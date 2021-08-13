@@ -47,66 +47,66 @@ inline namespace ztd_text_tests_basic_run_time_validate_transcodable_as {
 
 TEST_CASE("text/validate_transcodable_as/basic", "basic usages of validate_transcodable_as function do not explode") {
 	SECTION("execution") {
-		ztd::text::execution encoding {};
-		validate_check(ztd::text::tests::basic_source_character_set, encoding, encoding);
+		ztd::text::execution_t encoding {};
+		validate_check(ztd::tests::basic_source_character_set, encoding, encoding);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			validate_check(ztd::text::tests::unicode_sequence_truth_native_endian, encoding, encoding);
+			validate_check(ztd::tests::unicode_sequence_truth_native_endian, encoding, encoding);
 		}
 	}
 	SECTION("wide_execution") {
-		ztd::text::wide_execution encoding {};
-		validate_check(ztd::text::tests::w_basic_source_character_set, encoding, encoding);
+		ztd::text::wide_execution_t encoding {};
+		validate_check(ztd::tests::w_basic_source_character_set, encoding, encoding);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			validate_check(ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding, encoding);
+			validate_check(ztd::tests::w_unicode_sequence_truth_native_endian, encoding, encoding);
 		}
 	}
 	SECTION("literal") {
-		ztd::text::literal encoding {};
+		ztd::text::literal_t encoding {};
 		auto result0
-		     = ztd::text::validate_transcodable_as(ztd::text::tests::basic_source_character_set, encoding, encoding);
+		     = ztd::text::validate_transcodable_as(ztd::tests::basic_source_character_set, encoding, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1 = ztd::text::validate_transcodable_as(
-			     ztd::text::tests::unicode_sequence_truth_native_endian, encoding, encoding);
+			     ztd::tests::unicode_sequence_truth_native_endian, encoding, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("wide_literal") {
-		ztd::text::wide_literal encoding {};
-		auto result0 = ztd::text::validate_transcodable_as(
-		     ztd::text::tests::w_basic_source_character_set, encoding, encoding);
+		ztd::text::wide_literal_t encoding {};
+		auto result0
+		     = ztd::text::validate_transcodable_as(ztd::tests::w_basic_source_character_set, encoding, encoding);
 		REQUIRE(result0);
 		if (ztd::text::contains_unicode_encoding(encoding)) {
 			auto result1 = ztd::text::validate_transcodable_as(
-			     ztd::text::tests::w_unicode_sequence_truth_native_endian, encoding, encoding);
+			     ztd::tests::w_unicode_sequence_truth_native_endian, encoding, encoding);
 			REQUIRE(result1);
 		}
 	}
 	SECTION("ascii") {
-		ztd::text::ascii encoding {};
-		validate_check(ztd::text::tests::basic_source_character_set, encoding, encoding);
+		ztd::text::ascii_t encoding {};
+		validate_check(ztd::tests::basic_source_character_set, encoding, encoding);
 	}
 	SECTION("no_encoding") {
 		ztd::text::no_encoding encoding {};
-		validate_check(ztd::text::tests::basic_source_character_set, encoding, encoding);
+		validate_check(ztd::tests::basic_source_character_set, encoding, encoding);
 	}
 	SECTION("no_encoding") {
 		ztd::text::no_codepoint_encoding encoding {};
-		validate_check(ztd::text::tests::u32_basic_source_character_set, encoding, encoding);
+		validate_check(ztd::tests::u32_basic_source_character_set, encoding, encoding);
 	}
 	SECTION("utf8") {
-		ztd::text::utf8 encoding {};
-		validate_check(ztd::text::tests::u8_basic_source_character_set, encoding, encoding);
-		validate_check(ztd::text::tests::u8_unicode_sequence_truth_native_endian, encoding, encoding);
+		ztd::text::utf8_t encoding {};
+		validate_check(ztd::tests::u8_basic_source_character_set, encoding, encoding);
+		validate_check(ztd::tests::u8_unicode_sequence_truth_native_endian, encoding, encoding);
 	}
 	SECTION("utf16") {
-		ztd::text::utf16 encoding {};
-		validate_check(ztd::text::tests::u16_basic_source_character_set, encoding, encoding);
-		validate_check(ztd::text::tests::u16_unicode_sequence_truth_native_endian, encoding, encoding);
+		ztd::text::utf16_t encoding {};
+		validate_check(ztd::tests::u16_basic_source_character_set, encoding, encoding);
+		validate_check(ztd::tests::u16_unicode_sequence_truth_native_endian, encoding, encoding);
 	}
 	SECTION("utf32") {
-		ztd::text::utf32 encoding {};
-		validate_check(ztd::text::tests::u32_basic_source_character_set, encoding, encoding);
-		validate_check(ztd::text::tests::u32_unicode_sequence_truth_native_endian, encoding, encoding);
+		ztd::text::utf32_t encoding {};
+		validate_check(ztd::tests::u32_basic_source_character_set, encoding, encoding);
+		validate_check(ztd::tests::u32_unicode_sequence_truth_native_endian, encoding, encoding);
 	}
 }

@@ -35,5 +35,7 @@ The ``throw_handler`` simply throws a :doc:`ztd::text::encoding_error </api/enco
 
 Throwing on encoding, decoding, and other errors can easily result in Denial of Service target points if this is used in conjunction with user or untrusted input sources.
 
-.. doxygenclass:: ztd::text::throw_handler
+.. doxygenvariable:: ztd::text::throw_handler
+
+.. doxygenclass:: ztd::text::throw_handler_t
 	:members:

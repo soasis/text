@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/count_encodable.hpp>
+#include <ztd/text/count_as_encoded.hpp>

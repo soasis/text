@@ -45,11 +45,11 @@ They can change the conversion and other operations happen works. Consider, for 
 	:linenos:
 	:start-after: // ============================================================================>
 
-Clearly, the Korean characters present in the UTF-8 string just cannot fit in a strict, 7-bit ASCII encoding. What, then, becomes the printed output from ``std::cout`` at ``// (2)``? The answer is two ASCII question marks, ``??``. The :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` object passed in at ``// (1)`` substitutes replacement characters (zero or more) into the output for any failed operation. There are multiple kinds of error handlers with varying behaviors:
+Clearly, the Korean characters present in the UTF-8 string just cannot fit in a strict, 7-bit ASCII encoding. What, then, becomes the printed output from ``std::cout`` at ``// (2)``? The answer is two ASCII question marks, ``??``. The :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` object passed in at ``// (1)`` substitutes replacement characters (zero or more) into the output for any failed operation. There are multiple kinds of error handlers with varying behaviors:
 
-- :doc:`replacement_handler </api/error handlers/default_handler>`, which inserts a substitution character specified by either the encoding object or some form using the default replacement character ``"U+FFFD"``;
+- :doc:`replacement_handler_t </api/error handlers/default_handler>`, which inserts a substitution character specified by either the encoding object or some form using the default replacement character ``"U+FFFD"``;
 - :doc:`pass_handler </api/error handlers/pass_handler>`, which simply returns the error result as it and, if there is an error, halts higher-level operations from proceeding forward;
-- :doc:`default_handler </api/error handlers/default_handler>`, which is just a name for the ``replacement_handler`` or ``throw_handler`` or some other type based on compile time configuration of the library;
+- :doc:`default_handler </api/error handlers/default_handler>`, which is just a name for the ``replacement_handler_t`` or ``throw_handler`` or some other type based on compile time configuration of the library;
 - :doc:`throw_handler </api/error handlers/throw_handler>`, for throwing an exception on any failed operation;
 - :doc:`incomplete_handler </api/error handlers/incomplete_handler>`, for throwing an exception on any failed encode/decode operation; and,
 - :doc:`assume_valid_handler </api/error handlers/throw_handler>`, which triggers no checking for many error conditions and can leads to |ub| if used on malformed input.

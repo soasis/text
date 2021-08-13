@@ -53,7 +53,7 @@ inline namespace ztd_text_tests_transcode_containers {
                     }
                     else {
                          return ztd::text::transcode_into(in_container, from_encoding, out_container, to_encoding,
-                              ztd::text::pass_handler {}, ztd::text::pass_handler {});
+                              ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
                     }
 			};
 			auto result = invoker();
@@ -72,7 +72,7 @@ inline namespace ztd_text_tests_transcode_containers {
                     }
                     else {
                          return ztd::text::transcode_to<Container<ToCodeUnit>>(in_container, from_encoding, to_encoding,
-                              ztd::text::pass_handler {}, ztd::text::pass_handler {});
+                              ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
                     }
 			};
 			auto result = invoker();
@@ -90,7 +90,7 @@ inline namespace ztd_text_tests_transcode_containers {
                     }
                     else {
                          return ztd::text::transcode(in_container, from_encoding, to_encoding,
-                              ztd::text::pass_handler {}, ztd::text::pass_handler {});
+                              ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
                     }
 			};
 			auto result = invoker();
@@ -105,43 +105,43 @@ inline namespace ztd_text_tests_transcode_containers {
 TEST_CASE(
      "text/transcode/roundtrip/containers", "transcode can handle container-like types at many levels of the API") {
 	SECTION("ascii") {
-		ztd::text::ascii from;
-		ztd::text::ascii to;
+		ztd::text::ascii_t from;
+		ztd::text::ascii_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("execution") {
-		ztd::text::execution from;
-		ztd::text::execution to;
+		ztd::text::execution_t from;
+		ztd::text::wide_execution_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("wide_execution") {
-		ztd::text::wide_execution from;
-		ztd::text::wide_execution to;
+		ztd::text::wide_execution_t from;
+		ztd::text::wide_execution_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("literal") {
-		ztd::text::literal from;
-		ztd::text::literal to;
+		ztd::text::literal_t from;
+		ztd::text::literal_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("wide_literal") {
-		ztd::text::wide_literal from;
-		ztd::text::wide_literal to;
+		ztd::text::wide_literal_t from;
+		ztd::text::wide_literal_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("utf8") {
-		ztd::text::utf8 from;
-		ztd::text::utf8 to;
+		ztd::text::utf8_t from;
+		ztd::text::utf8_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("utf16") {
-		ztd::text::utf16 from;
-		ztd::text::utf16 to;
+		ztd::text::utf16_t from;
+		ztd::text::utf16_t to;
 		check_container_roundtrip(from, to);
 	}
 	SECTION("utf32") {
-		ztd::text::utf32 from;
-		ztd::text::utf32 to;
+		ztd::text::utf32_t from;
+		ztd::text::utf32_t to;
 		check_container_roundtrip(from, to);
 	}
 }

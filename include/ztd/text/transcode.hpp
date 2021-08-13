@@ -51,7 +51,7 @@
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 
 #include <ztd/ranges/unbounded.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>
@@ -68,7 +68,7 @@ namespace ztd { namespace text {
 	///
 	/// @brief These functions convert from a view of input code units into a view of output code units (typically,
 	/// through an intermediary code point type that is similar between the two) using either the inferred or specified
-	/// encodings. If no error handler is provided, the equivalent of the ztd::text::default_handler is used by
+	/// encodings. If no error handler is provided, the equivalent of the ztd::text::default_handler_t is used by
 	/// default, but it is marked as careless. If no associated state is provided for either the "to" or "from"
 	/// encodings, one will be created with automatic storage duration (as a "stack" variable) for the provided
 	/// encoding.
@@ -116,7 +116,7 @@ namespace ztd { namespace text {
 		using _IntermediateCodePoint = code_point_t<_UFromEncoding>;
 		constexpr ::std::size_t _IntermediateCodePointMax = max_code_points_v<_UFromEncoding>;
 		using _IntermediateStorage                        = _IntermediateCodePoint[_IntermediateCodePointMax];
-		using _Intermediate  = ::ztd::ranges::span<_IntermediateCodePoint, _IntermediateCodePointMax>;
+		using _Intermediate  = ::ztd::span<_IntermediateCodePoint, _IntermediateCodePointMax>;
 		using _Result        = decltype(__txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
                ::std::declval<_InitialInput>(), __from_encoding, ::std::declval<_InitialOutput>(), __to_encoding,
                __from_error_handler, __to_error_handler, __from_state, __to_state, ::std::declval<_Intermediate&>()));
@@ -304,8 +304,8 @@ namespace ztd { namespace text {
 	/// final code units.
 	/// @param[in]     __from_error_handler The error handler for the @p __from_encoding 's decode step.
 	///
-	/// @remarks This function creates an @c to_error_handler from a class like ztd::text::default_handler, but that is
-	/// marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
+	/// @remarks This function creates an @c to_error_handler from a class like ztd::text::default_handler_t, but that
+	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective. The result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -335,8 +335,8 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
 	/// final code units.
 	///
-	/// @remarks This function creates an @c from_error_handler from a class like ztd::text::default_handler, but that
-	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are
+	/// @remarks This function creates an @c from_error_handler from a class like ztd::text::default_handler_t, but
+	/// that is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are
 	/// not injective. The result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -345,7 +345,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding>
 	constexpr auto transcode_into(
 		_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output, _ToEncoding&& __to_encoding) {
-		default_handler __handler {};
+		default_handler_t __handler {};
 
 		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), __handler);
@@ -362,9 +362,9 @@ namespace ztd { namespace text {
 	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from the
 	/// intermediate code points.
 	///
-	/// @remarks This function creates both: a @c from_error_handler using a ztd::text::default_handler that is marked
-	/// as careless to pass to the next function overload; and, a @c from_encoding to interpret the @p __input by
-	/// checking the @p __input 's @c value_type. This matters for lossy conversions that are not injective. The
+	/// @remarks This function creates both: a @c from_error_handler using a ztd::text::default_handler_t that is
+	/// marked as careless to pass to the next function overload; and, a @c from_encoding to interpret the @p __input
+	/// by checking the @p __input 's @c value_type. This matters for lossy conversions that are not injective. The
 	/// result from this function returns a ztd::text::stateless_transcode_result as opposed to a
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
@@ -376,7 +376,7 @@ namespace ztd { namespace text {
 		using _UFromEncoding = default_code_unit_encoding_t<ranges::range_value_type_t<_UInput>>;
 
 		_UFromEncoding __from_encoding {};
-		default_handler __handler {};
+		default_handler_t __handler {};
 
 		return transcode_into(::std::forward<_Input>(__input), __from_encoding, ::std::forward<_Output>(__output),
 			::std::forward<_ToEncoding>(__to_encoding), __handler);
@@ -399,14 +399,13 @@ namespace ztd { namespace text {
 			using _IntermediateOutputValueType = code_unit_t<_UToEncoding>;
 			using _InitialInput                = __string_view_or_span_or_reconstruct_t<_Input>;
 			using _IntermediateInputValueType  = code_point_t<_UFromEncoding>;
-			using _IntermediateInput           = ::ztd::ranges::span<_IntermediateInputValueType>;
-			using _IntermediateOutputInitial
-				= ::ztd::ranges::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
-			using _IntermediateOutput = ::ztd::ranges::span<_IntermediateOutputValueType>;
-			using _DecodeResult       = decltype(__txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
-                    ::std::declval<_InitialInput>(), ::std::forward<_FromEncoding>(__from_encoding),
-                    ::std::declval<_IntermediateInput>(), __from_error_handler, __from_state));
-			using _WorkingInput       = decltype(::std::declval<_DecodeResult>().input);
+			using _IntermediateInput           = ::ztd::span<_IntermediateInputValueType>;
+			using _IntermediateOutputInitial   = ::ztd::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
+			using _IntermediateOutput          = ::ztd::span<_IntermediateOutputValueType>;
+			using _DecodeResult = decltype(__txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
+				::std::declval<_InitialInput>(), ::std::forward<_FromEncoding>(__from_encoding),
+				::std::declval<_IntermediateInput>(), __from_error_handler, __from_state));
+			using _WorkingInput = decltype(::std::declval<_DecodeResult>().input);
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
 				              remove_cvref_t<_FromErrorHandler>>,
@@ -639,7 +638,7 @@ namespace ztd { namespace text {
 	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A @c to_error_handler for the encode step of the operation is created using default construction of a
-	/// ztd::text::default_handler that is marked as careless. The return type is stateless since both states must be
+	/// ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must be
 	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
@@ -673,13 +672,13 @@ namespace ztd { namespace text {
 	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A @c from_error_handler for the encode step of the operation is created using default construction of
-	/// a ztd::text::default_handler that is marked as careless. The return type is stateless since both states must be
-	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
+	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
+	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
-		default_handler __handler {};
+		default_handler_t __handler {};
 
 		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding), __handler);
@@ -702,8 +701,8 @@ namespace ztd { namespace text {
 	/// parameter that contains the @p _OutputContainer specified.
 	///
 	/// @remarks A @c from_error_handler for the encode step of the operation is created using default construction of
-	/// a ztd::text::default_handler that is marked as careless. The return type is stateless since both states must be
-	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
+	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
+	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _ToEncoding>
@@ -713,7 +712,7 @@ namespace ztd { namespace text {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		if (::std::is_constant_evaluated()) {
 			using _UFromEncoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
-			default_handler __handler {};
+			default_handler_t __handler {};
 			_UFromEncoding __from_encoding {};
 			return transcode_to<_OutputContainer>(::std::forward<_Input>(__input), __from_encoding,
 				::std::forward<_ToEncoding>(__to_encoding), __handler);
@@ -722,7 +721,7 @@ namespace ztd { namespace text {
 #endif
 		{
 			using _UFromEncoding = default_code_unit_encoding_t<_CodeUnit>;
-			default_handler __handler {};
+			default_handler_t __handler {};
 			_UFromEncoding __from_encoding {};
 			return transcode_to<_OutputContainer>(::std::forward<_Input>(__input), __from_encoding,
 				::std::forward<_ToEncoding>(__to_encoding), __handler);
@@ -880,8 +879,8 @@ namespace ztd { namespace text {
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates a @c to_error_handler from a class like ztd::text::default_handler, but that is
-	/// marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
+	/// @remarks This function creates a @c to_error_handler from a class like ztd::text::default_handler_t, but that
+	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
@@ -914,13 +913,13 @@ namespace ztd { namespace text {
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates a @c from_error_handler from a class like ztd::text::default_handler, but that
+	/// @remarks This function creates a @c from_error_handler from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
-		default_handler __handler {};
+		default_handler_t __handler {};
 
 		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding), __handler);
@@ -943,8 +942,9 @@ namespace ztd { namespace text {
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	///
-	/// @remarks This function creates both: a @c from_error_handler from a class like ztd::text::default_handler, but
-	/// that is marked as careless since you did not explicitly provide it; and, a @c from_encoding derived from the @p
+	/// @remarks This function creates both: a @c from_error_handler from a class like ztd::text::default_handler_t,
+	/// but that is marked as careless since you did not explicitly provide it; and, a @c from_encoding derived from
+	/// the @p
 	/// "__input"'s @c value_type. The careless marking matters for lossy conversions that are not injective.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _ToEncoding>

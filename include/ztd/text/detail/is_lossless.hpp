@@ -50,7 +50,8 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _ErrorHandler>
 		class __is_careless_error_handler
-		: public ::std::integral_constant<bool, ::std::is_same_v<remove_cvref_t<_ErrorHandler>, default_handler>> { };
+		: public ::std::integral_constant<bool, ::std::is_same_v<remove_cvref_t<_ErrorHandler>, default_handler_t>> {
+		};
 
 		template <typename _Byte, typename _UInputRange, typename _UOutputRange, typename _ErrorHandler>
 		class __is_careless_error_handler<__scheme_handler<_Byte, _UInputRange, _UOutputRange, _ErrorHandler>>

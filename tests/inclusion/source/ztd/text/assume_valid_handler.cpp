@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/ranges/span.hpp>
+#include <ztd/text/assume_valid_handler.hpp>

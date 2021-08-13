@@ -28,8 +28,8 @@
 ..
 .. =============================================================================>
 
-Count Transcodable
-==================
+Count as Transcoded
+====================
 
 This operation counts how much text will result from a transcode operation. Essentially, we run the :doc:`encoding algorithm </design/converting/transcode>` loop, but instead of giving the end user the re-encoded values, we instead simply provide the count for running that bulk operation.
 
@@ -51,6 +51,6 @@ Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``co
 * ⏩ Update ``input``\ 's ``begin()`` value to point to after what was read by the ``encode_one`` step.
 * ⤴️ Go back to the start.
 
-This involves a single encoding type, and so does not need any cooperation to count the ``code_point``\ s. Note that this algorithm doesn't show what the error handler does; if the error handler "erases" the failure by setting the result type's ``.error_code == ztd::text::encoding_error::ok``, then the algorithm will keep going. This is useful to, for example, detect the maximum size of an operation even if it errors and would result in replacement characters being inserted (e.g., from :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>`).
+This involves a single encoding type, and so does not need any cooperation to count the ``code_point``\ s. Note that this algorithm doesn't show what the error handler does; if the error handler "erases" the failure by setting the result type's ``.error_code == ztd::text::encoding_error::ok``, then the algorithm will keep going. This is useful to, for example, detect the maximum size of an operation even if it errors and would result in replacement characters being inserted (e.g., from :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>`).
 
-Check out the API documentation for :doc:`ztd::text::count_transcodable </api/conversions/count_transcodable>` to learn more.
+Check out the API documentation for :doc:`ztd::text::count_as_transcoded </api/conversions/count_as_transcoded>` to learn more.

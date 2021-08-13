@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -47,7 +47,7 @@ namespace ztd { namespace text {
 
 		template <typename, typename, typename, typename>
 		class __scheme_handler;
-		template <bool, typename>
+		template <typename, typename>
 		class __progress_handler;
 		template <typename, typename>
 		class __forwarding_handler;
@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 
 		class __wide_execution_windows;
 		class __wide_execution_iso10646;
-		class __iconv_wide_execution;
+		class __wide_execution_iconv;
 		class __wide_execution_cwchar;
 
 		class __unicode_code_point;
@@ -90,27 +90,27 @@ namespace ztd { namespace text {
 	using unicode_scalar_value = char32_t;
 #endif
 
-	class assume_valid_handler;
+	class assume_valid_handler_t;
 	class pass_through_handler;
 	template <typename, typename>
 	class incomplete_handler;
-	class replacement_handler;
-	class default_handler;
+	class replacement_handler_t;
+	class default_handler_t;
 
 	template <typename, typename>
 	class basic_ascii;
-	using ascii = basic_ascii<char, unicode_code_point>;
+	using ascii_t = basic_ascii<char, unicode_code_point>;
 	template <typename, typename>
 	class basic_utf8;
 	template <typename, typename>
 	class basic_utf16;
 	template <typename, typename>
 	class basic_utf32;
-	using utf8  = basic_utf8<uchar8_t, unicode_code_point>;
-	using utf16 = basic_utf16<char16_t, unicode_code_point>;
-	using utf32 = basic_utf32<char32_t, unicode_code_point>;
+	using utf8_t  = basic_utf8<uchar8_t, unicode_code_point>;
+	using utf16_t = basic_utf16<char16_t, unicode_code_point>;
+	using utf32_t = basic_utf32<char32_t, unicode_code_point>;
 
-	using execution =
+	using execution_t =
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
 		__txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
@@ -122,7 +122,7 @@ namespace ztd { namespace text {
 #endif
 		;
 
-	using wide_execution =
+	using wide_execution_t =
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 		__txt_impl::__wide_execution_windows
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)

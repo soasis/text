@@ -173,7 +173,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 				else {
@@ -203,8 +203,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 1>(__units.data(), 1),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
 					}
 				}
 				if constexpr (__call_error_handler) {
@@ -216,8 +215,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::incomplete_sequence),
-							::ztd::ranges::span<code_unit, 1>(__units.data(), 1),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -233,8 +231,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 2>(__units.data(), 2),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 2>(__units.data(), 2), ::ztd::span<code_point, 0>());
 					}
 				}
 				*__outit = static_cast<code_point>(__txt_detail::__utf16_combine_surrogates(
@@ -298,7 +295,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 					}
 				}
 				else {
@@ -320,8 +317,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+							::ztd::span<code_unit, 0>());
 					}
 				}
 
@@ -352,8 +349,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::insufficient_output_space),
-								::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-								::ztd::ranges::span<code_unit, 1>(::std::addressof(__trail16), 1));
+								::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+								::ztd::span<code_unit, 1>(::std::addressof(__trail16), 1));
 						}
 					}
 					*__outit = __trail16;
@@ -390,7 +387,13 @@ namespace ztd { namespace text {
 	/// @brief A UTF-16 Encoding that traffics in char16_t. See ztd::text::basic_utf16 for more details.
 	///
 	//////
-	using utf16 = basic_utf16<char16_t>;
+	using utf16_t = basic_utf16<char16_t>;
+
+	//////
+	/// @brief An instance of the UTF-16 encoding for ease of use.
+	///
+	//////
+	inline constexpr utf16_t utf16 = {};
 
 	//////
 	/// @}

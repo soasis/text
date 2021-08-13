@@ -34,10 +34,10 @@ struct my_error_handler {
 	// Helper definitions
 	template <typename Encoding>
 	using code_point_span
-	     = ztd::ranges::span<const ztd::text::code_point_t<Encoding>>;
+	     = ztd::span<const ztd::text::code_point_t<Encoding>>;
 	template <typename Encoding>
 	using code_unit_span
-	     = ztd::ranges::span<const ztd::text::code_unit_t<Encoding>>;
+	     = ztd::span<const ztd::text::code_unit_t<Encoding>>;
 
 	// Function call operator that returns a "deduced" (auto) type
 	// Specifically, this one is called for encode failures
@@ -85,7 +85,7 @@ int main(int, char* argv[]) {
 	// convert from execution encoding to utf8 encoding,
 	// using our new handler
 	std::string utf8_string = ztd::text::transcode(
-	     std::string_view(argv[0]), ztd::text::execution {},
+	     std::string_view(argv[0]), ztd::text::execution,
 	     ztd::text::basic_utf8<char> {}, my_error_handler {});
 
 	return 0;

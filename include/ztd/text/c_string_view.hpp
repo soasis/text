@@ -37,7 +37,7 @@
 
 #include <ztd/text/basic_c_string_view.hpp>
 
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>

@@ -484,7 +484,7 @@ namespace ztd { namespace text {
 		///
 		/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
 		/// buffer, will never return an error. This is the case with specific encoding operations with
-		/// ztd::text::replacement_handler, or ztd::text::throw_handler.
+		/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
 		//////
 		constexpr encoding_error error_code() const noexcept {
 			if constexpr (_IsErrorless) {
@@ -622,9 +622,9 @@ namespace ztd { namespace text {
 			auto& __this_input_range = this->_M_range();
 			auto __this_cache_begin  = this->_M_cache.data();
 			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
-			::ztd::ranges::span<value_type, _MaxValues> __cache_view(this->_M_cache);
+			::ztd::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 			_IntermediateCodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
-			::ztd::ranges::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>> __intermediate(
+			::ztd::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>> __intermediate(
 				__intermediate_storage);
 			if constexpr (_IsInputOrOutput) {
 				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(

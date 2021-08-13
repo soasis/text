@@ -46,7 +46,7 @@
 #include <ztd/text/detail/progress_handler.hpp>
 
 #include <ztd/ranges/range.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 		class __wide_execution_decode_state {
 		public:
 			::std::mbstate_t __wide_state;
-			decode_state_t<execution> __narrow_state;
+			decode_state_t<execution_t> __narrow_state;
 
 			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {
 				char __ghost_space[MB_LEN_MAX];
@@ -82,7 +82,7 @@ namespace ztd { namespace text {
 		class __wide_execution_encode_state {
 		public:
 			::std::mbstate_t __wide_state;
-			encode_state_t<execution> __narrow_state;
+			encode_state_t<execution_t> __narrow_state;
 
 			__wide_execution_encode_state() noexcept : __wide_state(), __narrow_state() {
 				wchar_t __ghost_space[2];
@@ -102,27 +102,29 @@ namespace ztd { namespace text {
 	namespace __txt_impl {
 
 		//////
-		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. This iteration uses
-		/// the C Standard Library to do its job.
+		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. This iteration
+		/// uses the C Standard Library to do its job.
 		///
-		/// @remarks Because this encoding uses the C Standard Library's functions, it is both slower and effectively
-		/// dangerous because it requires a roundtrip through the execution encoding to get to UTF-32, and vice-versa.
-		/// This is only used when @c wchar_t and its locale-based runtime encoding cannot be determined to be UTF-32,
-		/// UTF-16, or some other statically-known encoding. These conversions may also be lossy.
+		/// @remarks Because this encoding uses the C Standard Library's functions, it is both slower and
+		/// effectively dangerous because it requires a roundtrip through the encoding to get to
+		/// UTF-32, and vice-versa. This is only used when @c wchar_t and its locale-based runtime encoding
+		/// cannot be determined to be UTF-32, UTF-16, or some other statically-known encoding. These conversions
+		/// may also be lossy.
 		//////
 		class __wide_execution_cwchar {
 		public:
 			//////
-			/// @brief The individual units that result from an encode operation or are used as input to a decode
-			/// operation.
+			/// @brief The individual units that result from an encode operation or are used as input to a
+			/// decode operation.
 			///
-			/// @remarks Please note that wchar_t is a variably sized type across platforms and may not represent
-			/// either UTF-16 or UTF-32, including on *nix or POSIX platforms.
+			/// @remarks Please note that wchar_t is a variably sized type across platforms and may not
+			/// represent either UTF-16 or UTF-32, including on *nix or POSIX platforms.
 			//////
 			using code_unit = wchar_t;
 			//////
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
-			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
+			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar
+			/// Value.
 			//////
 			using code_point = unicode_code_point;
 
@@ -132,30 +134,31 @@ namespace ztd { namespace text {
 
 		public:
 			//////
-			/// @brief The state of the wide execution encoding used between calls, which may potentially manage
+			/// @brief The state of the wide encoding used between calls, which may potentially manage
 			/// shift state.
 			///
 			/// @remarks This type can potentially have lots of state due to the way the C API is specified.
 			//////
 			using decode_state = __wide_decode_state;
 			//////
-			/// @brief The state of the wide execution encoding used between calls, which may potentially manage
+			/// @brief The state of the wide encoding used between calls, which may potentially manage
 			/// shift state.
 			///
 			/// @remarks This type can potentially have lots of state due to the way the C API is specified.
 			//////
 			using encode_state = __wide_encode_state;
 			//////
-			/// @brief Whether or not the decode operation can process all forms of input into code point values.
+			/// @brief Whether or not the decode operation can process all forms of input into code point
+			/// values.
 			///
-			/// @remarks All known wide execution encodings can decode into Unicode just fine.
+			/// @remarks All known wide encodings can decode into Unicode just fine.
 			//////
 			using is_decode_injective = ::std::false_type;
 
 			//////
-			/// @brief Whether or not the encode operation can process all forms of input into code unit values. On
-			/// Windows, this is guaranteed to be UTF-16 encoding for the platform. Normally, this is UTF-32 on
-			/// *nix/POSIX machines, but it can (and has been) changed before, sometimes even at runtime.
+			/// @brief Whether or not the encode operation can process all forms of input into code unit values.
+			/// On Windows, this is guaranteed to be UTF-16 encoding for the platform. Normally, this is UTF-32
+			/// on *nix/POSIX machines, but it can (and has been) changed before, sometimes even at runtime.
 			///
 			/// @remarks IBM encodings/computers make life interesting...
 			//////
@@ -164,8 +167,8 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Whether or not this encoding a Unicode encoding of some type.
 			///
-			/// @remarks On Windows, this is always true. On other platforms, the guarantees are not quite there. IBM
-			/// encodings/computers make life interesting...
+			/// @remarks On Windows, this is always true. On other platforms, the guarantees are not quite
+			/// there. IBM encodings/computers make life interesting...
 			//////
 			using is_unicode_encoding = ::std::false_type;
 
@@ -184,43 +187,56 @@ namespace ztd { namespace text {
 			/// @brief Returns whether or not this encoding is a unicode encoding.
 			///
 			/// @remarks This function operates at runtime and queries the existing locale through a variety of
-			/// platform-specific means (such as @c nl_langinfo for POSIX, ACP probing on Windows, or fallin back to
+			/// platform-specific means (such as @c nl_langinfo for POSIX, ACP probing on Windows, or fallin
+			/// back to
 			/// @c std::setlocale name checking otherwise).
 			//////
 			static bool contains_unicode_encoding() noexcept {
+				execution_t __execution {};
+				if (!text::contains_unicode_encoding(__execution)) {
+					return false;
+				}
 #if ZTD_IS_ON(ZTD_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
-				// On very specific platforms, we must probe......
-				// ... but we don't have the code right now to do that properly.
-				// When we do, it'll go in the detail/posix.hpp !
-				return false;
+#if ZTD_IS_ON(ZTD_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_LANGINFO_I_)
+				const char* __ctype_name = nl_langinfo(CODESET);
+#else
+				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
+#endif
+				::std::string_view __adjusted_ctype_name(__ctype_name);
+				::std::size_t __index = __adjusted_ctype_name.find_first_of(".");
+				if (__index != ::std::string_view::npos) {
+					__adjusted_ctype_name = __adjusted_ctype_name.substr(__index);
+				}
+				return __idk_detail::__is_unicode_encoding_name(__adjusted_ctype_name);
 #else
 				return true;
 #endif
 			}
 
 			//////
-			/// @brief Encodes a single complete unit of information as code units and produces a result with the
-			/// input and output ranges moved past what was successfully read and written; or, produces an error and
-			/// returns the input and output ranges untouched.
+			/// @brief Encodes a single complete unit of information as code units and produces a result with
+			/// the input and output ranges moved past what was successfully read and written; or, produces an
+			/// error and returns the input and output ranges untouched.
 			///
 			/// @param[in] __input The input view to read code uunits from.
 			/// @param[in] __output The output view to write code points into.
 			/// @param[in] __error_handler The error handler to invoke if encoding fails.
-			/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this
-			/// is effectively a runtime encoding and therefore it is important to preserve and manage this state.
+			/// @param[in, out] __s The necessary state information. Most encodings have no state, but because
+			/// this is effectively a runtime encoding and therefore it is important to preserve and manage this
+			/// state.
 			///
 			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
-			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
-			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
-			/// implementation and what it chooses. If ZTD_TEXT_USE_CUNEICODE is defined, the ztd.cuneicode library
-			/// may be used to fulfill this functionality.
+			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete
+			/// unit of information (alongside std::mbstate_t usage). Whether or not the state is used is based
+			/// on the implementation and what it chooses. If ZTD_TEXT_USE_CUNEICODE is defined, the
+			/// ztd.cuneicode library may be used to fulfill this functionality.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
-			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any view
-			/// that models an input_range.
+			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any
+			/// view that models an input_range.
 			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
@@ -250,9 +266,10 @@ namespace ztd { namespace text {
 				constexpr const ::std::size_t __state_max = 32;
 				char __intermediate_buffer[__state_max + 1] {};
 				char* __intermediate_start = &__intermediate_buffer[0];
-				::ztd::ranges::span<char, __state_max> __intermediate_output(__intermediate_start, __state_max);
-				execution __exec {};
-				__txt_detail::__progress_handler<!__call_error_handler, __wide_execution_cwchar>
+				::ztd::span<char, __state_max> __intermediate_output(__intermediate_start, __state_max);
+				execution_t __exec {};
+				__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>,
+					__wide_execution_cwchar>
 					__intermediate_handler {};
 				auto __result = __exec.encode_one(::std::forward<_InputRange>(__input), __intermediate_output,
 					__intermediate_handler, __s.__narrow_state);
@@ -269,7 +286,7 @@ namespace ztd { namespace text {
 					}
 				}
 
-				auto __current_input = ::ztd::ranges::span<char>(__intermediate_output.data(),
+				auto __current_input = ::ztd::span<char>(__intermediate_output.data(),
 					::std::distance(__intermediate_output.data(), __result.output.data()));
 				code_unit __units[1] {};
 				::std::size_t __res = ::std::mbrtowc(::std::addressof(__units[0]), __current_input.data(),
@@ -310,28 +327,29 @@ namespace ztd { namespace text {
 			}
 
 			//////
-			/// @brief Decodes a single complete unit of information as code points and produces a result with the
-			/// input and output ranges moved past what was successfully read and written; or, produces an error and
-			/// returns the input and output ranges untouched.
+			/// @brief Decodes a single complete unit of information as code points and produces a result with
+			/// the input and output ranges moved past what was successfully read and written; or, produces an
+			/// error and returns the input and output ranges untouched.
 			///
 			/// @param[in] __input The input view to read code uunits from.
 			/// @param[in] __output The output view to write code points into.
 			/// @param[in] __error_handler The error handler to invoke if encoding fails.
-			/// @param[in, out] __s The necessary state information. Most encodings have no state, but because this
-			/// is effectively a runtime encoding and therefore it is important to preserve and manage this state.
+			/// @param[in, out] __s The necessary state information. Most encodings have no state, but because
+			/// this is effectively a runtime encoding and therefore it is important to preserve and manage this
+			/// state.
 			///
 			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
-			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
-			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
-			/// implementation and what it chooses. If @c ZTD_TEXT_USE_CUNEICODE is defined, the ztd.cuneicode
-			/// library may be used to fulfill this functionality.
+			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete
+			/// unit of information (alongside std::mbstate_t usage). Whether or not the state is used is based
+			/// on the implementation and what it chooses. If @c ZTD_TEXT_USE_CUNEICODE is defined, the
+			/// ztd.cuneicode library may be used to fulfill this functionality.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
-			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any view
-			/// that models an input_range.
+			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any
+			/// view that models an input_range.
 			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
@@ -367,7 +385,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -395,8 +413,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit>(::std::addressof(__units[0]), __units_count),
+								::ztd::span<code_point, 0>());
 						}
 					}
 					else {
@@ -417,8 +435,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit>(::std::addressof(__units[0]), __units_count),
+								::ztd::span<code_point, 0>());
 						}
 					}
 					else if (__res == 0) {
@@ -430,7 +448,8 @@ namespace ztd { namespace text {
 							// (DR 488, http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2059.htm#dr_488)
 							// Another DR, DR 499
 							// (http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2059.htm#dr_498) addresses
-							// thread safety issues, both should be solved is this is to be anywhere near usable
+							// thread safety issues, both should be solved is this is to be anywhere near
+							// usable
 							if constexpr (__call_error_handler) {
 								if (__init == __inlast) {
 									__wide_execution_cwchar __self {};
@@ -438,9 +457,8 @@ namespace ztd { namespace text {
 										_Result(::std::forward<_InputRange>(__input),
 										     ::std::forward<_OutputRange>(__output), __s,
 										     encoding_error::incomplete_sequence),
-										::ztd::ranges::span<code_unit>(
-										     ::std::addressof(__units[0]), __units_count),
-										::ztd::ranges::span<code_point, 0>());
+										::ztd::span<code_unit>(::std::addressof(__units[0]), __units_count),
+										::ztd::span<code_point, 0>());
 								}
 							}
 							continue;
@@ -451,9 +469,9 @@ namespace ztd { namespace text {
 					break;
 				}
 
-				execution __exec {};
+				execution_t __exec {};
 				__txt_detail::__pass_through_handler_with<!__call_error_handler> __intermediate_handler {};
-				::ztd::ranges::span<char, __state_max> __intermediate_input(__intermediate_buffer, __state_max);
+				::ztd::span<char, __state_max> __intermediate_input(__intermediate_buffer, __state_max);
 				auto __result = __exec.decode_one(__intermediate_input, ::std::forward<_OutputRange>(__output),
 					__intermediate_handler, __s.__narrow_state);
 				if constexpr (__call_error_handler) {
@@ -463,7 +481,7 @@ namespace ztd { namespace text {
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 							             ::std::move(__inlast)),
 							     ::std::move(__result.output), __s, __result.error_code),
-							::ztd::ranges::span<code_unit>(::std::addressof(__units[0]), __units_count),
+							::ztd::span<code_unit>(::std::addressof(__units[0]), __units_count),
 							__intermediate_handler.__M_code_points_progress());
 					}
 				}

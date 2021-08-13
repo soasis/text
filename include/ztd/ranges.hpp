@@ -35,7 +35,6 @@
 
 #include <ztd/ranges/version.hpp>
 
-#include <ztd/ranges/span.hpp>
 #include <ztd/ranges/subrange.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>

@@ -45,7 +45,7 @@
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/cast.hpp>
 
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
 
@@ -186,8 +186,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+							::ztd::span<code_unit, 0>());
 					}
 					if constexpr (!__surrogates_allowed) {
 						if (__txt_detail::__is_surrogate(__point)) {
@@ -198,8 +198,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-								::ztd::ranges::span<code_unit, 0>());
+								::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+								::ztd::span<code_unit, 0>());
 						}
 					}
 				}
@@ -219,8 +219,8 @@ namespace ztd { namespace text {
 										     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 										          ::std::move(__outit), ::std::move(__outlast)),
 										     __s, encoding_error::insufficient_output_space),
-										::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-										::ztd::ranges::span<code_unit>(__payload + i, __payload_size - i));
+										::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+										::ztd::span<code_unit>(__payload + i, __payload_size - i));
 								}
 							}
 							*__outit = static_cast<code_unit>(__payload[i]);
@@ -243,8 +243,8 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+							::ztd::span<code_unit, 0>());
 					}
 				}
 				constexpr uchar8_t __first_mask_continuation_values[][2] = {
@@ -282,7 +282,7 @@ namespace ztd { namespace text {
 						if constexpr (__call_error_handler) {
 							if (__outit == __outlast) {
 								__self_t __self {};
-								::ztd::ranges::span<code_unit> __code_unit_progress(
+								::ztd::span<code_unit> __code_unit_progress(
 									::std::addressof(__values[__index]), __length_index - __index);
 								return __error_handler(__self,
 									_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
@@ -290,7 +290,7 @@ namespace ztd { namespace text {
 									     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 									          ::std::move(__outit), ::std::move(__outlast)),
 									     __s, encoding_error::insufficient_output_space),
-									::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
+									::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
 									__code_unit_progress);
 							}
 						}
@@ -359,7 +359,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 				else {
@@ -383,8 +383,8 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit, 1>(__units.data(), __units.size()),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit, 1>(__units.data(), __units.size()),
+								::ztd::span<code_point, 0>());
 						}
 					}
 				}
@@ -411,8 +411,7 @@ namespace ztd { namespace text {
 							     __s,
 							     __is_invalid_cu ? encoding_error::invalid_sequence
 							                     : encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit, 1>(__units.data(), 1),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -426,8 +425,7 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::incomplete_sequence),
-								::ztd::ranges::span<code_unit>(__units.data(), i),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit>(__units.data(), i), ::ztd::span<code_point, 0>());
 						}
 					}
 					__units[i] = __txt_detail::static_cast_if_lossless<code_unit>(*__init);
@@ -440,8 +438,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit>(__units.data(), i + 1),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit>(__units.data(), i + 1), ::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -473,8 +470,7 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(__units.data(), __length),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 						}
 					}
 					if constexpr (!__surrogates_allowed) {
@@ -486,8 +482,7 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(__units.data(), __length),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 						}
 					}
 					if (static_cast<char32_t>(__decoded) > __txt_detail::__last_code_point) {
@@ -498,8 +493,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_unit>(__units.data(), __length),
-							::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -542,13 +536,25 @@ namespace ztd { namespace text {
 	/// @brief A UTF-8 Encoding that traffics in uchar8_t. See ztd::text::basic_utf8 for more details.
 	///
 	//////
-	using utf8 = basic_utf8<uchar8_t>;
+	using utf8_t = basic_utf8<uchar8_t>;
+
+	//////
+	/// @brief An instance of the UTF-8 encoding for ease of use.
+	///
+	//////
+	inline constexpr utf8_t utf8 = {};
 
 	//////
 	/// @brief A UTF-8 Encoding that traffics in char, for compatibility purposes with older codebases. See
 	/// ztd::text::basic_utf8 for more details.
 	//////
-	using compat_utf8 = basic_utf8<char>;
+	using compat_utf8_t = basic_utf8<char>;
+
+	//////
+	/// @brief An instance of the compatibility UTF-8 encoding for ease of use.
+	///
+	//////
+	inline constexpr compat_utf8_t compat_utf8 = {};
 
 	//////
 	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in, specifically, the desired code
@@ -570,7 +576,13 @@ namespace ztd { namespace text {
 	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in char8_t. See
 	/// ztd::text::basic_wtf8 for more details.
 	//////
-	using wtf8 = basic_wtf8<uchar8_t>;
+	using wtf8_t = basic_wtf8<uchar8_t>;
+
+	//////
+	/// @brief An instance of the WTF-8 type for ease of use.
+	///
+	//////
+	inline constexpr wtf8_t wtf8 = {};
 
 	//////
 	/// @brief A Modified UTF-8 Encoding that traffics in, specifically, the desired code unit type provided as a
@@ -592,7 +604,14 @@ namespace ztd { namespace text {
 	/// @brief A Modified UTF-8 Encoding that traffics in char8_t. See ztd::text::basic_mutf8 for more details.
 	///
 	//////
-	using mutf8 = basic_mutf8<uchar8_t>;
+	using mutf8_t = basic_mutf8<uchar8_t>;
+
+
+	//////
+	/// @brief An instance of the MUTF-8 type for ease of use.
+	///
+	//////
+	inline constexpr mutf8_t mutf8 = {};
 
 
 	namespace __txt_detail {

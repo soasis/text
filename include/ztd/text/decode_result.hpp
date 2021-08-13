@@ -39,7 +39,7 @@
 #include <ztd/text/encoding_error.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 
 #include <ztd/idk/reference_wrapper.hpp>
@@ -115,7 +115,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the decode operation, taken as the first of either the decode
 		/// operation that failed.
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
-		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput>
@@ -181,7 +181,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the decode operation, taken as the first of either the decode
 		/// operation that failed.
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
-		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
@@ -198,8 +198,8 @@ namespace ztd { namespace text {
 	/// pointer-based buffer usages.
 	//////
 	template <typename _Encoding>
-	using span_decode_result_for = decode_result<::ztd::ranges::span<const code_unit_t<_Encoding>>,
-		::ztd::ranges::span<code_point_t<_Encoding>>, decode_state_t<_Encoding>>;
+	using span_decode_result_for = decode_result<::ztd::span<const code_unit_t<_Encoding>>,
+		::ztd::span<code_point_t<_Encoding>>, decode_state_t<_Encoding>>;
 
 	//////
 	/// @brief A type alias to produce a concrete error handler for the encoding result of the specified @p _Encoding
@@ -211,7 +211,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, template <class...> class _Function = std::function>
 	using basic_decode_error_handler_for = _Function<span_decode_result_for<_Encoding>(
-		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::ranges::span<const code_unit_t<_Encoding>>)>;
+		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::span<const code_unit_t<_Encoding>>)>;
 
 	//////
 	/// @}

@@ -43,8 +43,8 @@ inline namespace ztd_text_tests_basic_run_time_transcode_decode_encode_view {
 	void check_decode_encode_view(
 	     FromEncoding& from, ToEncoding& to, const Input& input, const Expected& expected_output) {
 		using DecodeRange    = ztd::text::decode_view<FromEncoding,
-               std::basic_string_view<ztd::text::code_unit_t<FromEncoding>>, ztd::text::replacement_handler>;
-		using TranscodeRange = ztd::text::encode_view<ToEncoding, DecodeRange, ztd::text::replacement_handler>;
+               std::basic_string_view<ztd::text::code_unit_t<FromEncoding>>, ztd::text::replacement_handler_t>;
+		using TranscodeRange = ztd::text::encode_view<ToEncoding, DecodeRange, ztd::text::replacement_handler_t>;
 		TranscodeRange result0_view(DecodeRange(input, from), to);
 		auto result0_it         = result0_view.begin();
 		const auto result0_last = result0_view.end();
@@ -64,383 +64,383 @@ inline namespace ztd_text_tests_basic_run_time_transcode_decode_encode_view {
 TEST_CASE("text/encode_view + decode_view/basic",
      "basic usages of wrapped encode view + decode view type do not explode and behave like transcode_view") {
 	SECTION("execution") {
-		ztd::text::execution from {};
+		ztd::text::execution_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::u8_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u8_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::unicode_sequence_truth_native_endian,
+				     ztd::tests::u8_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::u16_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u16_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::unicode_sequence_truth_native_endian,
+				     ztd::tests::u16_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::u32_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::unicode_sequence_truth_native_endian,
+				     ztd::tests::u32_unicode_sequence_truth_native_endian);
 			}
 		}
 	}
 	SECTION("wide_execution") {
-		ztd::text::wide_execution from {};
+		ztd::text::wide_execution_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::u8_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u8_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::u8_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::u16_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u16_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::u16_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::u32_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::u32_unicode_sequence_truth_native_endian);
 			}
 		}
 	}
 	SECTION("literal") {
-		ztd::text::literal from {};
+		ztd::text::literal_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::basic_source_character_set);
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::w_basic_source_character_set);
 		}
 		SECTION("literal") {
-			ztd::text::literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::basic_source_character_set);
 		}
 		SECTION("wide_literal") {
-			ztd::text::wide_literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::w_basic_source_character_set);
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::u8_basic_source_character_set);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::u16_basic_source_character_set);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::basic_source_character_set, ztd::tests::u32_basic_source_character_set);
 		}
 	}
 	SECTION("wide_literal") {
-		ztd::text::wide_literal from {};
+		ztd::text::wide_literal_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("literal") {
-			ztd::text::literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_literal") {
-			ztd::text::wide_literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::u8_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u8_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::u8_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::u16_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u16_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::u16_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::w_basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::w_basic_source_character_set, ztd::tests::u32_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::w_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::w_unicode_sequence_truth_native_endian,
+				     ztd::tests::u32_unicode_sequence_truth_native_endian);
 			}
 		}
 	}
 	SECTION("utf8") {
-		ztd::text::utf8 from {};
+		ztd::text::utf8_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("literal") {
-			ztd::text::literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_literal") {
-			ztd::text::wide_literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u8_unicode_sequence_truth_native_endian);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::u8_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+			     ztd::tests::u8_unicode_sequence_truth_native_endian);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u16_unicode_sequence_truth_native_endian);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::u16_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+			     ztd::tests::u16_unicode_sequence_truth_native_endian);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u8_basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u8_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u8_basic_source_character_set, ztd::tests::u32_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u8_unicode_sequence_truth_native_endian,
+			     ztd::tests::u32_unicode_sequence_truth_native_endian);
 		}
 	}
 	SECTION("utf16") {
-		ztd::text::utf16 from {};
+		ztd::text::utf16_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("literal") {
-			ztd::text::literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_literal") {
-			ztd::text::wide_literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u8_unicode_sequence_truth_native_endian);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::u8_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+			     ztd::tests::u8_unicode_sequence_truth_native_endian);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u16_unicode_sequence_truth_native_endian);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::u16_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+			     ztd::tests::u16_unicode_sequence_truth_native_endian);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u16_basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u16_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u16_basic_source_character_set, ztd::tests::u32_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u16_unicode_sequence_truth_native_endian,
+			     ztd::tests::u32_unicode_sequence_truth_native_endian);
 		}
 	}
 	SECTION("utf32") {
-		ztd::text::utf32 from {};
+		ztd::text::utf32_t from {};
 		SECTION("execution") {
-			ztd::text::execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_execution") {
-			ztd::text::wide_execution to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_execution_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("literal") {
-			ztd::text::literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::basic_source_character_set);
+			ztd::text::literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+				     ztd::tests::unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("wide_literal") {
-			ztd::text::wide_literal to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::w_basic_source_character_set);
+			ztd::text::wide_literal_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::w_basic_source_character_set);
 			if (ztd::text::contains_unicode_encoding(from) && ztd::text::contains_unicode_encoding(to)) {
-				check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-				     ztd::text::tests::w_unicode_sequence_truth_native_endian);
+				check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+				     ztd::tests::w_unicode_sequence_truth_native_endian);
 			}
 		}
 		SECTION("utf8") {
-			ztd::text::utf8 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::u8_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u8_unicode_sequence_truth_native_endian);
+			ztd::text::utf8_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::u8_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+			     ztd::tests::u8_unicode_sequence_truth_native_endian);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::u16_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u16_unicode_sequence_truth_native_endian);
+			ztd::text::utf16_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::u16_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+			     ztd::tests::u16_unicode_sequence_truth_native_endian);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 to {};
-			check_decode_encode_view(from, to, ztd::text::tests::u32_basic_source_character_set,
-			     ztd::text::tests::u32_basic_source_character_set);
-			check_decode_encode_view(from, to, ztd::text::tests::u32_unicode_sequence_truth_native_endian,
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian);
+			ztd::text::utf32_t to {};
+			check_decode_encode_view(
+			     from, to, ztd::tests::u32_basic_source_character_set, ztd::tests::u32_basic_source_character_set);
+			check_decode_encode_view(from, to, ztd::tests::u32_unicode_sequence_truth_native_endian,
+			     ztd::tests::u32_unicode_sequence_truth_native_endian);
 		}
 	}
 }

@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 
 #include <cstddef>
 
@@ -67,7 +67,7 @@ namespace ztd { namespace text {
 			return __value >= __first_surrogate && __value <= __last_surrogate;
 		}
 
-		// utf8 related
+		// utf8_t related
 		inline constexpr char32_t __last_1byte_value = 0x7F;
 		inline constexpr char32_t __last_2byte_value = 0x7FF;
 		inline constexpr char32_t __last_3byte_value = 0xFFFF;
@@ -173,7 +173,7 @@ namespace ztd { namespace text {
 				| ((__value2 & 0x3F) << 6) | (__value3 & 0x3F));
 		}
 
-		// utf16 related
+		// utf16_t related
 		inline constexpr char32_t __last_ascii_value   = 0x7F;
 		inline constexpr char32_t __last_bmp_value     = 0xFFFF;
 		inline constexpr char32_t __normalizing_value  = 0x10000;

@@ -39,23 +39,23 @@ inline namespace ztd_text_tests_basic_compile_time_validate_encodable_as_unicode
 	template <typename T>
 	static void delayed() {
 		// Larger unicode sequences, defaulted encoding
-		static_assert(ztd::text::validate_encodable_as(ztd::text::tests::u32_unicode_sequence_truth_native_endian));
+		static_assert(ztd::text::validate_encodable_as(ztd::tests::u32_unicode_sequence_truth_native_endian));
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
 			static_assert(ztd::text::validate_encodable_as(
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal()));
+			     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal_t()));
 		}
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
 			static_assert(ztd::text::validate_encodable_as(
-			     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal()));
+			     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal_t()));
 		}
 		static_assert(ztd::text::validate_encodable_as(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8()));
+		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8_t()));
 		static_assert(ztd::text::validate_encodable_as(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16()));
+		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16_t()));
 		static_assert(ztd::text::validate_encodable_as(
-		     ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32()));
+		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32_t()));
 	}
 
 	void instantiate() {

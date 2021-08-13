@@ -45,7 +45,7 @@
 #include <ztd/text/detail/progress_handler.hpp>
 
 #include <ztd/ranges/range.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <cwchar>
 #include <iterator>
@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 	namespace __txt_impl {
 
 		//////
-		/// @brief The wide execution encoding, as envisioned by ISO 10646. Typically UTF-32 with native endianness.
+		/// @brief The wide encoding, as envisioned by ISO 10646. Typically UTF-32 with native endianness.
 		///
 		/// @remarks This is generally only turned on when the Standard Definition is turn oned ( @c
 		/// __STDC_ISO_10646__ ). It effectively uses UTF-32 since that's the only encoding that can meet the original

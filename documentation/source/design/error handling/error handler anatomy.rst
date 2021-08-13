@@ -76,14 +76,14 @@ The second parameter is the result object. It is of the type :doc:`ztd::text::de
 
 This contains all of the state and information that the decode operation/encode operation would return, if left unmodified by the error handler. If you don't want to do anything to it, simply pass it through by returning it with ``return result;``. Otherwise, you have access to the ``input`` range, the ``output`` range, any ``.state`` relevant to the operation, the ``.error_code``, and the ``.error_handled`` value. You can modify any one of theses, or even perform a recovery operation and change the ``.error_code`` to be ``ztd::text::encoding_error::ok``. Literally, anything can be done!
 
-For example, someone can see if there is space left in the ``result.output`` parameter, and if so attempt to serialize a replacement character in place there (this is what :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` does).
+For example, someone can see if there is space left in the ``result.output`` parameter, and if so attempt to serialize a replacement character in place there (this is what :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` does).
 
 
 
 Third Parameter
 ---------------
 
-The third parameter is a contiguous range of inputs that were read. Typically, this is a ``ztd::ranges::span`` handed to you, or something that can construct a ``ztd::ranges::span`` or either code units or code points (whatever the input type has). This is useful for ``input_range``\ s and ``input_iterator``\ s where it is impossible to guarantee a value can be re-read, as is the case `with istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_ and other I/O-style iterators and ranges.
+The third parameter is a contiguous range of inputs that were read. Typically, this is a ``ztd::span`` handed to you, or something that can construct a ``ztd::span`` or either code units or code points (whatever the input type has). This is useful for ``input_range``\ s and ``input_iterator``\ s where it is impossible to guarantee a value can be re-read, as is the case `with istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_ and other I/O-style iterators and ranges.
 
 This is useful for grabbing any unused-but-read input data, and storing it for later. For example, reading from a network buffer where the network still has more data means that getting a :doc:`ztd::text::encoding_error::incomplete_sequence </api/encoding_error>` is not **really** an error. It just means to save what has not been read yet, change the buffer pointer to leave those characters in the right place, and try again. This can also be done a little bit easier by utilizing the :doc:`ztd::text::incomplete_handler </api/error handlers/incomplete_handler>`.
 
@@ -92,7 +92,7 @@ This is useful for grabbing any unused-but-read input data, and storing it for l
 Fourth Parameter
 ----------------
 
-The fourth parameter is a contiguous range of outputs that were read. Typically, this is a ``ztd::ranges::span`` handed to you, or something that can construct a ``ztd::ranges::span`` or either code units or code points (whatever the output type has). This is useful for ``output_range``\ s and ``output_iterator``\ s where it is impossible to guarantee a value can be written, as is the case `with ostream_iterator <https://en.cppreference.com/w/cpp/iterator/ostream_iterator>`_ and other I/O-style iterators and ranges. It is also **very** important for when someone does bulk-buffered writes, since multiple writes are not guaranteed to fit within the given :doc:`ztd::text::max_code_points_v </api/max_code_points>` or :doc:`ztd::text::max_code_units_v </api/max_code_units>` for a specific encoding. (They only represent the maximum for a single, atomic operation.)
+The fourth parameter is a contiguous range of outputs that were read. Typically, this is a ``ztd::span`` handed to you, or something that can construct a ``ztd::span`` or either code units or code points (whatever the output type has). This is useful for ``output_range``\ s and ``output_iterator``\ s where it is impossible to guarantee a value can be written, as is the case `with ostream_iterator <https://en.cppreference.com/w/cpp/iterator/ostream_iterator>`_ and other I/O-style iterators and ranges. It is also **very** important for when someone does bulk-buffered writes, since multiple writes are not guaranteed to fit within the given :doc:`ztd::text::max_code_points_v </api/max_code_points>` or :doc:`ztd::text::max_code_units_v </api/max_code_units>` for a specific encoding. (They only represent the maximum for a single, atomic operation.)
 
 This is useful for grabbing any would-be-written output data, and storing it for later / completing it. For example, writing to a smaller, contiguous buffer for delivery and looping around that buffer can be faster, but it runs the risk of partial reads/writes on the boundaries of said smaller, contiguous buffer.
 

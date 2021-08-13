@@ -40,25 +40,25 @@ inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_basic {
 	static void delayed() {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		// Basic Source Character Set, using defaults
-		// Can only be done if we have constant evaluation inside to swap to the literal encoding
-		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::basic_source_character_set));
-		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::w_basic_source_character_set));
+		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
+		static_assert(ztd::text::validate_decodable_as(ztd::tests::basic_source_character_set));
+		static_assert(ztd::text::validate_decodable_as(ztd::tests::w_basic_source_character_set));
 #endif
-		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::u8_basic_source_character_set));
-		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::u16_basic_source_character_set));
-		static_assert(ztd::text::validate_decodable_as(ztd::text::tests::u32_basic_source_character_set));
+		static_assert(ztd::text::validate_decodable_as(ztd::tests::u8_basic_source_character_set));
+		static_assert(ztd::text::validate_decodable_as(ztd::tests::u16_basic_source_character_set));
+		static_assert(ztd::text::validate_decodable_as(ztd::tests::u32_basic_source_character_set));
 
 		// Basic Source Character Set, explicit encoding
 		static_assert(
-		     ztd::text::validate_decodable_as(ztd::text::tests::basic_source_character_set, ztd::text::literal()));
-		static_assert(ztd::text::validate_decodable_as(
-		     ztd::text::tests::w_basic_source_character_set, ztd::text::wide_literal()));
+		     ztd::text::validate_decodable_as(ztd::tests::basic_source_character_set, ztd::text::literal_t()));
 		static_assert(
-		     ztd::text::validate_decodable_as(ztd::text::tests::u8_basic_source_character_set, ztd::text::utf8()));
+		     ztd::text::validate_decodable_as(ztd::tests::w_basic_source_character_set, ztd::text::wide_literal_t()));
 		static_assert(
-		     ztd::text::validate_decodable_as(ztd::text::tests::u16_basic_source_character_set, ztd::text::utf16()));
+		     ztd::text::validate_decodable_as(ztd::tests::u8_basic_source_character_set, ztd::text::utf8_t()));
 		static_assert(
-		     ztd::text::validate_decodable_as(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32()));
+		     ztd::text::validate_decodable_as(ztd::tests::u16_basic_source_character_set, ztd::text::utf16_t()));
+		static_assert(
+		     ztd::text::validate_decodable_as(ztd::tests::u32_basic_source_character_set, ztd::text::utf32_t()));
 	}
 
 	void instantiate() {

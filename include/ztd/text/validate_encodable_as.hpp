@@ -47,7 +47,7 @@
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
 
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <algorithm>
 #include <string_view>
@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 		using _InputValueType = ranges::range_value_type_t<_UInput>;
 		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                ::std::conditional_t<is_character_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
-                    ::ztd::ranges::span<const _InputValueType>>,
+                    ::ztd::span<const _InputValueType>>,
                _UInput>>;
 		using _UEncoding      = remove_cvref_t<_Encoding>;
 		using _Result         = validate_transcode_result<_WorkingInput, _EncodeState, _DecodeState>;
@@ -174,8 +174,8 @@ namespace ztd { namespace text {
 
 			_CodePoint __code_point_buf[max_code_points_v<_UEncoding>] {};
 			_CodeUnit __code_unit_buf[max_code_units_v<_UEncoding>] {};
-			::ztd::ranges::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_view(__code_point_buf);
-			::ztd::ranges::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
+			::ztd::span<_CodePoint, max_code_points_v<_UEncoding>> __code_point_view(__code_point_buf);
+			::ztd::span<_CodeUnit, max_code_units_v<_UEncoding>> __code_unit_view(__code_unit_buf);
 
 			for (;;) {
 				auto __stateless_validate_result = __txt_detail::__basic_validate_encodable_as_one(__working_input,

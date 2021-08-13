@@ -114,7 +114,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
-		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput>
@@ -192,7 +192,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
-		/// ztd::text::replacement_handler), and so the error code is not enough to determine if the handler was
+		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>

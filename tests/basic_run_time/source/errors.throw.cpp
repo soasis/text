@@ -44,10 +44,10 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 
 		auto action = [&]() noexcept(false) {
 			code_point output_buffer[ztd::text::max_code_points_v<Encoding>] {};
-			ztd::ranges::span<const code_unit> input(container.data(), container.size());
-			ztd::ranges::span<code_point> output(output_buffer, output_max);
+			ztd::span<const code_unit> input(container.data(), container.size());
+			ztd::span<code_point> output(output_buffer, output_max);
 			state s {};
-			[[maybe_unused]] auto result = encoding.decode_one(input, output, ztd::text::throw_handler {}, s);
+			[[maybe_unused]] auto result = encoding.decode_one(input, output, ztd::text::throw_handler_t {}, s);
 			REQUIRE(false); // should not make it here ever!
 		};
 		REQUIRE_THROWS_MATCHES(action(), std::system_error, Catch::Matchers::Message("invalid_sequence"));
@@ -62,10 +62,10 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 
 		auto action = [&]() noexcept(false) {
 			code_unit output_buffer[ztd::text::max_code_units_v<Encoding>] {};
-			ztd::ranges::span<const code_point> input(container.data(), container.size());
-			ztd::ranges::span<code_unit> output(output_buffer, output_max);
+			ztd::span<const code_point> input(container.data(), container.size());
+			ztd::span<code_unit> output(output_buffer, output_max);
 			state s {};
-			[[maybe_unused]] auto result = encoding.encode_one(input, output, ztd::text::throw_handler {}, s);
+			[[maybe_unused]] auto result = encoding.encode_one(input, output, ztd::text::throw_handler_t {}, s);
 			REQUIRE(false); // should not make it here ever!
 		};
 		REQUIRE_THROWS_MATCHES(action(), std::system_error, Catch::Matchers::Message("invalid_sequence"));
@@ -75,30 +75,30 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 TEST_CASE("text/encoding/errors", "invalid characters are handled") {
 	SECTION("decode") {
 		SECTION("utf8") {
-			ztd::text::utf8 encoding;
-			decode_one_throw_check(encoding, ztd::text::tests::u8_unicode_invalid_input);
+			ztd::text::utf8_t encoding;
+			decode_one_throw_check(encoding, ztd::tests::u8_unicode_invalid_input);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 encoding;
-			decode_one_throw_check(encoding, ztd::text::tests::u16_unicode_invalid_input);
+			ztd::text::utf16_t encoding;
+			decode_one_throw_check(encoding, ztd::tests::u16_unicode_invalid_input);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 encoding;
-			decode_one_throw_check(encoding, ztd::text::tests::u32_unicode_invalid_input);
+			ztd::text::utf32_t encoding;
+			decode_one_throw_check(encoding, ztd::tests::u32_unicode_invalid_input);
 		}
 	}
 	SECTION("encode") {
 		SECTION("utf8") {
-			ztd::text::utf8 encoding;
-			encode_one_throw_check(encoding, ztd::text::tests::u32_unicode_invalid_input);
+			ztd::text::utf8_t encoding;
+			encode_one_throw_check(encoding, ztd::tests::u32_unicode_invalid_input);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 encoding;
-			encode_one_throw_check(encoding, ztd::text::tests::u32_unicode_invalid_input);
+			ztd::text::utf16_t encoding;
+			encode_one_throw_check(encoding, ztd::tests::u32_unicode_invalid_input);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 encoding;
-			encode_one_throw_check(encoding, ztd::text::tests::u32_unicode_invalid_input);
+			ztd::text::utf32_t encoding;
+			encode_one_throw_check(encoding, ztd::tests::u32_unicode_invalid_input);
 		}
 	}
 }

@@ -31,7 +31,9 @@
 replacement_handler
 ===================
 
-The ``replacement_handler`` is the go-to error handling class. It is also the :doc:`ztd::text::default_handler </api/error handlers/default_handler>`.
+The ``replacement_handler_t`` is the go-to error handling class. It is also the :doc:`ztd::text::default_handler </api/error handlers/default_handler>`.
 
-.. doxygenclass:: ztd::text::replacement_handler
+.. doxygenvariable:: ztd::text::replacement_handler
+
+.. doxygenclass:: ztd::text::replacement_handler_t
 	:members:

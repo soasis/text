@@ -32,6 +32,10 @@ UTF-16
 ======
 
 
+.. doxygenvariable:: ztd::text::utf16
+
+.. doxygentypedef:: ztd::text::utf16_t
+
 
 
 Base Template
@@ -39,10 +43,3 @@ Base Template
 
 .. doxygenclass:: ztd::text::basic_utf16
 	:members:
-
-
-
-Aliases
--------
-
-.. doxygentypedef:: ztd::text::utf16

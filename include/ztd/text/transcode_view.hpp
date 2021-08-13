@@ -78,9 +78,9 @@ namespace ztd { namespace text {
 	/// present each code unit one at a time. If you are looking to explicitly know each collection of characters, you
 	/// will have to use lower-level interfaces.
 	//////
-	template <typename _FromEncoding, typename _ToEncoding = utf8,
+	template <typename _FromEncoding, typename _ToEncoding = utf8_t,
 		typename _Range            = ::std::basic_string_view<code_unit_t<_FromEncoding>>,
-		typename _FromErrorHandler = default_handler, typename _ToErrorHandler = default_handler,
+		typename _FromErrorHandler = default_handler_t, typename _ToErrorHandler = default_handler_t,
 		typename _FromState = decode_state_t<_FromEncoding>, typename _ToState = encode_state_t<_ToEncoding>>
 	class transcode_view {
 	public:

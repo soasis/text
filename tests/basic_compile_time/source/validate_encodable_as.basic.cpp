@@ -39,19 +39,19 @@ inline namespace ztd_text_tests_basic_compile_time_validate_encodable_as_basic {
 	template <typename T>
 	static void delayed() {
 		// Basic Source Character Set, using defaults
-		static_assert(ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set));
+		static_assert(ztd::text::validate_encodable_as(ztd::tests::u32_basic_source_character_set));
 
 		// Basic Source Character Set, explicit encoding
+		static_assert(
+		     ztd::text::validate_encodable_as(ztd::tests::u32_basic_source_character_set, ztd::text::literal_t()));
 		static_assert(ztd::text::validate_encodable_as(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::literal()));
-		static_assert(ztd::text::validate_encodable_as(
-		     ztd::text::tests::u32_basic_source_character_set, ztd::text::wide_literal()));
+		     ztd::tests::u32_basic_source_character_set, ztd::text::wide_literal_t()));
 		static_assert(
-		     ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf8()));
+		     ztd::text::validate_encodable_as(ztd::tests::u32_basic_source_character_set, ztd::text::utf8_t()));
 		static_assert(
-		     ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf16()));
+		     ztd::text::validate_encodable_as(ztd::tests::u32_basic_source_character_set, ztd::text::utf16_t()));
 		static_assert(
-		     ztd::text::validate_encodable_as(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32()));
+		     ztd::text::validate_encodable_as(ztd::tests::u32_basic_source_character_set, ztd::text::utf32_t()));
 	}
 
 	void instantiate() {

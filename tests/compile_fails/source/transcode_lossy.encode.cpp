@@ -35,9 +35,9 @@ int main(int, char*[]) {
 	     // input
 	     U"",
 	     // from this encoding
-	     ztd::text::utf32 {},
+	     ztd::text::utf32,
 	     // to this encoding
-	     ztd::text::execution {});
+	     ztd::text:: {});
 
 	return 0;
 }

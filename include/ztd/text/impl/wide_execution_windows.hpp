@@ -47,7 +47,7 @@
 #include <ztd/text/detail/progress_handler.hpp>
 
 #include <ztd/ranges/range.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <ztd/text/detail/windows.hpp>
 
@@ -70,7 +70,7 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding, as it exists on
-		/// Windows. The wide execution encoding is typically associated with the locale, which is tied to the C
+		/// Windows. The wide encoding is typically associated with the locale, which is tied to the C
 		/// standard library's setlocale function.
 		///
 		/// @remarks Windows uses UTF-16, unless you call the C Standard Library directly. If @c

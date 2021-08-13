@@ -36,7 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/type_traits.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <type_traits>
 

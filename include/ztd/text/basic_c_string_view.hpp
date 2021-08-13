@@ -37,10 +37,10 @@
 
 #include <ztd/text/forward.hpp>
 #include <ztd/text/type_traits.hpp>
-#include <ztd/text/detail/assert.hpp>
+#include <ztd/text/assert.hpp>
 
 #include <ztd/idk/ebco.hpp>
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/empty_string.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 

@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 	/// interfaces.
 	//////
 	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_point_t<_Encoding>>,
-		typename _ErrorHandler = default_handler, typename _State = encode_state_t<_Encoding>>
+		typename _ErrorHandler = default_handler_t, typename _State = encode_state_t<_Encoding>>
 	class encode_view {
 	private:
 		using _StoredRange = ranges::range_reconstruct_t<remove_cvref_t<_Range>>;

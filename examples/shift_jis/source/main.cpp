@@ -59,12 +59,12 @@ int main() {
 	std::vector<char> utf8_bytes(
 	     std::istreambuf_iterator<char>(expected_input_file), std::istreambuf_iterator<char> {});
 
-	ztd::ranges::span<char> shift_jis_input(shift_jis_bytes);
-	std::string utf8_string      = ztd::text::transcode(shift_jis_input, shift_jis(), ztd::text::compat_utf8(),
-          ztd::text::replacement_handler(), ztd::text::replacement_handler());
+	ztd::span<char> shift_jis_input(shift_jis_bytes);
+	std::string utf8_string      = ztd::text::transcode(shift_jis_input, shift_jis(), ztd::text::compat_utf8,
+          ztd::text::replacement_handler_t(), ztd::text::replacement_handler_t());
 	std::string_view utf8_input  = utf8_string;
-	std::string shift_jis_string = ztd::text::transcode(utf8_input, ztd::text::compat_utf8(), shift_jis(),
-	     ztd::text::replacement_handler(), ztd::text::replacement_handler());
+	std::string shift_jis_string = ztd::text::transcode(utf8_input, ztd::text::compat_utf8, shift_jis(),
+	     ztd::text::replacement_handler_t(), ztd::text::replacement_handler_t());
 
 	// check that they are equivalent!
 	ZTD_TEXT_ASSERT(std::equal(utf8_string.cbegin(), utf8_string.cend(), utf8_bytes.cbegin(), utf8_bytes.cend()));

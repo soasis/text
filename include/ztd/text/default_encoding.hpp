@@ -64,24 +64,24 @@ namespace ztd { namespace text {
 			// clang-format off
 			using _ChosenType = ::std::conditional_t<
 				::std::is_same_v<_Type, char>,
-					::std::conditional_t<_CompileTime, literal, execution>,
+					::std::conditional_t<_CompileTime, literal_t, execution_t>,
 					::std::conditional_t<::std::is_same_v<_Type, wchar_t>,
-						::std::conditional_t<_CompileTime, wide_literal, wide_execution>,
+						::std::conditional_t<_CompileTime, wide_literal_t, wide_execution_t>,
 						::std::conditional_t<::std::is_same_v<_Type, signed char>, basic_ascii<signed char>,
-							::std::conditional_t<::std::is_same_v<_Type, uchar8_t>, utf8,
+							::std::conditional_t<::std::is_same_v<_Type, uchar8_t>, utf8_t,
 								::std::conditional_t<::std::is_same_v<_Type, unsigned char>, basic_utf8<unsigned char>,
 #if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
 									::std::conditional_t<::std::is_same_v<_Type, char8_t>, basic_utf8<char8_t>,
 #endif
-										::std::conditional_t<::std::is_same_v<_Type, char16_t>, utf16,
-											::std::conditional_t<::std::is_same_v<_Type, char32_t>, utf32,
+										::std::conditional_t<::std::is_same_v<_Type, char16_t>, utf16_t,
+											::std::conditional_t<::std::is_same_v<_Type, char32_t>, utf32_t,
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
 												::std::conditional_t<::std::is_same_v<_Type, unicode_code_point>, basic_utf32<unicode_code_point>,
 #endif
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
 													::std::conditional_t<::std::is_same_v<_Type, unicode_scalar_value>, basic_utf32<unicode_scalar_value>,
 #endif
-														::std::conditional_t<::std::is_same_v<_Type, ::std::byte>, encoding_scheme<utf8, endian::native, ::std::byte>, basic_no_encoding<_Type, unicode_code_point>>
+														::std::conditional_t<::std::is_same_v<_Type, ::std::byte>, encoding_scheme<utf8_t, endian::native, ::std::byte>, basic_no_encoding<_Type, unicode_code_point>>
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
 													>
 #endif
@@ -108,16 +108,16 @@ namespace ztd { namespace text {
 			/// @brief The chosen type for the given code unit.
 			///
 			/// @remarks The default encodings for code unit types are as follows
-			/// - @c char ➡ ztd::text::execution (runtime), ztd::text::literal (compiletime)
-			/// - @c wchar_t ➡ ztd::text::wide_execution (runtime), ztd::text::wide_literal (compiletime)
+			/// - @c char ➡ ztd::text::(runtime), ztd::text::literal_t (compiletime)
+			/// - @c wchar_t ➡ ztd::text::(runtime), ztd::text::wide_literal_t (compiletime)
 			/// - @c char8_t ➡ ztd::text::utf8
-			/// - @c ztd::uchar8_t ➡ ztd::text::utf8 (if different from @c char8_t type)
+			/// - @c ztd::uchar8_t ➡ ztd::text::utf8_t (if different from @c char8_t type)
 			/// - @c std::byte ➡ ztd::text::basic_utf8<std::byte>
 			/// - @c signed char ➡ ztd::text::basic_ascii<signed char>
 			/// - @c char16_t ➡ ztd::text::utf16
 			/// - @c char32_t ➡ ztd::text::utf32
-			/// - @c unicode_code_point ➡ ztd::text::utf32 (if different from @c char32_t type)
-			/// - @c unicode_scalar_value ➡ ztd::text::utf32 (if different from @c char32_t type)
+			/// - @c unicode_code_point ➡ ztd::text::utf32_t (if different from @c char32_t type)
+			/// - @c unicode_scalar_value ➡ ztd::text::utf32_t (if different from @c char32_t type)
 			//////
 			using type = _ChosenType;
 		};
@@ -137,7 +137,7 @@ namespace ztd { namespace text {
 			/// - @c unicode_code_point ➡ ztd::text::utf8
 			/// - @c unicode_scalar_value ➡ ztd::text::utf8
 			//////
-			using type = utf8;
+			using type = utf8_t;
 		};
 	} // namespace __txt_detail
 

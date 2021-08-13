@@ -29,8 +29,8 @@
 // ============================================================================>
 
 #include <ztd/text/encoding.hpp>
-
 #include <ztd/ranges/algorithm.hpp>
+#include <ztd/text/transcode_one.hpp>
 
 #include <catch2/catch.hpp>
 
@@ -45,10 +45,10 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		using state                      = ztd::text::decode_state_t<Encoding>;
 
 		code_point output_buffer[output_max] {};
-		ztd::ranges::span<const code_unit> input(container.data(), container.size());
-		ztd::ranges::span<code_point> output(output_buffer, output_max);
+		ztd::span<const code_unit> input(container.data(), container.size());
+		ztd::span<code_point> output(output_buffer, output_max);
 		state s {};
-		auto result   = encoding.decode_one(input, output, ztd::text::replacement_handler {}, s);
+		auto result   = encoding.decode_one(input, output, ztd::text::replacement_handler, s);
 		bool is_equal = ztd::ranges::__rng_detail::__equal(
 		     output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
@@ -62,10 +62,31 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		using state                      = ztd::text::encode_state_t<Encoding>;
 
 		code_unit output_buffer[output_max] {};
-		ztd::ranges::span<const code_point> input(container.data(), container.size());
-		ztd::ranges::span<code_unit> output(output_buffer, output_max);
+		ztd::span<const code_point> input(container.data(), container.size());
+		ztd::span<code_unit> output(output_buffer, output_max);
 		state s {};
-		auto result   = encoding.encode_one(input, output, ztd::text::replacement_handler {}, s);
+		auto result   = encoding.encode_one(input, output, ztd::text::replacement_handler, s);
+		bool is_equal = ztd::ranges::__rng_detail::__equal(
+		     output.data(), result.output.data(), expected.begin(), expected.end());
+		REQUIRE(is_equal);
+	}
+
+	template <typename FromEncoding, typename ToEncoding, typename Input, typename Expected>
+	void transcode_one_replace_check(
+	     FromEncoding& from_encoding, ToEncoding& to_encoding, Input& container, Expected& expected) {
+		constexpr std::size_t output_max = ztd::text::max_code_units_v<ToEncoding>;
+		using from_code_unit             = ztd::text::code_unit_t<FromEncoding>;
+		using code_unit                  = ztd::text::code_unit_t<ToEncoding>;
+		using from_state                 = ztd::text::decode_state_t<FromEncoding>;
+		using to_state                   = ztd::text::encode_state_t<ToEncoding>;
+
+		code_unit output_buffer[output_max] {};
+		ztd::span<const from_code_unit> input(container.data(), container.size());
+		ztd::span<code_unit> output(output_buffer, output_max);
+		from_state fs {};
+		to_state ts {};
+		auto result   = ztd::text::transcode_one_into(input, from_encoding, output, to_encoding,
+               ztd::text::replacement_handler, ztd::text::replacement_handler, fs, ts);
 		bool is_equal = ztd::ranges::__rng_detail::__equal(
 		     output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
@@ -75,36 +96,53 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 TEST_CASE("text/encoding/errors/replacement", "invalid characters are properly replacement") {
 	SECTION("decode") {
 		SECTION("utf8") {
-			ztd::text::utf8 encoding;
-			decode_one_replace_check(encoding, ztd::text::tests::u8_unicode_invalid_input,
-			     ztd::text::tests::u32_unicode_replacement_truth);
+			ztd::text::utf8_t encoding;
+			decode_one_replace_check(
+			     encoding, ztd::tests::u8_unicode_invalid_input, ztd::tests::u32_unicode_replacement_truth);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 encoding;
-			decode_one_replace_check(encoding, ztd::text::tests::u16_unicode_invalid_input,
-			     ztd::text::tests::u32_unicode_replacement_truth);
+			ztd::text::utf16_t encoding;
+			decode_one_replace_check(
+			     encoding, ztd::tests::u16_unicode_invalid_input, ztd::tests::u32_unicode_replacement_truth);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 encoding;
-			decode_one_replace_check(encoding, ztd::text::tests::u32_unicode_invalid_input,
-			     ztd::text::tests::u32_unicode_replacement_truth);
+			ztd::text::utf32_t encoding;
+			decode_one_replace_check(
+			     encoding, ztd::tests::u32_unicode_invalid_input, ztd::tests::u32_unicode_replacement_truth);
 		}
 	}
 	SECTION("encode") {
 		SECTION("utf8") {
-			ztd::text::utf8 encoding;
-			encode_one_replace_check(encoding, ztd::text::tests::u32_unicode_invalid_input,
-			     ztd::text::tests::u8_unicode_replacement_truth);
+			ztd::text::utf8_t encoding;
+			encode_one_replace_check(
+			     encoding, ztd::tests::u32_unicode_invalid_input, ztd::tests::u8_unicode_replacement_truth);
 		}
 		SECTION("utf16") {
-			ztd::text::utf16 encoding;
-			encode_one_replace_check(encoding, ztd::text::tests::u32_unicode_invalid_input,
-			     ztd::text::tests::u16_unicode_replacement_truth);
+			ztd::text::utf16_t encoding;
+			encode_one_replace_check(
+			     encoding, ztd::tests::u32_unicode_invalid_input, ztd::tests::u16_unicode_replacement_truth);
 		}
 		SECTION("utf32") {
-			ztd::text::utf32 encoding;
-			encode_one_replace_check(encoding, ztd::text::tests::u32_unicode_invalid_input,
-			     ztd::text::tests::u32_unicode_replacement_truth);
+			ztd::text::utf32_t encoding;
+			encode_one_replace_check(
+			     encoding, ztd::tests::u32_unicode_invalid_input, ztd::tests::u32_unicode_replacement_truth);
+		}
+	}
+	SECTION("transcode") {
+		SECTION("utf8") {
+			ztd::text::utf8_t encoding;
+			transcode_one_replace_check(
+			     encoding, encoding, ztd::tests::u8_unicode_invalid_input, ztd::tests::u8_unicode_replacement_truth);
+		}
+		SECTION("utf16") {
+			ztd::text::utf16_t encoding;
+			transcode_one_replace_check(encoding, encoding, ztd::tests::u16_unicode_invalid_input,
+			     ztd::tests::u16_unicode_replacement_truth);
+		}
+		SECTION("utf32") {
+			ztd::text::utf32_t encoding;
+			transcode_one_replace_check(encoding, encoding, ztd::tests::u32_unicode_invalid_input,
+			     ztd::tests::u32_unicode_replacement_truth);
 		}
 	}
 }

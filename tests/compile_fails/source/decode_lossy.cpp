@@ -35,7 +35,7 @@ int main(int, char*[]) {
 	     // input
 	     "",
 	     // to this encoding
-	     ztd::text::execution {});
+	     ztd::text:: {});
 
 	return 0;
 }

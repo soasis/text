@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/detail/to_underlying.hpp>
 
@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This does not necessarily mean an error handler was not called. An error handler can set the
 		/// error code to ztd::text::encoding_error::ok after performing corrective action: see
-		/// ztd::text::replacement_handler for an example.
+		/// ztd::text::replacement_handler_t for an example.
 		//////
 		ok = 0x00,
 		//////

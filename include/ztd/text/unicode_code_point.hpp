@@ -36,7 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/type_traits.hpp>
-#include <ztd/text/detail/assert.hpp>
+#include <ztd/text/assert.hpp>
 #include <ztd/text/detail/unicode.hpp>
 
 #include <ztd/ranges/algorithm.hpp>

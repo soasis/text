@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/count_decodable.hpp>
+#include <ztd/text/count_as_decoded.hpp>

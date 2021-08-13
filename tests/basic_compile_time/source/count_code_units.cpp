@@ -30,96 +30,95 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-#include <ztd/text/count_decodable.hpp>
+#include <ztd/text/count_as_decoded.hpp>
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 
-inline namespace ztd_text_tests_basic_compile_time_count_decodable {
+inline namespace ztd_text_tests_basic_compile_time_count_as_decoded {
 
 	template <typename T>
 	static void delayed() {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		// Basic Source Character Set, using defaults
-		// Can only be done if we have constant evaluation inside to swap to the literal encoding
-		static_assert(ztd::text::count_decodable(ztd::text::tests::basic_source_character_set).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
-		static_assert(ztd::text::count_decodable(ztd::text::tests::w_basic_source_character_set).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
+		static_assert(ztd::text::count_as_decoded(ztd::tests::basic_source_character_set).count
+		     == ztd::tests::u32_basic_source_character_set.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 #endif
-		static_assert(ztd::text::count_decodable(ztd::text::tests::u8_basic_source_character_set).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
-		static_assert(ztd::text::count_decodable(ztd::text::tests::u16_basic_source_character_set).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
-		static_assert(ztd::text::count_decodable(ztd::text::tests::u32_basic_source_character_set).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::u8_basic_source_character_set).count
+		     == ztd::tests::u32_basic_source_character_set.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::u16_basic_source_character_set).count
+		     == ztd::tests::u32_basic_source_character_set.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::u32_basic_source_character_set).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 
 		// Basic Source Character Set, explicit encoding
 		static_assert(
-		     ztd::text::count_decodable(ztd::text::tests::basic_source_character_set, ztd::text::literal()).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		     ztd::text::count_as_decoded(ztd::tests::basic_source_character_set, ztd::text::literal_t()).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_decodable(ztd::text::tests::w_basic_source_character_set, ztd::text::wide_literal())
-		          .count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		     ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set, ztd::text::wide_literal_t()).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_decodable(ztd::text::tests::u8_basic_source_character_set, ztd::text::utf8()).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		     ztd::text::count_as_decoded(ztd::tests::u8_basic_source_character_set, ztd::text::utf8_t()).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_decodable(ztd::text::tests::u16_basic_source_character_set, ztd::text::utf16()).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		     ztd::text::count_as_decoded(ztd::tests::u16_basic_source_character_set, ztd::text::utf16_t()).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 		static_assert(
-		     ztd::text::count_decodable(ztd::text::tests::u32_basic_source_character_set, ztd::text::utf32()).count
-		     == ztd::text::tests::u32_basic_source_character_set.size());
+		     ztd::text::count_as_decoded(ztd::tests::u32_basic_source_character_set, ztd::text::utf32_t()).count
+		     == ztd::tests::u32_basic_source_character_set.size());
 
 		// Larger unicode sequences, using defaults
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
 		// Basic Source Character Set, using defaults
-		// Can only be done if we have constant evaluation inside to swap to the literal encoding
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
-			static_assert(ztd::text::count_decodable(ztd::text::tests::unicode_sequence_truth_native_endian).count
-			     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
+		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
+			static_assert(ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian).count
+			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		}
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
-			static_assert(ztd::text::count_decodable(ztd::text::tests::w_unicode_sequence_truth_native_endian).count
-			     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
+			static_assert(ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian).count
+			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		}
 #endif
-		static_assert(ztd::text::count_decodable(ztd::text::tests::u8_unicode_sequence_truth_native_endian).count
-		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
-		static_assert(ztd::text::count_decodable(ztd::text::tests::u16_unicode_sequence_truth_native_endian).count
-		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
-		static_assert(ztd::text::count_decodable(ztd::text::tests::u32_unicode_sequence_truth_native_endian).count
-		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::u8_unicode_sequence_truth_native_endian).count
+		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::u16_unicode_sequence_truth_native_endian).count
+		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
+		static_assert(ztd::text::count_as_decoded(ztd::tests::u32_unicode_sequence_truth_native_endian).count
+		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 
 		// Larger unicode sequences, explicit encoding
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal>) {
-			static_assert(ztd::text::count_decodable(
-			                   ztd::text::tests::unicode_sequence_truth_native_endian, ztd::text::literal())
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
+			static_assert(ztd::text::count_as_decoded(
+			                   ztd::tests::unicode_sequence_truth_native_endian, ztd::text::literal_t())
 			                   .count
-			     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
+			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		}
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>) {
-			static_assert(ztd::text::count_decodable(
-			                   ztd::text::tests::w_unicode_sequence_truth_native_endian, ztd::text::wide_literal())
+		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
+			static_assert(ztd::text::count_as_decoded(
+			                   ztd::tests::w_unicode_sequence_truth_native_endian, ztd::text::wide_literal_t())
 			                   .count
-			     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
+			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		}
 		static_assert(
-		     ztd::text::count_decodable(ztd::text::tests::u8_unicode_sequence_truth_native_endian, ztd::text::utf8())
+		     ztd::text::count_as_decoded(ztd::tests::u8_unicode_sequence_truth_native_endian, ztd::text::utf8_t())
 		          .count
-		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
-		static_assert(ztd::text::count_decodable(
-		                   ztd::text::tests::u16_unicode_sequence_truth_native_endian, ztd::text::utf16())
-		                   .count
-		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
-		static_assert(ztd::text::count_decodable(
-		                   ztd::text::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32())
-		                   .count
-		     == ztd::text::tests::u32_unicode_sequence_truth_native_endian.size());
+		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
+		static_assert(
+		     ztd::text::count_as_decoded(ztd::tests::u16_unicode_sequence_truth_native_endian, ztd::text::utf16_t())
+		          .count
+		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
+		static_assert(
+		     ztd::text::count_as_decoded(ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32_t())
+		          .count
+		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 	}
 
 	void instantiate() {
 		delayed<void>();
 	}
 
-} // namespace ztd_text_tests_basic_compile_time_count_decodable
+} // namespace ztd_text_tests_basic_compile_time_count_as_decoded

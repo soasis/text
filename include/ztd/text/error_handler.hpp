@@ -35,7 +35,6 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/c_string_view.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/state.hpp>
@@ -46,6 +45,9 @@
 #include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/type_traits.hpp>
+#include <ztd/text/assume_valid_handler.hpp>
+#include <ztd/text/throw_handler.hpp>
+#include <ztd/text/pass_handler.hpp>
 #include <ztd/text/detail/unicode.hpp>
 #include <ztd/text/detail/pass_through_handler.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
@@ -57,14 +59,8 @@
 
 #include <climits>
 #include <cstddef>
-#include <exception>
-#include <string_view>
 #include <utility>
 #include <array>
-#include <system_error>
-#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
-#include <cstdlib>
-#endif
 
 #include <ztd/prologue.hpp>
 
@@ -318,58 +314,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
-	/// adjustment, correction or checking.
-	///
-	/// @remarks This error handler is useful in conjunction with a ztd::text::ranges::unbounded_view for the fastest
-	/// possible encoding and decoding in a general sense. However: IT IS ALSO EXTREMELY DANGEROUS AND CAN INVOKE
-	/// UNDEFINED BEHAVIOR IF YOUR TEXT IS, IN FACT, MESSED UP. PLEASE DO NOT USE THIS WITHOUT A GOOD REASON!
-	//////
-	class assume_valid_handler {
-	public:
-		//////
-		/// @brief A type that is true when calling code can not call this function and ignore it, and false when
-		/// it cannot ignore it. See ztd::text::assume_valid_handler for details.
-		//////
-		using assume_valid = ::std::integral_constant<bool,
-#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
-			true
-#else
-			false
-#endif
-			>;
-
-		//////
-		/// @brief A handler for either decode or encode results that simply passes the result type back through
-		/// with no changes made.
-		///
-		/// @param[in] __result The current state of the encode operation to pass through.
-		//////
-		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
-		constexpr auto operator()(
-			const _Encoding&, _Result __result, const _InputProgress&, const _OutputProgress&) const {
-#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
-			ZTD_TEXT_ASSERT_MESSAGE_I_(
-				"You have invoked the ztd::text::assume_valid handler, and tripped undefined behavior. This means "
-				"you violated the covenant between you, the compiler, this library, and every piece of code that "
-				"depends depends on you. It is highly suggested that ztd::text::assume_valid_handler is not used "
-				"except for the most extremely secure cases. If you cannot properly grok your threat model or what "
-				"may or may not be external, please do not use this type!",
-				false);
-			::std::abort();
-#endif
-			return __result;
-		}
-	};
-
-	//////
-	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
-	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler
-	/// which can invoke UB if an error occurs.
-	//////
-	class pass_handler : public __txt_detail::__pass_through_handler_with<false> { };
-
-	//////
 	/// @brief An error handler that replaces bad code points and code units with a chosen code point / code unit
 	/// sequence.
 	///
@@ -383,7 +327,7 @@ namespace ztd { namespace text {
 	/// (<tt>U'�'</tt>) or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will
 	/// be inserted at all.
 	//////
-	class replacement_handler {
+	class replacement_handler_t {
 	public:
 		//////
 		/// @brief The function call for inserting replacement code units at the point of failure, before returning
@@ -463,8 +407,7 @@ namespace ztd { namespace text {
 						__encoding, __result.state, __replacement);
 				}
 
-				const ::ztd::ranges::span<const _InputCodePoint> __replacement_range(
-					__replacement, __replacement_size);
+				const ::ztd::span<const _InputCodePoint> __replacement_range(__replacement, __replacement_size);
 
 				__txt_detail::__pass_through_handler __handler {};
 				encode_state_t<_Encoding> __state = copy_encode_state_with(__encoding, __result.state);
@@ -561,8 +504,7 @@ namespace ztd { namespace text {
 						__encoding, __result.state, __replacement);
 				}
 
-				const ::ztd::ranges::span<const _InputCodeUnit> __replacement_range(
-					__replacement, __replacement_size);
+				const ::ztd::span<const _InputCodeUnit> __replacement_range(__replacement, __replacement_size);
 
 				__txt_detail::__pass_through_handler __handler {};
 				decode_state_t<_Encoding> __state = copy_decode_state_with(__encoding, __result.state);
@@ -582,52 +524,23 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief An error handler that throws on any encode operation failure.
-	///
-	/// @remarks This class absolutely should not be used unless the user is prepared to handle spurious failure,
-	/// especially for text processing that deals with input vectors. This can result in many exceptions being thrown,
-	/// which for resource-intensive applications could cause issues and result in Denial of Service by way of
-	/// repeated, unhandled, and unexpected failure.
+	/// @brief A convenience variable for passing the replacement_handler_t handler to functions.
 	//////
-	class throw_handler {
-	public:
-		//////
-		/// @brief Throws a ztd::text::encoding_error as an exception on an encode failure.
-		///
-		//////
-		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _InputProgress, typename _OutputProgress>
-		constexpr encode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
-			encode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
-			const _OutputProgress&) const noexcept(false) {
-			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
-		}
-
-		//////
-		/// @brief Throws a ztd::text::encoding_error code as an exception on a decode failure.
-		///
-		//////
-		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _InputProgress, typename _OutputProgress>
-		constexpr decode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
-			decode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
-			const _OutputProgress&) const noexcept(false) {
-			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
-		}
-	};
+	inline constexpr replacement_handler_t replacement_handler = {};
 
 	//////
-	/// @brief This handler detects if the error code is an incomplete seqence, and sets the error code to being okay
-	/// before returning.
+	/// @brief This handler detects if the error code is an incomplete seqence, and sets the error code to being
+	/// okay before returning.
 	///
-	/// @tparam _Encoding The encoding type which dictates the @c code_unit and @c code_point buffers to store in the
-	/// handler to catch unused input from the last parameter of error handler invocations by the encoding.
-	/// @tparam _ErrorHandler An error handler to invoke if the encoding error code is @b NOT an incomplete sequence.
+	/// @tparam _Encoding The encoding type which dictates the @c code_unit and @c code_point buffers to store in
+	/// the handler to catch unused input from the last parameter of error handler invocations by the encoding.
+	/// @tparam _ErrorHandler An error handler to invoke if the encoding error code is @b NOT an incomplete
+	/// sequence.
 	///
-	/// @remarks This type is often useful in conjunction with an accumulation state or buffer, which can be very handy
-	/// for I/O (e.g., Networking) operations.
+	/// @remarks This type is often useful in conjunction with an accumulation state or buffer, which can be very
+	/// handy for I/O (e.g., Networking) operations.
 	//////
-	template <typename _Encoding, typename _ErrorHandler = default_handler>
+	template <typename _Encoding, typename _ErrorHandler = default_handler_t>
 	class incomplete_handler : private ebco<_ErrorHandler> {
 	private:
 		using __error_handler_base_t = ebco<_ErrorHandler>;
@@ -717,7 +630,90 @@ namespace ztd { namespace text {
 		//////
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
-			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			const _InputProgress& __input_progress,
+			const _OutputProgress& __output_progress) const& // clang-format hack
+			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
+			     const _OutputProgress&>) {
+			if (__result.error_code == encoding_error::incomplete_sequence) {
+				// it's incomplete and we are okay with that
+				if constexpr (is_specialization_of_v<_Result, decode_result>) {
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
+				}
+				else {
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
+				}
+				return __result;
+			}
+			return this->get_value()(__encoding, ::std::move(__result), __input_progress, __output_progress);
+		}
+
+		//////
+		/// @brief Checks if the __result.error_code is ztd::text::encoding_error::incomplete_sequence, it saves the
+		/// values from @p __progress and returns. Otherwise, invokes the provided error handler this object was
+		/// constructed with.
+		///
+		/// @param[in] __encoding The Encoding that experienced the error.
+		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress Any code units or code points that were read but not yet used before the
+		/// failure occurred. These will be stored in this handler.
+		/// @param[in] __output_progress Any code points or code units that have not yet been written before the
+		/// failure occurred. These will be stored in this handler.
+		//////
+		template <typename _Result, typename _InputProgress, typename _OutputProgress>
+		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
+			const _InputProgress& __input_progress,
+			const _OutputProgress& __output_progress) & // clang-format hack
+			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
+			     const _OutputProgress&>) {
+			if (__result.error_code == encoding_error::incomplete_sequence) {
+				// it's incomplete and we are okay with that
+				if constexpr (is_specialization_of_v<_Result, decode_result>) {
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
+				}
+				else {
+					this->_M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+						this->_M_code_units_size, this->_M_code_units.data());
+					this->_M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+						this->_M_code_points_size, this->_M_code_points.data());
+				}
+				return __result;
+			}
+			return this->get_value()(__encoding, ::std::move(__result), __input_progress, __output_progress);
+		}
+
+		//////
+		/// @brief Checks if the __result.error_code is ztd::text::encoding_error::incomplete_sequence, it saves the
+		/// values from @p __progress and returns. Otherwise, invokes the provided error handler this object was
+		/// constructed with.
+		///
+		/// @param[in] __encoding The Encoding that experienced the error.
+		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress Any code units or code points that were read but not yet used before the
+		/// failure occurred. These will be stored in this handler.
+		/// @param[in] __output_progress Any code points or code units that have not yet been written before the
+		/// failure occurred. These will be stored in this handler.
+		//////
+		template <typename _Result, typename _InputProgress, typename _OutputProgress>
+		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
+			const _InputProgress& __input_progress,
+			const _OutputProgress& __output_progress) && // clang-format hack
 			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
 			     const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {
@@ -747,38 +743,38 @@ namespace ztd { namespace text {
 		/// @brief Returns the code units from the last incomplete decode operations.
 		///
 		//////
-		::ztd::ranges::span<_CodeUnit> code_units() const noexcept {
-			return ::ztd::ranges::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+		::ztd::span<_CodeUnit> code_units() const noexcept {
+			return ::ztd::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 		//////
 		/// @brief Returns the code points from the last incomplete encode operations.
 		///
 		//////
-		::ztd::ranges::span<_CodePoint> code_points() const noexcept {
-			return ::ztd::ranges::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
+		::ztd::span<_CodePoint> code_points() const noexcept {
+			return ::ztd::span<_CodePoint>(this->_M_code_units.data(), this->_M_code_units_size);
 		}
 
 	private:
-		::std::array<_CodeUnit, max_code_units_v<_Encoding>> _M_code_units;
-		::std::size_t _M_code_units_size;
-		::std::array<_CodePoint, max_code_points_v<_Encoding>> _M_code_points;
-		::std::size_t _M_code_points_size;
+		mutable ::std::array<_CodeUnit, max_code_units_v<_Encoding>> _M_code_units;
+		mutable ::std::size_t _M_code_units_size;
+		mutable ::std::array<_CodePoint, max_code_points_v<_Encoding>> _M_code_points;
+		mutable ::std::size_t _M_code_points_size;
 	};
 
 	//////
 	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
-	/// time. Without configuration, it defaults to the ztd::text::replacement_handler.
+	/// time. Without configuration, it defaults to the ztd::text::replacement_handler_t.
 	//////
-	class default_handler
+	class default_handler_t
 #if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
-	: private throw_handler {
+	: private throw_handler_t {
 	private:
-		using __error_handler_base_t = throw_handler;
+		using __error_handler_base_t = throw_handler_t;
 #else
-	: private replacement_handler {
+	: private replacement_handler_t {
 	private:
-		using __error_handler_base_t = replacement_handler;
+		using __error_handler_base_t = replacement_handler_t;
 #endif
 
 	public:
@@ -792,7 +788,17 @@ namespace ztd { namespace text {
 		using __error_handler_base_t::operator();
 	};
 
-	using default_incomplete_handler = incomplete_handler<default_handler>;
+	//////
+	/// @brief An instance of the default_handler_t type for ease of use.
+	///
+	//////
+	inline constexpr default_handler_t default_handler = {};
+
+	//////
+	/// @brief An incomplete handler that uses the default handler underneath.
+	///
+	//////
+	using default_incomplete_handler_t = incomplete_handler<default_handler_t>;
 
 	namespace __txt_detail {
 		template <typename _ErrorHandler>
@@ -803,11 +809,11 @@ namespace ztd { namespace text {
 					return __original;
 				}
 				else {
-					return default_handler {};
+					return default_handler_t {};
 				}
 			}
 			else {
-				return default_handler {};
+				return default_handler_t {};
 			}
 		}
 	} // namespace __txt_detail

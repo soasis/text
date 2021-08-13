@@ -28,4 +28,4 @@
 //
 // ============================================================================>
 
-#include <ztd/text/count_transcodable.hpp>
+#include <ztd/text/count_as_transcoded.hpp>

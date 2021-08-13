@@ -48,6 +48,6 @@ This covers the full universe of potential operations you may want to perform on
 	converting/validate encodable
 	converting/validate decodable
 	converting/validate transcodable
-	converting/count decodable
-	converting/count encodable
-	converting/count transcodable
+	converting/count as decoded
+	converting/count as encoded
+	converting/count as transcoded

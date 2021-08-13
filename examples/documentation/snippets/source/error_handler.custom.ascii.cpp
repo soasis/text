@@ -37,14 +37,14 @@ using ascii_encode_result = ztd::text::encode_result<
      // input range type
      std::u32string_view,
      // output range type; figured out from function call
-     ztd::ranges::span<char>,
+     ztd::span<char>,
      // the state type for encode operations
-     ztd::text::encode_state_t<ztd::text::ascii>>;
+     ztd::text::encode_state_t<ztd::text::ascii_t>>;
 
-ascii_encode_result my_printing_handler(const ztd::text::ascii& encoding,
+ascii_encode_result my_printing_handler(const ztd::text::ascii_t& encoding,
      ascii_encode_result result,
-     ztd::ranges::span<const char32_t> unused_read_characters,
-     ztd::ranges::span<const char> unused_write_characters) noexcept {
+     ztd::span<const char32_t> unused_read_characters,
+     ztd::span<const char> unused_write_characters) noexcept {
 	(void)encoding;
 	// just printing some information
 	std::cout << "An error occurred.\n"
@@ -70,7 +70,7 @@ int main(int, char*[]) {
 	     // input
 	     U"안녕",
 	     // to this encoding
-	     ztd::text::ascii {},
+	     ztd::text::ascii,
 	     // handled with our function
 	     &my_printing_handler);
 

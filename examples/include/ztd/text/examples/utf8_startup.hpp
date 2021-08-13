@@ -33,25 +33,10 @@
 #ifndef ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP
 #define ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP
 
-#include <iostream>
-#include <clocale>
+#include <ztd/idk/utf8_startup_hook.hpp>
 
-struct static_hook {
-	static_hook() {
-#ifdef _WIN32
-		char* res = std::setlocale(LC_ALL, ".65001");
-		if (res == nullptr) {
-			std::cout << "cannot set the locale-based encoding in Windows to UTF8" << std::endl;
-		}
-#elif defined(macintosh) || defined(Macintosh) || (__APPLE__)
-		// who knows what the hell goes on in Apple: assume UTF-8
-#else
-		char* res = std::setlocale(LC_ALL, "en_US.utf8");
-		if (res == nullptr) {
-			std::cout << "cannot set the locale-based encoding in non-Windows to UTF8" << std::endl;
-		}
-#endif
-	}
-} inline ztd_text_examples_utf8_startup {};
+namespace ztd { namespace text { namespace examples {
+	inline ztd::idk::utf8_startup_hook utf8_startup {};
+}}} // namespace ztd::text::examples
 
 #endif // ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP

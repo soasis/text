@@ -46,7 +46,7 @@
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <algorithm>
 #include <string_view>
@@ -86,7 +86,7 @@ namespace ztd { namespace text {
 		using _InputValueType = ranges::range_value_type_t<_UInput>;
 		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
                ::std::conditional_t<is_character_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
-                    ::ztd::ranges::span<const _InputValueType>>,
+                    ::ztd::span<const _InputValueType>>,
                _UInput>>;
 		using _UFromEncoding  = remove_cvref_t<_FromEncoding>;
 		using _UToEncoding    = remove_cvref_t<_ToEncoding>;
@@ -136,9 +136,9 @@ namespace ztd { namespace text {
 			_CodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
 
 			_CodeUnit __output_storage[max_code_units_v<_UToEncoding>] {};
-			::ztd::ranges::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
+			::ztd::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
 
-			pass_handler __handler {};
+			pass_handler_t __handler {};
 
 			for (;;) {
 				auto __transcode_result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(

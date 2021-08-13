@@ -32,9 +32,9 @@
 #include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
 
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf8>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf8>);
-using utf8_es = ztd::text::encoding_scheme<ztd::text::utf8>;
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf8_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf8_t>);
+using utf8_es = ztd::text::encoding_scheme<ztd::text::utf8_t>;
 static_assert(ztd::text::is_decode_injective_v<utf8_es>);
 static_assert(ztd::text::is_encode_injective_v<utf8_es>);
 static_assert(!ztd::text::is_code_units_maybe_replaceable_v<utf8_es>);
@@ -42,64 +42,64 @@ static_assert(!ztd::text::is_code_units_replaceable_v<utf8_es>);
 static_assert(!ztd::text::is_code_points_replaceable_v<utf8_es>);
 static_assert(!ztd::text::is_code_points_maybe_replaceable_v<utf8_es>);
 
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_le>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_le>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_le>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_le>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_le>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_le>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_be>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_be>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_be>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_be>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_be>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_be>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_ne>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_ne>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_ne>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_ne>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_ne>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_ne>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_le_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_le_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_le_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_le_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_le_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_le_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_be_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_be_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_be_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_be_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_be_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_be_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf16_ne_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf16_ne_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf16_ne_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf16_ne_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf16_ne_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf16_ne_t>);
 
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_le>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_le>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_le>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_le>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_le>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_le>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_be>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_be>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_be>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_be>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_be>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_be>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_ne>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_ne>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_ne>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_ne>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_ne>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_ne>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_le_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_le_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_le_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_le_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_le_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_le_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_be_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_be_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_be_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_be_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_be_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_be_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::utf32_ne_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::utf32_ne_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::utf32_ne_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::utf32_ne_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::utf32_ne_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::utf32_ne_t>);
 
-static_assert(ztd::text::is_decode_injective_v<ztd::text::ascii>);
-static_assert(!ztd::text::is_encode_injective_v<ztd::text::ascii>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::ascii>);
-static_assert(ztd::text::is_code_units_replaceable_v<ztd::text::ascii>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::ascii>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::ascii>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::ascii_t>);
+static_assert(!ztd::text::is_encode_injective_v<ztd::text::ascii_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::ascii_t>);
+static_assert(ztd::text::is_code_units_replaceable_v<ztd::text::ascii_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::ascii_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::ascii_t>);
 
-using ascii_es = ztd::text::encoding_scheme<ztd::text::ascii>;
+using ascii_es = ztd::text::encoding_scheme<ztd::text::ascii_t>;
 static_assert(ztd::text::is_decode_injective_v<ascii_es>);
 static_assert(!ztd::text::is_encode_injective_v<ascii_es>);
 static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ascii_es>);
@@ -107,21 +107,21 @@ static_assert(ztd::text::is_code_units_replaceable_v<ascii_es>);
 static_assert(!ztd::text::is_code_points_replaceable_v<ascii_es>);
 static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ascii_es>);
 
-static_assert(ztd::text::is_unicode_encoding_v<ztd::text::literal>
-          ? ztd::text::is_encode_injective_v<ztd::text::literal>
-          : !ztd::text::is_encode_injective_v<ztd::text::literal>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::literal>);
+static_assert(ztd::text::is_unicode_encoding_v<ztd::text::literal_t>
+          ? ztd::text::is_encode_injective_v<ztd::text::literal_t>
+          : !ztd::text::is_encode_injective_v<ztd::text::literal_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::literal_t>);
 
-static_assert(ztd::text::is_unicode_encoding_v<ztd::text::wide_literal>
-          ? ztd::text::is_encode_injective_v<ztd::text::wide_literal>
-          : !ztd::text::is_encode_injective_v<ztd::text::wide_literal>);
-static_assert(ztd::text::is_decode_injective_v<ztd::text::wide_literal>);
+static_assert(ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>
+          ? ztd::text::is_encode_injective_v<ztd::text::wide_literal_t>
+          : !ztd::text::is_encode_injective_v<ztd::text::wide_literal_t>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::wide_literal_t>);
 
-static_assert(!ztd::text::is_encode_injective_v<ztd::text::execution>);
-static_assert(!ztd::text::is_decode_injective_v<ztd::text::execution>);
+static_assert(!ztd::text::is_encode_injective_v<ztd::text::execution_t>);
+static_assert(!ztd::text::is_decode_injective_v<ztd::text::execution_t>);
 
-static_assert(!ztd::text::is_encode_injective_v<ztd::text::wide_execution>);
-static_assert(!ztd::text::is_decode_injective_v<ztd::text::wide_execution>);
+static_assert(!ztd::text::is_encode_injective_v<ztd::text::wide_execution_t>);
+static_assert(!ztd::text::is_decode_injective_v<ztd::text::wide_execution_t>);
 
 static_assert(!ztd::text::is_decode_injective_v<ztd::text::no_encoding>);
 static_assert(!ztd::text::is_encode_injective_v<ztd::text::no_encoding>);

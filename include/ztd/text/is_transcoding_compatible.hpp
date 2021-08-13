@@ -57,8 +57,8 @@ namespace ztd { namespace text {
 			::std::is_same_v<remove_cvref_t<_To>, remove_cvref_t<_From>>
 			// if the To is from ASCII, then it's bitwise-compatible with all UTF-8 implementations,
 			// provided those UTF-8 implementations have a sufficiently sized/aligned char that can be bit-copied.
-			|| (::std::is_same_v<remove_cvref_t<_From>, ascii>
-				&& (::std::is_same_v<remove_cvref_t<_To>, utf8>
+			|| (::std::is_same_v<remove_cvref_t<_From>, ascii_t>
+				&& (::std::is_same_v<remove_cvref_t<_To>, utf8_t>
 					|| ::std::is_base_of_v<__txt_impl::__utf8_tag, remove_cvref_t<_To>>)
 				&& ((sizeof(code_unit_t<remove_cvref_t<_To>>) == sizeof(char))
 					&& (alignof(code_unit_t<remove_cvref_t<_To>>) == alignof(char)))

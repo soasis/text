@@ -52,7 +52,7 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief The Encoding that represents the "Execution" (narrow locale-based) encoding. The execution encoding is
+	/// @brief The Encoding that represents the "Execution" (narrow locale-based) encoding. The encoding is
 	/// typically associated with the locale, which is tied to the C standard library's setlocale function.
 	///
 	/// @remarks Use of this type is subject to the C Standard Library or platform defaults. Some locales (such as the
@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 	/// glibc/musl libc's current locale encoding support. On Apple, this is cuurrently assumed to be UTF-8 since they
 	/// do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
 	//////
-	using execution =
+	using execution_t =
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
 		__txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
@@ -74,6 +74,12 @@ namespace ztd { namespace text {
      "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
 #endif
 		;
+
+	//////
+	/// @brief An instance of the execution_t type for ease of use.
+	///
+	//////
+	inline constexpr execution_t execution = {};
 
 	//////
 	/// @}

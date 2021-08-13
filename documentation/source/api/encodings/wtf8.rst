@@ -31,6 +31,13 @@
 WTF-8
 =====
 
+Wobby Transformat Format 8 (WTF-8) is an encoding scheme that preserves lone-encoded surrogates, which is generally not allowed in streams composed purely of Unicode Scalar Values.
+
+
+
+.. doxygenvariable:: ztd::text::wtf8
+
+.. doxygentypedef:: ztd::text::wtf8_t
 
 
 
@@ -39,10 +46,3 @@ Base Template
 
 .. doxygenclass:: ztd::text::basic_wtf8
 	:members:
-
-
-
-Aliases
--------
-
-.. doxygentypedef:: ztd::text::wtf8

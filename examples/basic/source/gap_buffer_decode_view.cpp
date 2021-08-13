@@ -46,7 +46,7 @@ int main(int, char*[]) {
 
 	buffer_subrange u16_buffer_view(buffer.begin(), buffer.end());
 
-	ztd::text::decode_view<ztd::text::utf16, buffer_subrange> decoded_buffer_view(u16_buffer_view);
+	ztd::text::decode_view<ztd::text::utf16_t, buffer_subrange> decoded_buffer_view(u16_buffer_view);
 
 	std::u32string_view expected_data = U"⛲ Très beau !";
 	ZTD_TEXT_ASSERT(std::equal(expected_data.cbegin(), expected_data.cend(), decoded_buffer_view.begin()));

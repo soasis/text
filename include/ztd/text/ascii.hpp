@@ -47,7 +47,7 @@
 
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -116,7 +116,7 @@ namespace ztd { namespace text {
 		/// @brief A range of code units representing the values to use when a replacement happen. For ASCII, this
 		/// must be '?' instead of the usual Unicode Replacement Character U'�'.
 		//////
-		static constexpr ::ztd::ranges::span<const code_unit, 1> replacement_code_units() noexcept {
+		static constexpr ::ztd::span<const code_unit, 1> replacement_code_units() noexcept {
 			return __txt_detail::__question_mark_replacement_units<code_unit>;
 		}
 
@@ -163,14 +163,14 @@ namespace ztd { namespace text {
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
-					ascii __self {};
+					ascii_t __self {};
 					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 						             ::std::move(__inlast)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+						::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 				}
 			}
 			else {
@@ -184,15 +184,14 @@ namespace ztd { namespace text {
 
 			if constexpr (__call_error_handler) {
 				if (static_cast<signed char>(__unit) < static_cast<signed char>(0)) {
-					ascii __self {};
+					ascii_t __self {};
 					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 						             ::std::move(__inlast)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::invalid_sequence),
-						::ztd::ranges::span<code_unit, 1>(::std::addressof(__units[0]), 1),
-						::ztd::ranges::span<code_point, 0>());
+						::ztd::span<code_unit, 1>(::std::addressof(__units[0]), 1), ::ztd::span<code_point, 0>());
 				}
 			}
 
@@ -249,13 +248,14 @@ namespace ztd { namespace text {
 
 			if constexpr (__call_error_handler) {
 				if (__outit == __outlast) {
-					return __error_handler(ascii {},
+					ascii_t __self {};
+					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 						             ::std::move(__inlast)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::insufficient_output_space),
-						::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
+						::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 				}
 			}
 			else {
@@ -269,15 +269,15 @@ namespace ztd { namespace text {
 
 			if constexpr (__call_error_handler) {
 				if (__point > __txt_detail::__last_ascii_value) {
-					ascii __self {};
+					ascii_t __self {};
 					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
 						             ::std::move(__inlast)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::invalid_sequence),
-						::ztd::ranges::span<code_point, 1>(::std::addressof(__points[0]), 1),
-						::ztd::ranges::span<code_unit, 0>());
+						::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+						::ztd::span<code_unit, 0>());
 				}
 			}
 
@@ -300,7 +300,14 @@ namespace ztd { namespace text {
 	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
 	/// reason!
 	//////
-	using ascii = basic_ascii<char>;
+	using ascii_t = basic_ascii<char>;
+
+
+	//////
+	/// @brief An instance of the ascii_t type for ease of use.
+	///
+	//////
+	inline constexpr ascii_t ascii = {};
 
 	//////
 	/// @}

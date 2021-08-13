@@ -49,7 +49,7 @@
 #include <ztd/text/detail/transcode_one.hpp>
 
 #include <ztd/ranges/unbounded.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>
@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 	//////
 	/// @addtogroup ztd_text_decode ztd::text::decode[_into]
 	/// @brief These functions convert from a view of input into a view of output using either the inferred or
-	/// specified encodings. If no error handler is provided, the equivalent of the ztd::text::default_handler is
+	/// specified encodings. If no error handler is provided, the equivalent of the ztd::text::default_handler_t is
 	/// used by default. If no associated state is provided for either the "to" or "from" encodings, one will be
 	/// created with automatic storage duration (as a "stack" variable) for the provided encoding.
 	/// @{
@@ -186,8 +186,8 @@ namespace ztd { namespace text {
 				: ZTD_TEXT_INTERMEDIATE_DECODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>);
 			using _IntermediateValueType = code_point_t<_UEncoding>;
 			using _IntermediateInput     = __string_view_or_span_or_reconstruct_t<_Input>;
-			using _InitialOutput         = ::ztd::ranges::span<_IntermediateValueType, __intermediate_buffer_max>;
-			using _Output                = ::ztd::ranges::span<_IntermediateValueType>;
+			using _InitialOutput         = ::ztd::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _Output                = ::ztd::span<_IntermediateValueType>;
 			using _Result                = decltype(__encoding.decode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
 			using _WorkingInput          = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
@@ -197,8 +197,11 @@ namespace ztd { namespace text {
 
 			// We MUST use a temporary error handler
 			// as well as a pass-throuugh handler if we end up with lots of intermediary input
-			__progress_handler<is_ignorable_error_handler_v<_UErrorHandler>, _UEncoding> __intermediate_handler {};
-			__progress_handler<is_ignorable_error_handler_v<_UErrorHandler>, _UEncoding>
+			__progress_handler<::std::integral_constant<bool, is_ignorable_error_handler_v<_UErrorHandler>>,
+				_UEncoding>
+				__intermediate_handler {};
+			__progress_handler<::std::integral_constant<bool, is_ignorable_error_handler_v<_UErrorHandler>>,
+				_UEncoding>
 				__unused_intermediate_handler {};
 
 			_WorkingInput __working_input = __string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
@@ -304,12 +307,12 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_decode_result object that contains references to @p __state.
 	///
-	/// @remarks Creates a default @c error_handler that is similar to ztd::text::default_handler, but marked as
+	/// @remarks Creates a default @c error_handler that is similar to ztd::text::default_handler_t, but marked as
 	/// careless.
 	//////
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
-		default_handler __handler {};
+		default_handler_t __handler {};
 		return decode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			::std::forward<_Output>(__output), __handler);
 	}
@@ -445,11 +448,11 @@ namespace ztd { namespace text {
 	///
 	/// @result A ztd::text::stateless_decode_result object whose output is of type @p _OutputContainer.
 	///
-	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
+	/// @remarks This function creates a @c handler using ztd::text::default_handler_t, but marks it as careless.
 	//////
 	template <typename _OutputContainer, typename _Input, typename _Encoding>
 	constexpr auto decode_to(_Input&& __input, _Encoding&& __encoding) {
-		default_handler __handler {};
+		default_handler_t __handler {};
 		return decode_to<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
@@ -611,11 +614,11 @@ namespace ztd { namespace text {
 	///
 	/// @result An object of type @p _OutputContainer .
 	///
-	/// @remarks This function creates a @c handler using ztd::text::default_handler, but marks it as careless.
+	/// @remarks This function creates a @c handler using ztd::text::default_handler_t, but marks it as careless.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto decode(_Input&& __input, _Encoding&& __encoding) {
-		default_handler __handler {};
+		default_handler_t __handler {};
 		return decode<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}

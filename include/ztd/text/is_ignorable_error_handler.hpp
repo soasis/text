@@ -35,7 +35,10 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/error_handler.hpp>
+#include <ztd/text/forward.hpp>
+#include <ztd/text/pass_handler.hpp>
+#include <ztd/text/throw_handler.hpp>
+#include <ztd/text/assume_valid_handler.hpp>
 #include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_code_points_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
@@ -57,61 +60,73 @@ namespace ztd { namespace text {
 		using __detect_encode_always_ok = decltype(_Type::encode_always_ok);
 
 		template <typename, typename = void>
-		struct __is_ignorable_error_handler_sfinae : ::std::false_type { };
+		struct __is_ignorable_error_handler_sfinae : public ::std::false_type { };
 
 		template <typename _Type>
 		struct __is_ignorable_error_handler_sfinae<_Type, ::std::void_t<decltype(_Type::assume_valid)>>
-		: ::std::integral_constant<bool, _Type::assume_valid::value> { };
+		: public ::std::integral_constant<bool, _Type::assume_valid::value> { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __decode_error_handler_always_returns_ok
-		: ::std::integral_constant<bool, is_detected_v<__detect_decode_always_ok, _ErrorHandler>> { };
+		: public ::std::integral_constant<bool, is_detected_v<__detect_decode_always_ok, _ErrorHandler>> { };
 
 		template <typename _Encoding>
-		struct __decode_error_handler_always_returns_ok<_Encoding, replacement_handler>
-		: ::std::integral_constant<bool,
+		struct __decode_error_handler_always_returns_ok<_Encoding, replacement_handler_t>
+		: public ::std::integral_constant<bool,
 			  (is_code_points_replaceable_v<_Encoding> && !is_code_points_maybe_replaceable_v<_Encoding>)
 			       || is_unicode_code_point_v<code_point_t<_Encoding>>> { };
 
 		template <typename _Encoding>
-		struct __decode_error_handler_always_returns_ok<_Encoding, throw_handler> : ::std::true_type { };
+		struct __decode_error_handler_always_returns_ok<_Encoding, throw_handler_t> : public ::std::true_type { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __decode_error_handler_always_returns_ok<_Encoding, incomplete_handler<_Encoding, _ErrorHandler>>
-		: __decode_error_handler_always_returns_ok<_Encoding,
+		: public __decode_error_handler_always_returns_ok<_Encoding,
 			  typename incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
 
 		template <typename _Encoding>
-		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler>
-		: __decode_error_handler_always_returns_ok<_Encoding, typename default_handler::error_handler> { };
-
+		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler_t>
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+		: public __decode_error_handler_always_returns_ok<_Encoding, throw_handler_t> {
+		};
+#else
+		: public __decode_error_handler_always_returns_ok<_Encoding, replacement_handler_t> {
+		};
+#endif
 		template <typename _Encoding>
-		struct __decode_error_handler_always_returns_ok<_Encoding, assume_valid_handler> : ::std::true_type { };
+		struct __decode_error_handler_always_returns_ok<_Encoding, assume_valid_handler_t> : public ::std::true_type {
+		};
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __encode_error_handler_always_returns_ok
-		: ::std::integral_constant<bool, is_detected_v<__detect_encode_always_ok, _ErrorHandler>> { };
+		: public ::std::integral_constant<bool, is_detected_v<__detect_encode_always_ok, _ErrorHandler>> { };
 
 		template <typename _Encoding>
-		struct __encode_error_handler_always_returns_ok<_Encoding, replacement_handler>
-		: ::std::integral_constant<bool,
+		struct __encode_error_handler_always_returns_ok<_Encoding, replacement_handler_t>
+		: public ::std::integral_constant<bool,
 			  (is_code_units_replaceable_v<_Encoding> && !is_code_units_maybe_replaceable_v<_Encoding>)
 			       || is_unicode_code_point_v<code_unit_t<_Encoding>>> { };
 
 		template <typename _Encoding>
-		struct __encode_error_handler_always_returns_ok<_Encoding, throw_handler> : ::std::true_type { };
+		struct __encode_error_handler_always_returns_ok<_Encoding, throw_handler_t> : public ::std::true_type { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __encode_error_handler_always_returns_ok<_Encoding, incomplete_handler<_Encoding, _ErrorHandler>>
-		: __encode_error_handler_always_returns_ok<_Encoding,
+		: public __encode_error_handler_always_returns_ok<_Encoding,
 			  typename incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
 
 		template <typename _Encoding>
-		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler>
-		: __encode_error_handler_always_returns_ok<_Encoding, typename default_handler::error_handler> { };
+		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler_t>
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+		: public __encode_error_handler_always_returns_ok<_Encoding, throw_handler_t> {
+		};
+#else
+		: public __encode_error_handler_always_returns_ok<_Encoding, replacement_handler_t> {
+		};
 
+#endif
 		template <typename _Encoding>
-		struct __encode_error_handler_always_returns_ok<_Encoding, assume_valid_handler> : ::std::true_type { };
+		struct __encode_error_handler_always_returns_ok<_Encoding, assume_valid_handler_t> : ::std::true_type { };
 
 	} // namespace __txt_detail
 
@@ -156,8 +171,8 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This is a compile time assertion. If the encoding may exhibit different behavior at runtime based on
 	/// runtime conditions, then this should return false. This is meant for cases where it is provable at compile
-	/// time, this should return true. For example, if the ztd::text::replacement_handler is used in conjunction with
-	/// ztd::text::utf8, then this will return true as
+	/// time, this should return true. For example, if the ztd::text::replacement_handler_t is used in conjunction with
+	/// ztd::text::utf8_t, then this will return true as
 	//////
 	template <typename _Encoding, typename _ErrorHandler>
 	class decode_error_handler_always_returns_ok

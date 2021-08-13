@@ -39,6 +39,8 @@
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/transcode_result.hpp>
 
+#include <ztd/idk/type_traits.hpp>
+
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
@@ -48,18 +50,24 @@ namespace ztd { namespace text {
 	/// @brief Takes the given encodings from a transcoding operation and inspects the
 	///
 	//////
-	template <typename _FromEncoding, typename _ToEncoding, typename _Result, typename _DecodeErrorHandler,
-		typename _EncodeErrorHandler, typename _FromProgress, typename _ToProgress>
-	constexpr auto propagate_error(_FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding, _Result&& __result,
-		_DecodeErrorHandler&& __decode_error_handler, _EncodeErrorHandler&& __encode_error_handler,
-		_FromProgress&& __from_progress, _ToProgress&& __to_progress) {
-		(void)__from_encoding;
-		(void)__to_encoding;
-		(void)__decode_error_handler;
-		(void)__encode_error_handler;
-		(void)__from_progress;
-		(void)__to_progress;
-		return __result;
+	template <typename _Result, typename _Output, typename _ToEncoding, typename _EncodeErrorHandler,
+		typename _ToState, typename _ToInputProgress, typename _ToOutputProgress, typename _Input,
+		typename _Intermediate, typename _FromState>
+	constexpr auto propagate_error(_Output&& __output, _ToEncoding&& __to_encoding,
+		decode_result<_Input, _Intermediate, _FromState>&& __result, _EncodeErrorHandler&& __encode_error_handler,
+		_ToState& __to_state, _ToInputProgress&& __to_input_progress, _ToOutputProgress&& __to_output_progress) {
+		// just run the encode error handler only
+		encode_result<_Intermediate, ranges::reconstruct_t<_Output>, _ToState> __encode_result(
+			::std::move(__result.output),
+			ranges::reconstruct(std::in_place_type<remove_cvref_t<_Output>>, ::std::forward<_Output>(__output)),
+			__to_state, __result.error_code, __result.handled_errors);
+		auto __encode_error_result
+			= ::std::forward<_EncodeErrorHandler>(__encode_error_handler)(::std::forward<_ToEncoding>(__to_encoding),
+			     ::std::move(__encode_result), ::std::forward<_ToInputProgress>(__to_input_progress),
+			     ::std::forward<_ToOutputProgress>(__to_output_progress));
+		return _Result(::std::move(__result.input), ::std::move(__encode_error_result.output), __result.state,
+			__encode_error_result.state, __encode_error_result.error_code,
+			__result.handled_errors + __encode_error_result.handled_errors);
 	}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

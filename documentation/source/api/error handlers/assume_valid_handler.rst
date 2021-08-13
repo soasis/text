@@ -40,5 +40,7 @@ The ``assume_valid_handler`` is a Undefined-Behavior invoking error handler. If 
 
 Implementers of encodings within templates can check for a potentially ignorable error handler like this one using :doc:`ztd::text::is_ignorable_error_handler_v </api/is_ignorable_error_handler>`.
 
-.. doxygenclass:: ztd::text::assume_valid_handler
+.. doxygenvariable:: ztd::text::assume_valid_handler
+
+.. doxygenclass:: ztd::text::assume_valid_handler_t
 	:members:

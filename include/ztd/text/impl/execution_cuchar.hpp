@@ -44,15 +44,14 @@
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/type_traits.hpp>
-
+#include <ztd/text/assert.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
 #include <ztd/text/detail/windows.hpp>
 #include <ztd/text/detail/posix.hpp>
-#include <ztd/text/detail/assert.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
 
 #include <ztd/ranges/range.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
 
@@ -186,7 +185,7 @@ namespace ztd { namespace text {
 			inline static constexpr ::std::size_t max_code_units = MB_LEN_MAX;
 			//////
 			/// @brief A range of code unit values that can be used as a replacement value, instead of the ones used
-			/// in ztd::text::default_handler.
+			/// in ztd::text::default_handler_t.
 			///
 			/// @remarks The default replacement code point / code unit is U+FFFD (). This, obviously, does not fit
 			/// in the majority of the (legacy) locale encodings in C and C++. '?' is a much more conservative
@@ -205,12 +204,18 @@ namespace ztd { namespace text {
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 				int __codepage_id = __txt_detail::__windows::__determine_active_code_page();
 				return __txt_detail::__windows::__is_unicode_code_page(__codepage_id);
-#elif ZTD_IS_ON(ZTD_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_LANGINFO_I_)
-				const char* __ctype_name = nl_langinfo(CODESET);
-				return __txt_detail::__is_unicode_encoding_name(__ctype_name);
 #else
-					const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
-					return __txt_detail::__is_unicode_encoding_name(__ctype_name);
+#if ZTD_IS_ON(ZTD_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_LANGINFO_I_)
+				const char* __ctype_name = nl_langinfo(CODESET);
+#else
+				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
+#endif
+				::std::string_view __adjusted_ctype_name(__ctype_name);
+				::std::size_t __index = __adjusted_ctype_name.find_first_of(".");
+				if (__index != ::std::string_view::npos) {
+					__adjusted_ctype_name = __adjusted_ctype_name.substr(__index);
+				}
+				return __idk_detail::__is_unicode_encoding_name(__adjusted_ctype_name);
 #endif
 			}
 
@@ -273,7 +278,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 					}
 				}
 
@@ -282,9 +287,10 @@ namespace ztd { namespace text {
 
 				__wutf16 __intermediate_encoding {};
 				__intermediate_state __intermediate_s {};
-				__txt_detail::__progress_handler<!__call_error_handler, __wutf16> __intermediate_handler {};
+				__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>, __wutf16>
+					__intermediate_handler {};
 				wchar_t __wide_intermediary[8] {};
-				::ztd::ranges::span<wchar_t> __wide_write_buffer(__wide_intermediary);
+				::ztd::span<wchar_t> __wide_write_buffer(__wide_intermediary);
 				auto __intermediate_result
 					= __intermediate_encoding.encode_one(::std::forward<_InputRange>(__input), __wide_write_buffer,
 					     __intermediate_handler, __intermediate_s);
@@ -296,14 +302,13 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 							          ::std::forward<_OutputRange>(__output)),
 							     __s, __intermediate_result.error_code),
-							__intermediate_handler._M_code_points_progress(),
-							::ztd::ranges::span<code_unit, 0>());
+							__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
 					}
 				}
 				constexpr const ::std::size_t __state_count_max = 12;
 				code_unit __intermediary_output[__state_count_max] {};
 				int __used_default_char = false;
-				::ztd::ranges::span<const wchar_t> __wide_read_buffer(
+				::ztd::span<const wchar_t> __wide_read_buffer(
 					__wide_intermediary, __intermediate_result.output.data());
 				int __res = ::WideCharToMultiByte(
 					static_cast<UINT>(__txt_detail::__windows::__determine_active_code_page()),
@@ -319,15 +324,14 @@ namespace ztd { namespace text {
 							     ::GetLastError() == ERROR_INSUFFICIENT_BUFFER
 							          ? encoding_error::insufficient_output_space
 							          : encoding_error::invalid_sequence),
-							__intermediate_handler._M_code_points_progress(),
-							::ztd::ranges::span<code_unit, 0>());
+							__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
 					}
 				}
 				for (auto __intermediary_it = __intermediary_output; __res-- > 0;) {
 					if constexpr (__call_error_handler) {
 						if (__outit == __outlast) {
 							__execution_cuchar __self {};
-							::ztd::ranges::span<code_unit> __code_unit_progress(
+							::ztd::span<code_unit> __code_unit_progress(
 								__intermediary_it, static_cast<::std::size_t>(__res + 1));
 							return __error_handler(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
@@ -372,7 +376,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_point, 0>(), ::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 					}
 				}
 
@@ -390,8 +394,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::invalid_sequence),
-							::ztd::ranges::span<code_point, 1>(&__codepoint, 1),
-							::ztd::ranges::span<code_unit, 0>());
+							::ztd::span<code_point, 1>(&__codepoint, 1), ::ztd::span<code_unit, 0>());
 					}
 				}
 
@@ -399,7 +402,7 @@ namespace ztd { namespace text {
 					if constexpr (__call_error_handler) {
 						if (__outit == __outlast) {
 							__execution_cuchar __self {};
-							::ztd::ranges::span<code_unit> __code_unit_progress(
+							::ztd::span<code_unit> __code_unit_progress(
 								__intermediary_it, static_cast<::std::size_t>(__res + 1));
 							return __error_handler(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
@@ -407,7 +410,7 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::insufficient_output_space),
-								::ztd::ranges::span<code_point, 1>(&__codepoint, 1), __code_unit_progress);
+								::ztd::span<code_point, 1>(&__codepoint, 1), __code_unit_progress);
 						}
 					}
 					*__outit = *__intermediary_it;
@@ -458,7 +461,7 @@ namespace ztd { namespace text {
 
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 				if (__txt_detail::__windows::__determine_active_code_page() == CP_UTF8) {
-					// just use utf8 directly
+					// just use utf8_t directly
 					// just go straight to UTF8
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;
@@ -493,7 +496,7 @@ namespace ztd { namespace text {
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
-							::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -524,8 +527,8 @@ namespace ztd { namespace text {
 										     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 										          ::std::move(__outit), ::std::move(__outlast)),
 										     __s, encoding_error::incomplete_sequence),
-										::ztd::ranges::span<code_unit>(__intermediary_input, __state_count),
-										::ztd::ranges::span<code_point, 0>());
+										::ztd::span<code_unit>(__intermediary_input, __state_count),
+										::ztd::span<code_point, 0>());
 								}
 							}
 							__intermediary_input[__state_count] = *__init;
@@ -540,16 +543,18 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(__intermediary_input, __state_count),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit>(__intermediary_input, __state_count),
+								::ztd::span<code_point, 0>());
 						}
 					}
 
 					__wutf16 __intermediate_encoding {};
 					__intermediate_state __intermediate_s {};
-					__txt_detail::__progress_handler<!__call_error_handler, __wutf16> __intermediate_handler {};
-					::ztd::ranges::span<wchar_t, sizeof(__wide_intermediary) / sizeof(wchar_t)>
-						__wide_intermediary_view(__wide_intermediary);
+					__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>,
+						__wutf16>
+						__intermediate_handler {};
+					::ztd::span<wchar_t, sizeof(__wide_intermediary) / sizeof(wchar_t)> __wide_intermediary_view(
+						__wide_intermediary);
 					auto __intermediate_result = __intermediate_encoding.encode_one(__wide_intermediary_view,
 						::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
 					if constexpr (__call_error_handler) {
@@ -560,7 +565,7 @@ namespace ztd { namespace text {
 								             ::std::move(__init), ::std::move(__inlast)),
 								     ::std::move(__intermediate_result.output), __s,
 								     __intermediate_result.error_code),
-								::ztd::ranges::span<code_unit>(__intermediary_input, __state_count),
+								::ztd::span<code_unit>(__intermediary_input, __state_count),
 								__intermediate_handler._M_code_points_progress());
 						}
 					}
@@ -583,7 +588,7 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit, 0>(), ::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 						}
 					}
 					*__outit = __intermediary_output[0];
@@ -619,8 +624,8 @@ namespace ztd { namespace text {
 									     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 									          ::std::move(__outit), ::std::move(__outlast)),
 									     __s, encoding_error::incomplete_sequence),
-									::ztd::ranges::span<code_unit>(__intermediary_input, __state_count),
-									::ztd::ranges::span<code_point, 0>());
+									::ztd::span<code_unit>(__intermediary_input, __state_count),
+									::ztd::span<code_point, 0>());
 							}
 						}
 						break;
@@ -648,9 +653,9 @@ namespace ztd { namespace text {
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__outit), ::std::move(__outlast)),
 								     __s, encoding_error::invalid_sequence),
-								::ztd::ranges::span<code_unit>(
+								::ztd::span<code_unit>(
 								     ::std::addressof(__intermediary_input[0]), __state_count),
-								::ztd::ranges::span<code_point, 0>());
+								::ztd::span<code_point, 0>());
 						}
 						else {
 							break;
@@ -686,8 +691,8 @@ namespace ztd { namespace text {
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__outit),
 						          ::std::move(__outlast)),
 						     __s, encoding_error::incomplete_sequence),
-						::ztd::ranges::span<code_unit>(::std::addressof(__intermediary_input[0]), __state_count),
-						::ztd::ranges::span<code_point, 0>());
+						::ztd::span<code_unit>(::std::addressof(__intermediary_input[0]), __state_count),
+						::ztd::span<code_point, 0>());
 				}
 				else {
 					// ... I mean.

@@ -44,7 +44,7 @@
 #include <ztd/idk/empty_string.hpp>
 #include <ztd/idk/hijack.hpp>
 #include <ztd/idk/to_address.hpp>
-#include <ztd/ranges/span.hpp>
+#include <ztd/idk/span.hpp>
 
 #include <utility>
 #include <type_traits>
@@ -184,23 +184,23 @@ namespace ztd { namespace ranges {
 
 namespace ztd { namespace hijack {
 
-	template <typename _Ty, decltype(::ztd::ranges::dynamic_extent) _Extent, typename _It, typename _Sen,
+	template <typename _Ty, decltype(::ztd::dynamic_extent) _Extent, typename _It, typename _Sen,
 		::std::enable_if_t<
 		     ::ztd::ranges::is_iterator_contiguous_iterator_v<
 		          _It> && ((::std::is_const_v<::std::remove_reference_t<::ztd::ranges::iterator_reference_t<_It>>>) ? std::is_const_v<_Ty> : true)>* = nullptr>
-	constexpr ::ztd::ranges::span<_Ty> tag_invoke(ztd::tag_t<::ztd::ranges::reconstruct>,
-		::std::in_place_type_t<::ztd::ranges::span<_Ty, _Extent>>, _It __iterator, _Sen __sentinel) noexcept {
+	constexpr ::ztd::span<_Ty> tag_invoke(ztd::tag_t<::ztd::ranges::reconstruct>,
+		::std::in_place_type_t<::ztd::span<_Ty, _Extent>>, _It __iterator, _Sen __sentinel) noexcept {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_SPAN_I_)
-		return ::ztd::ranges::span<_Ty>(__iterator, __sentinel);
+		return ::ztd::span<_Ty>(__iterator, __sentinel);
 #else
 		if constexpr (!::std::is_integral_v<_Sen>) {
 			auto __iterator_address = ::ztd::idk_adl::adl_to_address(__iterator);
 			auto __sentinel_address = ::ztd::idk_adl::adl_to_address(__sentinel);
-			return ::ztd::ranges::span<_Ty>(__iterator_address, __sentinel_address - __iterator_address);
+			return ::ztd::span<_Ty>(__iterator_address, __sentinel_address - __iterator_address);
 		}
 		else {
 			auto __iterator_address = ::ztd::idk_adl::adl_to_address(__iterator);
-			return ::ztd::ranges::span<_Ty>(__iterator_address, __sentinel);
+			return ::ztd::span<_Ty>(__iterator_address, __sentinel);
 		}
 #endif
 	}

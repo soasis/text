@@ -28,4 +28,37 @@
 //
 // ============================================================================>
 
-#include <ztd/ranges/detail/span.implementation.hpp>
+#pragma once
+
+#ifndef ZTD_TEXT_PASS_HANDLER_HPP
+#define ZTD_TEXT_PASS_HANDLER_HPP
+
+#include <ztd/text/version.hpp>
+
+#include <ztd/text/detail/pass_through_handler.hpp>
+
+#include <ztd/prologue.hpp>
+
+namespace ztd { namespace text {
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
+
+	//////
+	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
+	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler_t
+	/// which can invoke UB if an error occurs.
+	//////
+	class pass_handler_t : public __txt_detail::__pass_through_handler_with<false> { };
+
+	//////
+	/// @brief An instance of pass_handler_t for ease of use.
+	///
+	//////
+	inline constexpr pass_handler_t pass_handler = {};
+
+	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
+}} // namespace ztd::text
+
+
+#include <ztd/epilogue.hpp>
+
+#endif // ZTD_TEXT_PASS_HANDLER_HPP

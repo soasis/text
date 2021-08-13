@@ -72,7 +72,7 @@ namespace ztd { namespace text {
 	/// into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
 	//////
-	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler,
+	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler_t,
 		typename _State = decode_state_t<_Encoding>>
 	class decode_iterator
 	: public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__decode,

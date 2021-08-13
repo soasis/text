@@ -47,7 +47,9 @@ Currently, the hierachy of behaviors is like so:
 
 Even if, on a given platform, it can be assumed to be a static encoding (e.g., Apple/MacOS where it always returns the "C" Locale but processes text as UTF-32), ``ztd::text::wide_execution`` will always present itself as a runtime and unknowable encoding. This is to prevent portability issues from relying on, e.g., ``ztd::text::is_decode_injective_v<ztd::text::wide_execution>`` being true during development and working with that assumption, only to have it break when ported to a platform where that assumption no longer holds.
 
-.. doxygentypedef:: ztd::text::wide_execution
+.. doxygenvariable:: ztd::text::wide_execution
+
+.. doxygentypedef:: ztd::text::wide_execution_t
 
 
 

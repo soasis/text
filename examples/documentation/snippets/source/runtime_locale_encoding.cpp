@@ -109,8 +109,7 @@ public:
 		return false;
 	}
 
-	ztd::ranges::span<const code_unit>
-	replacement_code_units() const noexcept {
+	ztd::span<const code_unit> replacement_code_units() const noexcept {
 		if (this->contains_unicode_encoding()) {
 			// Probably CESU-8 or UTF-8!
 			static const char replacement[3]
@@ -126,26 +125,24 @@ public:
 
 private:
 	using rtl_decode_result
-	     = ztd::text::decode_result<ztd::ranges::span<const code_unit>,
-	          ztd::ranges::span<code_point>, decode_state>;
+	     = ztd::text::decode_result<ztd::span<const code_unit>,
+	          ztd::span<code_point>, decode_state>;
 	using rtl_encode_result
-	     = ztd::text::encode_result<ztd::ranges::span<const code_point>,
-	          ztd::ranges::span<code_unit>, encode_state>;
-	using rtl_decode_error_handler
-	     = std::function<rtl_decode_result(const runtime_locale&,
-	          rtl_decode_result, ztd::ranges::span<const char>,
-	          ztd::ranges::span<const char32_t>)>;
-	using rtl_encode_error_handler
-	     = std::function<rtl_encode_result(const runtime_locale&,
-	          rtl_encode_result, ztd::ranges::span<const char32_t>,
-	          ztd::ranges::span<const char>)>;
+	     = ztd::text::encode_result<ztd::span<const code_point>,
+	          ztd::span<code_unit>, encode_state>;
+	using rtl_decode_error_handler = std::function<rtl_decode_result(
+	     const runtime_locale&, rtl_decode_result, ztd::span<const char>,
+	     ztd::span<const char32_t>)>;
+	using rtl_encode_error_handler = std::function<rtl_encode_result(
+	     const runtime_locale&, rtl_encode_result,
+	     ztd::span<const char32_t>, ztd::span<const char>)>;
 
-	using empty_code_unit_span  = ztd::ranges::span<const code_unit, 0>;
-	using empty_code_point_span = ztd::ranges::span<const code_point, 0>;
+	using empty_code_unit_span  = ztd::span<const code_unit, 0>;
+	using empty_code_point_span = ztd::span<const code_point, 0>;
 
 public:
-	rtl_decode_result decode_one(ztd::ranges::span<const code_unit> input,
-	     ztd::ranges::span<code_point> output,
+	rtl_decode_result decode_one(
+	     ztd::span<const code_unit> input, ztd::span<code_point> output,
 	     rtl_decode_error_handler error_handler,
 	     decode_state& current // decode-based state
 	) const {
@@ -190,15 +187,14 @@ public:
 	}
 
 	rtl_encode_result encode_one(
-	     ztd::ranges::span<const code_point> input,
-	     ztd::ranges::span<code_unit> output,
+	     ztd::span<const code_point> input, ztd::span<code_unit> output,
 	     rtl_encode_error_handler error_handler,
 	     encode_state& current // encode-based state
 	) const {
 		// saved, in case we need to go
 		// around mulitple times to get
 		// an output character
-		ztd::ranges::span<const code_point> original_input = input;
+		ztd::span<const code_point> original_input = input;
 		// The C standard library assumes
 		// it can write out MB_CUR_MAX characters to the buffer:
 		// we have no guarantee our output buffer is that big, so it
@@ -253,7 +249,7 @@ int main(int argc, char* argv[]) {
 	runtime_locale encoding {};
 	std::string_view first_arg       = argv[0];
 	std::u32string decoded_first_arg = ztd::text::decode(
-	     first_arg, encoding, ztd::text::replacement_handler {});
+	     first_arg, encoding, ztd::text::replacement_handler_t {});
 
 	// the first argument is (usually!!) the executable name,
 	// so we'll see if we decoded that part nicely!

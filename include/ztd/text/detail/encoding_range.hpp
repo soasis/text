@@ -125,70 +125,70 @@ namespace ztd { namespace text {
 
 		// counting: code units
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_internal_text_count_decodable_one
-			= decltype(__text_count_decodable_one(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
+		using __detect_adl_internal_text_count_as_decoded_one
+			= decltype(__text_count_as_decoded_one(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
 			     ::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_text_count_decodable_one
-			= decltype(text_count_decodable_one(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
+		using __detect_adl_text_count_as_decoded_one
+			= decltype(text_count_as_decoded_one(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
 			     ::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_text_count_decodable
-			= decltype(text_count_decodable(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
+		using __detect_adl_text_count_as_decoded
+			= decltype(text_count_as_decoded(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
 			     ::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_internal_text_count_decodable
-			= decltype(__text_count_decodable(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
+		using __detect_adl_internal_text_count_as_decoded
+			= decltype(__text_count_as_decoded(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
 			     ::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		// counting: code points
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_internal_text_count_encodable_one = decltype(__text_count_encodable_one(
+		using __detect_adl_internal_text_count_as_encoded_one = decltype(__text_count_as_encoded_one(
 			text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(), ::std::declval<_Input>(),
 			::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_text_count_encodable_one
-			= decltype(text_count_encodable_one(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
+		using __detect_adl_text_count_as_encoded_one
+			= decltype(text_count_as_encoded_one(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Encoding>(),
 			     ::std::declval<_Input>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_text_count_encodable
-			= decltype(text_count_encodable(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
+		using __detect_adl_text_count_as_encoded
+			= decltype(text_count_as_encoded(text_tag<remove_cvref_t<_Encoding>> {}, ::std::declval<_Input>(),
 			     ::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		template <typename _Input, typename _Encoding, typename _Handler, typename _State>
-		using __detect_adl_internal_text_count_encodable = decltype(__text_count_encodable(::std::declval<_Input>(),
+		using __detect_adl_internal_text_count_as_encoded = decltype(__text_count_as_encoded(::std::declval<_Input>(),
 			::std::declval<_Encoding>(), ::std::declval<_Handler>(), ::std::declval<_State&>()));
 
 		// counting: transcode code units
 		template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromHandler,
 			typename _ToHandler, typename _FromState, typename _ToState>
-		using __detect_adl_internal_text_count_transcodable_one = decltype(__text_count_encodable_one(
+		using __detect_adl_internal_text_count_as_transcoded_one = decltype(__text_count_as_encoded_one(
 			text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {}, ::std::declval<_FromEncoding>(),
 			::std::declval<_ToEncoding>(), ::std::declval<_Input>(), ::std::declval<_FromHandler>(),
 			::std::declval<_ToHandler>(), ::std::declval<_FromState&>(), ::std::declval<_ToState&>()));
 
 		template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromHandler,
 			typename _ToHandler, typename _FromState, typename _ToState>
-		using __detect_adl_text_count_transcodable_one = decltype(text_count_encodable_one(
+		using __detect_adl_text_count_as_transcoded_one = decltype(text_count_as_encoded_one(
 			text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {}, ::std::declval<_Input>(),
 			::std::declval<_FromEncoding>(), ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(),
 			::std::declval<_ToHandler>(), ::std::declval<_FromState&>(), ::std::declval<_ToState&>()));
 
 		template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromHandler,
 			typename _ToHandler, typename _FromState, typename _ToState>
-		using __detect_adl_text_count_transcodable = decltype(text_count_encodable(
+		using __detect_adl_text_count_as_transcoded = decltype(text_count_as_encoded(
 			text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {}, ::std::declval<_Input>(),
 			::std::declval<_FromEncoding>(), ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(),
 			::std::declval<_ToHandler>(), ::std::declval<_FromState&>(), ::std::declval<_ToState&>()));
 
 		template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromHandler,
 			typename _ToHandler, typename _FromState, typename _ToState>
-		using __detect_adl_internal_text_count_transcodable = decltype(__text_count_encodable(
+		using __detect_adl_internal_text_count_as_transcoded = decltype(__text_count_as_encoded(
 			text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {}, ::std::declval<_Input>(),
 			::std::declval<_FromEncoding>(), ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(),
 			::std::declval<_ToHandler>(), ::std::declval<_FromState&>(), ::std::declval<_ToState&>()));

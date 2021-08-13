@@ -36,17 +36,20 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/forward.hpp>
-#include <ztd/idk/char8_t.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/c_string_view.hpp>
 
 #include <ztd/text/encode.hpp>
 #include <ztd/text/decode.hpp>
 #include <ztd/text/transcode.hpp>
-#include <ztd/text/count_encodable.hpp>
-#include <ztd/text/count_decodable.hpp>
+#include <ztd/text/transcode_one.hpp>
+#include <ztd/text/count_as_encoded.hpp>
+#include <ztd/text/count_as_decoded.hpp>
+#include <ztd/text/count_as_transcoded.hpp>
 #include <ztd/text/validate_decodable_as.hpp>
 #include <ztd/text/validate_encodable_as.hpp>
+#include <ztd/text/validate_transcodable_as.hpp>
 
 #include <ztd/text/encode_view.hpp>
 #include <ztd/text/decode_view.hpp>
