@@ -37,22 +37,26 @@
 
 #include <ztd/idk/detail/encoding_name.hpp>
 
-#if ZTD_IS_ON(ZTD_PLATFORM_UNIX_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_UNIX_I_) || ZTD_IS_ON(ZTD_PLATFORM_POSIX_I_)
 
-// clang-foramt off
-
+// clang-format off
 #include <clocale>
 #if ZTD_IS_ON(ZTD_LANGINFO_I_)
-extern "C" {
-#include <langinfo.h>
-}
+	extern "C" {
+		#include <langinfo.h>
+	}
 #elif ZTD_IS_ON(ZTD_NL_LANGINFO_I_)
-// IBM-specific??
-extern "C" {
-#include <nl_langinfo.h>
-}
+	// IBM-specific??
+	extern "C" {
+		#include <nl_langinfo.h>
+	}
 #endif
 
+#if ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
+	#if ZTD_IS_ON(ZTD_PLATFORM_POSIX_I_) && ZTD_IS_ON(ZTD_DLFCN_H_I_)
+		#include <dlfcn.h>
+	#endif
+#endif
 // clang-format on
 
 #include <ztd/prologue.hpp>

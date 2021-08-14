@@ -64,10 +64,10 @@ namespace ztd { namespace text {
 	using wide_execution_t =
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 		__txt_impl::__wide_execution_windows
-#elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-		__txt_impl::__wide_execution_iconv
 #elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE_I_)
 		__txt_impl::__wide_execution_iso10646
+#elif ZTD_IS_ON(ZTD_LIBICONV_I_)
+		__txt_impl::__wide_execution_iconv
 #else
 		__txt_impl::__wide_execution_cwchar
 #endif

@@ -64,10 +64,10 @@ namespace ztd { namespace text {
 	using execution_t =
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
 		__txt_impl::__execution_cuchar
-#elif ZTD_IS_ON(ZTD_TEXT_ICONV_I_)
-		__txt_impl::__execution_iconv
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
 		__txt_impl::__execution_mac_os
+#elif ZTD_IS_ON(ZTD_LIBICONV_I_)
+		__txt_impl::__execution_iconv
 #else
 		no_encoding<char, unicode_code_point>
 #error \

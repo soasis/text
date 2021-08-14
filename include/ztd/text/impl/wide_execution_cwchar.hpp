@@ -77,8 +77,8 @@ namespace ztd { namespace text {
 				::std::size_t __init_result = ::std::wcrtomb(__ghost_space, L'\0', &__wide_state);
 #endif
 				// make sure it is initialized
-				ZTD_TEXT_ASSERT_I_(__init_result == 1 && __ghost_space[0] == '\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
+				ZTD_TEXT_ASSERT(__init_result == 1 && __ghost_space[0] == '\0');
+				ZTD_TEXT_ASSERT(::std::mbsinit(&__wide_state) != 0);
 			}
 		};
 
@@ -91,8 +91,8 @@ namespace ztd { namespace text {
 				wchar_t __ghost_space[2];
 				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
 				// make sure it is initialized
-				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == L'\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__wide_state) != 0);
+				ZTD_TEXT_ASSERT(__init_result == 0 && __ghost_space[0] == L'\0');
+				ZTD_TEXT_ASSERT(::std::mbsinit(&__wide_state) != 0);
 			}
 		};
 	} // namespace __txt_detail

@@ -40,8 +40,9 @@ if (NOT TARGET Catch2::Catch2)
 endif()
 
 # # Test Subdirectories
-add_subdirectory(basic_run_time)
 add_subdirectory(inclusion)
+add_subdirectory(basic_run_time)
+add_subdirectory(iconv)
 add_subdirectory(basic_compile_time)
 add_subdirectory(tiny_buffer)
 add_subdirectory(compile_fails)

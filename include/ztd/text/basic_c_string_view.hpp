@@ -151,6 +151,10 @@ namespace ztd { namespace text {
 		constexpr basic_c_string_view& operator=(basic_c_string_view&&) = default;
 		constexpr basic_c_string_view& operator=(const basic_c_string_view&) = default;
 
+		constexpr __base_t base() const noexcept {
+			return __base_t(this->data(), this->size());
+		}
+
 		constexpr size_type size() const noexcept {
 			return this->__base_t::size();
 		}

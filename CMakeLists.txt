@@ -118,7 +118,9 @@ option(ZTD_TEXT_DOCUMENTATION_NO_SPHINX "Turn off Sphinx usage (useful for ReadT
 option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
 option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
-option(ZTD_TEXT_USE_CUNEICODE "Enable generation of a single header and its target" OFF)
+option(ZTD_TEXT_USE_CUNEICODE "Use ztd.cuneicode" OFF)
+option(ZTD_TEXT_USE_LIBICONV "Use libiconv" OFF)
+option(ZTD_TEXT_USE_STATIC_LIBICONV "Use libiconv and link against it even if it's a static library" OFF)
 
 # # Dependencies
 # ztd.idk
@@ -133,10 +135,65 @@ if (ZTD_TEXT_USE_CUNEICODE)
 		GIT_REPOSITORY https://github.com/soasis/cuneicode.git
 		GIT_TAG main)
 	FetchContent_MakeAvailable(ztd.cuneicode)
-	set(ztd_text_has_cuneicode ON)
-else()
-	set(ztd_text_has_cuneicode OFF)
+	set(ztd-text-cuneicode ztd::cuneicode)
 endif()
+
+# iconv - static and dynamic
+if (NOT TARGET Iconv::Iconv AND ZTD_TEXT_USE_LIBICONV)
+	# because of iconv's license, using it as a static dependency
+	# is tricky: therefore, it's only enabled for folks who explicitly asked for it,
+	# regardless of whether it is available or not
+	find_package(Iconv)
+endif()
+# define generator expressions for each moment
+string(CONCAT ztd-text-libiconv-define
+	$<IF:$<BOOL:ZTD_TEXT_USE_LIBICONV>,
+		ZTD_LIBICONV=1,
+		ZTD_LIBICONV=0
+	>
+)
+string(CONCAT ztd-text-libiconv-load-define
+	$<IF:$<AND:$<BOOL:Iconv_FOUND>,$<BOOL:ZTD_TEXT_USE_LIBICONV>>,
+		ZTD_LIBICONV_LOAD=0,
+		ZTD_LIBICONV_LOAD=1
+	>
+)
+string(CONCAT ztd-text-libiconv-header-define
+	$<IF:$<AND:$<BOOL:Iconv_FOUND>,$<BOOL:ZTD_TEXT_USE_LIBICONV>>,
+		ZTD_ICONV_H=1,
+		ZTD_ICONV_H=0
+	>
+)
+string(CONCAT ztd-text-libiconv
+	$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>
+)
+string(CONCAT ztd-text-libiconv-dl
+	$<$<BOOL:ztd-text-libiconv>:${CMAKE_DL_LIBS}>
+)
+string(CONCAT ztd-text-static-libiconv-define
+	$<IF:
+		$<AND:$<BOOL:Iconv_FOUND>, $<BOOL:ZTD_TEXT_USE_STATIC_LIBICONV>,
+			$<STREQUAL:
+				$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
+				STATIC_LIBRARY
+			>
+		>,
+		ZTD_LIBICONV_STATIC=1,
+		ZTD_LIBICONV_STATIC=0
+	>
+)
+string(CONCAT ztd-text-dynamic-libiconv-define
+	$<IF:
+		$<AND:$<BOOL:Iconv_FOUND>, $<BOOL:ZTD_TEXT_USE_LIBICONV>,
+			$<STREQUAL:
+				$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
+				SHARED_LIBRARY
+			>
+		>,
+		ZTD_LIBICONV_DYNAMIC=1,
+		ZTD_LIBICONV_DYNAMIC=0
+	>
+)
 
 # Main library declarations
 file(GLOB_RECURSE ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
@@ -148,14 +205,21 @@ target_include_directories(ztd.text
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
+target_compile_definitions(ztd.text
+	INTERFACE
+	${ztd-text-libiconv-define}
+	${ztd-text-libiconv-load-define}
+	${ztd-text-libiconv-header-define}
+	${ztd-text-static-libiconv-define}
+	${ztd-text-dynamic-libiconv-define})
 target_link_libraries(ztd.text
 	INTERFACE
-		ztd::idk
-		${ztd-use-cuneicode}
-)
+	${ztd-text-libiconv-dl}
+	ztd::idk
+	${ztd-text-libiconv}
+	${ztd-text-cuneicode})
 install(DIRECTORY include/
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # # Config / Version packaging
 # Version configurations

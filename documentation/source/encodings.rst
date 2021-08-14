@@ -96,7 +96,7 @@ As a general point, we hope to support almost all of the encodings here in one f
 	* - ``iconv`` Encoding
 	  - Yes
 	  - Yes
-	  - :doc:`WIP 🛠️ </api/encodings/iconv_encoding>`
+	  - :doc:`Yes ✅ </api/encodings/basic_iconv>`
 	* - ``cuneicode`` Encoding
 	  - Yes
 	  - Yes

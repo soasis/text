@@ -36,7 +36,7 @@ This is the locale-based, wide runtime encoding. It uses a number of compile-tim
 Currently, the hierachy of behaviors is like so:
 
 - If the platform is Windows, then it assumes this is :doc:`UTF-16 </api/encodings/utf16>`;
-- Otherwise, if libiconv is available, then it attempts to use :doc:`iconv </api/encodings/iconv_encoding>` configured to the ``"wchar_t"``-identified encoding;
+- Otherwise, if libiconv is available, then it attempts to use :doc:`iconv </api/encodings/basic_iconv>` configured to the ``"wchar_t"``-identified encoding;
 - Otherwise, if the platform is MacOS and ``WCHAR_MAX`` is greater than the maximum of an unsigned 21-bit number, or ``__STDC_ISO_10646__`` is defined, then it attempts to use :doc:`UTF-32 </api/encodings/utf32>`;
 - Otherwise, if the headers ``<cwchar>`` or ``<wchar.h>`` are available, then it attempts to use a gnarly, lossy, and dangerous encoding that potentially traffics through the C Standard Library and Locale APIs in conjunction with a roundtrip through the :doc:`ztd::text::execution </api/encodings/execution>` encoding;
 - Otherwise, it produces a compile-time error.
