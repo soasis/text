@@ -41,8 +41,10 @@
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/ascii.hpp>
 #include <ztd/text/no_encoding.hpp>
+#include <ztd/text/iconv_names.hpp>
 
 #include <ztd/idk/detail/encoding_name.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <string_view>
 
@@ -87,6 +89,26 @@ namespace ztd { namespace text {
 			}
 			else {
 				return basic_no_encoding<_CharType, unicode_code_point> {};
+			}
+		}
+
+		template <typename _CodePoint>
+		c_string_view __platform_utf_name() {
+			constexpr ::std::size_t __bits = sizeof(_CodePoint) * CHAR_BIT;
+			if constexpr (__bits <= 8) {
+				return iconv_utf8_name;
+			}
+			else if constexpr (__bits <= 16) {
+				return iconv_utf16_name;
+			}
+			else if constexpr (__bits <= 32) {
+				return iconv_utf32_name;
+			}
+			else {
+				static_assert(always_false_v<_CodePoint>,
+					"[ztd.text] There is no good known default platform encoding for the given bit size in this "
+					"platform. File a bug and tell us about your needs!");
+				return iconv_locale_name;
 			}
 		}
 

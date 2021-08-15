@@ -62,28 +62,4 @@ TEST_CASE("text/transcode/iconv", "iconv transcode can roundtrip") {
 			check_roundtrip(encoding, ztd::tests::w_unicode_sequence_truth_native_endian);
 		}
 	}
-	SECTION("utf8") {
-		ztd::text::basic_iconv<ztd::uchar8_t> encoding("UTF-8");
-		check_roundtrip(encoding, ztd::tests::u8_basic_source_character_set);
-
-		if (ztd::text::contains_unicode_encoding(encoding)) {
-			check_roundtrip(encoding, ztd::tests::u8_unicode_sequence_truth_native_endian);
-		}
-	}
-	SECTION("utf16") {
-		ztd::text::basic_iconv<char16_t> encoding("UTF-16");
-		check_roundtrip(encoding, ztd::tests::u16_basic_source_character_set);
-
-		if (ztd::text::contains_unicode_encoding(encoding)) {
-			check_roundtrip(encoding, ztd::tests::u16_unicode_sequence_truth_native_endian);
-		}
-	}
-	SECTION("utf32") {
-		ztd::text::basic_iconv<char32_t> encoding("UTF-32");
-		check_roundtrip(encoding, ztd::tests::u32_basic_source_character_set);
-
-		if (ztd::text::contains_unicode_encoding(encoding)) {
-			check_roundtrip(encoding, ztd::tests::u32_unicode_sequence_truth_native_endian);
-		}
-	}
 }

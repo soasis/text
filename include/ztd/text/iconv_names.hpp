@@ -30,39 +30,29 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
-#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
+#ifndef ZTD_TEXT_ICONV_NAMES_HPP
+#define ZTD_TEXT_ICONV_NAMES_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/basic_iconv.hpp>
-#include <ztd/text/iconv_names.hpp>
+#include <ztd/text/c_string_view.hpp>
 
-#if ZTD_IS_ON(ZTD_LIBICONV_I_)
+#include <ztd/idk/endian.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
-
-		class __wide_execution_iconv : public basic_iconv<wchar_t, unicode_code_point> {
-		private:
-			using __base_t = basic_iconv<wchar_t, unicode_code_point>;
-
-		public:
-			__wide_execution_iconv() noexcept : __base_t(iconv_wide_locale_name.base(), iconv_utf32_name.base()) {
-			}
-		};
-
-	} // namespace __impl
+	inline constexpr c_string_view iconv_locale_name      = "";
+	inline constexpr c_string_view iconv_wide_locale_name = "wchar_t";
+	inline constexpr c_string_view iconv_utf8_name        = "UTF-8";
+	inline constexpr c_string_view iconv_utf16_name       = (endian::native == endian::big ? "UTF-16BE" : "UTF-16LE");
+	inline constexpr c_string_view iconv_utf32_name       = (endian::native == endian::big ? "UTF-32BE" : "UTF-32LE");
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
 #include <ztd/epilogue.hpp>
 
-#endif
-
-#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
+#endif // ZTD_TEXT_ICONV_NAMES_HPP

@@ -28,41 +28,4 @@
 //
 // ============================================================================>
 
-#pragma once
-
-#ifndef ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
-#define ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP
-
-#include <ztd/text/version.hpp>
-
-#include <ztd/text/basic_iconv.hpp>
 #include <ztd/text/iconv_names.hpp>
-
-#if ZTD_IS_ON(ZTD_LIBICONV_I_)
-
-#include <ztd/prologue.hpp>
-
-namespace ztd { namespace text {
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-
-	namespace __impl {
-
-		class __wide_execution_iconv : public basic_iconv<wchar_t, unicode_code_point> {
-		private:
-			using __base_t = basic_iconv<wchar_t, unicode_code_point>;
-
-		public:
-			__wide_execution_iconv() noexcept : __base_t(iconv_wide_locale_name.base(), iconv_utf32_name.base()) {
-			}
-		};
-
-	} // namespace __impl
-
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text
-
-#include <ztd/epilogue.hpp>
-
-#endif
-
-#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_ICONV_HPP

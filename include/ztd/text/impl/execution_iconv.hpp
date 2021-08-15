@@ -36,6 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/basic_iconv.hpp>
+#include <ztd/text/iconv_names.hpp>
 
 #if ZTD_IS_ON(ZTD_LIBICONV_I_)
 
@@ -51,7 +52,7 @@ namespace ztd { namespace text {
 			using __base_t = basic_iconv<char, unicode_code_point>;
 
 		public:
-			__execution_iconv() noexcept : __base_t("", "UTF-32") {
+			__execution_iconv() noexcept : __base_t(iconv_locale_name.base(), iconv_utf32_name.base()) {
 			}
 		};
 

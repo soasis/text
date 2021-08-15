@@ -147,19 +147,19 @@ if (NOT TARGET Iconv::Iconv AND ZTD_TEXT_USE_LIBICONV)
 endif()
 # define generator expressions for each moment
 string(CONCAT ztd-text-libiconv-define
-	$<IF:$<BOOL:ZTD_TEXT_USE_LIBICONV>,
+	$<IF:$<BOOL:${ZTD_TEXT_USE_LIBICONV}>,
 		ZTD_LIBICONV=1,
 		ZTD_LIBICONV=0
 	>
 )
 string(CONCAT ztd-text-libiconv-load-define
-	$<IF:$<AND:$<BOOL:Iconv_FOUND>,$<BOOL:ZTD_TEXT_USE_LIBICONV>>,
+	$<IF:$<AND:$<BOOL:${Iconv_FOUND}>,$<BOOL:${ZTD_TEXT_USE_LIBICONV}>>,
 		ZTD_LIBICONV_LOAD=0,
 		ZTD_LIBICONV_LOAD=1
 	>
 )
 string(CONCAT ztd-text-libiconv-header-define
-	$<IF:$<AND:$<BOOL:Iconv_FOUND>,$<BOOL:ZTD_TEXT_USE_LIBICONV>>,
+	$<IF:$<AND:$<BOOL:${Iconv_FOUND}>,$<BOOL:${ZTD_TEXT_USE_LIBICONV}>>,
 		ZTD_ICONV_H=1,
 		ZTD_ICONV_H=0
 	>
@@ -172,7 +172,7 @@ string(CONCAT ztd-text-libiconv-dl
 )
 string(CONCAT ztd-text-static-libiconv-define
 	$<IF:
-		$<AND:$<BOOL:Iconv_FOUND>, $<BOOL:ZTD_TEXT_USE_STATIC_LIBICONV>,
+		$<AND:$<BOOL:${Iconv_FOUND}>, $<BOOL:${ZTD_TEXT_USE_STATIC_LIBICONV}>,
 			$<STREQUAL:
 				$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
 				STATIC_LIBRARY
