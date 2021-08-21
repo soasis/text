@@ -36,7 +36,7 @@
 #include <ztd/idk/utf8_startup_hook.hpp>
 
 namespace ztd { namespace text { namespace tests {
-	inline ztd::idk::utf8_startup_hook utf8_startup {};
+	inline ztd::utf8_startup_hook utf8_startup {};
 }}} // namespace ztd::text::tests
 
 #endif // ZTD_TEXT_TESTS_UTF8_STARTUP_HPP
