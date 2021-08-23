@@ -349,7 +349,7 @@ namespace ztd { namespace ranges {
 					::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
 			}
 			else
-#else
+#endif
 			{
 				for (; (__first0 != __last0) && (__first1 != __last1); ++__first0, (void)++__first1) {
 					if (*__first0 < *__first1)
@@ -359,7 +359,6 @@ namespace ztd { namespace ranges {
 				}
 				return (__first0 == __last0) && (__first1 != __last1);
 			}
-#endif
 #endif
 		}
 
