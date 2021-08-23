@@ -388,6 +388,14 @@ namespace ztd { namespace text {
 	inline constexpr utf16_t utf16 = {};
 
 	//////
+	/// @brief A UTF-16 Encoding that traffics in wchar_t. See ztd::text::basic_utf16 for more details.
+	using wide_utf16_t = basic_utf16<wchar_t>;
+
+	//////
+	/// @brief An instance of the UTF-16 that traffics in wchar_t for ease of use.
+	inline constexpr wide_utf16_t wide_utf16 = {};
+
+	//////
 	/// @}
 
 

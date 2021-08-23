@@ -312,6 +312,14 @@ namespace ztd { namespace text {
 	inline constexpr utf32_t utf32 = {};
 
 	//////
+	/// @brief A UTF-32 Encoding that traffics in wchar_t. See ztd::text::basic_utf32 for more details.
+	using wide_utf32_t = basic_utf32<wchar_t>;
+
+	//////
+	/// @brief An instance of the UTF-32 that traffics in wchar_t for ease of use.
+	inline constexpr wide_utf32_t wide_utf32 = {};
+
+	//////
 	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

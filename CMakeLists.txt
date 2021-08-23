@@ -202,7 +202,7 @@ add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
 target_include_directories(ztd.text
 	INTERFACE
-		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_compile_definitions(ztd.text
