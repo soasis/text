@@ -46,6 +46,7 @@
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
+#include <ztd/text/detail/forward_if_move_only.hpp>
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
@@ -285,9 +286,9 @@ namespace ztd { namespace text {
 				using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
 				using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(__output));
-				auto __stateful_result
-					= encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-					     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+				auto __stateful_result = encode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
+					::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
+					::std::forward<_ErrorHandler>(__error_handler), __state);
 				(void)__stateful_result;
 				return __output;
 			}
@@ -432,9 +433,9 @@ namespace ztd { namespace text {
 			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
 			using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
 			_Unbounded __insert_view(::std::back_inserter(__output));
-			auto __stateful_result
-				= encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-				     ::std::move(__insert_view), ::std::forward<_ErrorHandler>(__error_handler), __state);
+			auto __stateful_result = encode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
+				::std::forward<_ErrorHandler>(__error_handler), __state);
 			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
 		}
 		else {

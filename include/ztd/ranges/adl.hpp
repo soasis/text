@@ -579,6 +579,19 @@ namespace ztd { namespace ranges {
 	template <typename _Range>
 	using detect_adl_empty = decltype(ranges_adl::adl_empty(::std::declval<::std::add_lvalue_reference_t<_Range>>()));
 
+	template <typename _Range>
+	using detect_adl_begin = decltype(ranges_adl::adl_begin(::std::declval<_Range>()));
+
+	template <typename _Range>
+	using detect_adl_end = decltype(ranges_adl::adl_end(::std::declval<_Range>()));
+
+	template <typename _Ty>
+	struct is_range
+	: ::std::integral_constant<bool, is_detected_v<detect_adl_begin, _Ty> && is_detected_v<detect_adl_end, _Ty>> { };
+
+	template <typename _Ty>
+	inline constexpr bool is_range_v = is_range<_Ty>::value;
+
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::ranges
 

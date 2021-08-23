@@ -172,8 +172,7 @@ namespace ztd { namespace ranges {
 				::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_Range>, __subrange>>* = nullptr>
 			constexpr __subrange(_Range&& __range) noexcept(::std::is_nothrow_constructible_v<__subrange,
 				range_iterator_t<remove_cvref_t<_Range>>, range_sentinel_t<remove_cvref_t<_Range>>>)
-			: __subrange(ranges_adl::adl_begin(::std::forward<_Range>(__range)),
-				ranges_adl::adl_end(::std::forward<_Range>(__range))) {
+			: __subrange(ranges_adl::adl_begin(__range), ranges_adl::adl_end(__range)) {
 			}
 
 			//////
@@ -187,11 +186,9 @@ namespace ztd { namespace ranges {
 			//////
 			template <typename _Range, __subrange_kind _StrawmanKind = _Kind,
 				::std::enable_if_t<(_StrawmanKind == __subrange_kind::sized)>* = nullptr>
-			constexpr __subrange(_Range&& __range, size_type __size) noexcept(
-				noexcept(__subrange(ranges_adl::adl_begin(::std::forward<_Range>(__range)),
-				     ranges_adl::adl_end(::std::forward<_Range>(__range)), ::std::move(__size))))
-			: __subrange(ranges_adl::adl_begin(::std::forward<_Range>(__range)),
-				ranges_adl::adl_end(::std::forward<_Range>(__range)), ::std::move(__size)) {
+			constexpr __subrange(_Range&& __range, size_type __size) noexcept(noexcept(
+				__subrange(ranges_adl::adl_begin(__range), ranges_adl::adl_end(__range), ::std::move(__size))))
+			: __subrange(ranges_adl::adl_begin(__range), ranges_adl::adl_end(__range), ::std::move(__size)) {
 			}
 
 			//////

@@ -36,6 +36,10 @@ UTF-32
 
 .. doxygentypedef:: ztd::text::utf32_t
 
+.. doxygenvariable:: ztd::text::wide_utf32
+
+.. doxygentypedef:: ztd::text::wide_utf32_t
+
 
 
 Base Template

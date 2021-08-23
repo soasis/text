@@ -141,8 +141,8 @@ namespace ztd { namespace text {
 				using _Result = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-				auto __init   = ranges::ranges_adl::adl_begin(::std::forward<_InputRange>(__input));
-				auto __inlast = ranges::ranges_adl::adl_end(::std::forward<_InputRange>(__input));
+				auto __init   = ranges::ranges_adl::adl_begin(__input);
+				auto __inlast = ranges::ranges_adl::adl_end(__input);
 				if constexpr (__call_error_handler) {
 					if (__init == __inlast) {
 						// an exhausted sequence is fine
