@@ -341,7 +341,7 @@ namespace ztd { namespace ranges {
 		constexpr bool __lexicographical_compare(_First0 __first0, _Last0 __last0, _First1 __first1, _Last1 __last1) {
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
 			return ::std::ranges::lexicographical_compare(
-				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1))
+				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
 #else
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_)
 			if constexpr (::std::is_same_v<_First0, _Last0> && ::std::is_same_v<_First1, _Last1>) {
