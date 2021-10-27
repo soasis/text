@@ -176,7 +176,7 @@ namespace ztd { namespace text {
 				ranges::advance(__init);
 
 				if constexpr (__call_error_handler) {
-					if (__point > __txt_detail::__last_code_point) {
+					if (__point > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -188,7 +188,7 @@ namespace ztd { namespace text {
 							::ztd::span<code_unit, 0>());
 					}
 					if constexpr (!__surrogates_allowed) {
-						if (__txt_detail::__is_surrogate(__point)) {
+						if (__ztd_idk_detail_is_surrogate(__point)) {
 							__self_t __self {};
 							return __error_handler(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
@@ -472,7 +472,7 @@ namespace ztd { namespace text {
 						}
 					}
 					if constexpr (!__surrogates_allowed) {
-						if (__txt_detail::__is_surrogate(__decoded)) {
+						if (__ztd_idk_detail_is_surrogate(__decoded)) {
 							__self_t __self {};
 							return __error_handler(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
@@ -483,7 +483,7 @@ namespace ztd { namespace text {
 								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 						}
 					}
-					if (static_cast<char32_t>(__decoded) > __txt_detail::__last_code_point) {
+					if (static_cast<char32_t>(__decoded) > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),

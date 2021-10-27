@@ -174,8 +174,8 @@ namespace ztd { namespace text {
 				ranges::advance(__init);
 
 				if constexpr (__validate_decodable_as && __call_error_handler) {
-					if (static_cast<char32_t>(__unit) > __txt_detail::__last_code_point
-						|| __txt_detail::__is_surrogate(static_cast<char32_t>(__unit))) {
+					if (static_cast<char32_t>(__unit) > __ztd_idk_detail_last_unicode_code_point
+						|| __ztd_idk_detail_is_surrogate(static_cast<char32_t>(__unit))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -261,7 +261,7 @@ namespace ztd { namespace text {
 				ranges::advance(__init);
 
 				if constexpr (__validate_decodable_as && __call_error_handler) {
-					if (__point > __txt_detail::__last_code_point || __txt_detail::__is_surrogate(__point)) {
+					if (__point > __ztd_idk_detail_last_unicode_code_point || __ztd_idk_detail_is_surrogate(__point)) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),

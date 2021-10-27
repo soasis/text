@@ -181,7 +181,7 @@ namespace ztd { namespace text {
 				const code_unit& __lead = __units[0];
 				ranges::advance(__init);
 
-				if (!__txt_detail::__is_surrogate(__lead)) {
+				if (!__ztd_idk_detail_is_surrogate(__lead)) {
 					*__outit = static_cast<code_point>(__lead);
 					ranges::advance(::std::move(__outit));
 					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -191,7 +191,7 @@ namespace ztd { namespace text {
 						__s, encoding_error::ok);
 				}
 				if constexpr (__call_error_handler) {
-					if (!__txt_detail::__is_lead_surrogate(__lead)) {
+					if (!__ztd_idk_detail_is_lead_surrogate(__lead)) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -219,7 +219,7 @@ namespace ztd { namespace text {
 				const code_unit& __trail = __units[1];
 				ranges::advance(__init);
 				if constexpr (__call_error_handler) {
-					if (!__txt_detail::__is_trail_surrogate(__trail)) {
+					if (!__ztd_idk_detail_is_trail_surrogate(__trail)) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -305,7 +305,7 @@ namespace ztd { namespace text {
 				ranges::advance(__init);
 
 				if constexpr (__call_error_handler) {
-					if (__point > __txt_detail::__last_code_point) {
+					if (__point > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -324,10 +324,10 @@ namespace ztd { namespace text {
 				}
 				else {
 					auto __normal = __point - __txt_detail::__normalizing_value;
-					auto __lead   = __txt_detail::__first_lead_surrogate
+					auto __lead   = __ztd_idk_detail_first_lead_surrogate
 						+ ((__normal & __txt_detail::__lead_surrogate_bitmask)
 						     >> __txt_detail::__lead_shifted_bits);
-					auto __trail = __txt_detail::__first_trail_surrogate
+					auto __trail = __ztd_idk_detail_first_trail_surrogate
 						+ (__normal & __txt_detail::__trail_surrogate_bitmask);
 
 					code_unit __lead16  = static_cast<code_unit>(static_cast<char16_t>(__lead));

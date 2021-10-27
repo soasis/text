@@ -36,6 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/idk/charN_t.hpp>
+#include <ztd/idk/detail/unicode.h>
 
 #include <cstddef>
 
@@ -44,28 +45,6 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 	namespace __txt_detail {
-
-		// codepoint related
-		inline constexpr char32_t __last_code_point = 0x10FFFF;
-
-		inline constexpr char32_t __first_lead_surrogate = 0xD800;
-		inline constexpr char32_t __last_lead_surrogate  = 0xDBFF;
-
-		inline constexpr char32_t __first_trail_surrogate = 0xDC00;
-		inline constexpr char32_t __last_trail_surrogate  = 0xDFFF;
-
-		inline constexpr char32_t __first_surrogate = __first_lead_surrogate;
-		inline constexpr char32_t __last_surrogate  = __last_trail_surrogate;
-
-		inline constexpr bool __is_lead_surrogate(char32_t __value) noexcept {
-			return __value >= __first_lead_surrogate && __value <= __last_lead_surrogate;
-		}
-		inline constexpr bool __is_trail_surrogate(char32_t __value) noexcept {
-			return __value >= __first_trail_surrogate && __value <= __last_trail_surrogate;
-		}
-		inline constexpr bool __is_surrogate(char32_t __value) noexcept {
-			return __value >= __first_surrogate && __value <= __last_surrogate;
-		}
 
 		// utf8_t related
 		inline constexpr char32_t __last_1byte_value = 0x7F;
@@ -184,8 +163,8 @@ namespace ztd { namespace text {
 		inline constexpr char32_t __ascii_replacement  = 0x003F;
 
 		inline constexpr char32_t __utf16_combine_surrogates(char16_t __lead, char16_t __trail) noexcept {
-			auto __hibits = __lead - __first_lead_surrogate;
-			auto __lobits = __trail - __first_trail_surrogate;
+			auto __hibits = __lead - __ztd_idk_detail_first_lead_surrogate;
+			auto __lobits = __trail - __ztd_idk_detail_first_trail_surrogate;
 			return __normalizing_value + ((__hibits << __lead_shifted_bits) | __lobits);
 		}
 
