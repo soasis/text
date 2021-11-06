@@ -110,7 +110,7 @@ namespace ztd { namespace text {
 					const ::std::size_t __initial_input_size      = __initial_drain_size - __drain_size;
 					::std::size_t __input_size                    = __initial_input_size;
 					const ::std::size_t __clear_result            = __base_t::_S_functions().__convert(
-                              __desc, &__p_input, &__input_size, &__p_faux_drain, &__faux_drain_size);
+						           __desc, &__p_input, &__input_size, &__p_faux_drain, &__faux_drain_size);
 					ZTD_TEXT_ASSERT(__clear_result == __txt_detail::__iconv::__conversion_success);
 					ZTD_TEXT_ASSERT(__input_size == 0);
 				}
@@ -127,7 +127,7 @@ namespace ztd { namespace text {
 				this->_M_reset_state(__desc);
 				constexpr ::std::size_t __max_input_size = 5;
 				// Are we going to a Unicode encoding?
-				if (!__idk_detail::__is_unicode_encoding_name(__to_name.base()) || __from_size > __max_input_size) {
+				if (!::ztd::is_unicode_encoding_name(__to_name.base()) || __from_size > __max_input_size) {
 					return true;
 				}
 				// Congratulations, welcome to the hell that is the GNU / libc implementation of iconv!
@@ -287,8 +287,8 @@ namespace ztd { namespace text {
 
 
 			bool contains_unicode_encoding() const noexcept {
-				return __idk_detail::__is_unicode_encoding_name(this->_M_from_name)
-					&& __idk_detail::__is_unicode_encoding_name(this->_M_to_name);
+				return ::ztd::is_unicode_encoding_name(this->_M_from_name)
+					&& ::ztd::is_unicode_encoding_name(this->_M_to_name);
 			}
 
 			//////

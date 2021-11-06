@@ -206,7 +206,7 @@ namespace ztd { namespace text {
 				if (__index != ::std::string_view::npos) {
 					__adjusted_ctype_name = __adjusted_ctype_name.substr(__index);
 				}
-				return __idk_detail::__is_unicode_encoding_name(__adjusted_ctype_name);
+				return ::ztd::is_unicode_encoding_name(__adjusted_ctype_name);
 #else
 				return true;
 #endif

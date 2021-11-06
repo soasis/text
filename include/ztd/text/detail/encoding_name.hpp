@@ -43,7 +43,7 @@
 #include <ztd/text/no_encoding.hpp>
 #include <ztd/text/iconv_names.hpp>
 
-#include <ztd/idk/detail/encoding_name.hpp>
+#include <ztd/idk/encoding_name.hpp>
 #include <ztd/idk/type_traits.hpp>
 
 #include <string_view>

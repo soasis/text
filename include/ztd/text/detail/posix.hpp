@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/detail/encoding_name.hpp>
+#include <ztd/idk/encoding_name.hpp>
 
 #if ZTD_IS_ON(ZTD_PLATFORM_UNIX_I_) || ZTD_IS_ON(ZTD_PLATFORM_POSIX_I_)
 
