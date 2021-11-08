@@ -72,7 +72,7 @@ rst_prolog = """
 
 .. |specializations_okay_true_false_type| replace:: User Specializations: ✔️ Okay! You can add other types to this classification by specializing the class template to a definition that derives from ``std::true_type``, or turn it off explicitly by having a definition that derives from ``std::false_type``. Note that specializing any type not explicitly marked with this notice is |ub|.
 
-.. |reserved_name| replace:: ⚠️ Names with double underscores, and within the ``__detail`` and ``__impl`` namespaces are reserved for the implementation. Referencing this entity directly is bad, and the name/functionality can be changed at any point in the future. Relying on anything not guaranteed by the documentation is |ub|.
+.. |reserved_name| replace:: ⚠️ Names with double underscores, and within the ``__*detail`` and ``__*impl`` namespaces are reserved for the implementation. Referencing this entity directly is bad, and the name/functionality can be changed at any point in the future. Relying on anything not guaranteed by the documentation is |ub|.
 
 .. |unfinished_warning| replace:: 🔨 This isn't finished yet! Come check back by the next major or minor version update.
 """

@@ -34,25 +34,16 @@
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 
-inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_default {
+inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_explicit_utf16 {
 
 	template <typename T>
 	static void delayed() {
-		// Larger unicode sequences, using defaults
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
-		// Unicode sequences, using defaults
-		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
-			static_assert(ztd::text::validate_decodable_as(ztd::tests::unicode_sequence_truth_native_endian));
-		}
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
-			static_assert(ztd::text::validate_decodable_as(ztd::tests::w_unicode_sequence_truth_native_endian));
-		}
-#endif
+		static_assert(ztd::text::validate_decodable_as(
+		     ztd::tests::u16_unicode_sequence_truth_native_endian, ztd::text::utf16));
 	}
 
 	void instantiate() {
 		delayed<void>();
 	}
 
-} // namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_default
+} // namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode_explicit_utf16
