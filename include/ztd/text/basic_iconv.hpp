@@ -110,7 +110,7 @@ namespace ztd { namespace text {
 					const ::std::size_t __initial_input_size      = __initial_drain_size - __drain_size;
 					::std::size_t __input_size                    = __initial_input_size;
 					const ::std::size_t __clear_result            = __base_t::_S_functions().__convert(
-						           __desc, &__p_input, &__input_size, &__p_faux_drain, &__faux_drain_size);
+                              __desc, &__p_input, &__input_size, &__p_faux_drain, &__faux_drain_size);
 					ZTD_TEXT_ASSERT(__clear_result == __txt_detail::__iconv::__conversion_success);
 					ZTD_TEXT_ASSERT(__input_size == 0);
 				}
@@ -649,6 +649,11 @@ namespace ztd { namespace text {
 				"present!");
 
 		public:
+			//////
+			/// @brief Constructors a no-op basic_iconv encoding.
+			///
+			/// @remarks Internal: do not use directly under any circumstances!
+			//////
 			__basic_iconv_no(c_string_view, c_string_view = "UTF-32") noexcept {
 			}
 		};

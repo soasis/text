@@ -206,6 +206,37 @@
 	"in_encoding, out_encoding, in_handler, out_handler, ...) or transcode_into(in, in_encoding, out, out_encoding, " \
 	"in_handler, out_handler, ...) explicitly in order to bypass this."
 
+#define ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_(_LITERAL_NAME, _LITERAL_TYPE_NAME, _LITERAL_PREFIX)            \
+	"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the " _LITERAL_NAME             \
+	" encoding from the machine at compile time and you are trying to use the " _LITERAL_TYPE_NAME                 \
+	" encoding type, somewhere. If you are part of the C++ Standards Committee, please make sure p1885 "           \
+	"(https://wg21.link/p1885) gets passed so we don't need to keep doing this nonsense. MSVC (VS2022 v17.0+), "   \
+	"Clang (v12.0+), and GCC (v11.1+) all have features to detect this. If you are on some other compiler,\n\n"    \
+                                                                                                                    \
+	"God's Speed.\n\n"                                                                                             \
+                                                                                                                    \
+	"This could mangle all of your compile time string literal_t conversions you are performing. To prevent that " \
+	"from happening, this error is being printed out, so that you have the explicit understanding that "           \
+	"your life may indeed be terrible after going ahead with the below advice.\n\n"                                \
+                                                                                                                    \
+	"If you know what the literal encoding is, pass it through your command line build files so ztd.text "         \
+	"understands it with ZTD_COMPILE_TIME_" _LITERAL_PREFIX                                                        \
+	"ENCODING_NAME=\"NAME-HERE\". If you do not care to figure it out and what this error to go away, then add "   \
+	"ZTD_TEXT_YES_PLEASE_DESTROY_MY_" _LITERAL_PREFIX                                                              \
+	"LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly " \
+	"that for you!"
+
+#define ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(_ENCODING_DESCRIPTION, _LITERAL_PREFIX)                  \
+	"[[ PLEASE. READ. ]] This text encoding (" _ENCODING_DESCRIPTION                                               \
+	"), while recognized, is not supported because it hasn't yet been implemented or tuned! You can see all the "  \
+	"encodings we have support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"   \
+                                                                                                                    \
+	"If you need this to be implemented, please reach out at the repository or to the contact addresses in the "   \
+	"repository. If you absolutely don't give a damn, specify please add "                                         \
+	"ZTD_TEXT_YES_PLEASE_DESTROY_MY_" _LITERAL_PREFIX                                                              \
+	"LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly " \
+	"that for you."
+
 #include <ztd/prologue.hpp>
 #include <ztd/epilogue.hpp>
 

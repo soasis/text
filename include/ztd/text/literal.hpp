@@ -147,37 +147,13 @@ namespace ztd { namespace text {
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
 #if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_I_) \
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
-				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
-				"literal_t "
-				"encoding from the machine at compile time and you are trying to use the literal_t encoding "
-				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
-				"here (https://developercommunity.visualstudio.com/content/idea/1160821/"
-				"-compiler-feature-macro-for-narrow-literal-foo-enc.html) and leave a (strong, but very nicely "
-				"spoken) request to implement the functionality. If you are part of the C++ Standards Committee, "
-				"please make sure p1885 (https://wg21.link/p1885) gets passed so we don't need to keep doing this "
-				"nonsense. If you are on some other compiler,\n\n"
-
-				"God's Speed.\n\n"
-
-				"This could mangle all of your compile time string literal_t conversions you are performing. To "
-				"prevent that from happening, this error is being printed out, so that you have the explicit "
-				"understanding that your life may indeed suck after doing this.\n\n"
-
-				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
-				"ignore this error and we will get right on doing exactly that for you.");
+				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("string literal", "literal_t", ""));
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
-			"[[ Please read! ]] This text encoding (" ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
-			"supported because it hasn't yet been implemented! You can see all the encodings we have "
-			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
-			
-			"If you need this to be implemented, please reach out at the repository or to the contact "
-			"addresses in the repository. If you absolutely don't give a damn, specify please add "
-			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
-			"ignore this error and we will get right on doing exactly that for you.");
+				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
+				     ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_(), ""));
 #endif
 			__txt_detail::__forwarding_handler<const literal_t, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
@@ -208,37 +184,13 @@ namespace ztd { namespace text {
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
 #if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_I_) \
      && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			// Cry bitter tears, I guess?
 			static_assert(always_false_v<_Input>,
-				"[[ PLEASE. READ. ]] Your compiler does not implement any known way of getting the string "
-				"literal_t "
-				"encoding from the machine at compile time and you are trying to use the literal_t encoding "
-				"type, somewhere. If this is the Microsoft Visual C/C++ Compiler (MSVC), then go upvote this issue "
-				"here (https://developercommunity.visualstudio.com/content/idea/1160821/"
-				"-compiler-feature-macro-for-narrow-literal-foo-enc.html) and leave a (strong, but very nicely "
-				"spoken) request to implement the functionality. If you are part of the C++ Standards Committee, "
-				"please make sure p1885 (https://wg21.link/p1885) gets passed so we don't need to keep doing this "
-				"nonsense. If you are on some other compiler,\n\n"
-
-				"God's Speed.\n\n"
-
-				"This could mangle all of your compile time string literal_t conversions you are performing. To "
-				"prevent that from happening, this error is being printed out, so that you have the explicit "
-				"understanding that your life may indeed suck after doing this.\n\n"
-
-				"Please add ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
-				"ignore this error and we will get right on doing exactly that for you.");
+				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("string literal", "literal_t", ""));
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
 			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
-			"[[ Please read! ]] This text encoding (" ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_() "), while recognized, is not "
-			"supported because it hasn't yet been implemented! You can see all the encodings we have "
-			"support for in our documentation (https://ztdtext.rtfd.io/en/latest/encodings.html).\n\n"
-			
-			"If you need this to be implemented, please reach out at the repository or to the contact "
-			"addresses in the repository. If you absolutely don't give a damn, specify please add "
-			"ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT to your command line to "
-			"ignore this error and we will get right on doing exactly that for you.");
+				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
+				     ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_(), ""));
 #endif
 			__txt_detail::__forwarding_handler<const literal_t, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
