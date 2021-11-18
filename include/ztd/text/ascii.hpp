@@ -266,7 +266,7 @@ namespace ztd { namespace text {
 			ranges::advance(__init);
 
 			if constexpr (__call_error_handler) {
-				if (__point > __txt_detail::__last_ascii_value) {
+				if (__point > __ztd_idk_detail_last_ascii_value) {
 					ascii_t __self {};
 					return __error_handler(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),

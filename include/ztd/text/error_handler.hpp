@@ -48,7 +48,6 @@
 #include <ztd/text/assume_valid_handler.hpp>
 #include <ztd/text/throw_handler.hpp>
 #include <ztd/text/pass_handler.hpp>
-#include <ztd/text/detail/unicode.hpp>
 #include <ztd/text/detail/pass_through_handler.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 #include <ztd/text/detail/transcode_one.hpp>
@@ -56,6 +55,7 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 #include <ztd/idk/ebco.hpp>
+#include <ztd/idk/detail/unicode.hpp>
 
 #include <climits>
 #include <cstddef>
@@ -138,7 +138,7 @@ namespace ztd { namespace text {
 			}
 			else if constexpr (is_unicode_code_point_v<_InputCodePoint>) {
 				constexpr _InputCodePoint __replacements[1]
-					= { static_cast<_InputCodePoint>(__txt_detail::__replacement) };
+					= { static_cast<_InputCodePoint>(__ztd_idk_detail_replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::forward<_Result>(__result));
 			}
 			else {
@@ -184,7 +184,7 @@ namespace ztd { namespace text {
 			}
 			else if constexpr (sizeof(_InputCodeUnit) >= sizeof(char)) {
 				constexpr _InputCodeUnit __replacements[1]
-					= { static_cast<_InputCodeUnit>(__txt_detail::__ascii_replacement) };
+					= { static_cast<_InputCodeUnit>(__ztd_idk_detail_ascii_replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::forward<_Result>(__result));
 			}
 			else {
@@ -241,7 +241,7 @@ namespace ztd { namespace text {
 				return __replacement_index;
 			}
 			else if constexpr (is_unicode_code_point_v<_InputCodePoint>) {
-				__replacement_code_points[0] = static_cast<_InputCodePoint>(__replacement);
+				__replacement_code_points[0] = static_cast<_InputCodePoint>(__ztd_idk_detail_replacement);
 				return 1;
 			}
 			else {
@@ -298,11 +298,11 @@ namespace ztd { namespace text {
 				return __replacement_index;
 			}
 			else if constexpr (is_unicode_code_point_v<_InputCodeUnit>) {
-				__replacement_code_units[0] = static_cast<_InputCodeUnit>(__replacement);
+				__replacement_code_units[0] = static_cast<_InputCodeUnit>(__ztd_idk_detail_replacement);
 				return 1;
 			}
 			else if constexpr (sizeof(_InputCodeUnit) >= sizeof(char)) {
-				__replacement_code_units[0] = static_cast<_InputCodeUnit>(__ascii_replacement);
+				__replacement_code_units[0] = static_cast<_InputCodeUnit>(__ztd_idk_detail_ascii_replacement);
 				return 1;
 			}
 			else {
@@ -365,7 +365,7 @@ namespace ztd { namespace text {
 			else if constexpr (
 				!(is_code_points_maybe_replaceable_v<_Encoding,
 				       _State&> || is_code_points_maybe_replaceable_v<_Encoding>)&&is_unicode_code_point_v<_CodeUnit>) {
-				constexpr _CodeUnit __replacements[1] = { static_cast<_CodeUnit>(__txt_detail::__replacement) };
+				constexpr _CodeUnit __replacements[1] = { static_cast<_CodeUnit>(__ztd_idk_detail_replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::move(__result));
 			}
 			else {
@@ -462,7 +462,7 @@ namespace ztd { namespace text {
 			else if constexpr (
 				!(is_code_points_maybe_replaceable_v<_Encoding,
 				       _State&> || is_code_points_maybe_replaceable_v<_Encoding>)&&is_unicode_code_point_v<_CodePoint>) {
-				constexpr _CodePoint __replacements[1] = { static_cast<_CodePoint>(__txt_detail::__replacement) };
+				constexpr _CodePoint __replacements[1] = { static_cast<_CodePoint>(__ztd_idk_detail_replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::move(__result));
 			}
 			else {

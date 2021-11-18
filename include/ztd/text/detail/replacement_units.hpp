@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/unicode.hpp>
+#include <ztd/idk/detail/unicode.hpp>
 
 #include <array>
 
@@ -48,11 +48,11 @@ namespace ztd { namespace text {
 
 		template <typename _CharType>
 		inline constexpr ::std::array<_CharType, 1> __question_mark_replacement_units { { static_cast<_CharType>(
-			__ascii_replacement) } };
+			__ztd_idk_detail_ascii_replacement) } };
 
 		template <typename _CharType>
 		inline constexpr ::std::array<_CharType, 1> __0xfffd_replacement_units { { static_cast<_CharType>(
-			__replacement) } };
+			__ztd_idk_detail_replacement) } };
 
 	} // namespace __txt_detail
 

@@ -230,7 +230,7 @@ namespace ztd { namespace text {
 							::ztd::span<code_unit, 2>(__units.data(), 2), ::ztd::span<code_point, 0>());
 					}
 				}
-				*__outit = static_cast<code_point>(__txt_detail::__utf16_combine_surrogates(
+				*__outit = static_cast<code_point>(__ztd_idk_detail_utf16_combine_surrogates(
 					static_cast<char16_t>(__lead), static_cast<char16_t>(__trail)));
 				ranges::advance(::std::move(__outit));
 
@@ -318,17 +318,17 @@ namespace ztd { namespace text {
 					}
 				}
 
-				if (__point <= __txt_detail::__last_bmp_value) {
+				if (__point <= __ztd_idk_detail_last_bmp_value) {
 					*__outit = static_cast<char16_t>(__point);
 					ranges::advance(__outit);
 				}
 				else {
-					auto __normal = __point - __txt_detail::__normalizing_value;
+					auto __normal = __point - __ztd_idk_detail_normalizing_value;
 					auto __lead   = __ztd_idk_detail_first_lead_surrogate
-						+ ((__normal & __txt_detail::__lead_surrogate_bitmask)
-						     >> __txt_detail::__lead_shifted_bits);
+						+ ((__normal & __ztd_idk_detail_lead_surrogate_bitmask)
+						     >> __ztd_idk_detail_lead_shifted_bits);
 					auto __trail = __ztd_idk_detail_first_trail_surrogate
-						+ (__normal & __txt_detail::__trail_surrogate_bitmask);
+						+ (__normal & __ztd_idk_detail_trail_surrogate_bitmask);
 
 					code_unit __lead16  = static_cast<code_unit>(static_cast<char16_t>(__lead));
 					code_unit __trail16 = static_cast<code_unit>(static_cast<char16_t>(__trail));

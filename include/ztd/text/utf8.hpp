@@ -41,13 +41,13 @@
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_transcoding_compatible.hpp>
 #include <ztd/text/type_traits.hpp>
-#include <ztd/text/detail/unicode.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/cast.hpp>
 
 #include <ztd/idk/charN_t.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
+#include <ztd/idk/detail/unicode.hpp>
 
 #include <array>
 
@@ -246,15 +246,15 @@ namespace ztd { namespace text {
 					}
 				}
 				constexpr uchar8_t __first_mask_continuation_values[][2] = {
-					{ 0b01111111, __txt_detail::__start_1byte_continuation },
-					{ 0b00011111, __txt_detail::__start_2byte_continuation },
-					{ 0b00001111, __txt_detail::__start_3byte_continuation },
-					{ 0b00000111, __txt_detail::__start_4byte_continuation },
-					{ 0b00000011, __txt_detail::__start_5byte_continuation },
-					{ 0b00000001, __txt_detail::__start_6byte_continuation },
+					{ 0b01111111, __ztd_idk_detail_start_1byte_continuation },
+					{ 0b00011111, __ztd_idk_detail_start_2byte_continuation },
+					{ 0b00001111, __ztd_idk_detail_start_3byte_continuation },
+					{ 0b00000111, __ztd_idk_detail_start_4byte_continuation },
+					{ 0b00000011, __ztd_idk_detail_start_5byte_continuation },
+					{ 0b00000001, __ztd_idk_detail_start_6byte_continuation },
 				};
 
-				::std::size_t __length                = __txt_detail::__decode_length<__overlong_allowed>(__point);
+				::std::size_t __length = ::ztd::__idk_detail::__utf8_decode_length<__overlong_allowed>(__point);
 				::std::size_t __length_index          = static_cast<::std::size_t>(__length - 1);
 				const auto& __first_mask_continuation = __first_mask_continuation_values[__length_index];
 				const uchar8_t& __first_mask          = __first_mask_continuation[0];
@@ -271,9 +271,9 @@ namespace ztd { namespace text {
 				if (__length_index > 0) {
 					__current_shift -= 6;
 					for (::std::size_t __index = 0; __index < __length_index; ++__index) {
-						__values[__index] = static_cast<code_unit>(__txt_detail::__continuation_signature
+						__values[__index] = static_cast<code_unit>(__ztd_idk_detail_continuation_signature
 							| static_cast<uchar8_t>(
-							     (__point >> __current_shift) & __txt_detail::__continuation_mask_value));
+							     (__point >> __current_shift) & __ztd_idk_detail_continuation_mask_value));
 						__current_shift -= 6;
 					}
 					for (::std::size_t __index = 0; __index < __length_index; ++__index) {
@@ -368,8 +368,8 @@ namespace ztd { namespace text {
 				__units[0]               = __txt_detail::static_cast_if_lossless<code_unit>(*__init);
 				const code_unit& __unit0 = __units[0];
 				ranges::advance(__init);
-				::std::size_t __length
-					= static_cast<::std::size_t>(__txt_detail::__sequence_length(static_cast<uchar8_t>(__unit0)));
+				::std::size_t __length = static_cast<::std::size_t>(
+					__ztd_idk_detail_utf8_sequence_length(static_cast<uchar8_t>(__unit0)));
 
 				if constexpr (!__overlong_allowed) {
 					if constexpr (__call_error_handler) {
@@ -398,8 +398,8 @@ namespace ztd { namespace text {
 				}
 
 				if constexpr (__call_error_handler) {
-					const bool __is_invalid_cu = __txt_detail::__utf8_is_invalid(static_cast<uchar8_t>(__unit0));
-					if (__is_invalid_cu || __txt_detail::__utf8_is_continuation(static_cast<uchar8_t>(__unit0))) {
+					const bool __is_invalid_cu = __ztd_idk_detail_utf8_is_invalid(static_cast<uchar8_t>(__unit0));
+					if (__is_invalid_cu || __ztd_idk_detail_is_lead_utf8(static_cast<uchar8_t>(__unit0))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -428,7 +428,7 @@ namespace ztd { namespace text {
 					}
 					__units[i] = __txt_detail::static_cast_if_lossless<code_unit>(*__init);
 					ranges::advance(__init);
-					if (!__txt_detail::__utf8_is_continuation(static_cast<uchar8_t>(__units[i]))) {
+					if (!__ztd_idk_detail_is_lead_utf8(static_cast<uchar8_t>(__units[i]))) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),
@@ -443,16 +443,16 @@ namespace ztd { namespace text {
 				code_point __decoded {};
 				switch (__length) {
 				case 2:
-					__decoded = __txt_detail::__decode(
+					__decoded = __ztd_idk_detail_utf8_decode(
 						static_cast<uchar8_t>(__units[0]), static_cast<uchar8_t>(__units[1]));
 					break;
 				case 3:
-					__decoded = __txt_detail::__decode(static_cast<uchar8_t>(__units[0]),
+					__decoded = __ztd_idk_detail_utf8_decode(static_cast<uchar8_t>(__units[0]),
 						static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]));
 					break;
 				case 4:
 				default:
-					__decoded = __txt_detail::__decode(static_cast<uchar8_t>(__units[0]),
+					__decoded = __ztd_idk_detail_utf8_decode(static_cast<uchar8_t>(__units[0]),
 						static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]),
 						static_cast<uchar8_t>(__units[3]));
 					break;
@@ -460,7 +460,7 @@ namespace ztd { namespace text {
 
 				if constexpr (__call_error_handler) {
 					if constexpr (!__overlong_allowed) {
-						if (__txt_detail::__utf8_is_overlong(__decoded, __length)) {
+						if (__ztd_idk_detail_utf8_is_overlong(__decoded, __length)) {
 							__self_t __self {};
 							return __error_handler(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
