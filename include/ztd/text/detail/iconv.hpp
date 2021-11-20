@@ -35,8 +35,8 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/detail/windows.hpp>
-#include <ztd/text/detail/posix.hpp>
+#include <ztd/idk/detail/windows.hpp>
+#include <ztd/idk/detail/posix.hpp>
 
 #if ZTD_IS_ON(ZTD_LIBICONV_I_)
 
@@ -44,7 +44,6 @@
 #include <iconv.h>
 #elif ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
 #if ZTD_IS_ON(ZTD_PLATFORM_POSIX_I_)
-#include <dlfcn.h>
 #elif ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 // taken care of above
 #else

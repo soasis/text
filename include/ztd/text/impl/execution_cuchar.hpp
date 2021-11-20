@@ -46,12 +46,12 @@
 #include <ztd/text/type_traits.hpp>
 #include <ztd/text/assert.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
-#include <ztd/text/detail/windows.hpp>
-#include <ztd/text/detail/posix.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/encoding_detection.h>
+#include <ztd/idk/detail/windows.hpp>
 
 #if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
 
@@ -201,22 +201,7 @@ namespace ztd { namespace text {
 			/// `std::setlocale` name checking otherwise).
 			//////
 			static bool contains_unicode_encoding() noexcept {
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-				int __codepage_id = __txt_detail::__windows::__determine_active_code_page();
-				return __txt_detail::__windows::__is_unicode_code_page(__codepage_id);
-#else
-#if ZTD_IS_ON(ZTD_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_LANGINFO_I_)
-				const char* __ctype_name = nl_langinfo(CODESET);
-#else
-				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
-#endif
-				::std::string_view __adjusted_ctype_name(__ctype_name);
-				::std::size_t __index = __adjusted_ctype_name.find_first_of(".");
-				if (__index != ::std::string_view::npos) {
-					__adjusted_ctype_name = __adjusted_ctype_name.substr(__index);
-				}
-				return ::ztd::is_unicode_encoding_name(__adjusted_ctype_name);
-#endif
+				return ztdc_is_execution_encoding_unicode();
 			}
 
 			//////
@@ -253,8 +238,7 @@ namespace ztd { namespace text {
 					= __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-				if (__txt_detail::__windows::__determine_active_code_page() == CP_UTF8) {
+				if (ztdc_is_execution_encoding_utf8()) {
 					// just go straight to UTF8
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;
@@ -263,7 +247,6 @@ namespace ztd { namespace text {
 						::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler),
 						__s);
 				}
-#endif // Windows Hell
 
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 				auto __outit   = ranges::ranges_adl::adl_begin(__output);
@@ -311,7 +294,7 @@ namespace ztd { namespace text {
 				::ztd::span<const wchar_t> __wide_read_buffer(
 					__wide_intermediary, __intermediate_result.output.data());
 				int __res = ::WideCharToMultiByte(
-					static_cast<UINT>(__txt_detail::__windows::__determine_active_code_page()),
+					static_cast<UINT>(__idk_detail::__windows::__determine_active_code_page()),
 					WC_ERR_INVALID_CHARS, __wide_read_buffer.data(), static_cast<int>(__wide_read_buffer.size()),
 					__intermediary_output, __state_count_max, ::std::addressof(replacement_code_units[0]),
 					::std::addressof(__used_default_char));
@@ -459,9 +442,7 @@ namespace ztd { namespace text {
 					= __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
-				if (__txt_detail::__windows::__determine_active_code_page() == CP_UTF8) {
-					// just use utf8_t directly
+				if (ztdc_is_execution_encoding_utf8()) {
 					// just go straight to UTF8
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;
@@ -470,7 +451,6 @@ namespace ztd { namespace text {
 						::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler),
 						__s);
 				}
-#endif
 
 				auto __init   = ranges::ranges_adl::adl_begin(__input);
 				auto __inlast = ranges::ranges_adl::adl_end(__input);
@@ -512,7 +492,7 @@ namespace ztd { namespace text {
 					constexpr const int __wide_intermediary_size = 4;
 					wchar_t __wide_intermediary[__wide_intermediary_size] {};
 					int __res = ::MultiByteToWideChar(
-						static_cast<UINT>(__txt_detail::__windows::__determine_active_code_page()),
+						static_cast<UINT>(__idk_detail::__windows::__determine_active_code_page()),
 						MB_ERR_INVALID_CHARS, __intermediary_input, static_cast<int>(__state_count),
 						__wide_intermediary, __wide_intermediary_size);
 					if (__res == 0) {
@@ -712,8 +692,6 @@ namespace ztd { namespace text {
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
-
-#undef ZTD_UCHAR_ACCESSOR_I_
 
 #include <ztd/epilogue.hpp>
 

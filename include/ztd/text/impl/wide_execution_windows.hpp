@@ -49,8 +49,6 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
 
-#include <ztd/text/detail/windows.hpp>
-
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
 
 #include <iterator>

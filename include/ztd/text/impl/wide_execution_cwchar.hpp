@@ -47,15 +47,13 @@
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/encoding_detection.h>
 
 #include <ztd/prologue.hpp>
 
 #include <cwchar>
 #include <iterator>
 #include <utility>
-#if ZTD_IS_ON(ZTD_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
-#include <clocale>
-#endif
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -191,25 +189,12 @@ namespace ztd { namespace text {
 			/// `std::setlocale` name checking otherwise).
 			//////
 			static bool contains_unicode_encoding() noexcept {
-				execution_t __execution {};
-				if (!text::contains_unicode_encoding(__execution)) {
+				// even if the wide encoding is unicode, we have to round-trip through the execution encoding, so if
+				// this doesn't work then nothing works with all unicode code points!
+				if (!ztdc_is_execution_encoding_unicode()) {
 					return false;
 				}
-#if ZTD_IS_ON(ZTD_LOCALE_DEPENDENT_WIDE_EXECUTION_I_)
-#if ZTD_IS_ON(ZTD_NL_LANGINFO_I_) || ZTD_IS_ON(ZTD_LANGINFO_I_)
-				const char* __ctype_name = nl_langinfo(CODESET);
-#else
-				const char* __ctype_name = setlocale(LC_CTYPE, nullptr);
-#endif
-				::std::string_view __adjusted_ctype_name(__ctype_name);
-				::std::size_t __index = __adjusted_ctype_name.find_first_of(".");
-				if (__index != ::std::string_view::npos) {
-					__adjusted_ctype_name = __adjusted_ctype_name.substr(__index);
-				}
-				return ::ztd::is_unicode_encoding_name(__adjusted_ctype_name);
-#else
-				return true;
-#endif
+				return ztdc_is_wide_execution_encoding_unicode();
 			}
 
 			//////
