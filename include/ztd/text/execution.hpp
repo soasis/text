@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 	/// do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
 	//////
 	using execution_t =
-#if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
+#if (ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS_I_)
 		__txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
 		__txt_impl::__execution_mac_os

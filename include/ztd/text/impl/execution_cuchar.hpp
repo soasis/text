@@ -53,7 +53,7 @@
 #include <ztd/idk/encoding_detection.h>
 #include <ztd/idk/detail/windows.hpp>
 
-#if ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)
+#if (ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS_I_)
 
 // clang-format off
 #if ZTD_IS_ON(ZTD_CUCHAR_I_)
