@@ -153,8 +153,9 @@ namespace ztd { namespace ranges {
 			}
 
 			constexpr __counted_iterator operator++(int) noexcept(_S_operator_plusplus_noexcept()) {
+				auto __copy = (*this);
 				++(*this);
-				return *this;
+				return __copy;
 			}
 
 			constexpr __counted_iterator& operator--() noexcept(_S_operator_minusminus_noexcept()) {

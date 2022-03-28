@@ -442,13 +442,13 @@ namespace ztd { namespace text {
 		// observers and modifiers: iteration
 
 		//////
-		/// @brief Increment a copy of the iterator.
+		/// @brief Copy then increment the iterator.
 		///
-		/// @returns A copy to the incremented iterator.
+		/// @returns A copy of iterator, before incrementing.
 		//////
 		constexpr transcode_iterator operator++(int) {
-			transcode_iterator __copy = this;
-			++__copy;
+			transcode_iterator __copy = *this;
+			++(*this);
 			return __copy;
 		}
 

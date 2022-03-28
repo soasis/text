@@ -350,13 +350,13 @@ namespace ztd { namespace text {
 			}
 
 			//////
-			/// @brief Increment a copy of the iterator.
+			/// @brief Copy then increment the iterator.
 			///
-			/// @returns A copy to the incremented iterator.
+			/// @returns A copy of iterator, before incrementing.
 			//////
 			constexpr _Derived operator++(int) {
 				_Derived __copy = this->_M_derived();
-				++__copy;
+				++(*this);
 				return __copy;
 			}
 
