@@ -209,8 +209,8 @@ namespace ztd { namespace ranges {
 				auto& __base_range = this->_M_base_range();
 				if constexpr (_IsInput) {
 					auto __result         = __copy(__write_storage_first, __write_storage_last,
-                              ranges_adl::adl_begin(::std::move(__base_range)),
-                              ranges_adl::adl_end(::std::move(__base_range)));
+						        ranges_adl::adl_begin(::std::move(__base_range)),
+						        ranges_adl::adl_end(::std::move(__base_range)));
 					this->_M_base_range() = reconstruct(::std::in_place_type<_URange>, ::std::move(__result.out));
 				}
 				else {
@@ -420,7 +420,7 @@ namespace ztd { namespace ranges {
 		///@brief Shifts the iterator over by +1.
 		constexpr word_iterator operator++(int) const noexcept(_S_copy_noexcept() && _S_advance_noexcept()) {
 			auto __copy = *this;
-			++__copy;
+			++(*this);
 			return __copy;
 		}
 

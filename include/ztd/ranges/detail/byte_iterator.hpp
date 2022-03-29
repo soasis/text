@@ -140,7 +140,7 @@ namespace ztd { namespace ranges {
 
 			__byte_iterator operator++(int) const {
 				auto __copy = *this;
-				++__copy;
+				++(*this);
 				return __copy;
 			}
 

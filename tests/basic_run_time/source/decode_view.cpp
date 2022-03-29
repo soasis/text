@@ -50,6 +50,21 @@ void check_decode_view(const Input& input, const Expected& expected_output) {
 	}
 }
 
+void check_postincrement() {
+	ztd::text::decode_view<ztd::text::utf8_t> result0_view(ztd::tests::u8_basic_source_character_set);
+	auto result0_it         = result0_view.begin();
+	const auto result0_last = result0_view.end();
+	auto truth0_it          = std::cbegin(ztd::tests::u32_basic_source_character_set);
+	const auto truth0_last  = std::cend(ztd::tests::u32_basic_source_character_set);
+	for (; result0_it != result0_last; result0_it++, (void)++truth0_it) {
+		REQUIRE(result0_it.error_code() == ztd::text::encoding_error::ok);
+		REQUIRE(truth0_it != truth0_last);
+		const auto truth0_val  = *truth0_it;
+		const auto result0_val = *result0_it;
+		REQUIRE(truth0_val == result0_val);
+	}
+}
+
 TEST_CASE("text/decode_view/basic", "basic usages of decode_view type do not explode") {
 	SECTION("execution") {
 		ztd::text::execution_t encoding {};
@@ -108,5 +123,8 @@ TEST_CASE("text/decode_view/basic", "basic usages of decode_view type do not exp
 		     ztd::tests::u32_basic_source_character_set, ztd::tests::u32_basic_source_character_set);
 		check_decode_view<ztd::text::utf32_t>(ztd::tests::u32_unicode_sequence_truth_native_endian,
 		     ztd::tests::u32_unicode_sequence_truth_native_endian);
+	}
+	SECTION("post-increment operator") {
+		check_postincrement();
 	}
 }

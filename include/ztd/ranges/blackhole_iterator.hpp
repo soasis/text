@@ -99,9 +99,7 @@ namespace ztd { namespace ranges {
 		/// @brief Does absolutely nothing.
 		//////
 		constexpr blackhole_iterator operator++(int) const {
-			auto __copy = *this;
-			++__copy;
-			return __copy;
+			return *this;
 		}
 
 		//////
