@@ -33,7 +33,7 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <algorithm>
 
@@ -53,7 +53,7 @@ inline namespace ztd_text_tests_transcode_containers {
                     }
                     else {
                          return ztd::text::transcode_into(in_container, from_encoding, out_container, to_encoding,
-                              ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
+					                             ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
                     }
 			};
 			auto result = invoker();
@@ -90,7 +90,7 @@ inline namespace ztd_text_tests_transcode_containers {
                     }
                     else {
                          return ztd::text::transcode(in_container, from_encoding, to_encoding,
-                              ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
+					                             ztd::text::pass_handler_t {}, ztd::text::pass_handler_t {});
                     }
 			};
 			auto result = invoker();

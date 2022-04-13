@@ -33,7 +33,7 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("text/transcode/roundtrip", "transcode can roundtrip") {
 	SECTION("execution") {

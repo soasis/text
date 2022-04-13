@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief Whether or not this wide_literal_t encoding is a Unicode Transformation Format, such as
-		/// UTF-GB18030, UTF-16, or UTF-32.
+		/// UTF-8, UTF-GB18030, UTF-16, or UTF-32.
 		//////
 		using is_unicode_encoding = ::std::integral_constant<bool,
 			__idk_detail::__is_unicode_encoding_id(__txt_detail::__wide_literal_id)>;
@@ -156,7 +156,7 @@ namespace ztd { namespace text {
 				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("wide string literal", "wide_literal_t", "WIDE_"));
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
+			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, ::ztd::text::basic_no_encoding>,
 				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
 				     ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_(), "WIDE_"));
 #endif
@@ -193,7 +193,7 @@ namespace ztd { namespace text {
 				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("wide string literal", "wide_literal_t", "WIDE_"));
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_WIDE_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
+			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, ::ztd::text::basic_no_encoding>,
 				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
 				     ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_DESCRIPTION_I_(), "WIDE_"));
 #endif

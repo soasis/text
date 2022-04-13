@@ -31,11 +31,11 @@
 #include <ztd/text/decode.hpp>
 
 int main(int, char*[]) {
-	[[maybe_unused]] std::string my_ascii_string = ztd::text::decode(
+	[[maybe_unused]] std::u32string my_ascii_string = ztd::text::decode(
 	     // input
 	     "",
 	     // to this encoding
-	     ztd::text:: {});
+	     ztd::text::ascii);
 
 	return 0;
 }

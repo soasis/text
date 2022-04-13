@@ -30,7 +30,7 @@
 
 #include <ztd/text/count_as_encoded.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 

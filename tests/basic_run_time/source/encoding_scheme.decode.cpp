@@ -31,7 +31,7 @@
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/decode.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
@@ -52,8 +52,8 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1 = ztd::text::decode(ztd::tests::unicode_sequence_bytes_truth_native_endian,
 				     encoding, ztd::text::replacement_handler);
 				bool is_equal1         = std::equal(result1.begin(), result1.end(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.end());
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
 			}
 		}
@@ -70,8 +70,8 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1 = ztd::text::decode(ztd::tests::w_unicode_sequence_bytes_truth_native_endian,
 				     encoding, ztd::text::replacement_handler);
 				bool is_equal1         = std::equal(result1.begin(), result1.end(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.end());
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
 			}
 		}
@@ -88,8 +88,8 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1 = ztd::text::decode(ztd::tests::unicode_sequence_bytes_truth_native_endian,
 				     encoding, ztd::text::replacement_handler);
 				bool is_equal1         = std::equal(result1.begin(), result1.end(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.end());
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
 			}
 		}
@@ -106,8 +106,8 @@ TEST_CASE("text/decode/encoding_scheme", "decode from byte arrays with specific 
 				std::u32string result1 = ztd::text::decode(ztd::tests::w_unicode_sequence_bytes_truth_native_endian,
 				     encoding, ztd::text::replacement_handler);
 				bool is_equal1         = std::equal(result1.begin(), result1.end(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
-                         ztd::tests::u32_unicode_sequence_truth_native_endian.end());
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.begin(),
+				             ztd::tests::u32_unicode_sequence_truth_native_endian.end());
 				REQUIRE(is_equal1);
 			}
 		}

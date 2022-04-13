@@ -33,11 +33,11 @@
 int main(int, char*[]) {
 	[[maybe_unused]] std::string my_ascii_string = ztd::text::transcode(
 	     // input
-	     "",
+	     U"",
 	     // from this encoding
-	     ztd::text:: {},
+	     ztd::text::utf32,
 	     // to this encoding
-	     ztd::text::utf32);
+	     ztd::text::ascii);
 
 	return 0;
 }

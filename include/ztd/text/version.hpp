@@ -237,6 +237,13 @@
 	"LITERALS_UTTERLY_I_MEAN_IT to your command line to ignore this error and we will get right on doing exactly " \
 	"that for you."
 
+#define ZTD_TEXT_RVALUE_NON_RANGE_INPUT_MESSAGE_I_                                                                     \
+	"Passing an r-value, non-view range into the lower-level *_into functions (e.g. decode_into, transcode_into, "    \
+	"and more) can result in wholly undesirable behavior and excessive copying that can result in extremely poor "    \
+	"performance. If you would like to pass in a container, please use the top-level non-suffixed or *_to functions " \
+	"so that an appropriate output container can be made and natural view-like, mostly-cheap ranges can be copied "   \
+	"into the *_into functions to do the bulk of the hard work."
+
 #include <ztd/prologue.hpp>
 #include <ztd/epilogue.hpp>
 

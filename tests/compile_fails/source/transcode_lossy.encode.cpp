@@ -37,7 +37,7 @@ int main(int, char*[]) {
 	     // from this encoding
 	     ztd::text::utf32,
 	     // to this encoding
-	     ztd::text:: {});
+	     ztd::text::ascii);
 
 	return 0;
 }

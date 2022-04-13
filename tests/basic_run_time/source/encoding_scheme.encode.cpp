@@ -31,7 +31,7 @@
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/encode.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
@@ -119,8 +119,8 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			ztd::text::encoding_scheme<ztd::text::utf8_t, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(ztd::tests::u32_basic_source_character_set, encoding);
 			bool is_equal0                 = std::equal(result0.begin(), result0.end(),
-                    ztd::tests::u8_basic_source_character_set_bytes_native_endian.begin(),
-                    ztd::tests::u8_basic_source_character_set_bytes_native_endian.end());
+			                     ztd::tests::u8_basic_source_character_set_bytes_native_endian.begin(),
+			                     ztd::tests::u8_basic_source_character_set_bytes_native_endian.end());
 			REQUIRE(is_equal0);
 
 			std::vector<std::byte> result1
@@ -134,8 +134,8 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			ztd::text::encoding_scheme<ztd::text::utf16_t, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(ztd::tests::u32_basic_source_character_set, encoding);
 			bool is_equal0                 = std::equal(result0.begin(), result0.end(),
-                    ztd::tests::u16_basic_source_character_set_bytes_native_endian.begin(),
-                    ztd::tests::u16_basic_source_character_set_bytes_native_endian.end());
+			                     ztd::tests::u16_basic_source_character_set_bytes_native_endian.begin(),
+			                     ztd::tests::u16_basic_source_character_set_bytes_native_endian.end());
 			REQUIRE(is_equal0);
 
 			std::vector<std::byte> result1
@@ -149,8 +149,8 @@ TEST_CASE("text/encode/encoding_scheme", "encode to byte arrays with specific en
 			ztd::text::encoding_scheme<ztd::text::utf32_t, ztd::endian::native> encoding {};
 			std::vector<std::byte> result0 = ztd::text::encode(ztd::tests::u32_basic_source_character_set, encoding);
 			bool is_equal0                 = std::equal(result0.begin(), result0.end(),
-                    ztd::tests::u32_basic_source_character_set_bytes_native_endian.begin(),
-                    ztd::tests::u32_basic_source_character_set_bytes_native_endian.end());
+			                     ztd::tests::u32_basic_source_character_set_bytes_native_endian.begin(),
+			                     ztd::tests::u32_basic_source_character_set_bytes_native_endian.end());
 			REQUIRE(is_equal0);
 
 			std::vector<std::byte> result1

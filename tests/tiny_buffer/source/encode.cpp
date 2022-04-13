@@ -31,7 +31,7 @@
 #include <ztd/text/encode.hpp>
 #include <ztd/text/encoding.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 #include <ztd/tests/compare_each.hpp>

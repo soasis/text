@@ -66,6 +66,7 @@ then ``ztd.text`` is for you!
 	benchmarks
 	license
 	bibliography
+	errors
 
 
 

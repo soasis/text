@@ -100,7 +100,7 @@ namespace ztd { namespace text {
 				>;
 			// clang-format on
 
-			static_assert(!is_specialization_of_v<_ChosenType, basic_no_encoding>,
+			static_assert(!is_specialization_of_v<_ChosenType, ::ztd::text::basic_no_encoding>,
 				"there is no default encoding for the given code unit type");
 
 		public:

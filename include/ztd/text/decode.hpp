@@ -98,7 +98,7 @@ namespace ztd { namespace text {
 		using _IntermediateInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
 		using _IntermediateOutput = ranges::range_reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.decode_one(
-               ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
+			            ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
 		using _WorkingInput       = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 		using _WorkingOutput      = remove_cvref_t<decltype(::std::declval<_Result>().output)>;
 		using _UEncoding          = remove_cvref_t<_Encoding>;
@@ -191,7 +191,7 @@ namespace ztd { namespace text {
 			using _InitialOutput         = ::ztd::span<_IntermediateValueType, __intermediate_buffer_max>;
 			using _Output                = ::ztd::span<_IntermediateValueType>;
 			using _Result                = decltype(__encoding.decode_one(
-                    ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
+				               ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
 			using _WorkingInput          = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_Encoding, _ErrorHandler>,

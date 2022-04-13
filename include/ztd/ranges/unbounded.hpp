@@ -286,6 +286,16 @@ namespace std { namespace ranges {
 	inline constexpr bool enable_borrowed_range<::ztd::ranges::unbounded_view<_It>> = true;
 
 }} // namespace std::ranges
+
+#else
+
+namespace ztd { namespace ranges {
+
+	template <typename _It>
+	inline constexpr bool enable_borrowed_range<::ztd::ranges::unbounded_view<_It>> = true;
+
+}} // namespace ztd::ranges
+
 #endif
 
 #include <ztd/epilogue.hpp>

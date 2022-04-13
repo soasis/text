@@ -32,7 +32,7 @@
 #include <ztd/ranges/algorithm.hpp>
 #include <ztd/text/transcode_one.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
@@ -86,7 +86,7 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		from_state fs {};
 		to_state ts {};
 		auto result   = ztd::text::transcode_one_into(input, from_encoding, output, to_encoding,
-               ztd::text::replacement_handler, ztd::text::replacement_handler, fs, ts);
+		       ztd::text::replacement_handler, ztd::text::replacement_handler, fs, ts);
 		bool is_equal = ztd::ranges::__rng_detail::__equal(
 		     output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);

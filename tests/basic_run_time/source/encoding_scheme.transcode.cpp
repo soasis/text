@@ -31,7 +31,7 @@
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/transcode.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 

@@ -33,7 +33,7 @@
 #include <ztd/text/decode.hpp>
 #include <ztd/text/c_string_view.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 

@@ -151,7 +151,7 @@ namespace ztd { namespace text {
 				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("string literal", "literal_t", ""));
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
+			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, ::ztd::text::basic_no_encoding>,
 				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
 				     ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_(), ""));
 #endif
@@ -188,7 +188,7 @@ namespace ztd { namespace text {
 				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("string literal", "literal_t", ""));
 #endif
 #if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
-			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, basic_no_encoding>,
+			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, ::ztd::text::basic_no_encoding>,
 				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
 				     ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_(), ""));
 #endif

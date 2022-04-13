@@ -31,7 +31,7 @@
 #include <ztd/text/validate_decodable_as.hpp>
 #include <ztd/text/encoding.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 

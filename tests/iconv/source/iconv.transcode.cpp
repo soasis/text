@@ -33,14 +33,14 @@
 
 #include <ztd/text/tests/basic_unicode_strings.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 inline namespace ztd_text_tests_iconv_transcode {
 	template <typename Encoding, typename Input>
 	void check_roundtrip(Encoding& encoding, Input& input) {
 		const auto& expected = input;
 		auto result0         = ztd::text::transcode(
-               input, encoding, encoding, ztd::text::replacement_handler, ztd::text::replacement_handler);
+		             input, encoding, encoding, ztd::text::replacement_handler, ztd::text::replacement_handler);
 		REQUIRE(result0 == expected);
 	}
 } // namespace ztd_text_tests_iconv_transcode
