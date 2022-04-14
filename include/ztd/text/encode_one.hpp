@@ -107,7 +107,6 @@ namespace ztd { namespace text {
 			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 		_WorkingOutput __working_output
 			= ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
-		::std::size_t __handled_errors = false;
 
 		return __encoding.encode_one(
 			::std::move(__working_input), ::std::move(__working_output), __error_handler, __state);
@@ -115,7 +114,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Converts a single indivisible unit of work's worth of code points of the given `__input` view through
-	/// the encoding to code units into the @p __output view.
+	/// the encoding to code units into the `__output` view.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode_one operation that will
 	/// produce code units.

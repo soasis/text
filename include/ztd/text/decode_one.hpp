@@ -109,7 +109,6 @@ namespace ztd { namespace text {
 			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 		_WorkingOutput __working_output(
 			ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
-		::std::size_t __handled_errors = 0;
 
 		return __encoding.decode_one(
 			::std::move(__working_input), ::std::move(__working_output), __error_handler, __state);

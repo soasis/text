@@ -486,6 +486,8 @@ namespace std { namespace ranges {
 
 namespace ztd { namespace ranges {
 
+	//////
+	/// @brief Mark subranges as appropriately borrowed ranges.
 	template <typename _It, typename _Sen, ::ztd::ranges::__rng_detail::__subrange_kind _Kind>
 	inline constexpr bool enable_borrowed_range<::ztd::ranges::__rng_detail::__subrange<_It, _Sen, _Kind>> = true;
 

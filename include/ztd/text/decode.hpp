@@ -76,13 +76,13 @@ namespace ztd { namespace text {
 	/// @p
 	/// __output view.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __output An output_view to write code points to as the result of the decode operation from
+	/// @param[in] __output An output_view to write code points to as the result of the decode operation from
 	/// the intermediate code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's decode step.
 	///
@@ -133,13 +133,13 @@ namespace ztd { namespace text {
 	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
 	/// __output view.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __output An output_view to write code points to as the result of the decode operation from the
+	/// @param[in] __output An output_view to write code points to as the result of the decode operation from the
 	/// intermediate code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's decode step.
 	///
@@ -264,19 +264,68 @@ namespace ztd { namespace text {
 				}
 			}
 		}
+
+		template <bool _OutputOnly, typename _OutputContainer, typename _Input, typename _Encoding,
+			typename _ErrorHandler, typename _State>
+		constexpr auto __decode_dispatch(
+			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
+			using _UEncoding = remove_cvref_t<_Encoding>;
+
+			_OutputContainer __output {};
+			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
+				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
+				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
+					auto __output_size_hint = ranges::ranges_adl::adl_size(__input);
+					__output_size_hint *= max_code_points_v<_UEncoding>;
+					__output.reserve(__output_size_hint);
+				}
+			}
+			if constexpr (__txt_detail::__is_decode_range_category_output_v<_Encoding>) {
+				using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
+				using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
+				_Unbounded __insert_view(::std::back_inserter(__output));
+				auto __stateful_result = decode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
+					::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				if constexpr (_OutputOnly) {
+					// We are explicitly discarding this information with this function call.
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					return __txt_detail::__replace_result_output(
+						::std::move(__stateful_result), ::std::move(__output));
+				}
+			}
+			else {
+				auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(
+					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
+					::std::forward<_ErrorHandler>(__error_handler), __state);
+				if constexpr (_OutputOnly) {
+					// We are explicitly disca rding this information with this function call.
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					return __txt_detail::__replace_result_output(
+						::std::move(__stateful_result), ::std::move(__output));
+				}
+			}
+		}
+
 	} // namespace __txt_detail
 
 	//////
 	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
 	/// __output view.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __output An output_view to write code points to as the result of the decode operation from the
+	/// @param[in] __output An output_view to write code points to as the result of the decode operation from the
 	/// intermediate code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
 	/// @result A ztd::text::stateless_decode_result object that contains references to `__state`.
@@ -299,11 +348,11 @@ namespace ztd { namespace text {
 	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
 	/// __output view.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __output An output_view to write code points to as the result of the decode operation from the
+	/// @param[in] __output An output_view to write code points to as the result of the decode operation from the
 	/// intermediate code units.
 	///
 	/// @result A ztd::text::stateless_decode_result object that contains references to `__state`.
@@ -322,9 +371,9 @@ namespace ztd { namespace text {
 	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
 	/// __output view.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __output An output_view to write code points to as the result of the decode operation from the
+	/// @param[in] __output An output_view to write code points to as the result of the decode operation from the
 	/// intermediate code units.
 	///
 	/// @result A ztd::text::stateless_decode_result object that contains references to `__state`.
@@ -360,11 +409,11 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's decode step.
 	///
@@ -375,36 +424,27 @@ namespace ztd { namespace text {
 	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to. The result is
 	/// then returned, with the `.output` value put into the container.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
+		typename _State>
 	constexpr auto decode_to(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding = remove_cvref_t<_Encoding>;
-
-		_OutputContainer __output {};
-		if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-			using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
-			if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-				_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
-				__output_size_hint *= (max_code_points_v<_UEncoding> > 1) ? (max_code_points_v<_UEncoding> / 2)
-					                                                     : max_code_points_v<_UEncoding>;
-				__output.reserve(__output_size_hint);
-			}
-		}
-		if constexpr (__txt_detail::__is_decode_range_category_output_v<_UEncoding>) {
-			// We can use the unbounded stuff
-			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-			using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
-			_Unbounded __insert_view(::std::back_inserter(__output));
-			auto __stateful_result = decode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
-				::std::forward<_ErrorHandler>(__error_handler), __state);
-			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		using _UEncoding                = remove_cvref_t<_Encoding>;
+		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
+		using _OutputCodePoint          = code_point_t<_UEncoding>;
+		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
+		constexpr bool _IsStringable
+			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
+		if constexpr (_IsVoidContainer && _IsStringable) {
+			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
+			using _RealOutputContainer = ::std::basic_string<_OutputCodePoint>;
+			return __txt_detail::__decode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
-			auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
-				__state);
-			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+			using _RealOutputContainer
+				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodePoint>, _OutputContainer>;
+			return __txt_detail::__decode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}
 
@@ -415,18 +455,18 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
 	/// @result A ztd::text::stateless_decode_result object whose output is of type `_OutputContainer`.
 	///
 	/// @remarks This function creates a `state` using ztd::text::make_decode_state.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto decode_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
@@ -442,16 +482,16 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
 	///
 	/// @result A ztd::text::stateless_decode_result object whose output is of type `_OutputContainer`.
 	///
 	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto decode_to(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
 		return decode_to<_OutputContainer>(
@@ -465,15 +505,15 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
-	/// produce code points.
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will produce code
+	/// points.
 	///
 	/// @result A ztd::text::stateless_decode_result object whose output is of type `_OutputContainer`.
 	///
 	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
-	template <typename _OutputContainer, typename _Input>
+	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto decode_to(_Input&& __input) {
 		using _UInput   = remove_cvref_t<_Input>;
 		using _CodeUnit = ranges::range_value_type_t<_UInput>;
@@ -493,43 +533,6 @@ namespace ztd { namespace text {
 		}
 	}
 
-	namespace __txt_detail {
-		template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler,
-			typename _State>
-		constexpr auto __decode_dispatch(
-			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UEncoding = remove_cvref_t<_Encoding>;
-
-			_OutputContainer __output {};
-			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
-				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-					auto __output_size_hint = ranges::ranges_adl::adl_size(__input);
-					__output_size_hint *= max_code_points_v<_UEncoding>;
-					__output.reserve(__output_size_hint);
-				}
-			}
-			if constexpr (__txt_detail::__is_decode_range_category_output_v<_Encoding>) {
-				using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-				using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
-				_Unbounded __insert_view(::std::back_inserter(__output));
-				auto __stateful_result = decode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
-					::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
-					::std::forward<_ErrorHandler>(__error_handler), __state);
-				// We are explicitly discarding this information with this function call.
-				(void)__stateful_result;
-				return __output;
-			}
-			else {
-				auto __stateful_result = __txt_detail::__intermediate_decode_to_storage(
-					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
-					::std::forward<_ErrorHandler>(__error_handler), __state);
-				(void)__stateful_result;
-				return __output;
-			}
-		}
-	} // namespace __txt_detail
-
 	//////
 	/// @brief Converts the code units of the given `__input` view through the encoding to code points the
 	/// specified
@@ -537,11 +540,11 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	/// @param[in,out] __state A reference to the associated state for the `__encoding` 's decode step.
 	///
@@ -562,13 +565,13 @@ namespace ztd { namespace text {
 		if constexpr (_IsVoidContainer && _IsStringable) {
 			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
 			using _RealOutputContainer = ::std::basic_string<_OutputCodePoint>;
-			return __txt_detail::__decode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			return __txt_detail::__decode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
 			using _RealOutputContainer
 				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodePoint>, _OutputContainer>;
-			return __txt_detail::__decode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			return __txt_detail::__decode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}
@@ -580,11 +583,11 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
-	/// @param[in]     __error_handler The error handlers for the from and to encodings,
+	/// @param[in] __error_handler The error handlers for the from and to encodings,
 	/// respectively.
 	///
 	/// @result An object of type `_OutputContainer` .
@@ -608,9 +611,9 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
-	/// @param[in]     __encoding The encoding that will be used to decode the input's code points into
+	/// @param[in] __encoding The encoding that will be used to decode the input's code points into
 	/// output code units.
 	///
 	/// @result An object of type `_OutputContainer` .
@@ -631,7 +634,7 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _OutputContainer The container type to serialize data into.
 	///
-	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
 	///
 	/// @result An object of type `_OutputContainer` .

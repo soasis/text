@@ -291,6 +291,8 @@ namespace std { namespace ranges {
 
 namespace ztd { namespace ranges {
 
+	//////
+	/// @brief Mark subranges as appropriately borrowed ranges.
 	template <typename _It>
 	inline constexpr bool enable_borrowed_range<::ztd::ranges::unbounded_view<_It>> = true;
 

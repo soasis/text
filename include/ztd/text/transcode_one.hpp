@@ -440,7 +440,7 @@ namespace ztd { namespace text {
 	/// `container.reserve` function, it is and some multiple of the input's size is used to pre-size the container,
 	/// to aid with `push_back` / `insert` reallocation pains.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode_one_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
@@ -493,7 +493,7 @@ namespace ztd { namespace text {
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
 	/// both of them yourself and pass them into a lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState>
 	constexpr auto transcode_one_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state) {
@@ -532,7 +532,7 @@ namespace ztd { namespace text {
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
 	/// both of them yourself and pass them into a lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler>
 	constexpr auto transcode_one_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
@@ -571,7 +571,7 @@ namespace ztd { namespace text {
 	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler>
 	constexpr auto transcode_one_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler) {
@@ -605,7 +605,7 @@ namespace ztd { namespace text {
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding>
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto transcode_one_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
 

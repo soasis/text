@@ -108,7 +108,7 @@ namespace ztd { namespace text {
 			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 		_WorkingOutput __working_output
 			= ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
-		::std::size_t __handled_errors = false;
+		::std::size_t __handled_errors = 0;
 
 		for (;;) {
 			auto __result = __encoding.encode_one(
@@ -264,8 +264,8 @@ namespace ztd { namespace text {
 			}
 		}
 
-		template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler,
-			typename _State>
+		template <bool _OutputOnly, typename _OutputContainer, typename _Input, typename _Encoding,
+			typename _ErrorHandler, typename _State>
 		constexpr auto __encode_dispatch(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			using _UEncoding = remove_cvref_t<_Encoding>;
@@ -288,15 +288,27 @@ namespace ztd { namespace text {
 				auto __stateful_result = encode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
 					::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
 					::std::forward<_ErrorHandler>(__error_handler), __state);
-				(void)__stateful_result;
-				return __output;
+				if constexpr (_OutputOnly) {
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					return __txt_detail::__replace_result_output(
+						::std::move(__stateful_result), ::std::move(__output));
+				}
 			}
 			else {
 				auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(
 					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
 					::std::forward<_ErrorHandler>(__error_handler), __state);
-				(void)__stateful_result;
-				return __output;
+				if constexpr (_OutputOnly) {
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					return __txt_detail::__replace_result_output(
+						::std::move(__stateful_result), ::std::move(__output));
+				}
 			}
 		}
 	} // namespace __txt_detail
@@ -412,36 +424,27 @@ namespace ztd { namespace text {
 	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to. The result is
 	/// then returned, with the `.output` value put into the container.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
+		typename _State>
 	constexpr auto encode_to(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding = remove_cvref_t<_Encoding>;
-
-		_OutputContainer __output {};
-		if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-			using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
-			if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-				_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
-				__output_size_hint *= (max_code_points_v<_UEncoding> > 1) ? (max_code_points_v<_UEncoding> / 2)
-					                                                     : max_code_points_v<_UEncoding>;
-				__output.reserve(__output_size_hint);
-			}
-		}
-		if constexpr (__txt_detail::__is_encode_range_category_output_v<_Encoding>) {
-			// We can use the unbounded stuff
-			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-			using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
-			_Unbounded __insert_view(::std::back_inserter(__output));
-			auto __stateful_result = encode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), ::std::move(__insert_view),
-				::std::forward<_ErrorHandler>(__error_handler), __state);
-			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		using _UEncoding                = remove_cvref_t<_Encoding>;
+		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
+		using _OutputCodeUnit           = code_unit_t<_UEncoding>;
+		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
+		constexpr bool _IsStringable
+			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
+		if constexpr (_IsVoidContainer && _IsStringable) {
+			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
+			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
+			return __txt_detail::__encode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
-			auto __stateful_result = __txt_detail::__intermediate_encode_to_storage(::std::forward<_Input>(__input),
-				::std::forward<_Encoding>(__encoding), __output, ::std::forward<_ErrorHandler>(__error_handler),
-				__state);
-			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+			using _RealOutputContainer
+				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
+			return __txt_detail::__encode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}
 
@@ -462,7 +465,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates a `state` using ztd::text::make_encode_state.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = encode_state_t<_UEncoding>;
@@ -488,7 +491,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
 		return encode_to<_OutputContainer>(
@@ -509,7 +512,7 @@ namespace ztd { namespace text {
 	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
-	template <typename _OutputContainer, typename _Input>
+	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto encode_to(_Input&& __input) {
 		using _UInput    = remove_cvref_t<_Input>;
 		using _CodePoint = ranges::range_value_type_t<_UInput>;
@@ -560,13 +563,13 @@ namespace ztd { namespace text {
 		if constexpr (_IsVoidContainer && _IsStringable) {
 			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
 			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
-			return __txt_detail::__encode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			return __txt_detail::__encode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
 			using _RealOutputContainer
 				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
-			return __txt_detail::__encode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			return __txt_detail::__encode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}

@@ -239,15 +239,15 @@ namespace std { namespace ranges {
 
 }} // namespace std::ranges
 #else
-
 namespace ztd { namespace ranges {
 
+	//////
+	/// @brief Mark subranges as appropriately borrowed ranges.
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
 	inline constexpr bool enable_borrowed_range<::ztd::text::decode_view<_Encoding, _Range, _ErrorHandler,
 		_State>> = ::ztd::ranges::enable_borrowed_range<_Range>;
 
 }} // namespace ztd::ranges
-
 #endif
 
 #include <ztd/epilogue.hpp>

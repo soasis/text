@@ -69,6 +69,7 @@ set(ZTD_TEXT_DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
 set(ZTD_TEXT_DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 set(ZTD_TEXT_SPHINX_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
 set(ZTD_TEXT_SPHINX_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
+set(ZTD_TEXT_SPHINX_INDEX_FILE ${ZTD_TEXT_SPHINX_BUILD_DIR}/index.xml)
 
 # Get all Sphinx source files
 file(GLOB_RECURSE ztd_text_sphinx_sources
@@ -99,24 +100,33 @@ add_custom_command(OUTPUT ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 	MAIN_DEPENDENCY ${ZTD_TEXT_DOXYFILE_IN} ${ZTD_TEXT_DOXYFILE_OUT}
 	DEPENDS ${ztd_text_public_headers}
 	COMMENT "[ztd.text/documentation] Generating Doxygen XML..."
+	COMMAND_EXPAND_LISTS
+	VERBATIM
 )
-add_custom_target(ztd.text.documentation.doxygen ALL DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE})
+add_custom_target(ztd.text.documentation.doxygen ALL
+	DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
+)
 
 if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
-	add_custom_target(ztd.text.documentation.sphinx ALL
+	add_custom_command(OUTPUT ${ZTD_TEXT_SPHINX_INDEX_FILE}
 		COMMAND Sphinx::Build
+		ARGS
 			-b html
 			-Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
 			${ZTD_TEXT_SPHINX_SOURCE_DIR}
 			${ZTD_TEXT_SPHINX_BUILD_DIR}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_sphinx_sources}
+		DEPENDS ${ztd_text_sphinx_sources} ${ztd_text_public_headers} ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 		COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."
 		COMMAND_EXPAND_LISTS
-		VERBATIM)
+		VERBATIM
+	)
 
-	add_dependencies(ztd.text.documentation.sphinx ztd.text.documentation.doxygen)
+	add_custom_target(ztd.text.documentation.sphinx ALL
+		DEPENDS ${ZTD_TEXT_SPHINX_INDEX_FILE}
+	)
 
 	install(DIRECTORY ${ZTD_TEXT_SPHINX_BUILD_DIR}
-		DESTINATION ${CMAKE_INSTALL_DOCDIR})
+		DESTINATION ${CMAKE_INSTALL_DOCDIR}
+	)
 endif()

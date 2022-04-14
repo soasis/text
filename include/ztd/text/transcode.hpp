@@ -440,8 +440,9 @@ namespace ztd { namespace text {
 			}
 		}
 
-		template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
-			typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+		template <bool _OutputOnly, typename _OutputContainer, typename _Input, typename _FromEncoding,
+			typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState,
+			typename _ToState>
 		constexpr auto __transcode_dispatch(_Input&& __input, _FromEncoding&& __from_encoding,
 			_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
 			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
@@ -465,8 +466,14 @@ namespace ztd { namespace text {
 					::std::forward<_ToEncoding>(__to_encoding),
 					::std::forward<_FromErrorHandler>(__from_error_handler),
 					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-				(void)__stateful_result;
-				return __output;
+				if constexpr (_OutputOnly) {
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					return __txt_detail::__replace_result_output(
+						::std::move(__stateful_result), ::std::move(__output));
+				}
 			}
 			else {
 				auto __stateful_result = __txt_detail::__intermediate_transcode_to_storage(
@@ -474,8 +481,14 @@ namespace ztd { namespace text {
 					::std::forward<_ToEncoding>(__to_encoding),
 					::std::forward<_FromErrorHandler>(__from_error_handler),
 					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-				(void)__stateful_result;
-				return __output;
+				if constexpr (_OutputOnly) {
+					(void)__stateful_result;
+					return __output;
+				}
+				else {
+					return __txt_detail::__replace_result_output(
+						::std::move(__stateful_result), ::std::move(__output));
+				}
 			}
 		}
 	} // namespace __txt_detail
@@ -504,38 +517,32 @@ namespace ztd { namespace text {
 	/// `container.reserve` function, it is and some multiple of the input's size is used to pre-size the container,
 	/// to aid with `push_back` / `insert` reallocation pains.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
 		_ToState& __to_state) {
-		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
-
-		_OutputContainer __output {};
-		if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-			using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
-			if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-				_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
-				__output.reserve(__output_size_hint);
-			}
-		}
-
-		if constexpr (__txt_detail::__is_decode_range_category_output_v<_UFromEncoding>) {
-			using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
-			using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
-			auto __insert_view          = _Unbounded(::std::back_inserter(__output));
-			auto __stateful_result      = transcode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
-				     ::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
-				     ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-				     ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
+		using _UToEncoding              = remove_cvref_t<_ToEncoding>;
+		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
+		using _OutputCodeUnit           = code_unit_t<_UToEncoding>;
+		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
+		constexpr bool _IsStringable
+			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
+		if constexpr (_IsVoidContainer && _IsStringable) {
+			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
+			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
+			return __txt_detail::__transcode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+				::std::forward<_FromErrorHandler>(__from_error_handler),
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
 		else {
-			auto __stateful_result = __txt_detail::__intermediate_transcode_to_storage(
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding), __output,
-				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+			using _RealOutputContainer
+				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
+			return __txt_detail::__transcode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
+				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+				::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
 		}
 	}
 
@@ -564,7 +571,7 @@ namespace ztd { namespace text {
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
 	/// both of them yourself and pass them into a lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state) {
@@ -603,7 +610,7 @@ namespace ztd { namespace text {
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
 	/// both of them yourself and pass them into a lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler) {
@@ -642,7 +649,7 @@ namespace ztd { namespace text {
 	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler) {
@@ -676,7 +683,7 @@ namespace ztd { namespace text {
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding>
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
 
@@ -765,7 +772,7 @@ namespace ztd { namespace text {
 		if constexpr (_IsVoidContainer && _IsStringable) {
 			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
 			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
-			return __txt_detail::__transcode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			return __txt_detail::__transcode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
@@ -773,7 +780,7 @@ namespace ztd { namespace text {
 		else {
 			using _RealOutputContainer
 				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
-			return __txt_detail::__transcode_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			return __txt_detail::__transcode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
