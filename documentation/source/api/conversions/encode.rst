@@ -31,7 +31,7 @@
 encode
 ======
 
-The ``encode`` grouping of functions (``encode``, ``encode_to``, and ``encode_into``) perform the task of doing bulk decoding from an ``input`` of ``code_point``\ s to the encoding's ``code_unit`` type.
+The ``encode`` grouping of functions (``encode``, ``encode_to``, and ``encode_into``) perform the task of doing bulk decoding from an ``input`` of ``code_point``\ s to the encoding's ``code_unit`` type. They are also accompanied by ``encode_one`` variants (``encode_one``, ``encode_one_to``, ``encode_one_into``), which serve the same purpose as their bulk counterpoints but only do a single :term:`indivisible unit of work`'s worth of work.
 
 
 
@@ -113,8 +113,16 @@ The final function call, ``basic_encode_into``, simply performs the :doc:`core e
 
 
 
-Functions
----------
+Bulk Functions
+--------------
 
 .. doxygengroup:: ztd_text_encode
+	:content-only:
+
+
+
+Single Functions
+----------------
+
+.. doxygengroup:: ztd_text_encode_one
 	:content-only:

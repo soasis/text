@@ -31,7 +31,7 @@
 transcode
 =========
 
-The ``transcode`` grouping of functions (``transcode``, ``transcode_to``, and ``transcode_into``) perform the task of doing bulk transcoding from an ``input`` of ``code_unit``\ s to a second encoding's ``code_unit`` type. It expects to traffic through the ``code_point`` type as the intermediary between the two functions.
+The ``transcode`` grouping of functions (``transcode``, ``transcode_to``, and ``transcode_into``) perform the task of doing bulk transcoding from an ``input`` of ``code_unit``\ s to a second encoding's ``code_unit`` type. It expects to traffic through the ``code_point`` type as the intermediary between the two functions. There is also a ``transcode_one`` API as well that does a single indivisible unit of work for both decoding (to a common representation) and then encoding, and has the same variants as the bulk function.
 
 
 
@@ -113,8 +113,15 @@ The ``transcode_one`` extension point is also used in the :doc:`ztd::text::trans
 
 
 
-Functions
----------
+Bulk Functions
+--------------
 
 .. doxygengroup:: ztd_text_transcode
+	:content-only:
+
+
+Single Functions
+----------------
+
+.. doxygengroup:: ztd_text_transcode_one
 	:content-only:

@@ -57,7 +57,6 @@
 
 #include <string>
 #include <vector>
-#include <string_view>
 
 #include <ztd/prologue.hpp>
 
@@ -65,7 +64,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_transcode ztd::text::transcode[_into]
+	/// @addtogroup ztd_text_transcode ztd::text::transcode[_into/_to]
 	///
 	/// @brief These functions convert from a view of input code units into a view of output code units (typically,
 	/// through an intermediary code point type that is similar between the two) using either the inferred or specified
@@ -526,9 +525,9 @@ namespace ztd { namespace text {
 			using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
 			auto __insert_view          = _Unbounded(::std::back_inserter(__output));
 			auto __stateful_result      = transcode_into(__txt_detail::__forward_if_move_only<_Input>(__input),
-                    ::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
-                    ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-                    ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				     ::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
+				     ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+				     ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 			return __txt_detail::__replace_result_output(::std::move(__stateful_result), ::std::move(__output));
 		}
 		else {
@@ -945,8 +944,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates both: a `from_error_handler` from a class like ztd::text::default_handler_t,
 	/// but that is marked as careless since you did not explicitly provide it; and, a `from_encoding` derived from
-	/// the @p
-	/// "__input"'s `value_type.` The careless marking matters for lossy conversions that are not injective.
+	/// the `__input`'s `value_type.` The careless marking matters for lossy conversions that are not injective.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _ToEncoding>
 	constexpr auto transcode(_Input&& __input, _ToEncoding&& __to_encoding) {

@@ -41,7 +41,9 @@
 #include <ztd/text/c_string_view.hpp>
 
 #include <ztd/text/encode.hpp>
+#include <ztd/text/encode_one.hpp>
 #include <ztd/text/decode.hpp>
+#include <ztd/text/decode_one.hpp>
 #include <ztd/text/transcode.hpp>
 #include <ztd/text/transcode_one.hpp>
 #include <ztd/text/count_as_encoded.hpp>

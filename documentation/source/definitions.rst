@@ -50,6 +50,9 @@ Occasionally, we may need to use precise language to describe what we want. This
 
 		The other definition is just an abstract unit of information in human languages and writing. The closest approximation that Unicode has for the human language/writing character is a :term:`Grapheme Cluster <grapheme cluster>`.
 
+	indivisible unit of work
+		A single unit of transcoding effort when going from one encoding to another that consumes the smallest possible input to produce an output, to change the state, to both produce an output and change the state, or to produce an error. Unlike :term:`unicode code points <unicode code point>` or :term:`unicode scalar values <unicode scalar value>`, indivisible units of work do not have a fixed width or fixed definition and are dependent on the two encodings involved in the transcoding operation being performed.
+
 	unicode code point
 		A single unit of decoded information for Unicode. It represents the smallest, non-encoded, and indivisible piece of information that can be used to talk about higher level algorithms, properties, and more from the Unicode Standard.
 

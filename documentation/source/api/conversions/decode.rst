@@ -31,7 +31,7 @@
 decode
 ======
 
-The ``decode`` grouping of functions (``decode``, ``decode_to``, and ``decode_into``) perform the task of doing bulk decoding from an ``input`` of ``code_unit``\ s to the encoding's ``code_point`` type.
+The ``decode`` grouping of functions (``decode``, ``decode_to``, and ``decode_into``) perform the task of doing bulk decoding from an ``input`` of ``code_unit``\ s to the encoding's ``code_point`` type. They are also accompanied by ``decode_one`` variants (``decode_one``, ``decode_one_to``, ``decode_one_into``), which serve the same purpose as their bulk counterpoints but only do a single :term:`indivisible unit of work`'s worth of work.
 
 
 
@@ -113,8 +113,16 @@ The base function call, ``basic_decode_into``, simply performs the :doc:`core de
 
 
 
-Functions
----------
+Bulk Functions
+--------------
 
 .. doxygengroup:: ztd_text_decode
+	:content-only:
+
+
+
+Single Functions
+----------------
+
+.. doxygengroup:: ztd_text_decode_one
 	:content-only:
