@@ -85,10 +85,10 @@ namespace ztd { namespace text {
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
 	class transcode_iterator
-	: private ebco<remove_cvref_t<_FromEncoding>, 0>,
-	  private ebco<remove_cvref_t<_ToEncoding>, 1>,
-	  private ebco<remove_cvref_t<_FromErrorHandler>, 2>,
-	  private ebco<remove_cvref_t<_ToErrorHandler>, 3>,
+	: private ebco<remove_cvref_t<_FromEncoding>, 1>,
+	  private ebco<remove_cvref_t<_ToEncoding>, 2>,
+	  private ebco<remove_cvref_t<_FromErrorHandler>, 3>,
+	  private ebco<remove_cvref_t<_ToErrorHandler>, 4>,
 	  private __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>,
 	  private __txt_detail::__state_storage<remove_cvref_t<_ToEncoding>, remove_cvref_t<_ToState>, 1>,
 	  private __txt_detail::__cursor_cache<max_code_units_v<remove_cvref_t<unwrap_t<_ToEncoding>>>,
@@ -118,10 +118,10 @@ namespace ztd { namespace text {
 		using __base_cursor_cache_t       = __txt_detail::__cursor_cache<_MaxValues, _IsInputOrOutput>;
 		using __base_cursor_cache_size_t  = typename __base_cursor_cache_t::_SizeType;
 		using __base_error_cache_t        = __txt_detail::__error_cache<_IsErrorless>;
-		using __base_from_encoding_t      = ebco<remove_cvref_t<_FromEncoding>, 0>;
-		using __base_to_encoding_t        = ebco<remove_cvref_t<_ToEncoding>, 1>;
-		using __base_from_error_handler_t = ebco<remove_cvref_t<_FromErrorHandler>, 2>;
-		using __base_to_error_handler_t   = ebco<remove_cvref_t<_ToErrorHandler>, 3>;
+		using __base_from_encoding_t      = ebco<remove_cvref_t<_FromEncoding>, 1>;
+		using __base_to_encoding_t        = ebco<remove_cvref_t<_ToEncoding>, 2>;
+		using __base_from_error_handler_t = ebco<remove_cvref_t<_FromErrorHandler>, 3>;
+		using __base_to_error_handler_t   = ebco<remove_cvref_t<_ToErrorHandler>, 4>;
 		using __base_from_state_t
 			= __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>;
 		using __base_to_state_t

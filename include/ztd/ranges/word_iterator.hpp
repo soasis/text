@@ -284,7 +284,7 @@ namespace ztd { namespace ranges {
 			}
 
 		private:
-			_URange& _M_base_range() const noexcept {
+			constexpr _URange& _M_base_range() const noexcept {
 				return this->_M_base_range_ref.get();
 			}
 
