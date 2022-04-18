@@ -30,7 +30,7 @@
 
 #include <ztd/text.hpp>
 
-#if !defined(_LIBCPP_VERSION)
+#if !defined(_LIBCPP_VERSION) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS_I_)
 // This example doesn't work on Apple/libc++ because they don't have
 // standard C or C++ headers.
 

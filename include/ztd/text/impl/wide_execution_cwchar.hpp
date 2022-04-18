@@ -454,7 +454,9 @@ namespace ztd { namespace text {
 				}
 
 				execution_t __exec {};
-				__txt_detail::__pass_through_handler_with<!__call_error_handler> __intermediate_handler {};
+				__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>,
+					__wide_execution_cwchar>
+					__intermediate_handler {};
 				::ztd::span<char, __state_max> __intermediate_input(__intermediate_buffer, __state_max);
 				auto __result = __exec.decode_one(__intermediate_input, ::std::forward<_OutputRange>(__output),
 					__intermediate_handler, __s.__narrow_state);
@@ -466,7 +468,7 @@ namespace ztd { namespace text {
 							             ::std::move(__inlast)),
 							     ::std::move(__result.output), __s, __result.error_code),
 							::ztd::span<code_unit>(::std::addressof(__units[0]), __units_count),
-							__intermediate_handler.__M_code_points_progress());
+							__intermediate_handler._M_code_points_progress());
 					}
 				}
 				return _Result(ranges::reconstruct(
