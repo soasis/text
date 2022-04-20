@@ -50,7 +50,7 @@
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
-#include <ztd/idk/encoding_detection.h>
+#include <ztd/idk/encoding_detection.hpp>
 #include <ztd/idk/detail/windows.hpp>
 
 #if (ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS_I_)
@@ -201,7 +201,7 @@ namespace ztd { namespace text {
 			/// `std::setlocale` name checking otherwise).
 			//////
 			static bool contains_unicode_encoding() noexcept {
-				return ztdc_is_execution_encoding_unicode();
+				return ztd::is_execution_encoding_unicode();
 			}
 
 			//////
@@ -238,7 +238,7 @@ namespace ztd { namespace text {
 					= __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-				if (ztdc_is_execution_encoding_utf8()) {
+				if (ztd::is_execution_encoding_utf8()) {
 					// just go straight to UTF8
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;
@@ -442,7 +442,7 @@ namespace ztd { namespace text {
 					= __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-				if (ztdc_is_execution_encoding_utf8()) {
+				if (ztd::is_execution_encoding_utf8()) {
 					// just go straight to UTF8
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;

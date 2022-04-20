@@ -47,7 +47,7 @@
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
-#include <ztd/idk/encoding_detection.h>
+#include <ztd/idk/encoding_detection.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -191,10 +191,10 @@ namespace ztd { namespace text {
 			static bool contains_unicode_encoding() noexcept {
 				// even if the wide encoding is unicode, we have to round-trip through the execution encoding, so if
 				// this doesn't work then nothing works with all unicode code points!
-				if (!ztdc_is_execution_encoding_unicode()) {
+				if (!ztd::is_execution_encoding_unicode()) {
 					return false;
 				}
-				return ztdc_is_wide_execution_encoding_unicode();
+				return ztd::is_wide_execution_encoding_unicode();
 			}
 
 			//////
