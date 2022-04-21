@@ -230,7 +230,8 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONCEPTS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_BORROWED_RANGE_I_)
+
 namespace std { namespace ranges {
 
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
@@ -238,7 +239,9 @@ namespace std { namespace ranges {
 		_State>> = ::std::ranges::enable_borrowed_range<_Range>;
 
 }} // namespace std::ranges
+
 #else
+
 namespace ztd { namespace ranges {
 	//////
 	/// @brief Mark subranges as appropriately borrowed ranges.

@@ -278,8 +278,8 @@ namespace ztd { namespace ranges {
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::ranges
 
-#if (ZTD_IS_ON(ZTD_LIBSTDCXX_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_CONCEPTS_I_)) \
-     || (ZTD_IS_ON(ZTD_LIBVCXX_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_CONCEPTS_I_)) || ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_BORROWED_RANGE_I_)
+
 namespace std { namespace ranges {
 
 	template <typename _It>
