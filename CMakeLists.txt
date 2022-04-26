@@ -235,6 +235,10 @@ export(TARGETS ztd.text
 	FILE
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-targets.cmake")
 
+install(
+	DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/cmake"
+	TYPE DATA
+)
 
 if (ZTD_TEXT_GENERATE_SINGLE)
 	add_subdirectory(single)
