@@ -50,10 +50,8 @@
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/fixed_container.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
-
-#include <string>
-#include <vector>
 
 #include <ztd/prologue.hpp>
 
@@ -281,14 +279,13 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
-			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
+			using _RealOutputContainer = ::ztd::fixed_basic_string<_OutputCodeUnit, max_code_units_v<_UEncoding>>;
 			return __txt_detail::__encode_one_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
-			using _RealOutputContainer
-				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
+			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
+				::ztd::fixed_vector<_OutputCodeUnit, max_code_units_v<_UEncoding>>, _OutputContainer>;
 			return __txt_detail::__encode_one_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
@@ -408,15 +405,14 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
-			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
-			return __txt_detail::__encode_one_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			using _RealOutputContainer = ::ztd::fixed_basic_string<_OutputCodeUnit, max_code_units_v<_UEncoding>>;
+			return __txt_detail::__encode_one_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
-			using _RealOutputContainer
-				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
-			return __txt_detail::__encode_one_dispatch<_RealOutputContainer>(::std::forward<_Input>(__input),
+			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
+				::ztd::fixed_vector<_OutputCodeUnit, max_code_units_v<_UEncoding>>, _OutputContainer>;
+			return __txt_detail::__encode_one_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 	}

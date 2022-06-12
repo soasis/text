@@ -53,10 +53,8 @@
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/fixed_container.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
-
-#include <string>
-#include <vector>
 
 #include <ztd/prologue.hpp>
 
@@ -421,8 +419,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -452,15 +450,15 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
+			using _RealOutputContainer = ::ztd::fixed_basic_string<_OutputCodeUnit, max_code_units_v<_UToEncoding>>;
 			return __txt_detail::__transcode_one_dispatch<false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
 		else {
-			using _RealOutputContainer
-				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
+			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
+				::ztd::fixed_vector<_OutputCodeUnit, max_code_units_v<_UToEncoding>>, _OutputContainer>;
 			return __txt_detail::__transcode_one_dispatch<false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -473,8 +471,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -513,8 +511,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a
-	/// `std::basic_string` or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -552,8 +550,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -587,8 +585,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -618,8 +616,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -662,8 +660,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -692,15 +690,15 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::std::basic_string<_OutputCodeUnit>;
+			using _RealOutputContainer = ::ztd::fixed_basic_string<_OutputCodeUnit, max_code_units_v<_UToEncoding>>;
 			return __txt_detail::__transcode_one_dispatch<true, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
 		else {
-			using _RealOutputContainer
-				= ::std::conditional_t<_IsVoidContainer, ::std::vector<_OutputCodeUnit>, _OutputContainer>;
+			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
+				::ztd::fixed_vector<_OutputCodeUnit, max_code_units_v<_UToEncoding>>, _OutputContainer>;
 			return __txt_detail::__transcode_one_dispatch<true, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -713,8 +711,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -753,8 +751,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -792,8 +790,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -827,8 +825,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.
@@ -858,8 +856,8 @@ namespace ztd { namespace text {
 	/// encoding for the output, which is then returned in a result structure with additional information about
 	/// success.
 	///
-	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
-	/// std::basic_string or a `std::vector` of some sort.
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a fixed-size
+	/// container of some sort.
 	///
 	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
 	/// produce intermediate code points.

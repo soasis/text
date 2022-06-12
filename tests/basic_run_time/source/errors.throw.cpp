@@ -37,10 +37,10 @@
 inline namespace ztd_text_tests_basic_run_time_errors_throw {
 	template <typename Encoding, typename Input>
 	void decode_one_throw_check(Encoding& encoding, Input& container) {
-		constexpr std::size_t output_max = ztd::text::max_code_points_v<Encoding>;
-		using code_point                 = ztd::text::code_point_t<Encoding>;
-		using code_unit                  = ztd::text::code_unit_t<Encoding>;
-		using state                      = ztd::text::decode_state_t<Encoding>;
+		[[maybe_unused]] constexpr std::size_t output_max = ztd::text::max_code_points_v<Encoding>;
+		using code_point                                  = ztd::text::code_point_t<Encoding>;
+		using code_unit                                   = ztd::text::code_unit_t<Encoding>;
+		using state                                       = ztd::text::decode_state_t<Encoding>;
 
 		auto action = [&]() noexcept(false) {
 			code_point output_buffer[ztd::text::max_code_points_v<Encoding>] {};
@@ -55,10 +55,10 @@ inline namespace ztd_text_tests_basic_run_time_errors_throw {
 
 	template <typename Encoding, typename Input>
 	void encode_one_throw_check(Encoding& encoding, Input& container) {
-		constexpr std::size_t output_max = ztd::text::max_code_units_v<Encoding>;
-		using code_point                 = ztd::text::code_point_t<Encoding>;
-		using code_unit                  = ztd::text::code_unit_t<Encoding>;
-		using state                      = ztd::text::encode_state_t<Encoding>;
+		[[maybe_unused]] constexpr std::size_t output_max = ztd::text::max_code_units_v<Encoding>;
+		using code_point                                  = ztd::text::code_point_t<Encoding>;
+		using code_unit                                   = ztd::text::code_unit_t<Encoding>;
+		using state                                       = ztd::text::encode_state_t<Encoding>;
 
 		auto action = [&]() noexcept(false) {
 			code_unit output_buffer[ztd::text::max_code_units_v<Encoding>] {};

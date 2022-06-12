@@ -127,6 +127,12 @@ FetchContent_Declare(ztd.idk
 	GIT_TAG main)
 FetchContent_MakeAvailable(ztd.idk)
 
+# ztd.fixed_container
+FetchContent_Declare(ztd.fixed_container
+	GIT_REPOSITORY https://github.com/soasis/fixed_container.git
+	GIT_TAG main)
+FetchContent_MakeAvailable(ztd.fixed_container)
+
 # ztd.cuneicode
 if (ZTD_TEXT_USE_CUNEICODE)
 	FetchContent_Declare(ztd.cuneicode
@@ -214,6 +220,7 @@ target_link_libraries(ztd.text
 	INTERFACE
 	${ztd-text-libiconv-dl}
 	ztd::idk
+	ztd::fixed_container
 	${ztd-text-libiconv}
 	${ztd-text-cuneicode})
 install(DIRECTORY include/
