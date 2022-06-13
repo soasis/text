@@ -26,24 +26,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================
-// //
+// ============================================================================ //
 
 #include <ztd/text.hpp>
 
 struct my_error_handler {
 	// Helper definitions
 	template <typename Encoding>
-	using code_point_span
-	     = ztd::span<const ztd::text::code_point_t<Encoding>>;
+	using code_point_span = ztd::span<const ztd::text::code_point_t<Encoding>>;
 	template <typename Encoding>
-	using code_unit_span
-	     = ztd::span<const ztd::text::code_unit_t<Encoding>>;
+	using code_unit_span = ztd::span<const ztd::text::code_unit_t<Encoding>>;
 
 	// Function call operator that returns a "deduced" (auto) type
 	// Specifically, this one is called for encode failures
-	template <typename Encoding, typename Input, typename Output,
-	     typename State>
+	template <typename Encoding, typename Input, typename Output, typename State>
 	auto operator()(
 	     // First Parameter
 	     const Encoding& encoding,
@@ -62,8 +58,7 @@ struct my_error_handler {
 
 	// Function call operator that returns a "deduced" (auto) type
 	// Specifically, this one is called for decode failures
-	template <typename Encoding, typename Input, typename Output,
-	     typename State>
+	template <typename Encoding, typename Input, typename Output, typename State>
 	auto operator()(
 	     // First Parameter
 	     const Encoding& encoding,
@@ -85,9 +80,8 @@ int main(int, char* argv[]) {
 
 	// convert from execution encoding to utf8 encoding,
 	// using our new handler
-	std::string utf8_string = ztd::text::transcode(
-	     std::string_view(argv[0]), ztd::text::execution,
-	     ztd::text::basic_utf8<char> {}, my_error_handler {});
+	std::string utf8_string = ztd::text::transcode(std::string_view(argv[0]),
+	     ztd::text::execution, ztd::text::basic_utf8<char> {}, my_error_handler {});
 
 	return 0;
 }

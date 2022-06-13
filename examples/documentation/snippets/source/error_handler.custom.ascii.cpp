@@ -26,8 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================
-// //
+// ============================================================================ //
 
 #include <ztd/text/encode.hpp>
 #include <ztd/text/encoding.hpp>
@@ -43,21 +42,19 @@ using ascii_encode_result = ztd::text::encode_result<
      ztd::text::encode_state_t<ztd::text::ascii_t>>;
 
 ascii_encode_result my_printing_handler(const ztd::text::ascii_t& encoding,
-     ascii_encode_result result,
-     ztd::span<const char32_t> unused_read_characters,
+     ascii_encode_result result, ztd::span<const char32_t> unused_read_characters,
      ztd::span<const char> unused_write_characters) noexcept {
 	(void)encoding;
 	// just printing some information
 	std::cout << "An error occurred.\n"
-	          << "\tError code value: "
-	          << ztd::text::to_name(result.error_code) << "\n"
-	          << "\t# of code unit spaces left: " << result.output.size()
+	          << "\tError code value: " << ztd::text::to_name(result.error_code)
 	          << "\n"
-	          << "\t# of unused code points: "
-	          << unused_read_characters.size() << "\n"
+	          << "\t# of code unit spaces left: " << result.output.size() << "\n"
+	          << "\t# of unused code points: " << unused_read_characters.size()
 	          << "\n"
-	          << "\t# of unused code units: "
-	          << unused_write_characters.size() << "\n"
+	          << "\n"
+	          << "\t# of unused code units: " << unused_write_characters.size()
+	          << "\n"
 	          << "\tInput units left: " << result.input.size() << "\n";
 	// setting the error to "ok"
 	// tells the algorithm to keep spinning,

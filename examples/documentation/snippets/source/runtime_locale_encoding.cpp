@@ -26,8 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================
-// //
+// ============================================================================ //
 
 #include <ztd/text.hpp>
 
@@ -69,8 +68,7 @@ public:
 		decode_state() noexcept : c_stdlib_state() {
 			// properly set for mbrtoc32 state
 			code_point ghost_ouput[2] {};
-			UCHAR_ACCESS mbrtoc32(
-			     ghost_ouput, "\0", 1, &c_stdlib_state);
+			UCHAR_ACCESS mbrtoc32(ghost_ouput, "\0", 1, &c_stdlib_state);
 		}
 	};
 
@@ -113,8 +111,7 @@ public:
 	ztd::span<const code_unit> replacement_code_units() const noexcept {
 		if (this->contains_unicode_encoding()) {
 			// Probably CESU-8 or UTF-8!
-			static const char replacement[3]
-			     = { '\xEF', '\xBF', '\xBD' };
+			static const char replacement[3] = { '\xEF', '\xBF', '\xBD' };
 			return replacement;
 		}
 		else {
@@ -125,37 +122,33 @@ public:
 	}
 
 private:
-	using rtl_decode_result
-	     = ztd::text::decode_result<ztd::span<const code_unit>,
-	          ztd::span<code_point>, decode_state>;
-	using rtl_encode_result
-	     = ztd::text::encode_result<ztd::span<const code_point>,
-	          ztd::span<code_unit>, encode_state>;
-	using rtl_decode_error_handler = std::function<rtl_decode_result(
-	     const runtime_locale&, rtl_decode_result, ztd::span<const char>,
-	     ztd::span<const char32_t>)>;
-	using rtl_encode_error_handler = std::function<rtl_encode_result(
-	     const runtime_locale&, rtl_encode_result,
-	     ztd::span<const char32_t>, ztd::span<const char>)>;
+	using rtl_decode_result = ztd::text::decode_result<ztd::span<const code_unit>,
+	     ztd::span<code_point>, decode_state>;
+	using rtl_encode_result = ztd::text::encode_result<ztd::span<const code_point>,
+	     ztd::span<code_unit>, encode_state>;
+	using rtl_decode_error_handler
+	     = std::function<rtl_decode_result(const runtime_locale&, rtl_decode_result,
+	          ztd::span<const char>, ztd::span<const char32_t>)>;
+	using rtl_encode_error_handler
+	     = std::function<rtl_encode_result(const runtime_locale&, rtl_encode_result,
+	          ztd::span<const char32_t>, ztd::span<const char>)>;
 
 	using empty_code_unit_span  = ztd::span<const code_unit, 0>;
 	using empty_code_point_span = ztd::span<const code_point, 0>;
 
 public:
-	rtl_decode_result decode_one(
-	     ztd::span<const code_unit> input, ztd::span<code_point> output,
-	     rtl_decode_error_handler error_handler,
+	rtl_decode_result decode_one(ztd::span<const code_unit> input,
+	     ztd::span<code_point> output, rtl_decode_error_handler error_handler,
 	     decode_state& current // decode-based state
 	) const {
 		if (output.size() < 1) {
 			return error_handler(*this,
 			     rtl_decode_result(input, output, current,
-			          ztd::text::encoding_error::
-			               insufficient_output_space),
+			          ztd::text::encoding_error::insufficient_output_space),
 			     empty_code_unit_span(), empty_code_point_span());
 		}
-		std::size_t result = UCHAR_ACCESS mbrtoc32(output.data(),
-		     input.data(), input.size(), &current.c_stdlib_state);
+		std::size_t result = UCHAR_ACCESS mbrtoc32(
+		     output.data(), input.data(), input.size(), &current.c_stdlib_state);
 		switch (result) {
 		case (std::size_t)0:
 			// '\0' was encountered in the input
@@ -187,9 +180,8 @@ public:
 		     input.subspan(result), output.subspan(1), current);
 	}
 
-	rtl_encode_result encode_one(
-	     ztd::span<const code_point> input, ztd::span<code_unit> output,
-	     rtl_encode_error_handler error_handler,
+	rtl_encode_result encode_one(ztd::span<const code_point> input,
+	     ztd::span<code_unit> output, rtl_encode_error_handler error_handler,
 	     encode_state& current // encode-based state
 	) const {
 		// saved, in case we need to go
@@ -207,9 +199,8 @@ public:
 				// no more input: everything is fine
 				return rtl_encode_result(input, output, current);
 			}
-			std::size_t result
-			     = UCHAR_ACCESS c32rtomb(intermediate_buffer,
-			          *input.data(), &current.c_stdlib_state);
+			std::size_t result = UCHAR_ACCESS c32rtomb(
+			     intermediate_buffer, *input.data(), &current.c_stdlib_state);
 			if (result == (std::size_t)-1) {
 				// invalid sequence!
 				return error_handler(*this,
@@ -229,8 +220,7 @@ public:
 				// can't fit!!
 				return error_handler(*this,
 				     rtl_encode_result(original_input, output, current,
-				          ztd::text::encoding_error::
-				               insufficient_output_space),
+				          ztd::text::encoding_error::insufficient_output_space),
 				     empty_code_point_span(), empty_code_unit_span());
 			}
 			::std::memcpy(output.data(), intermediate_buffer,

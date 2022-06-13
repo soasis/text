@@ -11,7 +11,7 @@ CompactNamespaces: true
 FixNamespaceComments: true
 
 # Overall Alignment
-ColumnLimit: 75
+ColumnLimit: 85
 AlignAfterOpenBracket: DontAlign # uses ContinuationIndentWidth for this instead
 AccessModifierOffset: -5 # do not push public: or private: around
 AlignConsecutiveAssignments: true # affects more than what's expected: do not use
