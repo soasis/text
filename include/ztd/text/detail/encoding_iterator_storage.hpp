@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -86,10 +86,10 @@ namespace ztd { namespace text {
 				::std::is_nothrow_constructible_v<__state_base_t, _UEncodingState&&>)
 			: __state_base_t(::std::move(__state)) {
 			}
-			constexpr __state_storage(const __state_storage&) = default;
-			constexpr __state_storage(__state_storage&&)      = default;
+			constexpr __state_storage(const __state_storage&)            = default;
+			constexpr __state_storage(__state_storage&&)                 = default;
 			constexpr __state_storage& operator=(const __state_storage&) = default;
-			constexpr __state_storage& operator=(__state_storage&&) = default;
+			constexpr __state_storage& operator=(__state_storage&&)      = default;
 
 			constexpr ::std::add_lvalue_reference_t<_UEncodingState> _M_get_state() noexcept {
 				return this->__state_base_t::get_value();

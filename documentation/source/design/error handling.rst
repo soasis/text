@@ -1,7 +1,7 @@
 .. =============================================================================
 ..
 .. ztd.text
-.. Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+.. Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 .. Contact: opensource@soasis.org
 ..
 .. Commercial License Usage
@@ -43,7 +43,7 @@ They can change the conversion and other operations happen works. Consider, for 
 .. literalinclude:: /../../examples/documentation/compile_fails/source/error_handler.replacement.ascii.cpp
 	:language: cpp
 	:linenos:
-	:start-after: // ============================================================================>
+	:start-after: // ============================================================================ //
 
 Clearly, the Korean characters present in the UTF-8 string just cannot fit in a strict, 7-bit ASCII encoding. What, then, becomes the printed output from ``std::cout`` at ``// (2)``? The answer is two ASCII question marks, ``??``. The :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` object passed in at ``// (1)`` substitutes replacement characters (zero or more) into the output for any failed operation. There are multiple kinds of error handlers with varying behaviors:
 

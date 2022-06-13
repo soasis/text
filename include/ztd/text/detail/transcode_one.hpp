@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -197,17 +197,17 @@ namespace ztd { namespace text {
 			_Intermediate& __intermediate) {
 			using _InitialIntermediate = __span_or_reconstruct_t<_Intermediate>;
 			using _DecodeResult        = decltype(__from_error_handler(__from_encoding, // clang-format hack
-                    __basic_decode_one<_ConsumeIntoTheNothingness>(::std::forward<_Input>(__input), __from_encoding,
+				       __basic_decode_one<_ConsumeIntoTheNothingness>(::std::forward<_Input>(__input), __from_encoding,
                          ::std::declval<_InitialIntermediate>(), __from_error_handler, __from_state),
-                    ::ztd::span<code_unit_t<remove_cvref_t<_FromEncoding>>, 0>(),
-                    ::ztd::span<code_point_t<remove_cvref_t<_FromEncoding>>, 0>()));
+				       ::ztd::span<code_unit_t<remove_cvref_t<_FromEncoding>>, 0>(),
+				       ::ztd::span<code_point_t<remove_cvref_t<_FromEncoding>>, 0>()));
 			using _InputView           = decltype(::std::declval<_DecodeResult>().input);
 			using _WorkingIntermediate = decltype(::std::declval<_DecodeResult>().output);
 			using _EncodeResult        = decltype(__to_error_handler(__to_encoding,
-                    __basic_encode_one<_ConsumeIntoTheNothingness>(::std::declval<_WorkingIntermediate>(),
+				       __basic_encode_one<_ConsumeIntoTheNothingness>(::std::declval<_WorkingIntermediate>(),
                          __to_encoding, ::std::forward<_Output>(__output), __to_error_handler, __to_state),
-                    ::ztd::span<code_point_t<remove_cvref_t<_ToEncoding>>, 0>(),
-                    ::ztd::span<code_unit_t<remove_cvref_t<_ToEncoding>>, 0>()));
+				       ::ztd::span<code_point_t<remove_cvref_t<_ToEncoding>>, 0>(),
+				       ::ztd::span<code_unit_t<remove_cvref_t<_ToEncoding>>, 0>()));
 			using _OutputView          = decltype(::std::declval<_EncodeResult>().output);
 			using _Result              = transcode_result<_InputView, _OutputView, _FromState, _ToState>;
 

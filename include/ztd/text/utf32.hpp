@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -261,7 +261,8 @@ namespace ztd { namespace text {
 				ranges::advance(__init);
 
 				if constexpr (__validate_decodable_as && __call_error_handler) {
-					if (__point > __ztd_idk_detail_last_unicode_code_point || __ztd_idk_detail_is_surrogate(__point)) {
+					if (__point > __ztd_idk_detail_last_unicode_code_point
+						|| __ztd_idk_detail_is_surrogate(__point)) {
 						__self_t __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__init),

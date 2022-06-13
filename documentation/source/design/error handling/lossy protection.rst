@@ -1,7 +1,7 @@
 .. =============================================================================
 ..
 .. ztd.text
-.. Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+.. Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 .. Contact: opensource@soasis.org
 ..
 .. Commercial License Usage
@@ -37,7 +37,7 @@ Occasionally, you will end up in a situation where you want to convert some text
 	:language: cpp
 	:linenos:
 	:emphasize-lines: 6-7
-	:start-after: // ============================================================================>
+	:start-after: // ============================================================================ //
 
 This will produce a compile time error (with this error number for MSVC as an example):
 
@@ -53,6 +53,6 @@ Since this library is trying to prevent :term:`Mojibake <mojibake>` and other en
 	:language: cpp
 	:linenos:
 	:emphasize-lines: 15-16
-	:start-after: // ============================================================================>
+	:start-after: // ============================================================================ //
 
 Any encoding which does not meet the requirements of either :doc:`ztd::text::is_encode_injective_v </api/is_encode_injective>` or :doc:`ztd::text::is_decode_injective_v </api/is_decode_injective>` (or both, for transcoding which uses both an encode and a decode operation) will throw an error if you specify no error handlers in the text. This is done through the :doc:`Injectivity Lucky 7 Extensions </design/lucky 7 extensions/injective>` that go beyond the :doc:`traditional Lucky 7 </design/lucky 7>` with 2 ``std::true_type``/``std::false_type`` definitions.

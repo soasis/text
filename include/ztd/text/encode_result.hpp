@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -239,7 +239,7 @@ namespace ztd { namespace text {
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgState&& __state, encoding_error __error_code,
 			::std::size_t __handled_errors) {
 			decltype(auto) __in_range  = ranges::reconstruct(::std::in_place_type<_InputRange>,
-                    ::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
+				 ::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
 			decltype(auto) __out_range = ranges::reconstruct(::std::in_place_type<_OutputRange>,
 				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last));
 			return encode_result<_InputRange, _OutputRange, _State>(::std::forward<decltype(__in_range)>(__in_range),

@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #include <ztd/text/examples/utf8_startup.hpp>
 
@@ -61,7 +61,7 @@ int main() {
 
 	ztd::span<char> shift_jis_input(shift_jis_bytes);
 	std::string utf8_string      = ztd::text::transcode(shift_jis_input, shift_jis(), ztd::text::compat_utf8,
-          ztd::text::replacement_handler_t(), ztd::text::replacement_handler_t());
+	          ztd::text::replacement_handler_t(), ztd::text::replacement_handler_t());
 	std::string_view utf8_input  = utf8_string;
 	std::string shift_jis_string = ztd::text::transcode(utf8_input, ztd::text::compat_utf8, shift_jis(),
 	     ztd::text::replacement_handler_t(), ztd::text::replacement_handler_t());

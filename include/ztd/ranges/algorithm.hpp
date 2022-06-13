@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -301,7 +301,7 @@ namespace ztd { namespace ranges {
 					else {
 						auto __short_last = __first + __out_size;
 						auto __result     = __copy_unsafe(
-                                   ::std::move(__first), ::std::move(__short_last), ::std::move(__out_first));
+							    ::std::move(__first), ::std::move(__short_last), ::std::move(__out_first));
 						return _Result { ::std::move(__result.in),
 							_OutRange(::std::move(__result.out).begin(), ::std::move(__out_last)) };
 					}

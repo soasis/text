@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -223,8 +223,8 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _DecodeState& __decode_state) {
 		auto __encode_state = ztd::text::make_encode_state(__to_encoding);
 		auto __result       = validate_transcodable_as(::std::forward<_Input>(__input),
-               ::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
-               __decode_state, __encode_state);
+			      ::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+			      __decode_state, __encode_state);
 		return __txt_detail::__slice_to_stateless(::std::move(__result));
 	}
 

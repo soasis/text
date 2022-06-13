@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -48,10 +48,10 @@ namespace ztd { namespace text { namespace tests {
 		if constexpr (std::is_same_v<Encoding, ztd::text::ascii_t>) {
 			return basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::) {
+		else if constexpr (std::is_same_v < Encoding, ztd::text::) {
 			return basic_source_character_set;
 		}
-		else if constexpr (std::is_same_v<Encoding, ztd::text::) {
+		else if constexpr (std::is_same_v < Encoding, ztd::text::) {
 			return w_basic_source_character_set;
 		}
 		else if constexpr (std::is_same_v<Encoding, ztd::text::utf8_t>) {

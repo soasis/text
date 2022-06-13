@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -60,7 +60,7 @@ namespace ztd { namespace ranges {
 			}
 
 			constexpr __blackhole& operator=(const __blackhole&) = default;
-			constexpr __blackhole& operator=(__blackhole&&) = default;
+			constexpr __blackhole& operator=(__blackhole&&)      = default;
 			template <typename _Right,
 				::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_Right>, __blackhole>>* = nullptr>
 			constexpr __blackhole& operator=(_Right&&) noexcept {

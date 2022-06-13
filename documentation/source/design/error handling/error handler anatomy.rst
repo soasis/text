@@ -1,7 +1,7 @@
 .. =============================================================================
 ..
 .. ztd.text
-.. Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+.. Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 .. Contact: opensource@soasis.org
 ..
 .. Commercial License Usage
@@ -43,7 +43,7 @@ They are classes with a function call operator and utilizes a few templates. Her
 .. literalinclude:: /../../examples/documentation/snippets/source/error_handler.anatomy.cpp
 	:language: cpp
 	:linenos:
-	:start-after: // ============================================================================>
+	:start-after: // ============================================================================ //
 
 This skeleton, by itself, works. It doesn't do anything: it just returns the ``result`` object as-is. This will result in the algorithm stopping exactly where the error occurs, and returning back to the user. This is because the ``result`` has an ``error_code`` member variable, and that member variable, when it reaches the higher level algorithms, stops all encoding, decoding, transcoding, counting, validation, and etc. work and exists with the proper information.
 

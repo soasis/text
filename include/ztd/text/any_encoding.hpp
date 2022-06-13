@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -337,10 +337,10 @@ namespace ztd { namespace text {
 			__typed(_ArgEncoding&& __encoding) : __base_t(::std::forward<_ArgEncoding>(__encoding)) {
 			}
 
-			__typed(const __typed&) = default;
-			__typed(__typed&&)      = default;
+			__typed(const __typed&)            = default;
+			__typed(__typed&&)                 = default;
 			__typed& operator=(const __typed&) = default;
-			__typed& operator=(__typed&&) = default;
+			__typed& operator=(__typed&&)      = default;
 
 			virtual ::std::optional<::ztd::span<const code_point>>
 			__maybe_replacement_code_points() const noexcept override {
@@ -441,7 +441,7 @@ namespace ztd { namespace text {
 				else {
 					__real_encode_state __encode_state = make_encode_state(__encoding);
 					auto __raw_result                  = __txt_detail::__basic_validate_decodable_as_one(
-                              ::std::move(__input), __encoding, __actual_state, __encode_state);
+						                 ::std::move(__input), __encoding, __actual_state, __encode_state);
 					return __validate_decodable_as_result(
 						::std::move(__raw_result.input), __raw_result.valid, __state);
 				}
@@ -468,7 +468,7 @@ namespace ztd { namespace text {
 				else {
 					__real_decode_state __decode_state = make_decode_state(__encoding);
 					auto __raw_result                  = __txt_detail::__basic_validate_encodable_as_one(
-                              ::std::move(__input), __encoding, __actual_state, __decode_state);
+						                 ::std::move(__input), __encoding, __actual_state, __decode_state);
 					return __validate_encodable_as_result(
 						::std::move(__raw_result.input), __raw_result.valid, __state);
 				}

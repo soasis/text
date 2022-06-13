@@ -1,7 +1,7 @@
 .. =============================================================================
 ..
 .. ztd.text
-.. Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+.. Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 .. Contact: opensource@soasis.org
 ..
 .. Commercial License Usage
@@ -36,7 +36,7 @@ When put together, it can generally look like this:
 .. literalinclude:: /../../examples/documentation/snippets/source/error_handler.custom.ascii.cpp
 	:language: cpp
 	:linenos:
-	:start-after: // ============================================================================>
+	:start-after: // ============================================================================ //
 
 The result in ``my_ascii_string`` should be an empty string: nothing should have succeeded and therefore the function will just return an empty string. The print out will look like this:
 

@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #include <cstdint>
 #include <array>
@@ -1349,7 +1349,7 @@ namespace detail {
 	std::optional<char32_t> shift_jis_index_to_code_point(std::size_t lookup_index_pointer) noexcept {
 		std::uint_least32_t lookup_index = static_cast<std::uint_least32_t>(lookup_index_pointer);
 		auto it                          = std::lower_bound(
-               index_codepoint_map.cbegin(), index_codepoint_map.cend(), lookup_index, &less_than_index_target);
+		                              index_codepoint_map.cbegin(), index_codepoint_map.cend(), lookup_index, &less_than_index_target);
 		if (it == index_codepoint_map.cend()) {
 			return std::nullopt;
 		}

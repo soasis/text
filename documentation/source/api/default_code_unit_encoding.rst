@@ -1,7 +1,7 @@
 .. =============================================================================
 ..
 .. ztd.text
-.. Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+.. Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 .. Contact: opensource@soasis.org
 ..
 .. Commercial License Usage
@@ -74,4 +74,3 @@ Picks the default encoding for the given code unit type (for both run time, and 
 	:members:
 
 .. doxygentypedef:: ztd::text::default_consteval_code_unit_encoding_t
-

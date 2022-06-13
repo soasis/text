@@ -3,7 +3,7 @@
 # =============================================================================
 #
 # ztd.text
-# Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+# Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 # Contact: opensource@soasis.org
 #
 # Commercial License Usage
@@ -91,7 +91,7 @@ if not os.path.isabs(forward_single_file):
 intro = """// =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -116,7 +116,7 @@ intro = """// ==================================================================
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 /* This is an automatically generated header file.
 *  Generated from the ztd.text repository at {time},

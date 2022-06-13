@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2021 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -26,7 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// ============================================================================>
+// ============================================================================ //
 
 #pragma once
 
@@ -146,9 +146,9 @@ namespace ztd { namespace text {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
 		}
 
-		constexpr basic_c_string_view(basic_c_string_view&&)      = default;
-		constexpr basic_c_string_view(const basic_c_string_view&) = default;
-		constexpr basic_c_string_view& operator=(basic_c_string_view&&) = default;
+		constexpr basic_c_string_view(basic_c_string_view&&)                 = default;
+		constexpr basic_c_string_view(const basic_c_string_view&)            = default;
+		constexpr basic_c_string_view& operator=(basic_c_string_view&&)      = default;
 		constexpr basic_c_string_view& operator=(const basic_c_string_view&) = default;
 
 		constexpr __base_t base() const noexcept {
