@@ -18,7 +18,7 @@
 # file except in compliance with the License. You may obtain a copy of the
 # License at
 #
-#		http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,7 @@
 
 cmake_minimum_required(VERSION 3.16.0)
 cmake_policy(VERSION 3.16)
+
 # # Project kickstart
 # Includes a bunch of basic flags and utilities shared across projects
 # See more at the github repository link below
@@ -49,7 +50,7 @@ project(ztd.text
 	HOMEPAGE_URL "https://ztdtext.readthedocs.io/en/latest/"
 	LANGUAGES C CXX)
 
-if (ZTD_TEXT_READTHEDOCS)
+if(ZTD_TEXT_READTHEDOCS)
 	# ReadTheDocs seems unable to handle the include at the project level: something must be going wrong?
 	include(CheckCXXCompilerFlag)
 	include(CheckCCompilerFlag)
@@ -72,8 +73,8 @@ else()
 endif()
 
 # Modify bad flags / change defaults if we are the top level
-if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
-	if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
+	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/lib")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/bin")
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CMAKE_BUILD_TYPE}/bin")
@@ -83,26 +84,27 @@ if (ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/${CMAKE_BUILD_TYPE}/bin")
 	endif()
 
-	if (NOT DEFINED CMAKE_CXX_STANDARD)
+	if(NOT DEFINED CMAKE_CXX_STANDARD)
 		set(CMAKE_CXX_STANDARD 17)
 	endif()
 
-	if (NOT DEFINED CMAKE_C_STANDARD)
+	if(NOT DEFINED CMAKE_C_STANDARD)
 		set(CMAKE_C_STANDARD 11)
 	endif()
 
-	if (ZTD_TEXT_BENCHMARKS OR ZTD_TEXT_EXAMPLES OR ZTD_TEXT_TESTS OR ZTD_TEXT_SCRATCH)
+	if(ZTD_TEXT_BENCHMARKS OR ZTD_TEXT_EXAMPLES OR ZTD_TEXT_TESTS OR ZTD_TEXT_SCRATCH)
 		# normal flags
 		check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
+
 		# Warning flags
 		check_compiler_flag(warn-pedantic MSVC /permissive- GCC -pedantic)
 		check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
 		check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
-		check_compiler_flag(warn-extra GCC -Wextra CLANG -Wextra)
+		check_compiler_flag(warn-extra GCC -Wextra Clang -Wextra)
 		check_compiler_flag(utf8-literal-encoding MSVC /execution-charset:utf-8 GCC -fexec-charset=utf-8)
 		check_compiler_flag(utf8-source-encoding MSVC /source-charset:utf-8 GCC -finput-charset=utf-8)
-		check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 CLANG -fconstexpr-depth=2147483647)
-		check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 CLANG -fconstexpr-steps=2147483647)
+		check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 Clang -fconstexpr-depth=2147483647)
+		check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 Clang -fconstexpr-steps=2147483647)
 		check_compiler_flag(template-debugging-mode GCC -ftemplate-backtrace-limit=0)
 	endif()
 endif()
@@ -134,7 +136,7 @@ FetchContent_Declare(ztd.fixed_container
 FetchContent_MakeAvailable(ztd.fixed_container)
 
 # ztd.cuneicode
-if (ZTD_TEXT_USE_CUNEICODE)
+if(ZTD_TEXT_USE_CUNEICODE)
 	FetchContent_Declare(ztd.cuneicode
 		GIT_REPOSITORY https://github.com/soasis/cuneicode.git
 		GIT_TAG main)
@@ -143,29 +145,30 @@ if (ZTD_TEXT_USE_CUNEICODE)
 endif()
 
 # iconv - static and dynamic
-if (NOT TARGET Iconv::Iconv AND ZTD_TEXT_USE_LIBICONV)
+if(NOT TARGET Iconv::Iconv AND ZTD_TEXT_USE_LIBICONV)
 	# because of iconv's license, using it as a static dependency
 	# is tricky: therefore, it's only enabled for folks who explicitly asked for it,
 	# regardless of whether it is available or not
 	find_package(Iconv)
 endif()
+
 # define generator expressions for each moment
 string(CONCAT ztd-text-libiconv-define
 	$<IF:$<BOOL:${ZTD_TEXT_USE_LIBICONV}>,
-		ZTD_LIBICONV=1,
-		ZTD_LIBICONV=0
+	ZTD_LIBICONV=1,
+	ZTD_LIBICONV=0
 	>
 )
 string(CONCAT ztd-text-libiconv-load-define
 	$<IF:$<AND:$<BOOL:${Iconv_FOUND}>,$<BOOL:${ZTD_TEXT_USE_LIBICONV}>>,
-		ZTD_LIBICONV_LOAD=0,
-		ZTD_LIBICONV_LOAD=1
+	ZTD_LIBICONV_LOAD=0,
+	ZTD_LIBICONV_LOAD=1
 	>
 )
 string(CONCAT ztd-text-libiconv-header-define
 	$<IF:$<AND:$<BOOL:${Iconv_FOUND}>,$<BOOL:${ZTD_TEXT_USE_LIBICONV}>>,
-		ZTD_ICONV_H=1,
-		ZTD_ICONV_H=0
+	ZTD_ICONV_H=1,
+	ZTD_ICONV_H=0
 	>
 )
 string(CONCAT ztd-text-libiconv
@@ -176,26 +179,26 @@ string(CONCAT ztd-text-libiconv-dl
 )
 string(CONCAT ztd-text-static-libiconv-define
 	$<IF:
-		$<AND:$<BOOL:${Iconv_FOUND}>, $<BOOL:${ZTD_TEXT_USE_STATIC_LIBICONV}>,
-			$<STREQUAL:
-				$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
-				STATIC_LIBRARY
-			>
-		>,
-		ZTD_LIBICONV_STATIC=1,
-		ZTD_LIBICONV_STATIC=0
+	$<AND:$<BOOL:${Iconv_FOUND}>, $<BOOL:${ZTD_TEXT_USE_STATIC_LIBICONV}>,
+	$<STREQUAL:
+	$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
+	STATIC_LIBRARY
+	>
+	>,
+	ZTD_LIBICONV_STATIC=1,
+	ZTD_LIBICONV_STATIC=0
 	>
 )
 string(CONCAT ztd-text-dynamic-libiconv-define
 	$<IF:
-		$<AND:$<BOOL:Iconv_FOUND>, $<BOOL:ZTD_TEXT_USE_LIBICONV>,
-			$<STREQUAL:
-				$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
-				SHARED_LIBRARY
-			>
-		>,
-		ZTD_LIBICONV_DYNAMIC=1,
-		ZTD_LIBICONV_DYNAMIC=0
+	$<AND:$<BOOL:Iconv_FOUND>, $<BOOL:ZTD_TEXT_USE_LIBICONV>,
+	$<STREQUAL:
+	$<$<BOOL:$<TARGET_NAME_IF_EXISTS:Iconv::Iconv>>:$<TARGET_PROPERTY:Iconv::Iconv,TYPE>>,
+	SHARED_LIBRARY
+	>
+	>,
+	ZTD_LIBICONV_DYNAMIC=1,
+	ZTD_LIBICONV_DYNAMIC=0
 	>
 )
 
@@ -206,8 +209,8 @@ add_library(ztd.text INTERFACE)
 add_library(ztd::text ALIAS ztd.text)
 target_include_directories(ztd.text
 	INTERFACE
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_compile_definitions(ztd.text
 	INTERFACE
@@ -242,30 +245,32 @@ export(TARGETS ztd.text
 	FILE
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd.text/ztd.text-targets.cmake")
 
-
-if (ZTD_TEXT_GENERATE_SINGLE)
+if(ZTD_TEXT_GENERATE_SINGLE)
 	add_subdirectory(single)
 endif()
 
 # # Benchmarks, Tests, Examples and Documentation
-if (ZTD_TEXT_TESTS)
+if(ZTD_TEXT_TESTS)
 	include(CTest)
 	add_subdirectory(tests)
 endif()
 
-if (ZTD_TEXT_DOCUMENTATION)
+if(ZTD_TEXT_DOCUMENTATION)
 	add_subdirectory(documentation)
 endif()
-if (ZTD_TEXT_BENCHMARKS)
+
+if(ZTD_TEXT_BENCHMARKS)
 	add_subdirectory(benchmarks)
 endif()
-if (ZTD_TEXT_EXAMPLES)
+
+if(ZTD_TEXT_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
 # For quick debugging and development only: don't peek! 🙈
 mark_as_advanced(ZTD_TEXT_SCRATCH)
-if (ZTD_TEXT_SCRATCH)
+
+if(ZTD_TEXT_SCRATCH)
 	add_executable(scratch main.cpp)
 	target_link_libraries(scratch PRIVATE ztd::text)
 	target_include_directories(scratch PRIVATE tests/shared/include)

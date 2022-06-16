@@ -225,6 +225,10 @@ namespace ztd { namespace ranges {
 	inline constexpr bool is_iterator_concept_or_better_v = ::std::is_base_of_v<_Tag, iterator_concept_t<_It>>;
 
 	template <typename _It>
+	inline constexpr bool is_iterator_random_access_iterator_v
+		= is_iterator_concept_or_better_v<::std::random_access_iterator_tag, _It>;
+
+	template <typename _It>
 	inline constexpr bool is_iterator_contiguous_iterator_v = ::ztd::__idk_detail::__mark_contiguous_v<_It>
 		|| (
 #if ZTD_IS_ON(ZTD_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)

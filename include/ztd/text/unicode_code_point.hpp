@@ -58,7 +58,6 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Constructs a code point value of indeterminate value (if no parentheses/brackets are provided)
 			/// or with the value 0 (if parentheses/brackets are provided for intentional value initialization).
-
 			__unicode_code_point() noexcept = default;
 
 			//////

@@ -128,6 +128,10 @@ namespace ztd { namespace ranges {
 	inline constexpr bool is_range_contiguous_range_v = is_iterator_contiguous_iterator_v<range_iterator_t<_Range>>;
 
 	template <typename _Range>
+	inline constexpr bool is_range_random_access_range_v
+		= is_range_iterator_concept_or_better_v<::std::random_access_iterator_tag, range_iterator_t<_Range>>;
+
+	template <typename _Range>
 	inline constexpr bool is_sized_range_v
 		= is_sized_sentinel_for_v<range_iterator_t<_Range>, range_sentinel_t<_Range>>;
 

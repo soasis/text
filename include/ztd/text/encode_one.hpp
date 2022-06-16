@@ -89,25 +89,14 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto encode_one_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
-		using _IntermediateInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
-		using _IntermediateOutput = ranges::reconstruct_t<_Output>;
-		using _Result             = decltype(__encoding.encode_one_one(
-			            ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
-		using _WorkingInput       = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
-		using _WorkingOutput      = remove_cvref_t<decltype(::std::declval<_Result>().output)>;
-		using _UEncoding          = remove_cvref_t<_Encoding>;
-		using _UErrorHandler      = remove_cvref_t<_ErrorHandler>;
+		using _UEncoding     = remove_cvref_t<_Encoding>;
+		using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 
 		static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_UEncoding, _UErrorHandler>,
 			ZTD_TEXT_LOSSY_ENCODE_MESSAGE_I_);
 
-		_WorkingInput __working_input
-			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
-		_WorkingOutput __working_output
-			= ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
-
-		return __encoding.encode_one(
-			::std::move(__working_input), ::std::move(__working_output), __error_handler, __state);
+		return __encoding.encode_one(::std::forward<_Input>(__input), ::std::forward<_Output>(__output),
+			::std::forward<_ErrorHandler>(__error_handler), __state);
 	}
 
 	//////
@@ -199,6 +188,31 @@ namespace ztd { namespace text {
 	}
 
 	namespace __txt_detail {
+		template <typename _Input, typename _Encoding, typename _OutputContainer, typename _ErrorHandler,
+			typename _State>
+		constexpr auto __intermediate_encode_one_to_storage(_Input&& __input, _Encoding&& __encoding,
+			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
+			// Well, SHIT. Write into temporary, then serialize one-by-one/bulk to output.
+			// I'll admit, this is HELLA work to support...
+			using _UEncoding                                  = remove_cvref_t<_Encoding>;
+			using _UErrorHandler                              = remove_cvref_t<_ErrorHandler>;
+			constexpr ::std::size_t __intermediate_buffer_max = max_code_units_v<_UEncoding>;
+			using _IntermediateValueType                      = code_unit_t<_UEncoding>;
+			using _Output                                     = ::ztd::span<_IntermediateValueType>;
+
+			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_UEncoding, _UErrorHandler>,
+				ZTD_TEXT_LOSSY_ENCODE_MESSAGE_I_);
+
+			_IntermediateValueType __intermediate_translation_buffer[__intermediate_buffer_max] {};
+
+			_Output __intermediate_initial_output(__intermediate_translation_buffer);
+			auto __result = encode_into(::std::forward<_Input>(__input), __encoding, __intermediate_initial_output,
+				::std::forward<_ErrorHandler>(__error_handler), __state);
+			_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());
+			ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
+			return __result;
+		}
+
 		template <bool _OutputOnly, typename _OutputContainer, typename _Input, typename _Encoding,
 			typename _ErrorHandler, typename _State>
 		constexpr auto __encode_one_dispatch(
@@ -233,10 +247,11 @@ namespace ztd { namespace text {
 				}
 			}
 			else {
-				auto __stateful_result = encode_one_into(__txt_detail::__forward_if_move_only<_Input>(__input),
-					::std::forward<_Encoding>(__encoding), __output,
+				auto __stateful_result = __txt_detail::__intermediate_encode_one_to_storage(
+					::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __output,
 					::std::forward<_ErrorHandler>(__error_handler), __state);
 				if constexpr (_OutputOnly) {
+					// We are explicitly disca rding this information with this function call.
 					(void)__stateful_result;
 					return __output;
 				}
@@ -269,7 +284,8 @@ namespace ztd { namespace text {
 	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to. The result is
 	/// then returned, with the `.output` value put into the container.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
+		typename _State>
 	constexpr auto encode_one_to(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 		using _UEncoding                = remove_cvref_t<_Encoding>;
@@ -308,7 +324,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates a `state` using ztd::text::make_encode_state.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding, typename _ErrorHandler>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode_one_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = encode_state_t<_UEncoding>;
@@ -334,7 +350,7 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
 	//////
-	template <typename _OutputContainer, typename _Input, typename _Encoding>
+	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode_one_to(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
 		return encode_one_to<_OutputContainer>(
@@ -355,7 +371,7 @@ namespace ztd { namespace text {
 	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
 	//////
-	template <typename _OutputContainer, typename _Input>
+	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto encode_one_to(_Input&& __input) {
 		using _UInput    = remove_cvref_t<_Input>;
 		using _CodePoint = ranges::range_value_type_t<_UInput>;

@@ -123,16 +123,16 @@ static_assert(!ztd::text::is_decode_injective_v<ztd::text::execution_t>);
 static_assert(!ztd::text::is_encode_injective_v<ztd::text::wide_execution_t>);
 static_assert(!ztd::text::is_decode_injective_v<ztd::text::wide_execution_t>);
 
-static_assert(!ztd::text::is_decode_injective_v<ztd::text::no_encoding>);
-static_assert(!ztd::text::is_encode_injective_v<ztd::text::no_encoding>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::no_encoding>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::no_encoding>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::no_encoding>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::no_encoding>);
+static_assert(!ztd::text::is_decode_injective_v<ztd::text::no_encoding_t>);
+static_assert(!ztd::text::is_encode_injective_v<ztd::text::no_encoding_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::no_encoding_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::no_encoding_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::no_encoding_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::no_encoding_t>);
 
-static_assert(ztd::text::is_decode_injective_v<ztd::text::no_codepoint_encoding>);
-static_assert(ztd::text::is_encode_injective_v<ztd::text::no_codepoint_encoding>);
-static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::no_codepoint_encoding>);
-static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::no_codepoint_encoding>);
-static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::no_codepoint_encoding>);
-static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::no_codepoint_encoding>);
+static_assert(ztd::text::is_decode_injective_v<ztd::text::no_codepoint_encoding_t>);
+static_assert(ztd::text::is_encode_injective_v<ztd::text::no_codepoint_encoding_t>);
+static_assert(!ztd::text::is_code_units_maybe_replaceable_v<ztd::text::no_codepoint_encoding_t>);
+static_assert(!ztd::text::is_code_units_replaceable_v<ztd::text::no_codepoint_encoding_t>);
+static_assert(!ztd::text::is_code_points_replaceable_v<ztd::text::no_codepoint_encoding_t>);
+static_assert(!ztd::text::is_code_points_maybe_replaceable_v<ztd::text::no_codepoint_encoding_t>);

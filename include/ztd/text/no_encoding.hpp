@@ -249,11 +249,19 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A do-nothing encoding for `char` types of input.
-	using no_encoding = basic_no_encoding<char, unicode_code_point>;
+	using no_encoding_t = basic_no_encoding<char, unicode_code_point>;
+
+	//////
+	/// @brief An object for the ztd::text::no_encoding_t type.
+	inline constexpr no_encoding_t no_encoding = {};
 
 	//////
 	/// @brief A do-nothing encoding for ztd::text::unicode_code_point types of input.
-	using no_codepoint_encoding = basic_no_encoding<unicode_code_point, unicode_code_point>;
+	using no_codepoint_encoding_t = basic_no_encoding<unicode_code_point, unicode_code_point>;
+
+	//////
+	/// @brief An object for the ztd::text::no_codepoint_encoding_t type.
+	inline constexpr no_codepoint_encoding_t no_codepoint_encoding = {};
 
 	//////
 	/// @}

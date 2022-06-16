@@ -71,8 +71,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
-	/// @p
-	/// __output view.
+	/// `__output` view.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.
@@ -129,8 +128,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
-	/// @p
-	/// __output view.
+	/// `__output` view.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.
@@ -315,8 +313,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
-	/// @p
-	/// __output view.
+	/// `__output` view.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.
@@ -345,8 +342,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
-	/// @p
-	/// __output view.
+	/// `__output` view.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.
@@ -369,8 +365,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
-	/// @p
-	/// __output view.
+	/// `__output` view.
 	///
 	/// @param[in]     __input An input_view to read code points from and use in the encode operation that will
 	/// produce code units.

@@ -72,9 +72,8 @@ namespace ztd { namespace text {
 	//////
 
 	//////
-	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the
-	/// @p
-	/// __output view.
+	/// @brief Converts from the code units of the given `__input` view through the encoding to code points into the
+	/// `__output` view.
 	///
 	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
@@ -130,8 +129,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
-	/// __output view.
+	/// @brief Converts from the code units of the given `__input` view through the encoding to code points into the
+	/// `__output` view.
 	///
 	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
@@ -193,7 +192,7 @@ namespace ztd { namespace text {
 				               ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
 			using _WorkingInput          = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
-			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_Encoding, _ErrorHandler>,
+			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_Encoding, _ErrorHandler>,
 				ZTD_TEXT_LOSSY_DECODE_MESSAGE_I_);
 
 			// We MUST use a temporary error handler
@@ -316,8 +315,8 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
-	/// __output view.
+	/// @brief Converts from the code units of the given `__input` view through the encoding to code points into the
+	/// `__output` view.
 	///
 	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
@@ -345,8 +344,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
-	/// __output view.
+	/// @brief Converts from the code units of the given `__input` view through the encoding to code points into the
+	/// `__output` view.
 	///
 	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.
@@ -368,8 +367,8 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	/// @brief Converts the code units of the given `__input` view through the encoding to code points into the  @p
-	/// __output view.
+	/// @brief Converts from the code units of the given `__input` view through the encoding to code points into the
+	/// `__output` view.
 	///
 	/// @param[in] __input An input_view to read code units from and use in the decode operation that will
 	/// produce code points.

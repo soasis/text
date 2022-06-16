@@ -165,36 +165,75 @@ namespace ztd { namespace ranges {
 			}
 
 			constexpr __counted_iterator operator--(int) noexcept(_S_operator_minusminus_noexcept()) {
+				auto __copy = (*this);
 				--(*this);
+				return __copy;
+			}
+
+			template <typename _ItTy                                              = _It,
+				::std::enable_if_t<is_iterator_random_access_iterator_v<_ItTy>>* = nullptr>
+			constexpr __counted_iterator operator+(difference_type __diff) const {
+				return __counted_iterator(this->_M_it + __diff, this->_M_count + __diff);
+			}
+
+			template <typename _ItTy                                              = _It,
+				::std::enable_if_t<is_iterator_random_access_iterator_v<_ItTy>>* = nullptr>
+			friend constexpr __counted_iterator operator+(
+				difference_type __diff, const __counted_iterator& __right) {
+				return __counted_iterator(__right._M_it + __diff, __right._M_count + __diff);
+			}
+
+			template <typename _ItTy                                              = _It,
+				::std::enable_if_t<is_iterator_random_access_iterator_v<_ItTy>>* = nullptr>
+			constexpr __counted_iterator& operator+=(difference_type __diff) {
+				this->_M_it += __diff;
+				this->_M_count += __diff;
 				return *this;
 			}
 
-#if 0
-			constexpr __counted_iterator operator+(_ItDiff n) const requires random_­access_­iterator<_It>;
-			friend constexpr __counted_iterator operator+(
-				_ItDiff n, const __counted_iterator& x) requires random_­access_­iterator<_It>;
-			constexpr __counted_iterator& operator+=(_ItDiff n) requires random_­access_­iterator<_It>;
+			template <typename _ItTy                                              = _It,
+				::std::enable_if_t<is_iterator_random_access_iterator_v<_ItTy>>* = nullptr>
+			constexpr __counted_iterator operator-(difference_type __diff) const {
+				return __counted_iterator(this->_M_it - __diff, this->_M_count - __diff);
+			}
 
-			constexpr __counted_iterator operator-(_ItDiff n) const requires random_­access_­iterator<_It>;
+			template <typename _RightIt,
+				::std::enable_if_t<                                 // cf-hack
+				     is_iterator_random_access_iterator_v<_RightIt> // cf-hack
+				     && is_iterator_random_access_iterator_v<_It>   // cf-hack
+				     >* = nullptr>
+			friend constexpr iterator_difference_type_t<_RightIt> operator-(
+				const __counted_iterator& __left, const __counted_iterator<_RightIt>& __right) {
+				return __left._M_it - __right._M_it;
+			}
 
-			template <typename _ItRight>
-			friend constexpr iter_difference_t<_ItRight> operator-(const __counted_iterator& x, const __counted_iterator<_ItRight>& y);
-			constexpr __counted_iterator& operator-=(_ItDiff n) requires random_­access_­iterator<_It>;
+			template <typename _RightIt, typename _ItTy = _It,
+				::std::enable_if_t<is_iterator_random_access_iterator_v<_ItTy>>* = nullptr>
+			constexpr __counted_iterator& operator-=(difference_type __diff) {
+				this->_M_it -= __diff;
+				this->_M_count -= __diff;
+				return *this;
+			}
 
-			constexpr decltype(auto) operator[](_ItDiff n) const requires random_­access_­iterator<_It>;
-#endif
+			template <typename _ItTy                                              = _It,
+				::std::enable_if_t<is_iterator_random_access_iterator_v<_ItTy>>* = nullptr>
+			constexpr decltype(auto) operator[](difference_type __index) const {
+				return this->_M_it[__index];
+			}
 
-			friend constexpr _ItDiff operator-(const __counted_iterator& __left, default_sentinel_t) noexcept {
+			friend constexpr difference_type operator-(
+				const __counted_iterator& __left, default_sentinel_t) noexcept {
 				return __left._M_count;
 			}
 
-			friend constexpr _ItDiff operator-(default_sentinel_t, const __counted_iterator& __right) noexcept {
+			friend constexpr difference_type operator-(
+				default_sentinel_t, const __counted_iterator& __right) noexcept {
 				return -__right._M_count;
 			}
 
-			template <typename _ItRight>
+			template <typename _RightIt>
 			friend constexpr bool operator==(
-				const __counted_iterator& __left, const __counted_iterator<_ItRight>& __right) noexcept {
+				const __counted_iterator& __left, const __counted_iterator<_RightIt>& __right) noexcept {
 				return __left._M_it == __right._M_it && __left._M_count == __right._M_count;
 			}
 
@@ -202,9 +241,9 @@ namespace ztd { namespace ranges {
 				return __left._M_count == static_cast<_ItDiff>(0);
 			}
 
-			template <typename _ItRight>
+			template <typename _RightIt>
 			friend constexpr bool operator!=(
-				const __counted_iterator& __left, const __counted_iterator<_ItRight>& __right) noexcept {
+				const __counted_iterator& __left, const __counted_iterator<_RightIt>& __right) noexcept {
 				return __left._M_it != __right._M_it || __left._M_count != __right._M_count;
 			}
 
@@ -217,16 +256,16 @@ namespace ztd { namespace ranges {
 				return ranges_adl::adl_iter_move(__it._M_it);
 			}
 
-			template <typename _ItRight>
+			template <typename _RightIt>
 			friend constexpr void
-			iter_swap(const __counted_iterator& x, const __counted_iterator<_ItRight>& y) noexcept(
+			iter_swap(const __counted_iterator& x, const __counted_iterator<_RightIt>& y) noexcept(
 				noexcept(ranges_adl::adl_iter_swap(x._M_it, y._M_it))) {
 				ranges_adl::adl_iter_swap(x._M_it, y._M_it);
 			}
 
 		private:
-			_It _M_it        = _It();
-			_ItDiff _M_count = 0;
+			_It _M_it                = _It();
+			difference_type _M_count = difference_type {};
 		};
 	} // namespace __rng_detail
 

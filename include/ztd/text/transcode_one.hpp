@@ -362,14 +362,47 @@ namespace ztd { namespace text {
 	}
 
 	namespace __txt_detail {
+		template <typename _OutputContainer, typename _Input, typename _FromEncoding, typename _ToEncoding,
+			typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+		constexpr auto __intermediate_transcode_one_to_storage(_Input&& __input, _FromEncoding&& __from_encoding,
+			_OutputContainer& __output, _ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
+			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
+			// Well, SHIT. Write into temporary, then serialize one-by-one/bulk to output.
+			// I'll admit, this is HELLA work to support...
+			using _UFromEncoding                              = remove_cvref_t<_FromEncoding>;
+			using _UToEncoding                                = remove_cvref_t<_ToEncoding>;
+			using _UFromErrorHandler                          = remove_cvref_t<_FromErrorHandler>;
+			using _UToErrorHandler                            = remove_cvref_t<_ToErrorHandler>;
+			constexpr ::std::size_t __intermediate_buffer_max = max_code_units_v<_UToEncoding>;
+			using _IntermediateValueType                      = code_unit_t<_UToEncoding>;
+			using _Output                                     = ::ztd::span<_IntermediateValueType>;
+
+			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_UFromEncoding, _UFromErrorHandler>,
+				ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_);
+			static_assert(__txt_detail::__is_encode_lossless_or_deliberate_v<_UToEncoding, _UToErrorHandler>,
+				ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
+
+			_IntermediateValueType __intermediate_translation_buffer[__intermediate_buffer_max] {};
+
+			_Output __intermediate_initial_output(__intermediate_translation_buffer);
+			auto __result = transcode_one_into(::std::forward<_Input>(__input),
+				::std::forward<_FromEncoding>(__from_encoding), ::std::move(__intermediate_initial_output),
+				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+			_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());
+			ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
+			return __result;
+		}
+
 		template <bool _OutputOnly, typename _OutputContainer, typename _Input, typename _FromEncoding,
 			typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState,
 			typename _ToState>
 		constexpr auto __transcode_one_dispatch(_Input&& __input, _FromEncoding&& __from_encoding,
-			_OutputContainer& __output, _ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
+			_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
 			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
-			using _UFromEncoding = remove_cvref_t<_FromEncoding>;
+			using _UToEncoding = remove_cvref_t<_ToEncoding>;
 
+			_OutputContainer __output {};
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
 				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
@@ -377,7 +410,7 @@ namespace ztd { namespace text {
 					__output.reserve(__output_size_hint);
 				}
 			}
-			if constexpr (__txt_detail::__is_decode_range_category_output_v<_UFromEncoding>) {
+			if constexpr (__txt_detail::__is_encode_range_category_output_v<_UToEncoding>) {
 				using _BackInserterIterator = decltype(::std::back_inserter(::std::declval<_OutputContainer&>()));
 				using _Unbounded            = ranges::unbounded_view<_BackInserterIterator>;
 				// We can use the unbounded stuff
@@ -397,7 +430,7 @@ namespace ztd { namespace text {
 				}
 			}
 			else {
-				auto __stateful_result = transcode_one_into(__txt_detail::__forward_if_move_only<_Input>(__input),
+				auto __stateful_result = __intermediate_transcode_one_to_storage(::std::forward<_Input>(__input),
 					::std::forward<_FromEncoding>(__from_encoding), __output,
 					::std::forward<_ToEncoding>(__to_encoding),
 					::std::forward<_FromErrorHandler>(__from_error_handler),

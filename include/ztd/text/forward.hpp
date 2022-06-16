@@ -118,7 +118,7 @@ namespace ztd { namespace text {
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS_I_)
 		__txt_impl::__execution_mac_os
 #else
-		no_encoding<char, unicode_code_point>
+		no_encoding_t<char, unicode_code_point>
 #endif
 		;
 

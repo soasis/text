@@ -69,7 +69,7 @@ namespace ztd { namespace text {
 #elif ZTD_IS_ON(ZTD_LIBICONV_I_)
 		__txt_impl::__execution_iconv
 #else
-		no_encoding<char, unicode_code_point>
+		no_encoding_t<char, unicode_code_point>
 #error \
      "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
 #endif

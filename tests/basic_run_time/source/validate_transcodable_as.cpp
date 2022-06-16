@@ -87,11 +87,11 @@ TEST_CASE("text/validate_transcodable_as/basic", "basic usages of validate_trans
 		validate_check(ztd::tests::basic_source_character_set, encoding, encoding);
 	}
 	SECTION("no_encoding") {
-		ztd::text::no_encoding encoding {};
+		ztd::text::no_encoding_t encoding {};
 		validate_check(ztd::tests::basic_source_character_set, encoding, encoding);
 	}
 	SECTION("no_encoding") {
-		ztd::text::no_codepoint_encoding encoding {};
+		ztd::text::no_codepoint_encoding_t encoding {};
 		validate_check(ztd::tests::u32_basic_source_character_set, encoding, encoding);
 	}
 	SECTION("utf8") {

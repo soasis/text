@@ -34,8 +34,8 @@ int main(int, char*[]) {
 	[[maybe_unused]] std::u32string my_ascii_string = ztd::text::decode(
 	     // input
 	     "",
-	     // to this encoding
-	     ztd::text::ascii);
+	     // for this encoding
+	     ztd::text::execution);
 
 	return 0;
 }
