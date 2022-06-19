@@ -43,7 +43,7 @@
 #include <ztd/idk/ebco.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
-#include <ztd/text/detail/transcode_one.hpp>
+#include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/prologue.hpp>
 

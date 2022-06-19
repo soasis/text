@@ -44,7 +44,7 @@
 #include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_one.hpp>
+#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 

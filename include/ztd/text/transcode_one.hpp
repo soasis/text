@@ -44,7 +44,7 @@
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/text_tag.hpp>
 #include <ztd/text/type_traits.hpp>
-#include <ztd/text/detail/transcode_one.hpp>
+#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>

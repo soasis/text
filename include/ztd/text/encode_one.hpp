@@ -44,7 +44,7 @@
 #include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_one.hpp>
+#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 
@@ -206,8 +206,8 @@ namespace ztd { namespace text {
 			_IntermediateValueType __intermediate_translation_buffer[__intermediate_buffer_max] {};
 
 			_Output __intermediate_initial_output(__intermediate_translation_buffer);
-			auto __result = encode_into(::std::forward<_Input>(__input), __encoding, __intermediate_initial_output,
-				::std::forward<_ErrorHandler>(__error_handler), __state);
+			auto __result = encode_one_into(::std::forward<_Input>(__input), __encoding,
+				__intermediate_initial_output, ::std::forward<_ErrorHandler>(__error_handler), __state);
 			_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());
 			ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
 			return __result;

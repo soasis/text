@@ -46,7 +46,7 @@
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/type_traits.hpp>
-#include <ztd/text/detail/transcode_one.hpp>
+#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 
 #include <ztd/ranges/unbounded.hpp>

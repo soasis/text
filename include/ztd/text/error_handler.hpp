@@ -50,7 +50,7 @@
 #include <ztd/text/pass_handler.hpp>
 #include <ztd/text/detail/pass_through_handler.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
-#include <ztd/text/detail/transcode_one.hpp>
+#include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/reconstruct.hpp>
