@@ -62,7 +62,7 @@ inline namespace ztd_text_tests_basic_run_time_transcode_one {
 			          to_encoding, ztd::text::replacement_handler);
 			REQUIRE(result0_output == independent_result0_output);
 			expected_it += result0_output.size();
-			source_it += result0.input.size();
+			source_it = std::move(result0.input.begin());
 		}
 		REQUIRE(source_it == source_last);
 		REQUIRE(expected_it == expected_last);
