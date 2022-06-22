@@ -42,7 +42,7 @@ inline namespace ztd_text_tests_basic_run_time_transcode_one {
 	     FromEncoding& from_encoding, ToEncoding& to_encoding, Source& source, Expected& expected) {
 		using OutChar                    = ztd::text::code_unit_t<ToEncoding>;
 		constexpr std::size_t MaxOutSize = ztd::text::max_code_units_v<ToEncoding>;
-		using Output                     = ztd::fixed_basic_string<OutChar, MaxOutSize>;
+		using Output                     = ztd::static_basic_string<OutChar, MaxOutSize>;
 		auto source_it                   = source.cbegin();
 		auto source_last                 = source.cend();
 		auto expected_it                 = expected.cbegin();

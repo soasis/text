@@ -49,7 +49,7 @@
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 
-#include <ztd/fixed_container.hpp>
+#include <ztd/static_containers.hpp>
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
@@ -294,13 +294,13 @@ namespace ztd { namespace text {
 			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
 			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
-			using _RealOutputContainer = ::ztd::fixed_basic_string<_OutputCodePoint, max_code_points_v<_UEncoding>>;
+			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, max_code_points_v<_UEncoding>>;
 			return __txt_detail::__decode_one_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::fixed_vector<_OutputCodePoint, max_code_points_v<_UEncoding>>, _OutputContainer>;
+				::ztd::static_vector<_OutputCodePoint, max_code_points_v<_UEncoding>>, _OutputContainer>;
 			return __txt_detail::__decode_one_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
@@ -418,13 +418,13 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::ztd::fixed_basic_string<_OutputCodePoint, max_code_points_v<_UEncoding>>;
+			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, max_code_points_v<_UEncoding>>;
 			return __txt_detail::__decode_one_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::fixed_vector<_OutputCodePoint, max_code_points_v<_UEncoding>>, _OutputContainer>;
+				::ztd::static_vector<_OutputCodePoint, max_code_points_v<_UEncoding>>, _OutputContainer>;
 			return __txt_detail::__decode_one_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
