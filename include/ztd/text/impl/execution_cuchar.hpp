@@ -53,10 +53,10 @@
 #include <ztd/idk/encoding_detection.hpp>
 #include <ztd/idk/detail/windows.hpp>
 
-#if (ZTD_IS_ON(ZTD_CUCHAR_I_) || ZTD_IS_ON(ZTD_UCHAR_I_)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS_I_)
+#if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 
 // clang-format off
-#if ZTD_IS_ON(ZTD_CUCHAR_I_)
+#if ZTD_IS_ON(ZTD_CUCHAR)
 	#include <cuchar>
 #else
 extern "C" {
@@ -248,7 +248,7 @@ namespace ztd { namespace text {
 						__s);
 				}
 
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 				auto __outit   = ranges::ranges_adl::adl_begin(__output);
 				auto __outlast = ranges::ranges_adl::adl_end(__output);
 
@@ -481,7 +481,7 @@ namespace ztd { namespace text {
 				}
 
 				code_unit __intermediary_input[max_code_units] {};
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_) && ZTD_IS_OFF(ZTD_COMPILER_MINGW_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS) && ZTD_IS_OFF(ZTD_COMPILER_MINGW)
 				__intermediary_input[0] = *__init;
 				ranges::advance(__init);
 				::std::size_t __state_count = 1;

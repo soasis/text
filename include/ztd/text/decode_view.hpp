@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 	/// @tparam _Encoding The encoding to read the underlying range of code points as.
 	/// @tparam _Range The range of input that will be fed into the _FromEncoding's decode operation.
 	/// @tparam _ErrorHandler The error handler for any encode-step failures.
-	/// @tparam _State The state type to use for the encode operations to intermediate code points.
+	/// @tparam _State The state type to use for the decode operations to intermediate code points.
 	///
 	/// @remarks The view presents code point one at a time, regardless of how many code points are output by one
 	/// decode operation. This means if, for example, four (4) UTF-8 code units becomes two (2) UTF-16 code points, it
@@ -230,7 +230,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_BORROWED_RANGE_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_BORROWED_RANGE)
 
 namespace std { namespace ranges {
 

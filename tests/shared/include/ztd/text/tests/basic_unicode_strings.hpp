@@ -43,7 +43,7 @@
 #include <ztd/idk/span.hpp>
 #include <ztd/tests/basic_unicode_strings.hpp>
 
-#if ZTD_IS_ON(ZTD_COMPILER_VCXX_I_)
+#if ZTD_IS_ON(ZTD_COMPILER_VCXX)
 #pragma warning(push)
 #pragma warning(disable : 4310)
 #endif
@@ -67,7 +67,7 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, ztd::uchar8_t>) {
 				return ztd::tests::u8_basic_source_character_set;
 			}
-#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T)
 			else if constexpr (std::is_same_v<CodeUnit, char8_t>) {
 				return ztd::tests::u8_basic_source_character_set;
 			}
@@ -128,7 +128,7 @@ namespace ztd { namespace text { namespace tests {
 			else if constexpr (std::is_same_v<CodeUnit, uchar8_t>) {
 				return ztd::tests::u8_unicode_sequence_truth_native_endian;
 			}
-#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T)
 			else if constexpr (std::is_same_v<CodeUnit, char8_t>) {
 				return ztd::tests::u8_unicode_sequence_truth_native_endian;
 			}
@@ -147,7 +147,7 @@ namespace ztd { namespace text { namespace tests {
 	}
 }}} // namespace ztd::text::tests
 
-#if ZTD_IS_ON(ZTD_COMPILER_VCXX_I_)
+#if ZTD_IS_ON(ZTD_COMPILER_VCXX)
 #pragma warning(pop)
 #endif
 

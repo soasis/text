@@ -38,7 +38,7 @@ inline namespace ztd_text_tests_basic_compile_time_count_as_decoded {
 
 	template <typename T>
 	static void delayed() {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 		// Basic Source Character Set, using defaults
 		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
 		static_assert(ztd::text::count_as_decoded(ztd::tests::basic_source_character_set).count
@@ -71,7 +71,7 @@ inline namespace ztd_text_tests_basic_compile_time_count_as_decoded {
 		     == ztd::tests::u32_basic_source_character_set.size());
 
 		// Larger unicode sequences, using defaults
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 		// Basic Source Character Set, using defaults
 		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
 		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {

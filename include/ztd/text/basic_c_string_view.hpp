@@ -106,7 +106,7 @@ namespace ztd { namespace text {
 		}
 
 		constexpr basic_c_string_view(const_iterator __arg0, const_iterator __arg1) noexcept
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS)
 		: __base_t(__arg0 == __arg1 ? empty_string<_CharType>() : ::std::addressof(*__arg0),
 			::std::distance(__arg0, __arg1)) {
 #else
@@ -252,11 +252,11 @@ namespace ztd { namespace text {
 		using __base_t::compare;
 
 		using __base_t::copy;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_STARTS_ENDS_WITH_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_STARTS_ENDS_WITH)
 		using __base_t::ends_with;
 		using __base_t::starts_with;
 #endif
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_STRING_CONTAINS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_STRING_CONTAINS)
 		using __base_t::contains;
 #endif
 
@@ -291,7 +291,7 @@ namespace ztd { namespace text {
 			::std::in_place_type_t<basic_c_string_view>, _It __iterator, _Sen __sentinel) noexcept {
 			using _SizeType = typename __base_t::size_type;
 			if constexpr (!::std::is_integral_v<_Sen>) {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS)
 				if (__iterator == __sentinel) {
 					const auto& __empty_str = empty_string<value_type>();
 					return __base_t(__empty_str + 0, 0);
@@ -300,7 +300,7 @@ namespace ztd { namespace text {
 				return __base_t(::std::addressof(*__iterator), static_cast<_SizeType>(__sentinel - __iterator));
 			}
 			else {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS)
 				if (static_cast<_SizeType>(__sentinel) == static_cast<_SizeType>(0)) {
 					const auto& __empty_str = empty_string<value_type>();
 					return __base_t(__empty_str + 0, 0);
@@ -314,7 +314,7 @@ namespace ztd { namespace text {
 		friend constexpr basic_c_string_view tag_invoke(ztd::tag_t<::ztd::ranges::reconstruct>,
 			::std::in_place_type_t<basic_c_string_view>, _It __iterator, sentinel __sentinel) {
 			using _SizeType = typename __base_t::size_type;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS)
 			if (__iterator == __sentinel) {
 				const auto& __empty_str = empty_string<value_type>();
 				return __base_t(__empty_str + 0, 0);

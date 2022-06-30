@@ -67,7 +67,7 @@ namespace ztd { namespace text {
 
 			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {
 				char __ghost_space[MB_LEN_MAX];
-#if ZTD_IS_ON(ZTD_LIBVCXX_I_)
+#if ZTD_IS_ON(ZTD_LIBVCXX)
 				::std::size_t __init_result {};
 				errno_t err = wcrtomb_s(&__init_result, __ghost_space, MB_LEN_MAX, L'\0', &__wide_state);
 				ZTD_TEXT_ASSERT_I_(err == 0);
@@ -383,7 +383,7 @@ namespace ztd { namespace text {
 					const code_unit& __unit = __units[__units_count];
 					++__units_count;
 					ranges::advance(__init);
-#if ZTD_IS_ON(ZTD_LIBVCXX_I_)
+#if ZTD_IS_ON(ZTD_LIBVCXX)
 					::std::size_t __res;
 					errno_t __err = wcrtomb_s(::std::addressof(__res), __intermediate_buffer, __state_max, __unit,
 						::std::addressof(__s.__wide_state));

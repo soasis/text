@@ -37,7 +37,7 @@
 
 #include <ztd/ranges/range.hpp>
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 #include <ranges>
 #endif
 
@@ -49,7 +49,7 @@ namespace ztd { namespace ranges {
 	namespace __rng_detail {
 		template <typename _Ty>
 		inline constexpr bool __enable_view
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 			::std::ranges::enable_view<_Ty>
 #else
 			= false

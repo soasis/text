@@ -44,7 +44,7 @@
 #include <type_traits>
 #include <utility>
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 #include <ranges>
 #endif
 
@@ -53,7 +53,7 @@
 namespace ztd { namespace ranges {
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_OPEN_I_
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 	template <typename _Range>
 	using range_iterator_t = ::std::ranges::iterator_t<_Range>;
 

@@ -46,7 +46,7 @@
 #include <type_traits>
 #include <utility>
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 #include <ranges>
 #endif
 
@@ -231,7 +231,7 @@ namespace ztd { namespace ranges {
 	template <typename _It>
 	inline constexpr bool is_iterator_contiguous_iterator_v = ::ztd::__idk_detail::__mark_contiguous_v<_It>
 		|| (
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONTIGUOUS_ITERATOR_TAG)
 			is_iterator_concept_or_better_v<contiguous_iterator_tag, _It>)
 		|| (is_iterator_concept_or_better_v<contiguous_iterator_tag, _It> &&
 #else

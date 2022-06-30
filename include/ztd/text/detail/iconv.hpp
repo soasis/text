@@ -38,13 +38,13 @@
 #include <ztd/idk/detail/windows.hpp>
 #include <ztd/idk/detail/posix.hpp>
 
-#if ZTD_IS_ON(ZTD_LIBICONV_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV)
 
-#if ZTD_IS_ON(ZTD_ICONV_H_I_)
+#if ZTD_IS_ON(ZTD_ICONV_H)
 #include <iconv.h>
-#elif ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
-#if ZTD_IS_ON(ZTD_PLATFORM_POSIX_I_)
-#elif ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+#elif ZTD_IS_ON(ZTD_LIBICONV_LOAD)
+#if ZTD_IS_ON(ZTD_PLATFORM_POSIX)
+#elif ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 // taken care of above
 #else
 #error "[ztd.text] Cannot find a runtime loading mechanism to use for this platform!"
@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail { namespace __iconv {
 
-#if ZTD_IS_ON(ZTD_ICONV_H_I_)
+#if ZTD_IS_ON(ZTD_ICONV_H)
 		using __descriptor = iconv_t;
 #else
 		using __descriptor = void*;
@@ -81,12 +81,12 @@ namespace ztd { namespace text {
 			: __convert(nullptr)
 			, __open(nullptr)
 			, __close(nullptr)
-#if ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV_LOAD)
 			, _M_handle(nullptr)
 #endif
 			{
-#if ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
-#if ZTD_IS_ON(ZTD_PLATFORM_POSIX_I_) && ZTD_IS_ON(ZTD_DLFCN_H_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV_LOAD)
+#if ZTD_IS_ON(ZTD_PLATFORM_POSIX) && ZTD_IS_ON(ZTD_DLFCN_H)
 				constexpr ::std::array<const char*, 6> __lib_names { { "libiconv.so", "iconv.so", "libiconv",
 					"iconv", "iconv.dll", "libiconv.dll", "libc.so", "libc" } };
 				for (::std::size_t __index = 0; __index < std::size(__lib_names); ++__index) {
@@ -153,14 +153,14 @@ namespace ztd { namespace text {
 
 			bool is_valid() const noexcept {
 				return this->__convert != nullptr && this->__open != nullptr && this->__close != nullptr
-#if ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV_LOAD)
 					&& this->_M_handle != nullptr
 #endif
 					;
 			}
 
 			~__startup() {
-#if ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV_LOAD)
 				if (this->_M_handle != nullptr) {
 					dlclose(this->_M_handle);
 				}
@@ -168,7 +168,7 @@ namespace ztd { namespace text {
 			}
 
 		private:
-#if ZTD_IS_ON(ZTD_LIBICONV_LOAD_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV_LOAD)
 			void* _M_handle;
 #endif
 		};

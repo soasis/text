@@ -39,6 +39,7 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/normalization.hpp>
+#include <ztd/text/normalized_view.hpp>
 #include <ztd/text/decode_view.hpp>
 #include <ztd/text/state.hpp>
 
@@ -66,7 +67,9 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
 		typename _Range        = ::std::basic_string_view<code_unit_t<_Encoding>>,
-		typename _ErrorHandler = default_handler_t>
+		typename _ErrorHandler = default_handler_t,                        // cf-hack
+		typename _State        = decode_state_t<remove_cvref_t<_Encoding>> // cf-hack
+		>
 	class basic_text_view {
 	public:
 		//////
@@ -77,7 +80,7 @@ namespace ztd { namespace text {
 		using encoding_type = _Encoding;
 		//////
 		/// @brief The encoding type that this view is using to interpret the underlying sequence of code units.
-		using state_type = encode_state_t<_Encoding>;
+		using state_type = remove_cvref_t<_State>;
 		//////
 		/// @brief The normalization form type this view is imposing on top of the encoded sequence.
 		using normalization_type = _NormalizationForm;
@@ -87,10 +90,13 @@ namespace ztd { namespace text {
 
 	private:
 		template <typename, typename, typename, typename>
-		friend class basic_text;
+		friend class ztd::text::basic_text;
 
 		template <typename _ViewErrorHandler = error_handler_type>
 		using _CodePointView = decode_view<encoding_type, range_type, remove_cvref_t<_ViewErrorHandler>, state_type>;
+
+		template <typename _ViewErrorHandler = error_handler_type>
+		using _NormalizedView = normalized_view<_CodePointView<_ViewErrorHandler>>;
 
 		range_type _M_storage;
 		encoding_type _M_encoding;

@@ -54,7 +54,7 @@ namespace ztd { namespace ranges {
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __rng_detail {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 		template <typename _InItOrRange, typename _OutItOrRange>
 		using __in_out_result = ::std::ranges::in_out_result<_InItOrRange, _OutItOrRange>;
 #else
@@ -91,7 +91,7 @@ namespace ztd { namespace ranges {
 		template <typename _Iterator0, typename _Sentinel0, typename _Iterator1, typename _Sentinel1>
 		constexpr bool __equal(_Iterator0 __first0, _Sentinel0 __last0, _Iterator1 __first1, _Sentinel1 __last1) {
 			// std lib does not take differing sentinels, which is kind of shitty tbh
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 			return ::std::ranges::equal(
 				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
 #else
@@ -116,7 +116,7 @@ namespace ztd { namespace ranges {
 
 		template <typename _Iterator0, typename _Iterator1>
 		constexpr _Iterator0 __reverse(_Iterator0 __first, _Iterator1 __last) noexcept {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 			return ::std::ranges::reverse(::std::move(__first), ::std::move(__last));
 #else
 			if (__first == __last) {
@@ -171,7 +171,7 @@ namespace ztd { namespace ranges {
 			using _InRange    = subrange<_ResultInIt, default_sentinel_t>;
 			using _OutRange   = unbounded_view<_OutFirst>;
 			using _Result     = __in_out_result<_InRange, _OutRange>;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 			if (!::std::is_constant_evaluated())
 #else
 			if (false)
@@ -205,7 +205,7 @@ namespace ztd { namespace ranges {
 			using _InRange  = subrange<_First, _Last>;
 			using _OutRange = unbounded_view<_OutFirst>;
 			using _Result   = __in_out_result<_InRange, _OutRange>;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 			if (!::std::is_constant_evaluated())
 #else
 			if (false)
@@ -239,7 +239,7 @@ namespace ztd { namespace ranges {
 			using _InRange  = subrange<counted_iterator<_First>, default_sentinel_t>;
 			using _OutRange = subrange<counted_iterator<_OutFirst>, default_sentinel_t>;
 			using _Result   = __in_out_result<_InRange, _OutRange>;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 			if (!::std::is_constant_evaluated())
 #else
 			if (false)
@@ -283,7 +283,7 @@ namespace ztd { namespace ranges {
 			using _InRange  = subrange<_First, _Last>;
 			using _OutRange = subrange<_OutFirst, _OutLast>;
 			using _Result   = __in_out_result<_InRange, _OutRange>;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 			if (!::std::is_constant_evaluated())
 #else
 			if (false)
@@ -339,11 +339,11 @@ namespace ztd { namespace ranges {
 
 		template <typename _First0, typename _Last0, typename _First1, typename _Last1>
 		constexpr bool __lexicographical_compare(_First0 __first0, _Last0 __last0, _First1 __first1, _Last1 __last1) {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS) && ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 			return ::std::ranges::lexicographical_compare(
 				::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));
 #else
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_CONSTEXPR_ALGORITHMS)
 			if constexpr (::std::is_same_v<_First0, _Last0> && ::std::is_same_v<_First1, _Last1>) {
 				return ::std::lexicographical_compare(
 					::std::move(__first0), ::std::move(__last0), ::std::move(__first1), ::std::move(__last1));

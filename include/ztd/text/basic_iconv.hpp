@@ -63,7 +63,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-#if ZTD_IS_ON(ZTD_LIBICONV_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV)
 	namespace __txt_detail {
 		class __iconv_base {
 		public:
@@ -76,7 +76,7 @@ namespace ztd { namespace text {
 #endif
 
 	namespace __impl {
-#if ZTD_IS_ON(ZTD_LIBICONV_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV)
 		//////
 		/// @brief An encoding which wraps the iconv library.
 		///
@@ -676,7 +676,7 @@ namespace ztd { namespace text {
 	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	using basic_iconv =
-#if ZTD_IS_ON(ZTD_LIBICONV_I_)
+#if ZTD_IS_ON(ZTD_LIBICONV)
 		__impl::__basic_iconv<_CodeUnit, _CodePoint>
 #else
 		__impl::__basic_iconv_no<_CodeUnit, _CodePoint>

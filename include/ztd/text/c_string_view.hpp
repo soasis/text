@@ -74,7 +74,7 @@ namespace ztd { namespace text {
 			return wc_string_view(__str, __len);
 		}
 
-#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T)
 		//////
 		/// @brief A literal suffix to obtain a ztd::text::u8c_string_view from a `u8`"abc" string literal.
 		inline constexpr u8c_string_view operator"" _u8csv(const char8_t* __str, size_t __len) noexcept {

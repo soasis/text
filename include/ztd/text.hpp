@@ -57,6 +57,9 @@
 #include <ztd/text/decode_view.hpp>
 #include <ztd/text/transcode_view.hpp>
 
+#include <ztd/text/normalization.hpp>
+#include <ztd/text/normalized_view.hpp>
+
 #include <ztd/text/text_view.hpp>
 #include <ztd/text/text.hpp>
 

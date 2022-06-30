@@ -46,6 +46,11 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
+	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	/// @{
+	//////
+
+	//////
 	/// @brief The encode sentinel to use as the `end` value for a ztd::text::encode_iterator.
 	using encode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
@@ -208,6 +213,9 @@ namespace ztd { namespace text {
 		/// @brief Move assignment operator. Defaulted.
 		constexpr encode_iterator& operator=(encode_iterator&&) = default;
 	};
+
+	//////
+	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

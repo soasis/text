@@ -364,7 +364,7 @@ namespace ztd { namespace text {
 	constexpr auto count_as_transcoded(_Input&& __input, _ToEncoding&& __to_encoding) {
 		using _UInput   = remove_cvref_t<_Input>;
 		using _CodeUnit = remove_cvref_t<ranges::range_value_type_t<_UInput>>;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 		if (::std::is_constant_evaluated()) {
 			// Use literal encoding instead, if we meet the right criteria
 			using _FromEncoding = default_consteval_code_unit_encoding_t<_CodeUnit>;

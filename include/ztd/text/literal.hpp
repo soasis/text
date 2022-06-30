@@ -145,12 +145,12 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
-#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_I_) \
-     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME) \
+     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT)
 			static_assert(always_false_v<_Input>,
 				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("string literal", "literal_t", ""));
 #endif
-#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT)
 			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, ::ztd::text::basic_no_encoding>,
 				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
 				     ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_(), ""));
@@ -182,12 +182,12 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {
-#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_I_) \
-     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_CXX_COMPILE_TIME_ENCODING_NAME) \
+     && ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT)
 			static_assert(always_false_v<_Input>,
 				ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_("string literal", "literal_t", ""));
 #endif
-#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_)
+#if ZTD_IS_OFF(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT)
 			static_assert(always_true_v<_Input> && !is_specialization_of_v<__base_t, ::ztd::text::basic_no_encoding>,
 				ZTD_TEXT_UNIMPLEMENTED_LITERAL_ENCODING_MESSAGE_I_(
 				     ZTD_CXX_COMPILE_TIME_ENCODING_NAME_DESCRIPTION_I_(), ""));

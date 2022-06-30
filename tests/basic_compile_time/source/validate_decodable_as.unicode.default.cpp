@@ -39,7 +39,7 @@ inline namespace ztd_text_tests_basic_compile_time_validate_decodable_as_unicode
 	template <typename T>
 	static void delayed() {
 		// Larger unicode sequences, using defaults
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 		// Unicode sequences, using defaults
 		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
 		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {

@@ -759,7 +759,7 @@ namespace ztd { namespace text {
 	/// time. Without configuration, it defaults to the ztd::text::replacement_handler_t.
 	//////
 	class default_handler_t
-#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
 	: private throw_handler_t {
 	private:
 		using __error_handler_base_t = throw_handler_t;

@@ -49,7 +49,7 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
 
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 
 #include <iterator>
 #include <utility>

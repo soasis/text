@@ -35,7 +35,7 @@
 
 #include <ztd/ranges/version.hpp>
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 #include <ranges>
 #endif
 
@@ -44,7 +44,7 @@
 namespace ztd { namespace ranges {
 	ZTD_RANGES_INLINE_ABI_NAMESPACE_OPEN_I_
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 	//////
 	/// @brief A sentinel that cannot compare equal to any other iterator and thus results in infinitely long ranges.
 	using default_sentinel_t = ::std::default_sentinel_t;

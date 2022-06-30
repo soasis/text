@@ -31,7 +31,7 @@
 #include <ztd/text/transcode_view.hpp>
 #include <ztd/text/encoding.hpp>
 
-#if ZTD_IS_ON(ZTD_LIBSTDCXX_I_)
+#if ZTD_IS_ON(ZTD_LIBSTDCXX)
 
 // libstdc++ (gcc) has a rope class!
 

@@ -70,26 +70,26 @@ namespace ztd { namespace text {
 						::std::conditional_t<::std::is_same_v<_Type, signed char>, basic_ascii<signed char>,
 							::std::conditional_t<::std::is_same_v<_Type, uchar8_t>, utf8_t,
 								::std::conditional_t<::std::is_same_v<_Type, unsigned char>, basic_utf8<unsigned char>,
-#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T)
 									::std::conditional_t<::std::is_same_v<_Type, char8_t>, basic_utf8<char8_t>,
 #endif
 										::std::conditional_t<::std::is_same_v<_Type, char16_t>, utf16_t,
 											::std::conditional_t<::std::is_same_v<_Type, char32_t>, utf32_t,
-#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE)
 												::std::conditional_t<::std::is_same_v<_Type, unicode_code_point>, basic_utf32<unicode_code_point>,
 #endif
-#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE)
 													::std::conditional_t<::std::is_same_v<_Type, unicode_scalar_value>, basic_utf32<unicode_scalar_value>,
 #endif
 														::std::conditional_t<::std::is_same_v<_Type, ::std::byte>, encoding_scheme<utf8_t, endian::native, ::std::byte>, basic_no_encoding<_Type, unicode_code_point>>
-#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE)
 													>
 #endif
-#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE)
 												>
 #endif
 											>
-#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T_I_)
+#if ZTD_IS_ON(ZTD_NATIVE_CHAR8_T)
 										>
 #endif
 									>

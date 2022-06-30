@@ -44,7 +44,7 @@
 #include <iterator>
 #include <utility>
 
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 #include <ranges>
 #endif
 
@@ -86,7 +86,7 @@ namespace ztd { namespace ranges {
 
 			template <typename _It2, ::std::enable_if_t<::std::is_convertible_v<_It2, iterator_type>>* = nullptr>
 			constexpr __counted_iterator(const __counted_iterator<_It2>& __from) noexcept(
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_NOTHROW_CONVERTIBLE_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_NOTHROW_CONVERTIBLE)
 				::std::is_nothrow_convertible_v<const _It2&, iterator_type>
 #else
 				noexcept(static_cast<iterator_type>(::std::declval<const _It2&>()))
@@ -97,7 +97,7 @@ namespace ztd { namespace ranges {
 
 			template <typename _It2, ::std::enable_if_t<::std::is_convertible_v<_It2, iterator_type>>* = nullptr>
 			constexpr __counted_iterator(__counted_iterator<_It2>&& __from) noexcept(
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_NOTHROW_CONVERTIBLE_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_NOTHROW_CONVERTIBLE)
 				::std::is_nothrow_convertible_v<_It2&&, iterator_type>
 #else
 				noexcept(static_cast<iterator_type>(::std::declval<_It2&&>()))
@@ -279,7 +279,7 @@ namespace ztd { namespace ranges {
 	//////
 	template <typename _It>
 	using counted_iterator =
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_RANGES)
 		::std::counted_iterator<_It>;
 #else
 		__rng_detail::__counted_iterator<_It>;

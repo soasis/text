@@ -86,7 +86,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding>
 		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler_t>
-#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
 		: public __decode_error_handler_always_returns_ok<_Encoding, throw_handler_t> {
 		};
 #else
@@ -117,7 +117,7 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding>
 		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler_t>
-#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_)
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
 		: public __encode_error_handler_always_returns_ok<_Encoding, throw_handler_t> {
 		};
 #else

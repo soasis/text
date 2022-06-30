@@ -62,11 +62,11 @@ namespace ztd { namespace text {
 	/// do UTF-32 conversions where possible as well, relying on C Standard definitions.
 	//////
 	using wide_execution_t =
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS_I_)
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 		__txt_impl::__wide_execution_windows
-#elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE_I_)
+#elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE)
 		__txt_impl::__wide_execution_iso10646
-#elif ZTD_IS_ON(ZTD_LIBICONV_I_)
+#elif ZTD_IS_ON(ZTD_LIBICONV)
 		__txt_impl::__wide_execution_iconv
 #else
 		__txt_impl::__wide_execution_cwchar

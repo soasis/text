@@ -208,7 +208,7 @@ namespace ztd { namespace hijack {
 		using _SizeType = typename ::std::basic_string_view<_Ty, _Traits>::size_type;
 		if constexpr (!::std::is_integral_v<_Sen>) {
 			_SizeType __ptr_size = static_cast<_SizeType>(__sentinel - __iterator);
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS)
 			if (__ptr_size == static_cast<_SizeType>(0)) {
 				const auto& __empty_str = empty_string<_Ty>();
 				return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);
@@ -217,7 +217,7 @@ namespace ztd { namespace hijack {
 			return ::std::basic_string_view<_Ty, _Traits>(::ztd::idk_adl::adl_to_address(__iterator), __ptr_size);
 		}
 		else {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_DEBUG_ITERATORS)
 			if (static_cast<_SizeType>(__sentinel) == static_cast<_SizeType>(0)) {
 				const auto& __empty_str = empty_string<_Ty>();
 				return ::std::basic_string_view<_Ty, _Traits>(__empty_str + 0, 0);

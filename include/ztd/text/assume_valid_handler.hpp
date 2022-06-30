@@ -37,7 +37,7 @@
 
 #include <ztd/text/assert.hpp>
 
-#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
+#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION)
 #include <cstdlib>
 #endif
 
@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 		/// it cannot ignore it. See ztd::text::assume_valid_handler_t for details.
 		//////
 		using assume_valid = ::std::integral_constant<bool,
-#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
+#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION)
 			true
 #else
 			false
@@ -77,7 +77,7 @@ namespace ztd { namespace text {
 		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(
 			const _Encoding&, _Result __result, const _InputProgress&, const _OutputProgress&) const {
-#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION_I_)
+#if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION)
 			ZTD_TEXT_ASSERT_MESSAGE_I_(
 				"You have invoked the ztd::text::assume_valid handler, and tripped undefined behavior. This means "
 				"you violated the covenant between you, the compiler, this library, and every piece of code that "

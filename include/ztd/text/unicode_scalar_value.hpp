@@ -72,7 +72,7 @@ namespace ztd { namespace text {
 			/// @remarks
 			//////
 			constexpr __unicode_scalar_value(char32_t __code_point) noexcept : _M_scalar(__code_point) {
-#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT)
 				if (__ztd_idk_detail_is_surrogate(this->_M_scalar)
 					|| (this->_M_scalar > __ztd_idk_detail_last_unicode_code_point)) {
 					::std::abort();
@@ -146,7 +146,7 @@ namespace ztd { namespace text {
 		}
 	} // namespace __txt_impl
 
-#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE_I_)
+#if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE)
 	using unicode_scalar_value = __txt_impl::__unicode_scalar_value;
 #else
 	using unicode_scalar_value = char32_t;

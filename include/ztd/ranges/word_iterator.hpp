@@ -174,7 +174,7 @@ namespace ztd { namespace ranges {
 				__base_value_type __write_storage[__base_values_per_word] {};
 				auto __write_storage_first = __write_storage + 0;
 				auto __write_storage_last  = __write_storage + __base_values_per_word;
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 				if (!::std::is_constant_evaluated()) {
 					// just memcpy the data
 					::std::memcpy(__write_storage, ::std::addressof(__val), sizeof(value_type));
@@ -255,7 +255,7 @@ namespace ztd { namespace ranges {
 						__rng_detail::__reverse(__read_storage_first, __read_storage_last);
 					}
 				}
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED_I_)
+#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
 				if (!::std::is_constant_evaluated())
 #else
 				if (false)
