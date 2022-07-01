@@ -65,20 +65,31 @@ namespace ztd { namespace text {
 		using range_type = _Range;
 		//////
 		/// @brief The encoding type used for transformations.
-		using normalization_form = _NormalizationFOrm;
+		using normalization_form = _NormalizationForm;
 
+		//////
+		/// @brief Constructs with the given `__normalization_form`.
+		///
+		/// @param[in] __normalization_form The normalization form object to use for this iterator.
+		//////
 		constexpr normalized_view(normalization_form __normalization_form) noexcept(
 			::std::is_nothrow_constructible_v<iterator, normalization_form>)
 		: _M_it(::std::move(__normalization_form)) {
 		}
 
+		//////
+		/// @brief Constructs with the given `__normalization_form`.
+		///
+		/// @param[in] __normalization_form The normalization form object to use for this iterator.
+		/// @param[in] __range The range this normalization iterator will walk over.
+		//////
 		constexpr normalized_view(normalization_form __normalization_form, range_type __range) noexcept(
 			::std::is_nothrow_constructible_v<iterator, normalization_form, range_type>)
 		: _M_it(::std::move(__normalization_form), ::std::move(__range)) {
 		}
 
 		//////
-		/// @brief Constructs an encoding_view from one of its iterators, reconstituting the range.
+		/// @brief Constructs from one of its iterators, reconstituting the range.
 		///
 		/// @param[in] __it A previously-made normalized_view iterator.
 		//////

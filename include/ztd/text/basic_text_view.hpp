@@ -96,7 +96,7 @@ namespace ztd { namespace text {
 		using _CodePointView = decode_view<encoding_type, range_type, remove_cvref_t<_ViewErrorHandler>, state_type>;
 
 		template <typename _ViewErrorHandler = error_handler_type>
-		using _NormalizedView = normalized_view<_CodePointView<_ViewErrorHandler>>;
+		using _NormalizedView = normalized_view<_NormalizationForm, _CodePointView<_ViewErrorHandler>>;
 
 		range_type _M_storage;
 		encoding_type _M_encoding;
