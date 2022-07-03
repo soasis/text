@@ -52,7 +52,7 @@
 // clang-format on
 
 #define ZTD_TEXT_ASSERT(...) ZTD_TEXT_ASSERT_I_(__VA_ARGS__)
-#define ZTD_TEXT_ASSERT_MESSAGE(...) ZTD_TEXT_ASSERT_MESSAGE_I_(__VA_ARGS__)
+#define ZTD_TEXT_ASSERT_MESSAGE(_MESSAGE, ...) ZTD_TEXT_ASSERT_MESSAGE_I_(_MESSAGE, __VA_ARGS__)
 
 #include <ztd/epilogue.hpp>
 

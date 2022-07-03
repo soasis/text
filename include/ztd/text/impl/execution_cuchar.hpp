@@ -43,7 +43,6 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/assert.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
@@ -51,6 +50,7 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/encoding_detection.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/detail/windows.hpp>
 
 #if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)

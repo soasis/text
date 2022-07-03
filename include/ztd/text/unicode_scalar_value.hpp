@@ -35,10 +35,10 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/assert.hpp>
 
 #include <ztd/ranges/algorithm.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/detail/unicode.hpp>
 
 #include <string>

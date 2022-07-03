@@ -36,7 +36,8 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/type_traits.hpp>
+
+#include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
 

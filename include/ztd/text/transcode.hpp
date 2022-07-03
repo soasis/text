@@ -44,7 +44,7 @@
 #include <ztd/text/transcode_result.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/text_tag.hpp>
-#include <ztd/text/type_traits.hpp>
+#include <ztd/text/char_traits.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_extension_points.hpp>
@@ -53,6 +53,7 @@
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>

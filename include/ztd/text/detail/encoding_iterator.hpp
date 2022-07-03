@@ -39,12 +39,12 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/idk/ebco.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/subrange.hpp>
 #include <ztd/ranges/default_sentinel.hpp>

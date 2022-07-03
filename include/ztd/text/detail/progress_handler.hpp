@@ -37,12 +37,12 @@
 
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/decode_result.hpp>
 #include <ztd/text/encode_result.hpp>
 
 #include <ztd/ranges/algorithm.hpp>
 #include <ztd/idk/ebco.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <utility>
 #include <array>

@@ -41,7 +41,6 @@
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/no_encoding.hpp>
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/c_string_view.hpp>
 #include <ztd/text/iconv_names.hpp>
 #include <ztd/text/detail/iconv.hpp>
@@ -49,6 +48,7 @@
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/endian.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/algorithm.hpp>

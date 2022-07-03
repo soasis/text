@@ -43,9 +43,7 @@
 #include <ztd/text/is_code_points_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 
-#include <ztd/text/type_traits.hpp>
-
-#include <type_traits>
+#include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
 

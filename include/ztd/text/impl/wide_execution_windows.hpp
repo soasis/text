@@ -43,11 +43,11 @@
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
 
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 

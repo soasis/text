@@ -54,13 +54,13 @@
 #include <ztd/text/count_as_encoded.hpp>
 #include <ztd/text/count_as_decoded.hpp>
 #include <ztd/text/text_tag.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/idk/ebco.hpp>
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <cstdint>
 #include <cstddef>

@@ -37,7 +37,7 @@
 
 #include <ztd/text/code_unit.hpp>
 
-#include <ztd/text/type_traits.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <type_traits>
 

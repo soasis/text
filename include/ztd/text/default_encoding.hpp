@@ -44,11 +44,10 @@
 #include <ztd/text/utf32.hpp>
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/no_encoding.hpp>
-
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/unicode_scalar_value.hpp>
 
-#include <ztd/text/type_traits.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <cstdint>
 

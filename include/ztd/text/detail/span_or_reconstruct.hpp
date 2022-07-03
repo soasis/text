@@ -35,6 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/char_traits.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/ranges/adl.hpp>
@@ -55,9 +56,9 @@ namespace ztd { namespace text {
 			if constexpr (is_specialization_of_v<_UInput, ::std::basic_string_view> || ::ztd::is_span_v<_UInput>) {
 				return true;
 			}
-			else if constexpr (::std::is_array_v<_UInput> // cf-hack
+			else if constexpr (::std::is_array_v<_UInput> // cf
 				&& ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<_CVInput>>) {
-				using _Ty  = ::ztd::ranges::range_value_type_t<_UInput>;
+				using _Ty  = ::ztd::ranges::range_value_type_t<_CVInput>;
 				using _Tag = ::std::in_place_type_t<::ztd::span<_Ty>>;
 				return ::ztd::ranges::__rng_detail::__is_cascade_range_reconstruct_noexcept<_Tag, _Input>();
 			}
@@ -71,7 +72,7 @@ namespace ztd { namespace text {
 		constexpr bool __string_view_or_span_or_reconstruct_noexcept() {
 			using _CVInput = ::std::remove_reference_t<_Input>;
 			using _UInput  = remove_cvref_t<_Input>;
-			if constexpr (::std::is_array_v<_UInput> // cf-hack
+			if constexpr (::std::is_array_v<_UInput> // cf
 				&& ::std::is_const_v<::std::remove_extent_t<_CVInput>> && ::std::is_lvalue_reference_v<_Input>) {
 				using _CharTy = ::std::remove_extent_t<_UInput>;
 				if constexpr (is_char_traitable_v<_CharTy>) {
@@ -92,19 +93,19 @@ namespace ztd { namespace text {
 
 		template <typename _Input>
 		constexpr auto __span_or_reconstruct(_Input&& __input) noexcept(__span_or_reconstruct_noexcept<_Input>()) {
-			using _VInput = ::std::remove_reference_t<_Input>;
-			using _UInput = remove_cvref_t<_Input>;
+			using _CVInput = ::std::remove_reference_t<_Input>;
+			using _UInput  = remove_cvref_t<_Input>;
 			if constexpr (is_specialization_of_v<_UInput, ::std::basic_string_view> || ::ztd::is_span_v<_UInput>) {
 				return __input;
 			}
-			else if constexpr (::std::is_array_v<_UInput> // cf-hack
-				&& ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<_VInput>>) {
-				using _Ty = ::std::remove_reference_t<::ztd::ranges::range_reference_t<_VInput>>;
+			else if constexpr (::std::is_array_v<_UInput> // cf
+				&& ranges::is_iterator_contiguous_iterator_v<ranges::range_iterator_t<_CVInput>>) {
+				using _Ty = ::std::remove_reference_t<::ztd::ranges::range_reference_t<_CVInput>>;
 				return ::ztd::ranges::reconstruct(
 					::std::in_place_type<::ztd::span<_Ty>>, ::std::forward<_Input>(__input));
 			}
 			else {
-				return ::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::forward<_Input>(__input));
+				return ::ztd::ranges::reconstruct(::std::in_place_type<_CVInput>, ::std::forward<_Input>(__input));
 			}
 		}
 
@@ -114,7 +115,7 @@ namespace ztd { namespace text {
 			using _CVInput = ::std::remove_reference_t<_Input>;
 			using _UInput  = remove_cvref_t<_Input>;
 			// try to catch string literal_ts / arrays
-			if constexpr (::std::is_array_v<_UInput> // cf-hack
+			if constexpr (::std::is_array_v<_UInput> // cf
 				&& ::std::is_const_v<::std::remove_extent_t<_CVInput>> && ::std::is_lvalue_reference_v<_Input>) {
 				using _CharTy = ::std::remove_extent_t<_UInput>;
 				if constexpr (is_char_traitable_v<_CharTy>) {

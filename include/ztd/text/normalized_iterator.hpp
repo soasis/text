@@ -84,7 +84,7 @@ namespace ztd { namespace text {
 		/// @param[in] __normalization_form The normalization form object to use for this iterator.
 		//////
 		constexpr normalized_iterator(_NormalizationForm __normalization_form) noexcept(
-			::std::is_nothrow_move_constructible_v<_NormalizationForm> // cf-hack
+			::std::is_nothrow_move_constructible_v<_NormalizationForm> // cf
 			     && ::std::is_nothrow_default_constructible_v<_Range>)
 		: __base_normalization_form(::std::move(__normalization_form)), __base_range() {
 		}
@@ -96,7 +96,7 @@ namespace ztd { namespace text {
 		/// @param[in] __range The range this normalization iterator will walk over.
 		//////
 		constexpr normalized_iterator(_NormalizationForm __normalization_form, _Range __range) noexcept(
-			::std::is_nothrow_move_constructible_v<_NormalizationForm> // cf-hack
+			::std::is_nothrow_move_constructible_v<_NormalizationForm> // cf
 			     && ::std::is_nothrow_move_constructible_v<_Range>)
 		: __base_normalization_form(::std::move(__normalization_form)), __base_range(::std::move(__range)) {
 		}

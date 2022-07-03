@@ -50,6 +50,9 @@ namespace ztd { namespace text {
 	using c_string_view = basic_c_string_view<char>;
 	//////
 	/// @brief A basic_c_string_view for a `wchar_t` sequence.
+	using nc_string_view = basic_c_string_view<char>;
+	//////
+	/// @brief A basic_c_string_view for a `wchar_t` sequence.
 	using wc_string_view = basic_c_string_view<wchar_t>;
 	//////
 	/// @brief A basic_c_string_view for a `char8_t` sequence.
@@ -66,6 +69,12 @@ namespace ztd { namespace text {
 		/// @brief A literal suffix to obtain a ztd::text::c_string_view from a @c "abc" string literal.
 		inline constexpr c_string_view operator"" _csv(const char* __str, size_t __len) noexcept {
 			return c_string_view(__str, __len);
+		}
+
+		//////
+		/// @brief A literal suffix to obtain a ztd::text::c_string_view from a @c "abc" string literal.
+		inline constexpr nc_string_view operator"" _ncsv(const char* __str, size_t __len) noexcept {
+			return nc_string_view(__str, __len);
 		}
 
 		//////

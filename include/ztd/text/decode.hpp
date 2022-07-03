@@ -42,15 +42,16 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/text_tag.hpp>
+#include <ztd/text/char_traits.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 
-#include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
+#include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>

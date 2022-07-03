@@ -39,8 +39,8 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/text_tag.hpp>
-#include <ztd/text/type_traits.hpp>
 
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/iterator.hpp>
 

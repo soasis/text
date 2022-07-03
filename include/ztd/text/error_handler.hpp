@@ -44,7 +44,6 @@
 #include <ztd/text/is_code_points_replaceable.hpp>
 #include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/assume_valid_handler.hpp>
 #include <ztd/text/throw_handler.hpp>
 #include <ztd/text/pass_handler.hpp>
@@ -55,6 +54,7 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 #include <ztd/idk/ebco.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/detail/unicode.hpp>
 
 #include <climits>

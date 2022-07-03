@@ -198,9 +198,9 @@ namespace ztd { namespace ranges {
 			}
 
 			template <typename _RightIt,
-				::std::enable_if_t<                                 // cf-hack
-				     is_iterator_random_access_iterator_v<_RightIt> // cf-hack
-				     && is_iterator_random_access_iterator_v<_It>   // cf-hack
+				::std::enable_if_t<                                 // cf
+				     is_iterator_random_access_iterator_v<_RightIt> // cf
+				     && is_iterator_random_access_iterator_v<_It>   // cf
 				     >* = nullptr>
 			friend constexpr iterator_difference_type_t<_RightIt> operator-(
 				const __counted_iterator& __left, const __counted_iterator<_RightIt>& __right) {

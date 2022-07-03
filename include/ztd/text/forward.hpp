@@ -142,7 +142,7 @@ namespace ztd { namespace text {
 	template <typename, typename, typename, typename, typename>
 	class basic_text_view;
 
-	template <typename, typename, typename, typename>
+	template <typename, typename, typename>
 	class basic_text;
 
 	template <typename, typename>

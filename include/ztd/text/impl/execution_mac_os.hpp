@@ -43,9 +43,10 @@
 #include <ztd/text/is_full_range_representable.hpp>
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
+
+#include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
 

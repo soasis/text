@@ -35,9 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/type_traits.hpp>
-
-#include <type_traits>
+#include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
 

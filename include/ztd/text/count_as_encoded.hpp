@@ -41,7 +41,6 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/text_tag.hpp>
-#include <ztd/text/type_traits.hpp>
 
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
@@ -50,6 +49,7 @@
 #include <ztd/ranges/subrange.hpp>
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <string_view>
 

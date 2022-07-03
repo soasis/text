@@ -36,12 +36,13 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/forward.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/assert.hpp>
+#include <ztd/text/char_traits.hpp>
 
 #include <ztd/idk/ebco.hpp>
 #include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/empty_string.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 
 #include <string_view>
@@ -139,9 +140,9 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Arg,
-			::std::enable_if_t<
-			     !::std::is_same_v<remove_cvref_t<_Arg>,
-			          basic_c_string_view> && !::std::is_same_v<remove_cvref_t<_Arg>, const_pointer> && !::std::is_array_v<remove_cvref_t<_Arg>>>* = nullptr>
+			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_Arg>, basic_c_string_view> // cf
+			     && !::std::is_convertible_v<remove_cvref_t<_Arg>, const_pointer> &&        // cf
+			     !::std::is_array_v<remove_cvref_t<_Arg>>>* = nullptr>
 		constexpr basic_c_string_view(_Arg&& __arg) noexcept : __base_t(::std::data(__arg), ::std::size(__arg)) {
 			ZTD_TEXT_ASSERT_MESSAGE_I_("c_string_view must be null-terminated!", this->_M_last_element_check());
 		}

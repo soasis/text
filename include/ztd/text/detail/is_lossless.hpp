@@ -38,9 +38,7 @@
 #include <ztd/text/forward.hpp>
 #include <ztd/text/is_full_range_representable.hpp>
 
-#include <ztd/text/type_traits.hpp>
-
-#include <type_traits>
+#include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
 

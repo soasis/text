@@ -38,8 +38,8 @@
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/c_string_view.hpp>
 
-#include <ztd/text/type_traits.hpp>
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 namespace ztd { namespace text { namespace tests {
 

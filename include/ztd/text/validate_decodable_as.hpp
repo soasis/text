@@ -41,12 +41,12 @@
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <algorithm>
 #include <string_view>
@@ -82,15 +82,12 @@ namespace ztd { namespace text {
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
 		using _UInput         = remove_cvref_t<_Input>;
 		using _InputValueType = ranges::range_value_type_t<_UInput>;
-		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<is_character_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
-                    ::ztd::span<const _InputValueType>>,
-               _UInput>>;
 		using _UEncoding      = remove_cvref_t<_Encoding>;
-		using _Result         = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
-		_WorkingInput __working_input(
-			ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+		auto __working_input = __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+
+		using _WorkingInput = decltype(__working_input);
+		using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _WorkingInput,
 			              _Encoding, _DecodeState, _EncodeState>) {

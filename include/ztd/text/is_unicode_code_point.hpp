@@ -37,7 +37,7 @@
 
 #include <ztd/text/forward.hpp>
 
-#include <ztd/text/type_traits.hpp>
+#include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
 

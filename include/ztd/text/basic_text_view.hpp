@@ -67,8 +67,8 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
 		typename _Range        = ::std::basic_string_view<code_unit_t<_Encoding>>,
-		typename _ErrorHandler = default_handler_t,                        // cf-hack
-		typename _State        = decode_state_t<remove_cvref_t<_Encoding>> // cf-hack
+		typename _ErrorHandler = default_handler_t,                        // cf
+		typename _State        = decode_state_t<remove_cvref_t<_Encoding>> // cf
 		>
 	class basic_text_view {
 	public:
@@ -89,7 +89,7 @@ namespace ztd { namespace text {
 		using error_handler_type = _ErrorHandler;
 
 	private:
-		template <typename, typename, typename, typename>
+		template <typename, typename, typename>
 		friend class ztd::text::basic_text;
 
 		template <typename _ViewErrorHandler = error_handler_type>

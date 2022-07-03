@@ -40,11 +40,11 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_transcoding_compatible.hpp>
-#include <ztd/text/type_traits.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/cast.hpp>
 
 #include <ztd/idk/charN_t.hpp>
+#include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/detail/unicode.hpp>
