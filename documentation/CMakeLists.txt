@@ -18,7 +18,7 @@
 # file except in compliance with the License. You may obtain a copy of the
 # License at
 #
-#		http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,13 +41,17 @@ file(GLOB_RECURSE ztd_text_public_headers
 	LIST_DIRECTORIES NO
 	CONFIGURE_DEPENDS
 	${PROJECT_SOURCE_DIR}/include/**.*)
+
 # make a list copy for use with dependency tracking later down below
 set(ztd_text_doxygen_public_headers ${ztd_text_public_headers})
+
 # Remove every single public header
 list(FILTER ztd_text_doxygen_public_headers EXCLUDE REGEX /detail/.*)
+
 # separate text with spaces and surround them with quotes for Doxygen to understand them all
 list(TRANSFORM ztd_text_doxygen_public_headers REPLACE "(.+)" [["\1"]])
 list(JOIN ztd_text_doxygen_public_headers " " ztd_text_doxygen_public_headers)
+
 # do the same for the include paths
 get_target_property(ztd_text_doxygen_include_paths ztd::text INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(ztd_idk_doxygen_include_paths ztd::idk INTERFACE_INCLUDE_DIRECTORIES)
@@ -107,14 +111,14 @@ add_custom_target(ztd.text.documentation.doxygen ALL
 	DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 )
 
-if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
+if(NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
 	add_custom_command(OUTPUT ${ZTD_TEXT_SPHINX_INDEX_FILE}
 		COMMAND Sphinx::Build
 		ARGS
-			-b html
-			-Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
-			${ZTD_TEXT_SPHINX_SOURCE_DIR}
-			${ZTD_TEXT_SPHINX_BUILD_DIR}
+		-b html
+		-Dbreathe_projects.ztd.text=${ZTD_TEXT_DOXYGEN_XML_OUTPUT_DIR}
+		${ZTD_TEXT_SPHINX_SOURCE_DIR}
+		${ZTD_TEXT_SPHINX_BUILD_DIR}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		DEPENDS ${ztd_text_sphinx_sources} ${ztd_text_public_headers} ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 		COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."

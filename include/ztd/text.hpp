@@ -36,10 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/forward.hpp>
-#include <ztd/idk/charN_t.hpp>
 #include <ztd/text/encoding.hpp>
-#include <ztd/text/c_string_view.hpp>
-
 #include <ztd/text/encode.hpp>
 #include <ztd/text/encode_one.hpp>
 #include <ztd/text/decode.hpp>

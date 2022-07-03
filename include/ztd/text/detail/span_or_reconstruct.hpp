@@ -35,9 +35,8 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/char_traits.hpp>
-
 #include <ztd/idk/span.hpp>
+#include <ztd/idk/char_traits.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 

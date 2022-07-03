@@ -47,13 +47,12 @@
 #include <ztd/text/decode_view.hpp>
 #include <ztd/text/normalized_view.hpp>
 #include <ztd/text/assert.hpp>
-#include <ztd/text/basic_c_string_view.hpp>
 
 #include <ztd/idk/unwrap.hpp>
+#include <ztd/idk/basic_c_string_view.hpp>
 #include <ztd/ranges/from_range.hpp>
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/counted_iterator.hpp>
-#include <ztd/ranges/single_value_iterator.hpp>
 #include <ztd/ranges/adl.hpp>
 
 #include <string>
@@ -202,7 +201,7 @@ namespace ztd { namespace text {
 
 		template <typename _Ptr, typename... _Args>
 		static constexpr bool _S_constructor_pointer_noexcept() noexcept {
-			using _CStringView = ::ztd::text::basic_c_string_view<::std::remove_pointer_t<_Ptr>>;
+			using _CStringView = ::ztd::basic_c_string_view<::std::remove_pointer_t<_Ptr>>;
 			return ::std::is_nothrow_constructible_v<_CStringView, _Ptr> // cf
 				&& _S_constructor_from_range_noexcept<_CStringView, _Args...>();
 		}
@@ -234,7 +233,7 @@ namespace ztd { namespace text {
 		constexpr basic_text(_Ptr __ptr, _Args&&... __args) noexcept(
 			_S_constructor_pointer_noexcept<_Ptr, _Args...>())
 		: basic_text(::ztd::ranges::from_range,
-			::ztd::text::basic_c_string_view<::std::remove_pointer_t<_Ptr>>(::std::forward<_Ptr>(__ptr)),
+			::ztd::basic_c_string_view<::std::remove_pointer_t<_Ptr>>(::std::forward<_Ptr>(__ptr)),
 			::std::forward<_Args>(__args)...) {
 		}
 

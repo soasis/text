@@ -35,12 +35,12 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/ranges/default_sentinel.hpp>
 #include <ztd/idk/ebco.hpp>
+#include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/type_traits.hpp>
-#include <ztd/static_containers/static_vector.hpp>
+#include <ztd/ranges/default_sentinel.hpp>
 
-#include <array>
+#include <vector>
 
 #include <ztd/prologue.hpp>
 
@@ -60,7 +60,8 @@ namespace ztd { namespace text {
 	/// @tparam _NormalizationForm The normalization form to apply to the sequence of code points.
 	/// @tparam _Range The sequence of code points to iterate over.
 	//////
-	template <typename _NormalizationForm, typename _Range>
+	template <typename _NormalizationForm, typename _Range,
+		typename _Storage = ::std::vector<ranges::range_value_type_t<remove_cvref_t<unwrap_t<_Range>>>>>
 	class normalized_iterator : private ebco<_NormalizationForm, 0>, private ebco<_Range, 1> {
 	private:
 		using __base_normalization_form = ebco<_NormalizationForm, 0>;
@@ -175,7 +176,7 @@ namespace ztd { namespace text {
 		constexpr void _M_get_more() noexcept {
 		}
 
-		static_vector<__code_point, 8> _M_normalized;
+		_Storage _M_normalized;
 		unsigned char _M_cursor = 0;
 	};
 

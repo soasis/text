@@ -37,6 +37,10 @@
 
 #include <ztd/text/normalized_iterator.hpp>
 
+#include <ztd/idk/unwrap.hpp>
+
+#include <vector>
+
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
@@ -47,7 +51,8 @@ namespace ztd { namespace text {
 	/// @{
 	//////
 
-	template <typename _NormalizationForm, typename _Range>
+	template <typename _NormalizationForm, typename _Range,
+		typename _Storage = ::std::vector<ranges::range_value_type_t<remove_cvref_t<unwrap_t<_Range>>>>>
 	class normalized_view {
 	private:
 		using _UNormalizationForm = remove_cvref_t<unwrap_t<_NormalizationForm>>;
@@ -56,7 +61,7 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The iterator type for this view.
-		using iterator = normalized_iterator<_NormalizationForm, _Range>;
+		using iterator = normalized_iterator<_NormalizationForm, _Range, _Storage>;
 		//////
 		/// @brief The sentinel type for this view.
 		using sentinel = normalized_sentinel_t;

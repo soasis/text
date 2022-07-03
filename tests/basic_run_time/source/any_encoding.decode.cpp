@@ -31,7 +31,8 @@
 #include <ztd/text/encoding_scheme.hpp>
 #include <ztd/text/any_encoding.hpp>
 #include <ztd/text/decode.hpp>
-#include <ztd/text/c_string_view.hpp>
+
+#include <ztd/idk/c_string_view.hpp>
 
 #include <catch2/catch_all.hpp>
 

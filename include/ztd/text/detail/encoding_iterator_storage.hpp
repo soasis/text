@@ -38,7 +38,7 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/encoding_error.hpp>
 
-
+#include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
 #include <ztd/idk/detail/math.hpp>
 #include <ztd/ranges/range.hpp>

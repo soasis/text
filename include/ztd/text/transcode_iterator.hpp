@@ -40,6 +40,7 @@
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 
+#include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>

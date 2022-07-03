@@ -35,7 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/c_string_view.hpp>
+#include <ztd/idk/c_string_view.hpp>
 
 #include <ztd/idk/endian.hpp>
 

@@ -51,6 +51,7 @@
 #include <ztd/idk/endian.hpp>
 #include <ztd/idk/ebco.hpp>
 #include <ztd/idk/reference_wrapper.hpp>
+#include <ztd/idk/unwrap.hpp>
 #include <ztd/ranges/subrange.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/ranges/word_iterator.hpp>
@@ -504,6 +505,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
+	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

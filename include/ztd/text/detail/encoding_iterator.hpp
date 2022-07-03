@@ -43,6 +43,7 @@
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 
+#include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/unbounded.hpp>
