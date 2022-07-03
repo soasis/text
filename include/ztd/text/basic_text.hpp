@@ -150,6 +150,66 @@ namespace ztd { namespace text {
 		/// @brief FIXME.
 		using iterator_concept = ranges::range_iterator_concept_t<_URange>;
 
+
+	private:
+		template <typename _Input>
+		static constexpr bool _S_constructor_from_range_noexcept() noexcept {
+			// TODO: test for encode noexcept-ness and container insertion noexcept-ness
+			return false
+				&& (::std::is_nothrow_default_constructible_v<encoding_type>          // cf
+				     && ::std::is_nothrow_default_constructible_v<normalization_type> // cf
+				     && ::std::is_nothrow_default_constructible_v<range_type>);
+		}
+
+		template <typename _Input, typename _FromEncoding>
+		static constexpr bool _S_constructor_from_range_noexcept() noexcept {
+			// TODO: test for encode noexcept-ness and container insertion noexcept-ness
+			return false
+				&& (::std::is_nothrow_default_constructible_v<encoding_type>          // cf
+				     && ::std::is_nothrow_default_constructible_v<normalization_type> // cf
+				     && ::std::is_nothrow_default_constructible_v<range_type>);
+		}
+
+		template <typename _Input, typename _FromEncoding, typename _ErrorHandler>
+		static constexpr bool _S_constructor_from_range_noexcept() noexcept {
+			// TODO: test for encode noexcept-ness and container insertion noexcept-ness
+			return false
+				&& (::std::is_nothrow_default_constructible_v<encoding_type>          // cf
+				     && ::std::is_nothrow_default_constructible_v<normalization_type> // cf
+				     && ::std::is_nothrow_default_constructible_v<range_type>);
+		}
+
+		static constexpr bool _S_constructor_in_place() noexcept {
+			return ::std::is_nothrow_default_constructible_v<encoding_type> // cf
+				&& ::std::is_nothrow_default_constructible_v<range_type>   // cf
+				&& ::std::is_nothrow_default_constructible_v<normalization_type>;
+		}
+
+		template <typename _InPlaceOrRange>
+		static constexpr bool _S_constructor_range_noexcept() noexcept {
+			if constexpr (::std::is_same_v<::ztd::remove_cvref_t<_InPlaceOrRange>, ::std::in_place_t>) {
+				return _S_constructor_in_place();
+			}
+			else {
+				return _S_constructor_from_range_noexcept<_InPlaceOrRange>();
+			}
+		}
+
+		template <typename _RangeOrCount>
+		static constexpr bool _S_constructor_range_or_count_noexcept() noexcept {
+			return false;
+		}
+
+		template <typename _Ptr, typename... _Args>
+		static constexpr bool _S_constructor_pointer_noexcept() noexcept {
+			using _CStringView = ::ztd::text::basic_c_string_view<::std::remove_pointer_t<_Ptr>>;
+			return ::std::is_nothrow_constructible_v<_CStringView, _Ptr> // cf
+				&& _S_constructor_from_range_noexcept<_CStringView, _Args...>();
+		}
+
+	public:
+		// constructors and assignment operators
+
 		//////
 		/// @brief Copy constructor. Defaulted.
 		constexpr basic_text(const basic_text&) = default;
@@ -308,6 +368,9 @@ namespace ztd { namespace text {
 			this->_M_verify_integrity();
 		}
 
+		// observers
+		// observers: iteration
+
 		constexpr auto begin() const noexcept {
 			return iterator(::std::ref(this->_M_range), this->_M_encoding);
 		}
@@ -315,6 +378,8 @@ namespace ztd { namespace text {
 		constexpr auto end() const noexcept {
 			return sentinel();
 		}
+
+		// observers: storage
 
 		constexpr const range_type& base() & noexcept {
 			return this->_M_range;
@@ -329,61 +394,6 @@ namespace ztd { namespace text {
 		}
 
 	private:
-		template <typename _Input>
-		static constexpr bool _S_constructor_from_range_noexcept() noexcept {
-			// TODO: test for encode noexcept-ness and container insertion noexcept-ness
-			return false
-				&& (::std::is_nothrow_default_constructible_v<encoding_type>          // cf
-				     && ::std::is_nothrow_default_constructible_v<normalization_type> // cf
-				     && ::std::is_nothrow_default_constructible_v<range_type>);
-		}
-
-		template <typename _Input, typename _FromEncoding>
-		static constexpr bool _S_constructor_from_range_noexcept() noexcept {
-			// TODO: test for encode noexcept-ness and container insertion noexcept-ness
-			return false
-				&& (::std::is_nothrow_default_constructible_v<encoding_type>          // cf
-				     && ::std::is_nothrow_default_constructible_v<normalization_type> // cf
-				     && ::std::is_nothrow_default_constructible_v<range_type>);
-		}
-
-		template <typename _Input, typename _FromEncoding, typename _ErrorHandler>
-		static constexpr bool _S_constructor_from_range_noexcept() noexcept {
-			// TODO: test for encode noexcept-ness and container insertion noexcept-ness
-			return false
-				&& (::std::is_nothrow_default_constructible_v<encoding_type>          // cf
-				     && ::std::is_nothrow_default_constructible_v<normalization_type> // cf
-				     && ::std::is_nothrow_default_constructible_v<range_type>);
-		}
-
-		static constexpr bool _S_constructor_in_place() noexcept {
-			return ::std::is_nothrow_default_constructible_v<encoding_type> // cf
-				&& ::std::is_nothrow_default_constructible_v<range_type>   // cf
-				&& ::std::is_nothrow_default_constructible_v<normalization_type>;
-		}
-
-		template <typename _InPlaceOrRange>
-		static constexpr bool _S_constructor_range_noexcept() noexcept {
-			if constexpr (::std::is_same_v<::ztd::remove_cvref_t<_InPlaceOrRange>, ::std::in_place_t>) {
-				return _S_constructor_in_place();
-			}
-			else {
-				return _S_constructor_from_range_noexcept<_InPlaceOrRange>();
-			}
-		}
-
-		template <typename _RangeOrCount>
-		static constexpr bool _S_constructor_range_or_count_noexcept() noexcept {
-			return false;
-		}
-
-		template <typename _Ptr, typename... _Args>
-		static constexpr bool _S_constructor_pointer_noexcept() noexcept {
-			using _CStringView = ::ztd::text::basic_c_string_view<::std::remove_pointer_t<_Ptr>>;
-			return ::std::is_nothrow_constructible_v<_CStringView, _Ptr> // cf
-				&& _S_constructor_from_range_noexcept<_CStringView, _Args...>();
-		}
-
 		constexpr void _M_verify_integrity() const noexcept {
 			const bool __success = ::ztd::text::validate_decodable_as(this->_M_range, this->_M_encoding).valid;
 			ZTD_TEXT_ASSERT_MESSAGE("given data has violated its encoding constraints", __success);
