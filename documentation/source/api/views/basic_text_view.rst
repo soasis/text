@@ -42,9 +42,11 @@ The ``basic_text_view`` class provides a one-by-one view of the stored range's c
 
 .. doxygentypedef:: ztd::text::text_view
 
+.. doxygentypedef:: ztd::text::ntext_view
+
 .. doxygentypedef:: ztd::text::wtext_view
 
-.. doxygentypedef:: ztd::text::ltext_view
+.. doxygentypedef:: ztd::text::nltext_view
 
 .. doxygentypedef:: ztd::text::wltext_view
 

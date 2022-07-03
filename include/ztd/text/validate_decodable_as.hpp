@@ -80,9 +80,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
 	constexpr auto basic_validate_decodable_as(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
-		using _UInput         = remove_cvref_t<_Input>;
-		using _InputValueType = ranges::range_value_type_t<_UInput>;
-		using _UEncoding      = remove_cvref_t<_Encoding>;
+		using _UEncoding = remove_cvref_t<_Encoding>;
 
 		auto __working_input = __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 

@@ -276,7 +276,7 @@ namespace ztd { namespace text {
 		}
 
 		explicit constexpr basic_text(::std::in_place_t) // cf
-			noexcept(_S_constructor_from_in_place())
+			noexcept(_S_constructor_in_place())
 		: _M_encoding(), _M_normalization(), _M_range() {
 			this->_M_verify_integrity();
 		}
@@ -356,7 +356,7 @@ namespace ztd { namespace text {
 				     && ::std::is_nothrow_default_constructible_v<range_type>);
 		}
 
-		static constexpr bool _S_constructor_from_in_place() noexcept {
+		static constexpr bool _S_constructor_in_place() noexcept {
 			return ::std::is_nothrow_default_constructible_v<encoding_type> // cf
 				&& ::std::is_nothrow_default_constructible_v<range_type>   // cf
 				&& ::std::is_nothrow_default_constructible_v<normalization_type>;
@@ -365,7 +365,7 @@ namespace ztd { namespace text {
 		template <typename _InPlaceOrRange>
 		static constexpr bool _S_constructor_range_noexcept() noexcept {
 			if constexpr (::std::is_same_v<::ztd::remove_cvref_t<_InPlaceOrRange>, ::std::in_place_t>) {
-				return _S_constructor_from_in_place();
+				return _S_constructor_in_place();
 			}
 			else {
 				return _S_constructor_from_range_noexcept<_InPlaceOrRange>();

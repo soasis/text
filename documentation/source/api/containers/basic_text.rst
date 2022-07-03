@@ -42,9 +42,11 @@ The ``basic_text`` class provides functionality similar to ``std::string`` but f
 
 .. doxygentypedef:: ztd::text::text
 
+.. doxygentypedef:: ztd::text::ntext
+
 .. doxygentypedef:: ztd::text::wtext
 
-.. doxygentypedef:: ztd::text::ltext
+.. doxygentypedef:: ztd::text::nltext
 
 .. doxygentypedef:: ztd::text::wltext
 
