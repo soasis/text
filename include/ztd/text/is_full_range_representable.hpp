@@ -46,6 +46,16 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		template <typename _Type>
+		using __detect_is_injective = decltype(_Type::is_injective::value);
+
+		template <typename, typename = void>
+		struct __is_injective_sfinae : ::std::false_type { };
+
+		template <typename _Type>
+		struct __is_injective_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_is_injective, _Type>>>
+		: ::std::integral_constant<bool, _Type::is_injective::value> { };
+
+		template <typename _Type>
 		using __detect_is_encode_injective = decltype(_Type::is_encode_injective::value);
 
 		template <typename, typename = void>
@@ -84,7 +94,9 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_decode_injective : public __txt_detail::__is_decode_injective_sfinae<_Type> { };
+	class is_decode_injective : public ::std::integral_constant<bool,
+		                            __txt_detail::__is_decode_injective_sfinae<_Type>::value
+		                                 || __txt_detail::__is_injective_sfinae<_Type>::value> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_decode_injective.
@@ -101,7 +113,9 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_encode_injective : public __txt_detail::__is_encode_injective_sfinae<_Type> { };
+	class is_encode_injective : public ::std::integral_constant<bool,
+		                            __txt_detail::__is_encode_injective_sfinae<_Type>::value
+		                                 || __txt_detail::__is_injective_sfinae<_Type>::value> { };
 
 	//////
 	/// @brief A @c \::value alias for ztd::text::is_encode_injective.

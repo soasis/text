@@ -35,6 +35,8 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/no_normalization.hpp>
+
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
@@ -50,10 +52,10 @@ namespace ztd { namespace text {
 		/// @tparam _IsCompatibility Whether or not this Normalization Form is NFKC (Compatibility Composed), or NFC
 		/// (Canonical Composed).
 		///
-		/// @remarks From from Unicode Technical Report #5.
+		/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
 		//////
 		template <bool _IsCompatibility>
-		struct __nfc { };
+		struct __nfc : public no_normalization { };
 
 		//////
 		/// @internal
@@ -64,28 +66,43 @@ namespace ztd { namespace text {
 		/// @tparam _IsCompatibility Whether or not this Normalization Form is NFKD (Compatibility Decomposed), or NFD
 		/// (Canonical Decomposed).
 		///
-		/// @remarks From from Unicode Technical Report #5.
+		/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
 		//////
 		template <bool _IsCompatibility>
-		struct __nfd { };
+		struct __nfd : public no_normalization { };
 	} // namespace __txt_impl
 
 
 	//////
-	/// @brief The Normalization Form C (Canonical, Composed, from Unicode Technical Report #5).
+	/// @brief The Normalization Form C (Canonical, Composed, from Unicode Technical Report #15).
+	///
+	/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
+	//////
 	class nfc : public __txt_impl::__nfc<false> { };
 	//////
-	/// @brief The Normalization Form D (Canonical, Decomposed, from Unicode Technical Report #5).
+	/// @brief The Normalization Form D (Canonical, Decomposed, from Unicode Technical Report #15).
+	///
+	/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
+	//////
 	class nfd : public __txt_impl::__nfd<false> { };
 	//////
-	/// @brief The Normalization Form KC (Compatibility, Composed, from Unicode Technical Report #5).
+	/// @brief The Normalization Form KC (Compatibility, Composed, from Unicode Technical Report #15).
+	///
+	/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
+	//////
 	class nfkc : public __txt_impl::__nfc<true> { };
 	//////
-	/// @brief The Normalization Form KD (Compatibility, Decomposed, from Unicode Technical Report #5).
+	/// @brief The Normalization Form KD (Compatibility, Decomposed, from Unicode Technical Report #15).
+	///
+	/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
+	//////
 	class nfkd : public __txt_impl::__nfd<true> { };
 	//////
-	/// @brief The Normalization Form C, Stream-Safe (Fast Composed, Contiguous, from Unicode Technical Report #5).
-	class fcc { };
+	/// @brief The Normalization Form C, Stream-Safe (Fast Composed, Contiguous, from Unicode Technical Report #15).
+	///
+	/// @remarks From from Unicode Technical Report #15. FIXME: currently does nothing.
+	//////
+	class fcc : public no_normalization { };
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -46,7 +46,9 @@
 #include <ztd/text/transcode.hpp>
 #include <ztd/text/decode_view.hpp>
 #include <ztd/text/normalized_view.hpp>
+#include <ztd/text/basic_text_view_iterator.hpp>
 #include <ztd/text/assert.hpp>
+#include <ztd/text/detail/default_char_range.hpp>
 
 #include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/basic_c_string_view.hpp>
@@ -80,11 +82,13 @@ namespace ztd { namespace text {
 	/// operations will provide room to override this.
 	//////
 	template <typename _Encoding, typename _NormalizationForm = nfkc,
-		typename _Range = ::std::basic_string<code_unit_t<_Encoding>>>
+		typename _Range = __txt_detail::__default_char_range_t<code_unit_t<_Encoding>>>
 	class basic_text {
 	private:
-		using _URange    = remove_cvref_t<unwrap_t<_Range>>;
-		using _UEncoding = remove_cvref_t<unwrap_t<_Encoding>>;
+		using _URange             = unwrap_remove_cvref_t<_Range>;
+		using _CVRange            = unwrap_remove_reference_t<_Range>;
+		using _UEncoding          = unwrap_remove_cvref_t<_Encoding>;
+		using _UNormalizationForm = unwrap_remove_cvref_t<_NormalizationForm>;
 
 		template <typename _RangeOrCount, typename... _Args>
 		using __allow_single_argument_with_variadic_constructor = ::std::integral_constant<bool,
@@ -111,19 +115,21 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief FIXME.
-		using iterator = decode_iterator<_Encoding, ::std::reference_wrapper<_URange>>;
+		using iterator
+			= basic_text_view_iterator<_UEncoding, _UNormalizationForm, ::ztd::ranges::reconstruct_t<_CVRange>>;
 
 		//////
 		/// @brief FIXME.
-		using const_iterator = decode_iterator<_Encoding, ::std::reference_wrapper<const _URange>>;
+		using const_iterator = basic_text_view_iterator<_UEncoding, _UNormalizationForm,
+			::ztd::ranges::reconstruct_t<const _CVRange>>;
 
 		//////
 		/// @brief FIXME.
-		using sentinel = decode_sentinel_t;
+		using sentinel = text_view_sentinel_t;
 
 		//////
 		/// @brief FIXME.
-		using const_sentinel = decode_sentinel_t;
+		using const_sentinel = text_view_sentinel_t;
 
 		//////
 		/// @brief The type for the basic iterators.
@@ -135,19 +141,19 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The type for the basic iterators.
-		using difference_type = ranges::range_difference_type_t<_URange>;
+		using difference_type = ranges::iterator_difference_type_t<iterator>;
 
 		//////
 		/// @brief The type for the basic iterators.
-		using size_type = ranges::range_size_type_t<_URange>;
+		using size_type = ranges::iterator_size_type_t<iterator>;
 
 		//////
 		/// @brief FIXME.
-		using iterator_category = ranges::range_iterator_concept_t<_URange>;
+		using iterator_category = ranges::iterator_concept_t<iterator>;
 
 		//////
 		/// @brief FIXME.
-		using iterator_concept = ranges::range_iterator_concept_t<_URange>;
+		using iterator_concept = ranges::iterator_concept_t<iterator>;
 
 
 	private:
@@ -371,7 +377,12 @@ namespace ztd { namespace text {
 		// observers: iteration
 
 		constexpr auto begin() const noexcept {
-			return iterator(::std::ref(this->_M_range), this->_M_encoding);
+			using _OuterRangeType = typename const_iterator::range_type;
+			return const_iterator(_OuterRangeType(::ztd::ranges::reconstruct(::std::in_place_type<_URange>,
+				                                      ::ztd::ranges::ranges_adl::adl_begin(this->_M_range),
+				                                      ::ztd::ranges::ranges_adl::adl_end(this->_M_range)),
+				                      this->_M_encoding),
+				this->_M_normalization);
 		}
 
 		constexpr auto end() const noexcept {
@@ -379,8 +390,7 @@ namespace ztd { namespace text {
 		}
 
 		// observers: storage
-
-		constexpr const range_type& base() & noexcept {
+		constexpr range_type& base() & noexcept {
 			return this->_M_range;
 		}
 
@@ -391,6 +401,36 @@ namespace ztd { namespace text {
 		constexpr range_type&& base() && noexcept {
 			return ::std::move(this->_M_range);
 		}
+
+		// observers: underlying range
+		constexpr range_type& range() & noexcept {
+			return this->_M_range;
+		}
+
+		constexpr const range_type& range() const& noexcept {
+			return this->_M_range;
+		}
+
+		constexpr range_type&& range() && noexcept {
+			return ::std::move(this->_M_range);
+		}
+
+		// observers: encoding
+		constexpr encoding_type& encoding() & noexcept {
+			return this->_M_range;
+		}
+
+		constexpr const encoding_type& encoding() const& noexcept {
+			return this->_M_range;
+		}
+
+		constexpr encoding_type&& encoding() && noexcept {
+			return ::std::move(this->_M_encoding);
+		}
+
+		// modifiers:
+		// modifiers: insertion
+
 
 	private:
 		constexpr void _M_verify_integrity() const noexcept {

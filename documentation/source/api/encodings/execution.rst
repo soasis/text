@@ -36,9 +36,7 @@ This is the locale-based, runtime encoding. It uses a number of compile-time and
 Currently, the hierachy of behaviors is like so:
 
 - If the platform is MacOS, then it assumes this is :doc:`UTF-8 </api/encodings/utf8>`;
-- Otherwise, if libiconv is available, then it attempts to use :doc:`iconv </api/encodings/basic_iconv>` configured to the ``"char"``-identified encoding;
-- Otherwise, if the headers ``<cuchar>`` or ``<uchar.h>`` are available, then it attempts to use a gnarly, lossy, and dangerous encoding that potentially traffics through the C Standard Library and Locale APIs;
-- Otherwise, it produces a compile-time error.
+- Otherwise, if the :term:`cuneicode`, then Cuneicode will be used.
 
 .. warning::
 

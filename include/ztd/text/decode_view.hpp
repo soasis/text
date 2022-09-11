@@ -40,6 +40,7 @@
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
+#include <ztd/text/detail/default_char_view.hpp>
 
 #include <ztd/ranges/reconstruct.hpp>
 
@@ -70,11 +71,12 @@ namespace ztd { namespace text {
 	/// maps into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
 	//////
-	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_unit_t<_Encoding>>,
+	template <typename _Encoding, typename _Range = __txt_detail::__default_char_view_t<code_unit_t<_Encoding>>,
 		typename _ErrorHandler = default_handler_t, typename _State = decode_state_t<_Encoding>>
 	class decode_view {
 	private:
-		using _StoredRange = ranges::range_reconstruct_t<remove_cvref_t<_Range>>;
+		using _CVRange     = unwrap_remove_reference_t<_Range>;
+		using _StoredRange = ranges::range_reconstruct_t<const _CVRange>;
 
 	public:
 		//////
@@ -83,6 +85,9 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The sentinel type for this view.
 		using sentinel = decode_sentinel_t;
+		//////
+		/// @brief The value type for this view.
+		using value_type = ranges::iterator_value_type_t<iterator>;
 		//////
 		/// @brief The underlying range type.
 		using range_type = _Range;

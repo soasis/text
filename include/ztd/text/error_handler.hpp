@@ -73,9 +73,9 @@ namespace ztd { namespace text {
 		constexpr _Result&& __write_direct(const _Encoding&, _Input&& __input, _Result&& __result) noexcept {
 			using _UOutputRange = remove_cvref_t<decltype(__result.output)>;
 
-			auto __outit   = ranges::ranges_adl::adl_begin(__result.output);
+			auto __out_it  = ranges::ranges_adl::adl_begin(__result.output);
 			auto __outlast = ranges::ranges_adl::adl_end(__result.output);
-			if (__outit == __outlast) {
+			if (__out_it == __outlast) {
 				// BAIL
 				return ::std::forward<_Result>(__result);
 			}
@@ -87,17 +87,17 @@ namespace ztd { namespace text {
 			}
 
 			for (const auto& __element : ::std::forward<_Input>(__input)) {
-				if (__outit == __outlast) {
+				if (__out_it == __outlast) {
 					__result.output = ranges::reconstruct(
-						::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast));
+						::std::in_place_type<_UOutputRange>, ::std::move(__out_it), ::std::move(__outlast));
 					return ::std::forward<_Result>(__result);
 				}
-				(*__outit) = __element;
-				++__outit;
+				(*__out_it) = __element;
+				++__out_it;
 			}
 
 			__result.output = ranges::reconstruct(
-				::std::in_place_type<_UOutputRange>, ::std::move(__outit), ::std::move(__outlast));
+				::std::in_place_type<_UOutputRange>, ::std::move(__out_it), ::std::move(__outlast));
 			__result.error_code = encoding_error::ok;
 			return ::std::forward<_Result>(__result);
 		}
@@ -347,9 +347,9 @@ namespace ztd { namespace text {
 				return __result;
 			}
 
-			auto __outit   = ranges::ranges_adl::adl_begin(__result.output);
+			auto __out_it  = ranges::ranges_adl::adl_begin(__result.output);
 			auto __outlast = ranges::ranges_adl::adl_end(__result.output);
-			if (__outit == __outlast) {
+			if (__out_it == __outlast) {
 				// BAIL
 				return __result;
 			}
@@ -444,9 +444,9 @@ namespace ztd { namespace text {
 				// BAIL
 				return __result;
 			}
-			auto __outit   = ranges::ranges_adl::adl_begin(__result.output);
+			auto __out_it  = ranges::ranges_adl::adl_begin(__result.output);
 			auto __outlast = ranges::ranges_adl::adl_end(__result.output);
-			if (__outit == __outlast) {
+			if (__out_it == __outlast) {
 				// BAIL
 				return __result;
 			}

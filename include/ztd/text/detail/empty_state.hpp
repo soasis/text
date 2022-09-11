@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_EMPTY_STATE_HPP
-#define ZTD_TEXT_EMPTY_STATE_HPP
+#ifndef ZTD_TEXT_DETAIL_EMPTY_STATE_HPP
+#define ZTD_TEXT_DETAIL_EMPTY_STATE_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -47,4 +47,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_EMPTY_STATE_HPP
+#endif // ZTD_TEXT_DETAIL_EMPTY_STATE_HPP

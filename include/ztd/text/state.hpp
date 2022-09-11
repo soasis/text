@@ -62,6 +62,10 @@ namespace ztd { namespace text {
 		struct __encode_state<_Type, ::std::void_t<typename _Type::encode_state>> {
 			using type = typename _Type::encode_state;
 		};
+
+		template <typename _State>
+		using __is_state_complete_test = decltype(::std::declval<_State>().is_complete());
+
 	} // namespace __txt_detail
 
 	//////
@@ -136,6 +140,12 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding>
 	inline constexpr bool is_encode_state_independent_v = is_state_independent_v<_Encoding, encode_state_t<_Encoding>>;
+
+	//////
+	/// @brief Whether or not a state is capable of outputting data even after an input is fully processed.
+	template <typename _Type>
+	inline constexpr bool is_state_output_capable_v
+		= ::ztd::is_detected_v<__txt_detail::__is_state_complete_test, _Type>;
 
 	//////
 	/// @brief Constructs the `decode_state` of the given encoding, based on whether or not the encoding and state
@@ -314,6 +324,25 @@ namespace ztd { namespace text {
 				(void)__encode_state;
 				return _EncodeState(__encoding);
 			}
+		}
+	}
+
+	//////
+	/// @brief Returns whether or not a state has completed any associated operations and has no more manipulations on
+	/// the output to perform, even if the input source is empty.
+	///
+	/// @param[in] __state The state to check for completion.
+	///
+	/// @remarks If the state does not have a member function `is_complete`, then this will simply return `true`.
+	/// Otherwise, it invokes `__state.is_complete()`.
+	//////
+	template <typename _State>
+	constexpr bool is_state_complete(_State& __state) noexcept {
+		if constexpr (is_state_output_capable_v<_State>) {
+			return __state.is_complete();
+		}
+		else {
+			return true;
 		}
 	}
 

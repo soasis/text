@@ -120,6 +120,9 @@ namespace ztd { namespace text {
 			__working_input  = ::std::move(__result.input);
 			__working_output = ::std::move(__result.output);
 			if (ranges::ranges_adl::adl_empty(__result.input)) {
+				if (!::ztd::text::is_state_complete(__state)) {
+					continue;
+				}
 				break;
 			}
 		}
@@ -221,7 +224,7 @@ namespace ztd { namespace text {
 					}
 					else if (__intermediate_handler._M_code_points_progress_size() != 0) {
 						// make sure to empty any read-but-unused characters here...!
-						auto __unused_input_progress = __intermediate_handler._M_code_points_progress();
+						auto __unused_input_progress = __intermediate_handler._M_const_code_points_progress();
 						_InitialOutput __unused_input_intermediate_initial_output(
 							__intermediate_translation_buffer);
 						auto __unused_input_result = encode_into(__unused_input_progress, __encoding,
@@ -258,6 +261,9 @@ namespace ztd { namespace text {
 					return __error_result;
 				}
 				if (ranges::ranges_adl::adl_empty(__result.input)) {
+					if (!text::is_state_complete(__state)) {
+						continue;
+					}
 					return __result;
 				}
 			}

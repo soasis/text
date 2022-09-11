@@ -103,6 +103,12 @@ namespace ztd { namespace text {
 				}
 				__working_input = ::std::move(__result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__decode_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__encode_state)) {
+						continue;
+					}
 					break;
 				}
 			}
@@ -118,6 +124,12 @@ namespace ztd { namespace text {
 				}
 				__working_input = ::std::move(__result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__decode_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__encode_state)) {
+						continue;
+					}
 					break;
 				}
 			}
@@ -133,6 +145,12 @@ namespace ztd { namespace text {
 				}
 				__working_input = ::std::move(__result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__decode_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__encode_state)) {
+						continue;
+					}
 					break;
 				}
 			}
@@ -148,6 +166,12 @@ namespace ztd { namespace text {
 				}
 				__working_input = ::std::move(__result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__decode_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__encode_state)) {
+						continue;
+					}
 					break;
 				}
 			}
@@ -163,6 +187,12 @@ namespace ztd { namespace text {
 				}
 				__working_input = ::std::move(__result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__decode_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__encode_state)) {
+						continue;
+					}
 					break;
 				}
 			}
@@ -187,6 +217,12 @@ namespace ztd { namespace text {
 				}
 				__working_input = ::std::move(__stateless_validate_result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__decode_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__encode_state)) {
+						continue;
+					}
 					break;
 				}
 			}

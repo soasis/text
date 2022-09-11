@@ -72,12 +72,13 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler_t,
 		typename _State = encode_state_t<_Encoding>>
-	class encode_iterator
-	: public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__encode,
-		  encode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State> {
+	class encode_iterator : public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__encode,
+		                        encode_iterator<_Encoding, _Range, _ErrorHandler, _State>,
+		                        __txt_detail::__iterator_storage<_Encoding, _Range, _ErrorHandler, _State>> {
 	private:
 		using __iterator_base_it = __txt_detail::__encoding_iterator<__txt_detail::__transaction::__encode,
-			encode_iterator<_Encoding, _Range, _ErrorHandler, _State>, _Encoding, _Range, _ErrorHandler, _State>;
+			encode_iterator<_Encoding, _Range, _ErrorHandler, _State>,
+			__txt_detail::__iterator_storage<_Encoding, _Range, _ErrorHandler, _State>>;
 
 	public:
 		//////

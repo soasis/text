@@ -37,6 +37,9 @@ These are all the resources that this documentation links to, in alphabetical or
 .. glossary::
 	:sorted:
 
+	cuneicode
+		JeanHeyd Meneide & Shepherd's Oasis, LLC. cuneicode. September 2022. URL: `https://savannah.gnu.org/git/?group=libiconv <https://savannah.gnu.org/git/?group=libiconv>`_. `A software library <https://www.gnu.org/software/libiconv/>`_ for working with and converting text. Typically ships on most, if not all, POSIX and Linux systems.
+
 	iconv
 		Bruno Haible and Daiki Ueno. libiconv. August 2020. URL: `https://savannah.gnu.org/git/?group=libiconv <https://savannah.gnu.org/git/?group=libiconv>`_. `A software library <https://www.gnu.org/software/libiconv/>`_ for working with and converting text. Typically ships on most, if not all, POSIX and Linux systems.
 

@@ -107,6 +107,9 @@ namespace ztd { namespace text {
 				}
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
+				if (!text::is_state_complete(__state)) {
+					continue;
+				}
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
 					break;
 				}
@@ -124,6 +127,9 @@ namespace ztd { namespace text {
 				}
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
+				if (!text::is_state_complete(__state)) {
+					continue;
+				}
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
 					break;
 				}
@@ -146,6 +152,9 @@ namespace ztd { namespace text {
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
 				if (ranges::ranges_adl::adl_empty(__working_input)) {
+					if (!text::is_state_complete(__state)) {
+						continue;
+					}
 					break;
 				}
 			}

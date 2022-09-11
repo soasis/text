@@ -42,6 +42,7 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/execution.hpp>
+#include <ztd/text/detail/default_char_view.hpp>
 
 #include <string_view>
 
@@ -79,7 +80,7 @@ namespace ztd { namespace text {
 	/// will have to use lower-level interfaces.
 	//////
 	template <typename _FromEncoding, typename _ToEncoding = utf8_t,
-		typename _Range            = ::std::basic_string_view<code_unit_t<_FromEncoding>>,
+		typename _Range            = __txt_detail::__default_char_view_t<code_unit_t<_FromEncoding>>,
 		typename _FromErrorHandler = default_handler_t, typename _ToErrorHandler = default_handler_t,
 		typename _FromState = decode_state_t<_FromEncoding>, typename _ToState = encode_state_t<_ToEncoding>>
 	class transcode_view {

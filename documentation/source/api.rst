@@ -112,6 +112,7 @@ Properties and Classifications
 	api/is_code_units_replaceable
 	api/is_code_points_replaceable
 	api/is_ignorable_error_handler
+	api/is_state_complete
 	api/is_unicode_encoding
 	api/contains_unicode_encoding
 	api/is_unicode_code_point

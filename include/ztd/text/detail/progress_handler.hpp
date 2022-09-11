@@ -68,6 +68,14 @@ namespace ztd { namespace text {
 			: _M_code_points(), _M_code_points_size(), _M_code_units(), _M_code_units_size() {
 			}
 
+			constexpr ::ztd::span<const _CodePoint> _M_const_code_points_progress() const noexcept {
+				return ::ztd::span<const _CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
+			}
+
+			constexpr ::ztd::span<const _CodeUnit> _M_const_code_units_progress() const noexcept {
+				return ::ztd::span<const _CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+			}
+
 			constexpr ::ztd::span<const _CodePoint> _M_code_points_progress() const noexcept {
 				return ::ztd::span<const _CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
 			}

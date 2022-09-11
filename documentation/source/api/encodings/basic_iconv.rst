@@ -31,7 +31,7 @@
 basic_iconv
 ===========
 
-This encoding is only available if the :ref:`configuration macro/build option for ZTD__LIBICONV <config-ZTD_LIBICONV>` is turned on.
+This encoding is only available if the configuration macro/build option for ``ZTD_PLATFORM_LIBICONV`` is turned on.
 
 This encoding is tied to the `iconv library <https://www.gnu.org/software/libiconv/>`_. It will attempt to use the header and the functions directly, and if not otherwise bootstrap iconv on first use of the encoding through ``GetProcAddress``/``dlsym`` and related. If it cannot find it will either assert, abort, or loudly annoy the user in some way. The code is retrieved dynamically where possible unless the user explicitly defines the build option for ``ZTD_TEXT_USE_STATIC_LIBICONV`` (for CMake), as iconv is under a LGPL/GPL licensed and cannot be traditionally built / statically linked with application code (though in the future we may provide a way for software to do that if the software being made with this library is also GPL-compatible software).
 

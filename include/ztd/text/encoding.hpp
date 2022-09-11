@@ -46,6 +46,7 @@
 #include <ztd/text/wide_literal.hpp>
 #include <ztd/text/any_encoding.hpp>
 #include <ztd/text/basic_iconv.hpp>
+#include <ztd/text/punycode.hpp>
 
 #include <ztd/prologue.hpp>
 

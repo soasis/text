@@ -33,6 +33,12 @@
 #ifndef ZTD_TEXT_BASIC_ENCODING_SCHEME_HPP
 #define ZTD_TEXT_BASIC_ENCODING_SCHEME_HPP
 
+//////
+/// @file basic_encoding_scheme.hpp
+///
+/// @brief Generate docs.
+//////
+
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/state.hpp>
@@ -170,11 +176,11 @@ namespace ztd { namespace text {
 	//////
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
 	class encoding_scheme : public __txt_detail::__is_unicode_encoding_es<encoding_scheme<_Encoding, _Endian, _Byte>,
-		                        remove_cvref_t<unwrap_t<_Encoding>>>,
+		                        unwrap_remove_cvref_t<_Encoding>>,
 		                   private ebco<_Encoding> {
 	private:
 		using __base_t       = ebco<_Encoding>;
-		using _UBaseEncoding = remove_cvref_t<unwrap_t<_Encoding>>;
+		using _UBaseEncoding = unwrap_remove_cvref_t<_Encoding>;
 		using _BaseCodeUnit  = code_unit_t<_UBaseEncoding>;
 
 	public:

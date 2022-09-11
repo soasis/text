@@ -38,7 +38,7 @@
 #include <ztd/text/basic_iconv.hpp>
 #include <ztd/text/iconv_names.hpp>
 
-#if ZTD_IS_ON(ZTD_LIBICONV)
+#if ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
 
 #include <ztd/prologue.hpp>
 

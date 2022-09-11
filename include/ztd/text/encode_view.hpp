@@ -40,6 +40,7 @@
 #include <ztd/text/encoding.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
+#include <ztd/text/detail/default_char_view.hpp>
 
 #include <ztd/ranges/reconstruct.hpp>
 
@@ -70,7 +71,7 @@ namespace ztd { namespace text {
 	/// into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
 	//////
-	template <typename _Encoding, typename _Range = ::std::basic_string_view<code_point_t<_Encoding>>,
+	template <typename _Encoding, typename _Range = __txt_detail::__default_char_view_t<code_point_t<_Encoding>>,
 		typename _ErrorHandler = default_handler_t, typename _State = encode_state_t<_Encoding>>
 	class encode_view {
 	private:

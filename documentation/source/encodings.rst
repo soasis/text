@@ -100,7 +100,7 @@ As a general point, we hope to support almost all of the encodings here in one f
 	* - ``cuneicode`` Encoding
 	  - Yes
 	  - Yes
-	  - :doc:`WIP 🛠️ </api/encodings/cuneicode_encoding>`
+	  - :doc:`WIP 🛠️ </api/encodings/cuneicode_registry_encoding>`
 	* - UTF-EBCDIC
 	  - No
 	  - Yes

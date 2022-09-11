@@ -191,6 +191,12 @@ shift_jis::sjis_decode_result shift_jis::decode_one(ztd::span<const shift_jis::c
 	}
 	else if ((first_byte <= 0x9F && first_byte >= 0x81) || (first_byte <= 0xFC && first_byte >= 0xE0)) {
 		// Top-Level case 2: this is a double-byte sequence!
+		if (in_it == in_last) {
+			return error_handler(*this,
+			     sjis_decode_result(std::move(input), std::move(output), current_state,
+			          ztd::text::encoding_error::incomplete_sequence),
+			     input_span(), output_span());
+		}
 		unsigned char second_byte = static_cast<unsigned char>(*in_it);
 		++in_it;
 		unsigned char lookup_offset      = second_byte < 0x7F ? 0x40 : 0x41;

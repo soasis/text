@@ -92,21 +92,22 @@ namespace ztd { namespace text {
 	  private ebco<remove_cvref_t<_ToErrorHandler>, 4>,
 	  private __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>,
 	  private __txt_detail::__state_storage<remove_cvref_t<_ToEncoding>, remove_cvref_t<_ToState>, 1>,
-	  private __txt_detail::__cursor_cache<max_code_units_v<remove_cvref_t<unwrap_t<_ToEncoding>>>,
-		  ranges::is_range_input_or_output_range_v<remove_cvref_t<unwrap_t<_Range>>>>,
+	  private __txt_detail::__cursor_cache<max_code_units_v<unwrap_remove_cvref_t<_ToEncoding>>,
+		  ranges::is_range_input_or_output_range_v<unwrap_remove_cvref_t<_Range>>>,
 	  private __txt_detail::__error_cache<
-		  decode_error_handler_always_returns_ok_v<remove_cvref_t<unwrap_t<_FromEncoding>>,
-		       remove_cvref_t<unwrap_t<
-		            _FromErrorHandler>>> && encode_error_handler_always_returns_ok_v<remove_cvref_t<unwrap_t<_ToEncoding>>, remove_cvref_t<unwrap_t<_ToErrorHandler>>>>,
+		  decode_error_handler_always_returns_ok_v<unwrap_remove_cvref_t<_FromEncoding>,
+		       unwrap_remove_cvref_t<_FromErrorHandler>> // cf
+		  && encode_error_handler_always_returns_ok_v<unwrap_remove_cvref_t<_ToEncoding>,
+		       unwrap_remove_cvref_t<_ToErrorHandler>>>,
 	  private ebco<_Range, 4> {
 	private:
-		using _URange                                    = remove_cvref_t<unwrap_t<_Range>>;
-		using _UFromEncoding                             = remove_cvref_t<unwrap_t<_FromEncoding>>;
-		using _UToEncoding                               = remove_cvref_t<unwrap_t<_ToEncoding>>;
-		using _UFromErrorHandler                         = remove_cvref_t<unwrap_t<_FromErrorHandler>>;
-		using _UToErrorHandler                           = remove_cvref_t<unwrap_t<_ToErrorHandler>>;
-		using _UFromState                                = remove_cvref_t<unwrap_t<_FromState>>;
-		using _UToState                                  = remove_cvref_t<unwrap_t<_ToState>>;
+		using _URange                                    = unwrap_remove_cvref_t<_Range>;
+		using _UFromEncoding                             = unwrap_remove_cvref_t<_FromEncoding>;
+		using _UToEncoding                               = unwrap_remove_cvref_t<_ToEncoding>;
+		using _UFromErrorHandler                         = unwrap_remove_cvref_t<_FromErrorHandler>;
+		using _UToErrorHandler                           = unwrap_remove_cvref_t<_ToErrorHandler>;
+		using _UFromState                                = unwrap_remove_cvref_t<_FromState>;
+		using _UToState                                  = unwrap_remove_cvref_t<_ToState>;
 		using _BaseIterator                              = ranges::range_iterator_t<_URange>;
 		using _IntermediateCodePoint                     = code_point_t<_UToEncoding>;
 		inline static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;

@@ -35,9 +35,12 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/charN_t.hpp>
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/detail/to_underlying.hpp>
+
+#include <ztd/idk/charN_t.hpp>
+#include <ztd/idk/to_underlying.hpp>
+
+#include <ztd/cuneicode/mcerror.h>
 
 #include <cstddef>
 #include <system_error>
@@ -96,28 +99,19 @@ namespace ztd { namespace text {
 		/// output. This can be queried for an encoding by using ztd::text::max_code_points_v<the_encoding> for code
 		/// points, and ztd::text::max_code_units_v<the_encoding> for code units.
 		//////
-		insufficient_output_space = 0x03,
-#if 0
-		/* These error types are not used because they are too specific to Unicode. I suspect that some people will
-		   find them useful for error reporting cases, but it does result in more checking for higher-level APIs. It's
-		   best to leave them off, for now. */
-
-		//////
-		/// Input contains overlong encoding sequence. This is specific to certain encodings, such as Unicode
-		/// Transformation Formats like UTF-8 where different sequences can end up encoding the same character but are
-		/// not allowed.
-		//////
-		invalid_sequence = 0x04,
-		//////
-		/// leading code unit is wrong
-		
-		invalid_sequence = 0x05,
-		//////
-		/// leading code units were correct, trailing code units were wrong
-		
-		invalid_sequence = 0x06
-#endif
+		insufficient_output_space = 0x03
 	};
+
+	// We must make sure the C and C++ error definitions line up here, if only for the benefit of this library.
+	static_assert(CNC_MCERROR_OKAY == ztd::to_underlying(encoding_error::ok),
+		"the encoding_error::ok value does not make the CNC_MCERROR_OKAY value");
+	static_assert(CNC_MCERROR_INVALID_SEQUENCE == ztd::to_underlying(encoding_error::invalid_sequence),
+		"the encoding_error::invalid_sequence value does not make the CNC_MCERROR_INVALID_SEQUENCE value");
+	static_assert(CNC_MCERROR_INCOMPLETE_INPUT == ztd::to_underlying(encoding_error::incomplete_sequence),
+		"the encoding_error::incomplete_sequence value does not make the CNC_MCERROR_INCOMPLETE_INPUT value");
+	static_assert(CNC_MCERROR_INSUFFICIENT_OUTPUT == ztd::to_underlying(encoding_error::insufficient_output_space),
+		"the encoding_error::insufficient_output_space value does not make the CNC_MCERROR_INSUFFICIENT_OUTPUT "
+		"value");
 
 	//////
 	/// @brief Converts an encoding_error to a string value.
@@ -129,7 +123,7 @@ namespace ztd { namespace text {
 	inline constexpr ::std::string_view to_name(encoding_error __error_code) {
 		constexpr ::std::array<::std::string_view, 4> __translation { { "ok", "invalid_sequence",
 			"incomplete_sequence", "insufficient_output_space" } };
-		return __translation[static_cast<::std::size_t>(__txt_detail::__to_underlying(__error_code))];
+		return __translation[static_cast<::std::size_t>(::ztd::to_underlying(__error_code))];
 	}
 
 	namespace __txt_detail {

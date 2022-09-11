@@ -41,16 +41,6 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Default: off.
 	- Turned on if the special ``__has_include`` directive is present with the compiler and ``__has_include(<ztd/cuneicode/cuneicode.h>)`` works.
 
-.. _config-ZTD_LIBICONV:
-
-- ``ZTD_LIBICONV`` (CMake: ``ZTD_TEXT_USE_ICONV``)
-	- Enables use of the `iconv project <https://www.gnu.org/software/libiconv/>`_.
-	- Attempts to use the headers directly if possible.
-	- Otherwise, attempts to load it from the system at runtime using ``GetProcAddress``, or ``dlopen``/``dlsym``/``dlclose``.
-	- Makes the ``ztd::text::basic_iconv`` available (accessible directly VIA ``#include <ztd/text/basic_iconv.hpp>``).
-	- Default: off.
-	- Not turned on by-default under any conditions.
-
 .. _config-ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE:
 
 - ``ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE``

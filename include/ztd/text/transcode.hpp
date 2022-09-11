@@ -149,6 +149,12 @@ namespace ztd { namespace text {
 			__working_input  = ::std::move(__transcode_result.input);
 			__working_output = ::std::move(__transcode_result.output);
 			if (ranges::ranges_adl::adl_empty(__working_input)) {
+				if (!text::is_state_complete(__from_state)) {
+					continue;
+				}
+				if (!text::is_state_complete(__to_state)) {
+					continue;
+				}
 				break;
 			}
 		}
@@ -436,6 +442,12 @@ namespace ztd { namespace text {
 					return __result;
 				}
 				if (ranges::ranges_adl::adl_empty(__result.input)) {
+					if (!text::is_state_complete(__from_state)) {
+						continue;
+					}
+					if (!text::is_state_complete(__to_state)) {
+						continue;
+					}
 					return __result;
 				}
 			}

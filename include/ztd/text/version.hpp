@@ -48,26 +48,6 @@
 
 // clang-format off
 
-#if defined(ZTD_TEXT_ICONV)
-	#if (ZTD_TEXT_ICONV != 0)
-		#define ZTD_TEXT_ICONV_I_ ZTD_ON
-	#else
-		#define ZTD_TEXT_ICONV_I_ ZTD_OFF
-	#endif
-#else
-	#define ZTD_TEXT_ICONV_I_ ZTD_DEFAULT_OFF
-#endif
-
-#if defined(ZTD_TEXT_CUNEICODE)
-	#if (ZTD_TEXT_CUNEICODE != 0)
-		#define ZTD_TEXT_CUNEICODE_I_ ZTD_ON
-	#else
-		#define ZTD_TEXT_CUNEICODE_I_ ZTD_OFF
-	#endif
-#else
-	#define ZTD_TEXT_CUNEICODE_I_ ZTD_DEFAULT_OFF
-#endif
-
 #if defined(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
 	#if (ZTD_TEXT_DEFAULT_HANDLER_THROWS != 0)
 		#define ZTD_TEXT_DEFAULT_HANDLER_THROWS_I_ ZTD_ON

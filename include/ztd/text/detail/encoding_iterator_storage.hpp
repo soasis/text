@@ -55,11 +55,11 @@ namespace ztd { namespace text {
 		inline constexpr ::std::size_t _CursorlessSizeSentinel = 1;
 
 		template <typename _Encoding, typename _EncodingState, ::std::size_t _Id = 0>
-		class __state_storage : private ebco<remove_cvref_t<unwrap_t<_EncodingState>>, _Id> {
+		class __state_storage : private ebco<unwrap_remove_cvref_t<_EncodingState>, _Id> {
 		private:
-			using _UEncoding      = remove_cvref_t<unwrap_t<_Encoding>>;
-			using _UEncodingState = remove_cvref_t<unwrap_t<_EncodingState>>;
-			using __state_base_t  = ebco<remove_cvref_t<unwrap_t<_EncodingState>>, _Id>;
+			using _UEncoding      = unwrap_remove_cvref_t<_Encoding>;
+			using _UEncodingState = unwrap_remove_cvref_t<_EncodingState>;
+			using __state_base_t  = ebco<unwrap_remove_cvref_t<_EncodingState>, _Id>;
 
 		public:
 			template <typename _ArgEncoding = _UEncoding,
@@ -98,6 +98,199 @@ namespace ztd { namespace text {
 			constexpr ::std::add_const_t<::std::add_lvalue_reference_t<_UEncodingState>>
 			_M_get_state() const noexcept {
 				return this->__state_base_t::get_value();
+			}
+		};
+
+		template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
+		class __iterator_storage
+		: private ebco<remove_cvref_t<_Encoding>, 0>,
+		  private ebco<remove_cvref_t<_ErrorHandler>, 1>,
+		  private __state_storage<unwrap_remove_cvref_t<_Encoding>, remove_cvref_t<_State>, 2>,
+		  private ebco<remove_cvref_t<_Range>, 3> {
+		private:
+			using __base_encoding_t      = ebco<remove_cvref_t<_Encoding>, 0>;
+			using __base_error_handler_t = ebco<remove_cvref_t<_ErrorHandler>, 1>;
+			using __base_state_t = __state_storage<unwrap_remove_cvref_t<_Encoding>, remove_cvref_t<_State>, 2>;
+			using __base_range_t = ebco<_Range, 3>;
+			using _URange        = unwrap_remove_cvref_t<_Range>;
+			using _UEncoding     = unwrap_remove_cvref_t<_Encoding>;
+			using _UErrorHandler = unwrap_remove_cvref_t<_ErrorHandler>;
+			using _UState        = unwrap_remove_cvref_t<_State>;
+
+		public:
+			using range_type         = _Range;
+			using encoding_type      = _Encoding;
+			using state_type         = _State;
+			using error_handler_type = _ErrorHandler;
+
+			constexpr __iterator_storage()                                     = default;
+			constexpr __iterator_storage(const __iterator_storage&)            = default;
+			constexpr __iterator_storage(__iterator_storage&&)                 = default;
+			constexpr __iterator_storage& operator=(const __iterator_storage&) = default;
+			constexpr __iterator_storage& operator=(__iterator_storage&&)      = default;
+
+			template <typename _ArgRange,
+				::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_ArgRange>, __iterator_storage>>* = nullptr>
+			constexpr __iterator_storage(_ArgRange&& __range) noexcept(
+				noexcept(__iterator_storage(::std::declval<range_type>(), ::std::declval<encoding_type>(),
+				     ::std::declval<error_handler_type>())))
+			: __iterator_storage(::std::forward<_ArgRange>(__range), encoding_type {}, error_handler_type {}) {
+			}
+
+			constexpr __iterator_storage(range_type __range, encoding_type __encoding) noexcept(
+				noexcept(__iterator_storage(::std::declval<range_type>(), ::std::declval<encoding_type>(),
+				     ::std::declval<error_handler_type>())))
+			: __iterator_storage(::std::move(__range), ::std::move(__encoding), error_handler_type {}) {
+			}
+
+			constexpr __iterator_storage(range_type __range, error_handler_type __error_handler) noexcept(
+				noexcept(__iterator_storage(::std::declval<range_type>(), ::std::declval<encoding_type>(),
+				     ::std::declval<error_handler_type>())))
+			: __iterator_storage(::std::move(__range), encoding_type {}, ::std::move(__error_handler)) {
+			}
+
+			constexpr __iterator_storage(range_type __range, encoding_type __encoding,
+				error_handler_type __error_handler)                                     // cf
+				noexcept(::std::is_nothrow_move_constructible_v<encoding_type>          // cf
+				          && ::std::is_nothrow_move_constructible_v<error_handler_type> // cf
+				               && ::std::is_nothrow_move_constructible_v<range_type>    // cf
+				                    && noexcept(__base_state_t(::std::declval<encoding_type&>())))
+			: __base_encoding_t(::std::move(__encoding))
+			, __base_error_handler_t(::std::move(__error_handler))
+			, __base_state_t(this->_M_get_encoding())
+			, __base_range_t(::std::move(__range)) {
+			}
+
+			constexpr __iterator_storage(range_type __range, encoding_type __encoding,
+				error_handler_type __error_handler, state_type __state) noexcept(  // cf
+				::std::is_nothrow_move_constructible_v<encoding_type>              // cf
+				     && ::std::is_nothrow_move_constructible_v<error_handler_type> // cf
+				          && ::std::is_nothrow_move_constructible_v<range_type>    // cf
+				               && noexcept(
+				                    __base_state_t(::std::declval<encoding_type&>(), ::std::declval<state_type>())))
+			: __base_encoding_t(::std::move(__encoding))
+			, __base_error_handler_t(::std::move(__error_handler))
+			, __base_state_t(this->_M_get_encoding(), ::std::move(__state))
+			, __base_range_t(::std::move(__range)) {
+			}
+
+			using __base_state_t::_M_get_state;
+
+			const encoding_type& _M_get_encoding() const& noexcept {
+				return this->__base_encoding_t::get_value();
+			}
+
+			encoding_type& _M_get_encoding() & noexcept {
+				return this->__base_encoding_t::get_value();
+			}
+
+			encoding_type&& _M_get_encoding() && noexcept {
+				return ::std::move(this->__base_encoding_t::get_value());
+			}
+
+			const _UErrorHandler& _M_get_error_handler() const& noexcept {
+				return this->__base_error_handler_t::get_value();
+			}
+
+			_UErrorHandler& _M_get_error_handler() & noexcept {
+				return this->__base_error_handler_t::get_value();
+			}
+
+			_UErrorHandler&& _M_get_error_handler() && noexcept {
+				return ::std::move(this->__base_error_handler_t::get_value());
+			}
+
+			const _URange& _M_get_range() const& noexcept {
+				return this->__base_range_t::get_value();
+			}
+
+			_URange& _M_get_range() & noexcept {
+				return this->__base_range_t::get_value();
+			}
+
+			_URange&& _M_get_range() && noexcept {
+				return ::std::move(this->__base_range_t::get_value());
+			}
+		};
+
+		template <typename _Ref>
+		class __ref_storage : private ebco<unwrap_t<_Ref>, 0>,
+			                 private __state_storage<remove_cvref_t<unwrap_t<typename _Ref::encoding_type>>,
+			                      remove_cvref_t<unwrap_t<typename _Ref::state_type>>, 1> {
+		private:
+			using _Encoding      = typename _Ref::encoding_type;
+			using _Range         = typename _Ref::range_type;
+			using _ErrorHandler  = typename _Ref::error_handler_type;
+			using _State         = typename _Ref::state_type;
+			using _UEncoding     = unwrap_remove_cvref_t<_Encoding>;
+			using _URange        = unwrap_remove_cvref_t<_Range>;
+			using _UErrorHandler = unwrap_remove_cvref_t<_ErrorHandler>;
+			using _UState        = unwrap_remove_cvref_t<_State>;
+
+			using __base_ref_t   = ebco<unwrap_t<_Ref>, 0>;
+			using __base_state_t = __state_storage<_UEncoding, _UState, 1>;
+
+			unwrap_t<_Ref> _M_get_ref() noexcept {
+				return this->__base_ref_t::get_value();
+			}
+
+			const unwrap_t<_Ref> _M_get_ref() const noexcept {
+				return this->__base_ref_t::get_value();
+			}
+
+		public:
+			using range_type         = _Range;
+			using encoding_type      = _Encoding;
+			using state_type         = _State;
+			using error_handler_type = _ErrorHandler;
+
+			constexpr __ref_storage(const __ref_storage&)            = default;
+			constexpr __ref_storage(__ref_storage&&)                 = default;
+			constexpr __ref_storage& operator=(const __ref_storage&) = default;
+			constexpr __ref_storage& operator=(__ref_storage&&)      = default;
+
+			template <typename _Arg,
+				::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_Arg>, __ref_storage>>* = nullptr>
+			constexpr __ref_storage(_Arg&& __arg) noexcept(::std::is_nothrow_constructible_v<__base_ref_t, _Arg>)
+			: __base_ref_t(::std::forward<_Arg>(__arg)), __base_state_t(this->_M_get_encoding()) {
+			}
+
+			using __base_state_t::_M_get_state;
+
+			const encoding_type& _M_get_encoding() const& noexcept {
+				return this->_M_get_ref()->encoding();
+			}
+
+			encoding_type& _M_get_encoding() & noexcept {
+				return this->_M_get_ref()->encoding();
+			}
+
+			encoding_type&& _M_get_encoding() && noexcept {
+				return this->_M_get_ref()->encoding();
+			}
+
+			const _UErrorHandler& _M_get_error_handler() const& noexcept {
+				return this->_M_get_ref()->error_handler();
+			}
+
+			_UErrorHandler& _M_get_error_handler() & noexcept {
+				return this->_M_get_ref()->error_handler();
+			}
+
+			_UErrorHandler&& _M_get_error_handler() && noexcept {
+				return this->_M_get_ref()->error_handler();
+			}
+
+			const _URange& _M_get_range() const& noexcept {
+				return this->_M_get_ref()->range();
+			}
+
+			_URange& _M_get_range() & noexcept {
+				return this->_M_get_ref()->range();
+			}
+
+			_URange&& _M_get_range() && noexcept {
+				return this->_M_get_ref()->range();
 			}
 		};
 

@@ -52,11 +52,11 @@ namespace ztd { namespace text {
 	//////
 
 	template <typename _NormalizationForm, typename _Range,
-		typename _Storage = ::std::vector<ranges::range_value_type_t<remove_cvref_t<unwrap_t<_Range>>>>>
+		typename _Storage = ::std::vector<ranges::range_value_type_t<unwrap_remove_cvref_t<_Range>>>>
 	class normalized_view {
 	private:
-		using _UNormalizationForm = remove_cvref_t<unwrap_t<_NormalizationForm>>;
-		using _URange             = remove_cvref_t<unwrap_t<_Range>>;
+		using _UNormalizationForm = unwrap_remove_cvref_t<_NormalizationForm>;
+		using _URange             = unwrap_remove_cvref_t<_Range>;
 
 	public:
 		//////

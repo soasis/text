@@ -66,7 +66,7 @@ namespace ztd { namespace text {
 		__txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS)
 		__txt_impl::__execution_mac_os
-#elif ZTD_IS_ON(ZTD_LIBICONV)
+#elif ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
 		__txt_impl::__execution_iconv
 #else
 		no_encoding_t<char, unicode_code_point>
