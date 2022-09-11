@@ -73,11 +73,11 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The punycode encoding, as envisioned by RFC 3492 and (potentially) influenced by IDNA (RFC 5890).
 	///
+	/// @tparam _IsIdna Whether or not this punycode type looks for IDNA prefixes and obeys its encoding rules.
 	/// @tparam _CodeUnit The code unit type for the encoded ASCII text.
 	/// @tparam _CodePoint The code point type for the Unicode Code Point decoded text.
-	/// @tparam _IsIdna Whether or not this punycode type looks for IDNA prefixes and obeys its encoding rules.
 	///
-	/// @remarks See https://datatracker.ietf.org/doc/html/rfc5890 and https://datatracker.ietf.org/doc/html/rfc3492
+	/// @remarks See https://datatracker.ietf.org/doc/html/rfc5890 and https://datatracker.ietf.org/doc/html/rfc3492.
 	//////
 	template <idna _IsIdna, typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_any_punycode {

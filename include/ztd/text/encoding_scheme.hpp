@@ -35,9 +35,9 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/basic_encoding_scheme.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/utf32.hpp>
+#include <ztd/text/basic_encoding_scheme.hpp>
 
 #include <ztd/prologue.hpp>
 
