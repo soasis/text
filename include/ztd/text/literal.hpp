@@ -51,7 +51,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		inline constexpr __idk_detail::__encoding_id __literal_id
+		inline constexpr text_encoding_id __literal_id
 			= __idk_detail::__to_encoding_id(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_GET_I_());
 		using __literal = decltype(__select_encoding<char, __literal_id>());
 	} // namespace __txt_detail
@@ -69,7 +69,7 @@ namespace ztd { namespace text {
 		/// UTF-EBCDIC, or GB18030.
 		//////
 		using is_unicode_encoding
-			= ::std::integral_constant<bool, __idk_detail::__is_unicode_encoding_id(__txt_detail::__literal_id)>;
+			= ::std::integral_constant<bool, is_unicode_encoding_id(__txt_detail::__literal_id)>;
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.

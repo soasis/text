@@ -175,7 +175,7 @@ namespace ztd { namespace text {
 				cnc_mcerror __err
 					= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
 				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OKAY) {
+					if (__err != CNC_MCERROR_OK) {
 						basic_any_punycode __self {};
 						return __error_handler(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, __typed_in_ptr,
@@ -213,7 +213,7 @@ namespace ztd { namespace text {
 				cnc_mcerror __err
 					= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
 				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OKAY) {
+					if (__err != CNC_MCERROR_OK) {
 						basic_any_punycode __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
@@ -296,7 +296,7 @@ namespace ztd { namespace text {
 				cnc_mcerror __err
 					= __encode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
 				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OKAY) {
+					if (__err != CNC_MCERROR_OK) {
 						basic_any_punycode __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, __typed_in_ptr,
@@ -334,7 +334,7 @@ namespace ztd { namespace text {
 				cnc_mcerror __err
 					= __encode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
 				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OKAY) {
+					if (__err != CNC_MCERROR_OK) {
 						basic_any_punycode __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),

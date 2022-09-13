@@ -103,8 +103,8 @@ namespace ztd { namespace text {
 	};
 
 	// We must make sure the C and C++ error definitions line up here, if only for the benefit of this library.
-	static_assert(CNC_MCERROR_OKAY == ztd::to_underlying(encoding_error::ok),
-		"the encoding_error::ok value does not make the CNC_MCERROR_OKAY value");
+	static_assert(CNC_MCERROR_OK == ztd::to_underlying(encoding_error::ok),
+		"the encoding_error::ok value does not make the CNC_MCERROR_OK value");
 	static_assert(CNC_MCERROR_INVALID_SEQUENCE == ztd::to_underlying(encoding_error::invalid_sequence),
 		"the encoding_error::invalid_sequence value does not make the CNC_MCERROR_INVALID_SEQUENCE value");
 	static_assert(CNC_MCERROR_INCOMPLETE_INPUT == ztd::to_underlying(encoding_error::incomplete_sequence),

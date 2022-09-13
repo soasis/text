@@ -1,0 +1,76 @@
+{
+	"name": "Function Forms",
+	"scale": {
+		"type": "relative",
+		"to": "base"
+	},
+	"categories": [
+		{
+			"name": "Transform 2 Spans, Return Error Information",
+			"pattern": ".*",
+			"ascending": false,
+			"description": "Attempting to measure how the form of a function (pointers vs. sizes) changes affects repetitive use."
+		}
+	],
+	"data_groups": [
+		{
+			"name": "err(T**, size_t*, T**, size_t*)",
+			"pattern": "err_ptrptr_ptrsize_ptrptr_ptrsize",
+			"description": "An indivisible unit conversion using output pointers for the data and its size."
+		},
+		{
+			"name": "err(T**, T*, T**, T*)",
+			"pattern": "err_ptrptr_ptr_ptrptr_ptr",
+			"description": "An indivisible unit conversion using output pointers for the data and its size and returning an error code."
+		},
+		{
+			"name": "{ err, ptr, size }(T*, T*, T*, T*)",
+			"pattern": "structsize_ptr_ptr_ptr_ptr",
+			"description": "An indivisible unit conversion returning a structure which contains the error code with a pointer/size pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans."
+		},
+		{
+			"name": "{ err, ptr, size }(T*, size_t, T*, size_t)",
+			"pattern": "structsize_ptr_size_ptr_size",
+			"description": "An indivisible unit conversion returning a structure which contains the error code with a pointer/size pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans."
+		},
+		{
+			"name": "{ err, ptr, ptr }(T*, T*, T*, T*)",
+			"pattern": "structptr_ptr_ptr_ptr_ptr",
+			"description": "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans."
+		},
+		{
+			"name": "{ err, ptr, ptr }(T*, size_t, T*, size_t)",
+			"pattern": "structptr_ptr_size_ptr_size",
+			"description": "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans."
+		}
+	],
+	"data_labels": [
+		{
+			"name": "real time",
+			"id": "real_time",
+			"format": "clock",
+			"primary": true,
+			"description": "The amount of elapsed time in the real world; also known as \"wall clock\" time."
+		},
+		{
+			"name": "cpu time",
+			"id": "cpu_time",
+			"format": "clock",
+			"description": "The amount of elapsed time if work done was laid out in linear time and did not have concurrency, parallelization, or multithreading in use."
+		}
+	],
+	"remove_suffixes": [
+		",",
+		"_"
+	],
+	"remove_prefixes": [
+		",",
+		"_"
+	],
+	"sources": [
+		{
+			"file": "benchmarks.json",
+			"required": false
+		}
+	]
+}

@@ -113,7 +113,7 @@ namespace ztd { namespace text {
 	using execution_t =
 #if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 		__txt_impl::__execution_cuchar
-#elif ZTD_IS_ON(ZTD_TEXT_ICONV)
+#elif ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
 		__txt_impl::__execution_iconv
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS)
 		__txt_impl::__execution_mac_os
@@ -125,7 +125,7 @@ namespace ztd { namespace text {
 	using wide_execution_t =
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 		__txt_impl::__wide_execution_windows
-#elif ZTD_IS_ON(ZTD_TEXT_ICONV)
+#elif ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
 		__txt_impl::__iconv_wide_execution
 #elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE)
 		__txt_impl::__wide_execution_iso10646

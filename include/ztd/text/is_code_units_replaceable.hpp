@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 	: public is_detected<__txt_detail::__detect_is_code_units_maybe_replaceable, _Type, _Args...> { };
 
 	//////
-	/// @brief A @c \::value alias for ztd::text::is_code_units_maybe_replaceable
+	/// @brief A `::value` alias for ztd::text::is_code_units_maybe_replaceable
 	template <typename _Type, typename... _Args>
 	inline constexpr bool is_code_units_maybe_replaceable_v = is_code_units_maybe_replaceable<_Type, _Args...>::value;
 
@@ -80,7 +80,7 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _Type The type to check for the proper function call.
 	///
-	/// @remarks The @c \::value boolean is true if the given `_Type` has a function named @c
+	/// @remarks The `::value` boolean is true if the given `_Type` has a function named @c
 	/// replacement_code_units() on it that can be called from a `const` -qualified `_Type` which returns
 	/// a contiguous view of code units.
 	//////
@@ -89,7 +89,7 @@ namespace ztd { namespace text {
 	: public is_detected<__txt_detail::__detect_is_code_units_replaceable, _Type, _Args...> { };
 
 	//////
-	/// @brief A @c \::value alias for ztd::text::is_code_units_replaceable
+	/// @brief A `::value` alias for ztd::text::is_code_units_replaceable
 	template <typename _Type, typename... _Args>
 	inline constexpr bool is_code_units_replaceable_v = is_code_units_replaceable<_Type, _Args...>::value;
 

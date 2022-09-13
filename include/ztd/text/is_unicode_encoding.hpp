@@ -35,6 +35,9 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/is_unicode_code_point.hpp>
+
+#include <ztd/idk/encoding_name.hpp>
 #include <ztd/idk/type_traits.hpp>
 
 #include <type_traits>
@@ -59,6 +62,18 @@ namespace ztd { namespace text {
 		struct __is_unicode_encoding_sfinae<_Type,
 			::std::enable_if_t<is_detected_v<__detect_is_unicode_encoding, _Type>>>
 		: ::std::integral_constant<bool, _Type::is_unicode_encoding::value> { };
+
+		template <typename _Type>
+		using __detect_decoded_id = decltype(_Type::decoded_id);
+
+		template <typename _Type, typename = void>
+		struct __decoded_id_sfinae
+		: ::std::integral_constant<text_encoding_id,
+			  is_unicode_code_point_v<_Type> ? text_encoding_id::utf32 : text_encoding_id::unknown> { };
+
+		template <typename _Type>
+		struct __decoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_decoded_id, _Type>>>
+		: ::std::integral_constant<text_encoding_id, _Type::decoded_id> { };
 	} // namespace __txt_detail
 
 	//////
@@ -79,7 +94,7 @@ namespace ztd { namespace text {
 	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c \::value alias for ztd::text::is_unicode_encoding.
+	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
 	template <typename _Type>
 	inline constexpr bool is_unicode_encoding_v = is_unicode_encoding<_Type>::value;
 
@@ -105,6 +120,23 @@ namespace ztd { namespace text {
 			return false;
 		}
 	}
+
+	//////
+	/// @brief Returns the ID of what an encoding decodes into.
+	///
+	/// @tparam _Type The encoding type to retrieve the ID from.
+	///
+	/// @remarks If the encoding type does not have a `static constexpr text_encoding_id` member with the name
+	/// `decoded_id`, it will assume it decodes to UTF-32 code points if the ztd::text::code_point_t type matches
+	/// ztd::text::is_unicode_code_point_v. Otherwise, it will return ztd::text_encoding_id::unknown.
+	//////
+	template <typename _Type>
+	class decoded_id : public __txt_detail::__decoded_id_sfinae<_Type> { };
+
+	//////
+	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
+	template <typename _Type>
+	inline constexpr bool decoded_id_v = decoded_id<_Type>::value;
 
 	//////
 	/// @}

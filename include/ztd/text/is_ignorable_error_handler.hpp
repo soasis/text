@@ -151,7 +151,7 @@ namespace ztd { namespace text {
 	class is_ignorable_error_handler : public __txt_detail::__is_ignorable_error_handler_sfinae<_Type> { };
 
 	//////
-	/// @brief A @c \::value alias for ztd::text::is_ignorable_error_handler.
+	/// @brief A `::value` alias for ztd::text::is_ignorable_error_handler.
 	template <typename _Type>
 	inline constexpr bool is_ignorable_error_handler_v = is_ignorable_error_handler<_Type>::value;
 
@@ -175,7 +175,7 @@ namespace ztd { namespace text {
 	: public __txt_detail::__decode_error_handler_always_returns_ok<_Encoding, _ErrorHandler> { };
 
 	//////
-	/// @brief A @c \::value alias for ztd::text::decode_error_handler_always_returns_ok_v
+	/// @brief A `::value` alias for ztd::text::decode_error_handler_always_returns_ok_v
 	template <typename _Encoding, typename _ErrorHandler>
 	inline constexpr bool decode_error_handler_always_returns_ok_v
 		= decode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;
@@ -187,7 +187,7 @@ namespace ztd { namespace text {
 	: public __txt_detail::__encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler> { };
 
 	//////
-	/// @brief A @c \::value alias for ztd::text::decode_error_handler_always_returns_ok_v
+	/// @brief A `::value` alias for ztd::text::decode_error_handler_always_returns_ok_v
 	template <typename _Encoding, typename _ErrorHandler>
 	inline constexpr bool encode_error_handler_always_returns_ok_v
 		= encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;

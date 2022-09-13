@@ -134,6 +134,7 @@ FetchContent_Declare(ztd.static_containers
 FetchContent_MakeAvailable(ztd.static_containers)
 
 # ztd.cuneicode
+set(ZTD_CUNEICODE_SIMDUTF_SHARED ${ZTD_TEXT_BENCHMARKS})
 FetchContent_Declare(ztd.cuneicode
 	GIT_REPOSITORY https://github.com/soasis/cuneicode.git
 	GIT_TAG main)
@@ -144,6 +145,10 @@ FetchContent_Declare(ztd.platform
 	GIT_REPOSITORY https://github.com/soasis/platform.git
 	GIT_TAG main)
 FetchContent_MakeAvailable(ztd.platform)
+
+if (ZTD_TEXT_BENCHAMRKS OR ZTD_TEXT_GENERATE_SINGLE OR ZTD_TEXT_DOCUMENTATION)
+	find_package(Python3 REQUIRED COMPONENTS Interpreter)
+endif()
 
 # Main library declarations
 file(GLOB_RECURSE ztd.text.includes CONFIGURE_DEPENDS include/*.hpp)
@@ -185,6 +190,38 @@ if(ZTD_TEXT_GENERATE_SINGLE)
 endif()
 
 # # Benchmarks, Tests, Examples and Documentation
+# Example and/or benchmark dependencies
+if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
+	# # Fetch dependencies for either benchmarks and/or examples
+	function(simdutf_dependency_jail)
+		# simdutf
+		set(SIMDUTF_BENCHMARKS OFF CACHE INTERNAL "")
+		set(BUILD_TESTING OFF CACHE INTERNAL "")
+		FetchContent_Declare(
+			simdutf
+			GIT_REPOSITORY https://github.com/simdutf/simdutf
+		)
+		FetchContent_MakeAvailable(simdutf)
+	endfunction()
+	simdutf_dependency_jail()
+
+	function(boost_text_dependency_jail)
+		# boost.text
+		set(BOOST_TEXT_PERF OFF CACHE INTERNAL "")
+		set(BOOST_TEXT_EXAMPLES OFF CACHE INTERNAL "")
+		set(BOOST_TEXT_TESTS OFF CACHE INTERNAL "")
+		set(BOOST_TEXT_FETCH_BOOST ON CACHE INTERNAL "")
+		set(BOOST_TEXT_INSTALL OFF CACHE INTERNAL "")
+		set(BUILD_TESTING OFF CACHE INTERNAL "")
+		FetchContent_Declare(
+			boost.text
+			GIT_REPOSITORY https://github.com/ThePhD/text
+		)
+		FetchContent_MakeAvailable(boost.text)
+	endfunction()
+	boost_text_dependency_jail()
+endif()
+
 if(ZTD_TEXT_TESTS)
 	include(CTest)
 	add_subdirectory(tests)

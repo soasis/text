@@ -35,6 +35,8 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/decode.hpp>
+#include <ztd/text/encode.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/error_handler.hpp>
@@ -42,6 +44,8 @@
 #include <ztd/text/default_encoding.hpp>
 #include <ztd/text/transcode_result.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
+#include <ztd/text/is_redundant.hpp>
+#include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/text_tag.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
@@ -52,6 +56,7 @@
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
+#include <ztd/ranges/algorithm.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
@@ -178,20 +183,41 @@ namespace ztd { namespace text {
 				::std::forward<_FromErrorHandler>(__from_error_handler),
 				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		}
-		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_transcode_one, _Input,
-			                   _FromEncoding, _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
-			                   _ToState>) {
-			return __text_transcode_one(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-		}
 		else {
-			return basic_transcode_one_into(::std::forward<_Input>(__input),
-				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
-				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+			using _UFromEncoding     = remove_cvref_t<_FromEncoding>;
+			using _UToEncoding       = remove_cvref_t<_ToEncoding>;
+			using _UFromErrorHandler = remove_cvref_t<_FromErrorHandler>;
+			using _UToErrorHandler   = remove_cvref_t<_ToErrorHandler>;
+			if constexpr (is_decode_redundant_v<_UFromEncoding, _UToEncoding> // cf
+				&& is_encode_redundant_v<_UFromEncoding, _UToEncoding>       // cf
+				&& is_ignorable_error_handler_v<_UFromErrorHandler>          // cf
+				&& is_ignorable_error_handler_v<_UToErrorHandler>) {
+				// we can simply copy from the input to the output, no questions asked!
+				auto __result = ::ztd::ranges::__rng_detail::__copy(
+					::ztd::ranges::ranges_adl::adl_cbegin(::std::forward<_Input>(__input)),
+					::ztd::ranges::ranges_adl::adl_cend(__input),
+					::ztd::ranges::ranges_adl::adl_begin(::std::forward<_Output>(__output)),
+					::ztd::ranges::ranges_adl::adl_end(__output));
+				using _Result = ::ztd::text::__txt_detail::__reconstruct_transcode_result_t<decltype(__result.in),
+					decltype(__result.out), _FromState, _ToState>;
+				return _Result(::std::move(__result.in), ::std::move(__result.out), __from_state, __to_state);
+			}
+			else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_transcode_one, _Input,
+				                   _FromEncoding, _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler,
+				                   _FromState, _ToState>) {
+				return __text_transcode_one(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+					::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+					::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
+					::std::forward<_FromErrorHandler>(__from_error_handler),
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+			}
+			else {
+				return basic_transcode_one_into(::std::forward<_Input>(__input),
+					::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+					::std::forward<_ToEncoding>(__to_encoding),
+					::std::forward<_FromErrorHandler>(__from_error_handler),
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+			}
 		}
 	}
 

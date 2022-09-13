@@ -55,36 +55,36 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 
-		template <typename _CharType, __idk_detail::__encoding_id _Id>
+		template <typename _CharType, text_encoding_id _Id>
 		constexpr auto __select_encoding() {
-			if constexpr (_Id == __idk_detail::__encoding_id::__utf8) {
+			if constexpr (_Id == text_encoding_id::utf8) {
 				return basic_utf8<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__mutf8) {
+			else if constexpr (_Id == text_encoding_id::mutf8) {
 				return basic_mutf8<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__wtf8) {
+			else if constexpr (_Id == text_encoding_id::wtf8) {
 				return basic_wtf8<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__utf16) {
+			else if constexpr (_Id == text_encoding_id::utf16) {
 				return basic_utf16<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__utf16le) {
+			else if constexpr (_Id == text_encoding_id::utf16le) {
 				return basic_utf16_le<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__utf16be) {
+			else if constexpr (_Id == text_encoding_id::utf16be) {
 				return basic_utf16_be<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__utf32) {
+			else if constexpr (_Id == text_encoding_id::utf32) {
 				return basic_utf32<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__utf32le) {
+			else if constexpr (_Id == text_encoding_id::utf32le) {
 				return basic_utf32_le<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__utf32be) {
+			else if constexpr (_Id == text_encoding_id::utf32be) {
 				return basic_utf32_be<_CharType> {};
 			}
-			else if constexpr (_Id == __idk_detail::__encoding_id::__ascii) {
+			else if constexpr (_Id == text_encoding_id::ascii) {
 				return basic_ascii<_CharType> {};
 			}
 			else {

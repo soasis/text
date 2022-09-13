@@ -34,9 +34,7 @@ cmake_minimum_required(VERSION 3.13.0)
 
 # # # ztd.text single generation header
 # generate the single header if we can find the python3 interpreter
-find_package(PythonInterp 3)
-
-if (NOT PYTHONINTERP_FOUND)
+if (NOT Python3_Interpreter_FOUND)
 	message(FATAL_ERROR "ztd.text single header cannot be generated as python 3 has not been found: install or set the python 3 interpreter to generate the single header")
 endif()
 
@@ -44,7 +42,7 @@ endif()
 file(GLOB_RECURSE ztd.text.generated_header_sources LIST_DIRECTORIES false CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../include/**/*.*)
 add_custom_command(
 	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text"
-	COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/single.py" --input "${CMAKE_CURRENT_SOURCE_DIR}/../include" --output "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp"
+	COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/single.py" --input "${CMAKE_CURRENT_SOURCE_DIR}/../include" --output "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp"
 	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/single.py" "${ztd.text.generated_header_sources}"
 	OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text.hpp" "${CMAKE_CURRENT_BINARY_DIR}/include/ztd/text/forward.hpp")
 add_custom_target(ztd.text.single_header_generator ALL

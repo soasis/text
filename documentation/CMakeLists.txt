@@ -30,7 +30,6 @@
 
 # Dependencies
 find_package(Doxygen REQUIRED)
-find_package(Python3 REQUIRED)
 find_package(Sphinx QUIET)
 
 # For the install target and related directories

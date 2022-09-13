@@ -28,41 +28,31 @@
 #
 # ============================================================================>
 
-# # Boost.Text barely builds on Windows or MinGW, and you can't even
-# # include <boost/text/unencoded_rope.hpp> without graphemes somehow getting involved...
-# # So! We will do this later.
-
-#[[
 file(GLOB ztd.text.examples.boost_text.sources source/*.cpp)
 
 add_executable(ztd.text.examples.boost_text ${ztd.text.examples.boost_text.sources})
 target_compile_definitions(ztd.text.examples.boost_text
 	PRIVATE
-	ZTD_CXX_COMPILE_TIME_ENCODING_NAME="UTF-8"
-)
+		ZTD_CXX_COMPILE_TIME_ENCODING_NAME="UTF-8")
 target_compile_options(ztd.text.examples.boost_text
 	PRIVATE
-	${--utf8-literal-encoding}
-	${--utf8-source-encoding}
-	${--disable-permissive}
-	${--warn-pedantic}
-	${--warn-all}
-	${--warn-extra}
-	${--warn-errors})
+		${--utf8-literal-encoding}
+		${--utf8-source-encoding}
+		${--disable-permissive}
+		${--warn-pedantic}
+		${--warn-all}
+		${--warn-extra}
+		${--warn-errors})
 
 target_include_directories(ztd.text.examples.boost_text
 	PRIVATE
-	${Boost_INCLUDE_DIRS}
-	${CMAKE_CURRENT_BINARY_DIR}/Boost.Text-prefix/src/Boost.Text/include/
-)
-add_dependencies(ztd.text.examples.boost_text
-	Boost.Text
+		${Boost_INCLUDE_DIRS}
+		${CMAKE_CURRENT_BINARY_DIR}/Boost.Text-prefix/src/Boost.Text/include/
 )
 target_link_libraries(ztd.text.examples.boost_text
 	PRIVATE
-	ztd::text
-	${CMAKE_DL_LIBS}
+		ztd::text
+		Boost::text
+		${CMAKE_DL_LIBS}
 )
 add_test(NAME ztd.text.examples.boost_text COMMAND ztd.text.examples.boost_text)
-
-]]

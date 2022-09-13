@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		inline constexpr __idk_detail::__encoding_id __wide_literal_id
+		inline constexpr text_encoding_id __wide_literal_id
 			= __idk_detail::__to_encoding_id(ZTD_CXX_COMPILE_TIME_WIDE_ENCODING_NAME_GET_I_());
 		using __wide_literal = decltype(__select_encoding<wchar_t, __wide_literal_id>());
 	} // namespace __txt_detail
@@ -73,8 +73,8 @@ namespace ztd { namespace text {
 		/// @brief Whether or not this wide_literal_t encoding is a Unicode Transformation Format, such as
 		/// UTF-8, UTF-GB18030, UTF-16, or UTF-32.
 		//////
-		using is_unicode_encoding = ::std::integral_constant<bool,
-			__idk_detail::__is_unicode_encoding_id(__txt_detail::__wide_literal_id)>;
+		using is_unicode_encoding
+			= ::std::integral_constant<bool, is_unicode_encoding_id(__txt_detail::__wide_literal_id)>;
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
