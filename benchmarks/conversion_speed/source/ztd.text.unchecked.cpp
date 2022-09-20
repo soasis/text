@@ -29,6 +29,8 @@
 
 #include <benchmark/benchmark.h>
 
+#include <ztd.text_transcode_speed.hpp>
+
 #include <ztd/text.hpp>
 #include <barrier/barrier.h>
 

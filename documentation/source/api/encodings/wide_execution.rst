@@ -36,6 +36,7 @@ This is the locale-based, wide runtime encoding. It uses a number of compile-tim
 Currently, the hierachy of behaviors is like so:
 
 - If the platform is Windows, then it assumes this is :doc:`UTF-16 </api/encodings/utf16>`;
+- If the platform is MacOS or ``__STDC_ISO10646__``, then it assumed this is :doc:`UTF-32 </api/encodings/utf32>` of some kind;
 - Otherwise, cuneicode is used.
 
 .. warning::
@@ -46,7 +47,7 @@ Even if, on a given platform, it can be assumed to be a static encoding (e.g., A
 
 .. doxygenvariable:: ztd::text::wide_execution
 
-.. doxygentypedef:: ztd::text::wide_execution_t
+.. doxygenclass:: ztd::text::wide_execution_t
 
 
 
@@ -65,15 +66,14 @@ Internal Type
 	:members:
 
 
-.. Windows-based
-.. +++++++++++++
-.. 
-.. .. doxygenclass:: ztd::text::__txt_impl::__wide_execution_windows
-.. 	:members:
-
-
-MacOS-based
-+++++++++++
+MacOS-based / ``__STDC_ISO106464__``-based
+++++++++++++++++++++++++++++++++++++++++++
 
 .. doxygenclass:: ztd::text::__txt_impl::__wide_execution_iso10646
+	:members:
+
+Windows-based
++++++++++++++
+
+.. doxygenclass:: ztd::text::__txt_impl::__wide_execution_windows
 	:members:

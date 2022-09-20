@@ -80,14 +80,14 @@ namespace ztd { namespace text {
 			inline static constexpr ::std::size_t _MaxDrainSize = 64;
 
 			void _M_reset_state(::ztd::plat::icnv::descriptor __desc) const noexcept {
-				const auto& __iconv_functions = ztd::plat::icnv::functions();
+				const auto& __iconv_functions = ::ztd::plat::icnv::functions();
 				char __drain[_MaxDrainSize];
 				char* __p_drain                          = __drain;
 				const ::std::size_t __initial_drain_size = sizeof(__drain);
 				::std::size_t __drain_size               = __initial_drain_size;
 				const ::std::size_t __suggested_clear_result
-					= __base_t::_S_functions().__convert(__desc, nullptr, nullptr, &__p_drain, &__drain_size);
-				ZTD_TEXT_ASSERT(__suggested_clear_result == __txt_detail::__iconv::__conversion_success);
+					= __iconv_functions.convert(__desc, nullptr, nullptr, &__p_drain, &__drain_size);
+				ZTD_TEXT_ASSERT(__suggested_clear_result == ::ztd::plat::icnv::conversion_success);
 				if (__initial_drain_size != __drain_size) {
 					// there is a special sequence that will reset the conversion back to normal
 					char __faux_drain[_MaxDrainSize];
@@ -97,16 +97,16 @@ namespace ztd { namespace text {
 					char* __p_input                               = __drain;
 					const ::std::size_t __initial_input_size      = __initial_drain_size - __drain_size;
 					::std::size_t __input_size                    = __initial_input_size;
-					const ::std::size_t __clear_result            = __iconv_functions.__convert(
+					const ::std::size_t __clear_result            = __iconv_functions.convert(
 						           __desc, &__p_input, &__input_size, &__p_faux_drain, &__faux_drain_size);
-					ZTD_TEXT_ASSERT(__clear_result == __txt_detail::__iconv::__conversion_success);
+					ZTD_TEXT_ASSERT(__clear_result == ::ztd::plat::icnv::conversion_success);
 					ZTD_TEXT_ASSERT(__input_size == 0);
 				}
 				else {
 					// there is no special sequence: just erase it normally
 					const ::std::size_t __clear_result
-						= __iconv_functions.__convert(__desc, nullptr, nullptr, nullptr, nullptr);
-					ZTD_TEXT_ASSERT(__clear_result == __txt_detail::__iconv::__conversion_success);
+						= __iconv_functions.convert(__desc, nullptr, nullptr, nullptr, nullptr);
+					ZTD_TEXT_ASSERT(__clear_result == ::ztd::plat::icnv::conversion_success);
 				}
 			}
 
@@ -166,9 +166,9 @@ namespace ztd { namespace text {
 					ranges::__rng_detail::__copy_n_unsafe(__input + 0, __max_input_size, __input_write_bom + 0);
 					char* __p_input_write_bom              = __input_write_bom;
 					::std::size_t __input_write_bom_size   = __from_size;
-					const ::std::size_t __write_bom_result = __base_t::_S_functions().__convert(
+					const ::std::size_t __write_bom_result = ::ztd::plat::icnv::functions().convert(
 						__desc, &__p_input_write_bom, &__input_write_bom_size, &__p_drain, &__drain_size);
-					if (__write_bom_result == __txt_detail::__iconv::__conversion_success) {
+					if (__write_bom_result == ::ztd::plat::icnv::conversion_success) {
 						// we found something! Thank god...
 						return true;
 					}
@@ -199,8 +199,8 @@ namespace ztd { namespace text {
 				::ztd::plat::icnv::descriptor _M_conv_descriptor;
 
 				decode_state(const __basic_iconv& __source) noexcept
-				: _M_conv_descriptor(__txt_detail::__iconv::__failure_descriptor) {
-					this->_M_conv_descriptor = __source._S_functions().__open(
+				: _M_conv_descriptor(::ztd::plat::icnv::failure_descriptor) {
+					this->_M_conv_descriptor = ::ztd::plat::icnv::functions().open(
 						__source._M_to_name.c_str(), __source._M_from_name.c_str());
 					if (this->_M_is_valid()) {
 						__source._M_reset_descriptor(
@@ -213,9 +213,9 @@ namespace ztd { namespace text {
 				}
 
 				~decode_state() {
-					if (this->_M_conv_descriptor != __txt_detail::__iconv::__failure_descriptor) {
-						int __close_result = __base_t::_S_functions().__close(this->_M_conv_descriptor);
-						ZTD_TEXT_ASSERT(__close_result == __txt_detail::__iconv::__close_success);
+					if (this->_M_conv_descriptor != ::ztd::plat::icnv::failure_descriptor) {
+						int __close_result = ::ztd::plat::icnv::functions().close(this->_M_conv_descriptor);
+						ZTD_TEXT_ASSERT(__close_result == ::ztd::plat::icnv::close_success);
 					}
 				}
 			};
@@ -230,8 +230,8 @@ namespace ztd { namespace text {
 				::ztd::plat::icnv::descriptor _M_conv_descriptor;
 
 				encode_state(const __basic_iconv& __source) noexcept
-				: _M_conv_descriptor(__txt_detail::__iconv::__failure_descriptor) {
-					this->_M_conv_descriptor = __source._S_functions().__open(
+				: _M_conv_descriptor(::ztd::plat::icnv::failure_descriptor) {
+					this->_M_conv_descriptor = ::ztd::plat::icnv::functions().open(
 						__source._M_from_name.c_str(), __source._M_to_name.c_str());
 					if (this->_M_is_valid()) {
 						__source._M_reset_descriptor(
@@ -244,9 +244,9 @@ namespace ztd { namespace text {
 				}
 
 				~encode_state() {
-					if (this->_M_conv_descriptor != __txt_detail::__iconv::__failure_descriptor) {
-						int __close_result = __base_t::_S_functions().__close(this->_M_conv_descriptor);
-						ZTD_TEXT_ASSERT(__close_result == __txt_detail::__iconv::__close_success);
+					if (this->_M_conv_descriptor != ::ztd::plat::icnv::failure_descriptor) {
+						int __close_result = ::ztd::plat::icnv::functions().close(this->_M_conv_descriptor);
+						ZTD_TEXT_ASSERT(__close_result == ::ztd::plat::icnv::close_success);
 					}
 				}
 			};
@@ -356,9 +356,9 @@ namespace ztd { namespace text {
 					++__in_it;
 					::std::size_t __read_buffer_size = (__read_index + 1) * sizeof(__read_buffer[0]);
 					auto* __read_pointer             = reinterpret_cast<char*>(::std::addressof(__read_buffer[0]));
-					::std::size_t __attempted_write_result
-						= _S_functions().__convert(__state._M_conv_descriptor, ::std::addressof(__read_pointer),
-						     &__read_buffer_size, ::std::addressof(__write_pointer), &__write_buffer_size);
+					::std::size_t __attempted_write_result = ::ztd::plat::icnv::functions().convert(
+						__state._M_conv_descriptor, ::std::addressof(__read_pointer), &__read_buffer_size,
+						::std::addressof(__write_pointer), &__write_buffer_size);
 					if (__attempted_write_result == ::ztd::plat::icnv::conversion_failure) {
 						ZTD_TEXT_ASSERT(errno != EBADF && errno != E2BIG);
 						switch (errno) {
@@ -519,9 +519,9 @@ namespace ztd { namespace text {
 					const ::std::size_t __initial_read_buffer_size = (__read_index + 1) * sizeof(__read_buffer[0]);
 					::std::size_t __read_buffer_size               = __initial_read_buffer_size;
 					auto* __read_pointer = reinterpret_cast<char*>(::std::addressof(__read_buffer[0]));
-					::std::size_t __attempted_write_result
-						= _S_functions().__convert(__state._M_conv_descriptor, ::std::addressof(__read_pointer),
-						     &__read_buffer_size, ::std::addressof(__write_pointer), &__write_buffer_size);
+					::std::size_t __attempted_write_result = ::ztd::plat::icnv::functions().convert(
+						__state._M_conv_descriptor, ::std::addressof(__read_pointer), &__read_buffer_size,
+						::std::addressof(__write_pointer), &__write_buffer_size);
 					if (__attempted_write_result == ::ztd::plat::icnv::conversion_failure) {
 						ZTD_TEXT_ASSERT(errno != EBADF && errno != E2BIG);
 						switch (errno) {

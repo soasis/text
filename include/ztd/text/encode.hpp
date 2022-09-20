@@ -156,13 +156,13 @@ namespace ztd { namespace text {
 		_ErrorHandler&& __error_handler, _State& __state) {
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_encode, _Input, _Encoding, _Output, _ErrorHandler,
 			              _State>) {
-			return text_encode(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+			return text_encode(::ztd::tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_encode, _Input, _Encoding, _Output,
 			                   _ErrorHandler, _State>) {
-			return __text_encode(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+			return __text_encode(::ztd::tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}

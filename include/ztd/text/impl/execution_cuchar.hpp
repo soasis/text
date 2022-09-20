@@ -115,10 +115,10 @@ namespace ztd { namespace text {
 		/// is typically associated with the locale, which is tied to the C standard library's setlocale function.
 		///
 		/// @remarks Use of this type is subject to the C Standard Library or platform defaults. Some locales (such as
-		/// the Big5 Hong King Supplementary Character Set (Big5-HKSCS)) are broken when accessed without @c
-		/// ZTD_TEXT_USE_CUNEICODE beingdefined, due to fundamental design issues in the C Standard Library and bugs
-		/// in glibc/musl libc's current locale encoding support. On Apple, this is cuurrently assumed to be UTF-8
-		/// since they do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
+		/// the Big5 Hong King Supplementary Character Set (Big5-HKSCS)) are broken due to fundamental design issues
+		/// in the C Standard Library and bugs in glibc/musl libc's current locale encoding support. On Apple, this is
+		/// cuurrently assumed to be UTF-8 since they do not support the @c \<cuchar\> or @c
+		/// \<uchar.h\> headers.
 		//////
 		class __execution_cuchar {
 		public:
@@ -220,8 +220,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
 			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
-			/// implementation and what it chooses. If `ZTD_TEXT_USE_CUNEICODE` is defined, the ztd.cuneicode
-			/// library may be used to fulfill this functionality.
+			/// implementation and what it chooses.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
@@ -424,8 +423,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
 			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
-			/// implementation and what it chooses. If `ZTD_TEXT_USE_CUNEICODE` is defined, the ztd.cuneicode
-			/// library may be used to fulfill this functionality.
+			/// implementation and what it chooses.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not

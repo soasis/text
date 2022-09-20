@@ -41,9 +41,9 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-#include <ztd/text/text_tag.hpp>
+#include <ztd/text/extension.hpp>
 
-
+#include <ztd/idk/tag.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 		::std::enable_if_t<::std::is_same_v<remove_cvref_t<_FromEncoding>,
 		     remove_cvref_t<_ToEncoding>>>* = nullptr>
 	constexpr auto __text_transcode_one(
-		text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>>,
+		::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>>,
 		_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		decode_state_t<remove_cvref_t<_FromEncoding>>& __from_state,
@@ -79,7 +79,7 @@ namespace ztd { namespace text {
 		::std::enable_if_t<::std::is_same_v<remove_cvref_t<_FromEncoding>,
 		     remove_cvref_t<_ToEncoding>>>* = nullptr>
 	constexpr auto __text_transcode(
-		text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>>,
+		::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>>,
 		_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		decode_state_t<remove_cvref_t<_FromEncoding>>& __from_state,

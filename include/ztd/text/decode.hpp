@@ -41,7 +41,6 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
-#include <ztd/text/text_tag.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
@@ -51,6 +50,7 @@
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
+#include <ztd/idk/tag.hpp>
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
@@ -158,13 +158,13 @@ namespace ztd { namespace text {
 		_ErrorHandler&& __error_handler, _State& __state) {
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_decode, _Input, _Encoding, _Output, _ErrorHandler,
 			              _State>) {
-			return text_decode(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+			return text_decode(::ztd::tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_decode, _Input, _Encoding, _Output,
 			                   _ErrorHandler, _State>) {
-			return __text_decode(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+			return __text_decode(::ztd::tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
@@ -184,10 +184,10 @@ namespace ztd { namespace text {
 			using _UEncoding     = remove_cvref_t<_Encoding>;
 			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
 			constexpr ::std::size_t __intermediate_buffer_max
-				= ZTD_TEXT_INTERMEDIATE_DECODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>)
+				= ZTD_TEXT_INTERMEDIATE_DECODE_BUFFER_SIZE_I_(code_point_t<_UEncoding>)
 				     < max_code_points_v<_UEncoding>
 				? max_code_points_v<_UEncoding>
-				: ZTD_TEXT_INTERMEDIATE_DECODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>);
+				: ZTD_TEXT_INTERMEDIATE_DECODE_BUFFER_SIZE_I_(code_point_t<_UEncoding>);
 			using _IntermediateValueType = code_point_t<_UEncoding>;
 			using _IntermediateInput     = __string_view_or_span_or_reconstruct_t<_Input>;
 			using _InitialOutput         = ::ztd::span<_IntermediateValueType, __intermediate_buffer_max>;

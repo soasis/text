@@ -44,6 +44,20 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	namespace __txt_detail {
+		template <typename _FromEncoding, typename _ToEncoding>
+		inline constexpr bool __is_decode_same_as_encode_v
+			= decoded_id_v<_FromEncoding> == encoded_id_v<_ToEncoding>              // cf
+			     && decoded_id_v<_FromEncoding> == decoded_id_v<_ToEncoding>        // cf
+			     && decoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown // cf
+			     && encoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
+
+		template <typename _FromEncoding, typename _ToEncoding>
+		inline constexpr bool __is_already_decoded_v = encoded_id_v<_FromEncoding> == decoded_id_v<_ToEncoding> // cf
+			     && decoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown                            // cf
+			     && encoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
+	} // namespace __txt_detail
+
 	//////
 	/// @brief Whether or not the decode encoding is
 	template <typename _From, typename _To>
@@ -62,7 +76,8 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A `::value` alias for `ztd::text::is_encode_redundant<_From, _To>`.
 	template <typename _From, typename _To>
-	inline constexpr bool is_encode_redundant_v = is_encode_redundant<_From, _To>::value;
+	inline constexpr bool is_encode_redundant_v
+		= is_encode_redundant<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>::value;
 
 	//////
 	/// @}

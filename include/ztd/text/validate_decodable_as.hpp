@@ -41,12 +41,14 @@
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/pivot.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
+#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
+#include <ztd/idk/tag.hpp>
 
 #include <algorithm>
 #include <string_view>
@@ -92,7 +94,7 @@ namespace ztd { namespace text {
 			using _Result = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
-					text_tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
+					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
@@ -113,7 +115,7 @@ namespace ztd { namespace text {
 			                   _Encoding, _DecodeState>) {
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
-					text_tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
+					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
@@ -134,7 +136,7 @@ namespace ztd { namespace text {
 			                   _WorkingInput, _Encoding, _DecodeState, _EncodeState>) {
 			for (;;) {
 				auto __result = __text_validate_decodable_as_one(
-					text_tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
+					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
@@ -155,7 +157,7 @@ namespace ztd { namespace text {
 			                   _WorkingInput, _Encoding, _DecodeState>) {
 			for (;;) {
 				auto __result = __text_validate_decodable_as_one(
-					text_tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
+					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
@@ -180,10 +182,11 @@ namespace ztd { namespace text {
 			::ztd::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
 			_CodeUnit __output_storage[max_code_units_v<_UEncoding>] {};
 			::ztd::span<_CodeUnit, max_code_units_v<_UEncoding>> __output(__output_storage);
-
+			pivot<::ztd::span<_CodePoint, max_code_points_v<_UEncoding>>> __pivot { __intermediate,
+				encoding_error::ok };
 			for (;;) {
 				auto __stateless_validate_result = __txt_detail::__basic_validate_decodable_as_one(
-					__working_input, __encoding, __output, __decode_state, __encode_state, __intermediate);
+					__working_input, __encoding, __output, __decode_state, __encode_state, __pivot);
 				if (!__stateless_validate_result.valid) {
 					return _Result(
 						ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
@@ -222,26 +225,26 @@ namespace ztd { namespace text {
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as, _Input, _Encoding,
 			              _DecodeState>) {
-			return text_validate_decodable_as(text_tag<remove_cvref_t<_Encoding>> {},
+			return text_validate_decodable_as(::ztd::tag<remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state,
 				__encode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as, _Input, _Encoding,
 			                   _DecodeState>) {
 			(void)__encode_state;
-			return text_validate_decodable_as(text_tag<remove_cvref_t<_Encoding>> {},
+			return text_validate_decodable_as(::ztd::tag<remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as, _Input,
 			                   _Encoding, _DecodeState>) {
-			return __text_validate_decodable_as(text_tag<remove_cvref_t<_Encoding>> {},
+			return __text_validate_decodable_as(::ztd::tag<remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state,
 				__encode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as, _Input,
 			                   _Encoding, _DecodeState>) {
 			(void)__encode_state;
-			return __text_validate_decodable_as(text_tag<remove_cvref_t<_Encoding>> {},
+			return __text_validate_decodable_as(::ztd::tag<remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else {
@@ -269,12 +272,12 @@ namespace ztd { namespace text {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as, _Input, _Encoding,
 			              _DecodeState>) {
-			return text_validate_decodable_as(text_tag<remove_cvref_t<_Encoding>> {},
+			return text_validate_decodable_as(::ztd::tag<remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as, _Input,
 			                   _Encoding, _DecodeState>) {
-			return __text_validate_decodable_as(text_tag<remove_cvref_t<_Encoding>> {},
+			return __text_validate_decodable_as(::ztd::tag<remove_cvref_t<_Encoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __decode_state);
 		}
 		else {

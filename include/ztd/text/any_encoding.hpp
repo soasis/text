@@ -53,14 +53,15 @@
 #include <ztd/text/validate_encodable_as.hpp>
 #include <ztd/text/count_as_encoded.hpp>
 #include <ztd/text/count_as_decoded.hpp>
-#include <ztd/text/text_tag.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/idk/ebco.hpp>
-#include <ztd/ranges/range.hpp>
-#include <ztd/ranges/adl.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
+#include <ztd/idk/tag.hpp>
+#include <ztd/idk/text_encoding_id.hpp>
+#include <ztd/ranges/range.hpp>
+#include <ztd/ranges/adl.hpp>
 
 #include <cstdint>
 #include <cstddef>
@@ -164,6 +165,14 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
 		static inline constexpr ::std::size_t max_code_units = _MaxCodeUnits;
+		//////
+		/// @brief The decoded id. Because this is a type-erased encoding, anything can come out: therefore, it is set
+		/// to "unknown" at all times.
+		static inline constexpr ::ztd::text_encoding_id decoded_id = ::ztd::text_encoding_id::unknown;
+		//////
+		/// @brief The encoded id. Because this is a type-erased encoding, anything can come out: therefore, it is set
+		/// to "unknown" at all times.
+		static inline constexpr ::ztd::text_encoding_id encoded_id = ::ztd::text_encoding_id::unknown;
 
 	private:
 		using __decode_result                = decode_result<_DecodeCodeUnits, _DecodeCodePoints, decode_state>;
@@ -911,7 +920,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _Output, typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_decode(text_tag<any_encoding_with>, _DecodeCodeUnits __input,
+		constexpr friend auto __text_decode(::ztd::tag<any_encoding_with>, _DecodeCodeUnits __input,
 			type_identity_t<const any_encoding_with&> __encoding, _Output&& __output,
 			_ErrorHandler&& __error_handler, _State& __state) {
 			return __encoding.__decode(::std::move(__input), ::std::forward<_Output>(__output),
@@ -924,7 +933,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _Output, typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_encode(text_tag<any_encoding_with>, _EncodeCodePoints __input,
+		constexpr friend auto __text_encode(::ztd::tag<any_encoding_with>, _EncodeCodePoints __input,
 			type_identity_t<const any_encoding_with&> __encoding, _Output&& __output,
 			_ErrorHandler&& __error_handler, _State& __state) {
 			return __encoding.__encode(::std::move(__input), ::std::forward<_Output>(__output),
@@ -937,8 +946,8 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _EncodeState>
-		constexpr friend auto __text_validate_encodable_as_one(text_tag<any_encoding_with>, _DecodeCodeUnits __input,
-			type_identity_t<const any_encoding_with&> __encoding, _EncodeState& __state) {
+		constexpr friend auto __text_validate_encodable_as_one(::ztd::tag<any_encoding_with>,
+			_DecodeCodeUnits __input, type_identity_t<const any_encoding_with&> __encoding, _EncodeState& __state) {
 			return __encoding.__validate_encodable_as_one(::std::move(__input), __state);
 		}
 
@@ -948,8 +957,8 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _DecodeState>
-		constexpr friend auto __text_validate_decodable_as_one(text_tag<any_encoding_with>, _EncodeCodePoints __input,
-			type_identity_t<const any_encoding_with&> __encoding, _DecodeState& __state) {
+		constexpr friend auto __text_validate_decodable_as_one(::ztd::tag<any_encoding_with>,
+			_EncodeCodePoints __input, type_identity_t<const any_encoding_with&> __encoding, _DecodeState& __state) {
 			return __encoding.__validate_decodable_as_one(::std::move(__input), __state);
 		}
 
@@ -959,7 +968,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _EncodeState>
-		constexpr friend auto __text_validate_encodable_as(text_tag<any_encoding_with>, _DecodeCodeUnits __input,
+		constexpr friend auto __text_validate_encodable_as(::ztd::tag<any_encoding_with>, _DecodeCodeUnits __input,
 			type_identity_t<const any_encoding_with&> __encoding, _EncodeState& __state) {
 			return __encoding.__validate_encodable_as(::std::move(__input), __state);
 		}
@@ -970,7 +979,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _Input, typename _DecodeState>
-		constexpr friend auto __text_validate_decodable_as(text_tag<any_encoding_with>, _EncodeCodePoints __input,
+		constexpr friend auto __text_validate_decodable_as(::ztd::tag<any_encoding_with>, _EncodeCodePoints __input,
 			type_identity_t<const any_encoding_with&> __encoding, _DecodeState& __state) {
 			return __encoding.__validate_decodable_as(::std::move(__input), __state);
 		}
@@ -981,7 +990,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_as_encoded_one(text_tag<any_encoding_with>, _EncodeCodePoints __input,
+		constexpr friend auto __text_count_as_encoded_one(::ztd::tag<any_encoding_with>, _EncodeCodePoints __input,
 			type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			return __encoding.__count_as_encoded_one(
 				::std::move(__input), ::std::forward<_ErrorHandler>(__error_handler), __state);
@@ -993,7 +1002,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_as_decoded_one(text_tag<any_encoding_with>, _DecodeCodeUnits __input,
+		constexpr friend auto __text_count_as_decoded_one(::ztd::tag<any_encoding_with>, _DecodeCodeUnits __input,
 			type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			return __encoding.__count_as_decoded_one(
 				::std::move(__input), ::std::forward<_ErrorHandler>(__error_handler), __state);
@@ -1005,7 +1014,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_as_encoded(text_tag<any_encoding_with>, _EncodeCodePoints __input,
+		constexpr friend auto __text_count_as_encoded(::ztd::tag<any_encoding_with>, _EncodeCodePoints __input,
 			type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			return __encoding.__count_as_encoded(::std::move(__input), ::std::move(__error_handler), __state);
 		}
@@ -1016,7 +1025,7 @@ namespace ztd { namespace text {
 		/// @brief Extension point hooks for the implementation-side only.
 		//////
 		template <typename _ErrorHandler, typename _State>
-		constexpr friend auto __text_count_as_decoded(text_tag<any_encoding_with>, _DecodeCodeUnits __input,
+		constexpr friend auto __text_count_as_decoded(::ztd::tag<any_encoding_with>, _DecodeCodeUnits __input,
 			type_identity_t<const any_encoding_with&> __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 			return __encoding.__count_as_decoded(
 				::std::move(__input), ::std::forward<_ErrorHandler>(__error_handler), __state);

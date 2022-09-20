@@ -38,22 +38,23 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/error_handler.hpp>
-#include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/default_encoding.hpp>
 #include <ztd/text/transcode_result.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
-#include <ztd/text/text_tag.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
+#include <ztd/text/transcode_one.hpp>
+#include <ztd/text/pivot.hpp>
+#include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_extension_points.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 
-#include <ztd/ranges/unbounded.hpp>
+#include <ztd/idk/tag.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
+#include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
 #include <string>
@@ -94,6 +95,8 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	/// @param[in, out] __pivot A reference to the pivot space and error code to fill, if there is applicable pivot
+	/// space to use.
 	///
 	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
@@ -103,26 +106,23 @@ namespace ztd { namespace text {
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
 	//////
-	template <typename _Input, typename _Output, typename _FromEncoding, typename _ToEncoding,
-		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+		typename _PivotRange>
 	constexpr auto basic_transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
-		_FromState& __from_state, _ToState& __to_state) {
-		using _InitialInput          = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
-		using _InitialOutput         = ranges::range_reconstruct_t<_Output>;
-		using _UFromEncoding         = remove_cvref_t<_FromEncoding>;
-		using _UToEncoding           = remove_cvref_t<_ToEncoding>;
-		using _UFromErrorHandler     = remove_cvref_t<_FromErrorHandler>;
-		using _UToErrorHandler       = remove_cvref_t<_ToErrorHandler>;
-		using _IntermediateCodePoint = code_point_t<_UFromEncoding>;
-		constexpr ::std::size_t _IntermediateCodePointMax = max_code_points_v<_UFromEncoding>;
-		using _IntermediateStorage                        = _IntermediateCodePoint[_IntermediateCodePointMax];
-		using _Intermediate  = ::ztd::span<_IntermediateCodePoint, _IntermediateCodePointMax>;
-		using _Result        = decltype(__txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-               ::std::declval<_InitialInput>(), __from_encoding, ::std::declval<_InitialOutput>(), __to_encoding,
-               __from_error_handler, __to_error_handler, __from_state, __to_state, ::std::declval<_Intermediate&>()));
-		using _WorkingInput  = decltype(::std::declval<_Result>().input);
-		using _WorkingOutput = decltype(::std::declval<_Result>().output);
+		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot) {
+		using _InitialInput      = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _InitialOutput     = ranges::range_reconstruct_t<_Output>;
+		using _UFromEncoding     = remove_cvref_t<_FromEncoding>;
+		using _UToEncoding       = remove_cvref_t<_ToEncoding>;
+		using _UFromErrorHandler = remove_cvref_t<_FromErrorHandler>;
+		using _UToErrorHandler   = remove_cvref_t<_ToErrorHandler>;
+		using _Result            = decltype(transcode_one_into(::std::declval<_InitialInput>(), __from_encoding,
+			           ::std::declval<_InitialOutput>(), __to_encoding, __from_error_handler, __to_error_handler, __from_state,
+			           __to_state, __pivot));
+		using _WorkingInput      = decltype(::std::declval<_Result>().input);
+		using _WorkingOutput     = decltype(::std::declval<_Result>().output);
 
 		static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_UFromEncoding, _UFromErrorHandler>,
 			ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_);
@@ -134,13 +134,11 @@ namespace ztd { namespace text {
 		_WorkingOutput __working_output
 			= ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
 
-		_IntermediateStorage __intermediate_storage {};
-		_Intermediate __intermediate(__intermediate_storage);
 		::std::size_t __handled_errors = 0;
 		for (;;) {
-			auto __transcode_result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-				::std::move(__working_input), __from_encoding, ::std::move(__working_output), __to_encoding,
-				__from_error_handler, __to_error_handler, __from_state, __to_state, __intermediate);
+			auto __transcode_result
+				= transcode_one_into(::std::move(__working_input), __from_encoding, ::std::move(__working_output),
+				     __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state, __pivot);
 			if (__transcode_result.error_code != encoding_error::ok) {
 				return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
 					__to_state, __transcode_result.error_code, __transcode_result.handled_errors);
@@ -180,6 +178,7 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	/// @param[in, out] __pivot A reference to a range to use as the intermediate / "pivot" range.
 	///
 	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
@@ -189,33 +188,154 @@ namespace ztd { namespace text {
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
 	//////
-	template <typename _Input, typename _Output, typename _FromEncoding, typename _ToEncoding,
+	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+		typename _PivotRange>
+	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
+		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
+		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot) {
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_transcode, _Input, _FromEncoding, _Output,
+			              _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState, _PivotRange>) {
+			return text_transcode(::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
+				::std::forward<_FromErrorHandler>(__from_error_handler),
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
+		}
+		else {
+			using _UFromEncoding     = ::ztd::remove_cvref_t<_FromEncoding>;
+			using _UToEncoding       = ::ztd::remove_cvref_t<_ToEncoding>;
+			using _UFromErrorHandler = ::ztd::remove_cvref_t<_FromErrorHandler>;
+			using _UToErrorHandler   = ::ztd::remove_cvref_t<_ToErrorHandler>;
+			using _UInput            = ::ztd::remove_cvref_t<_Input>;
+			using _UOutput           = ::ztd::remove_cvref_t<_Output>;
+			if constexpr (is_decode_redundant_v<_UFromEncoding, _UToEncoding> // cf
+				&& is_encode_redundant_v<_UFromEncoding, _UToEncoding>       // cf
+				&& is_ignorable_error_handler_v<_UFromErrorHandler>          // cf
+				&& is_ignorable_error_handler_v<_UToErrorHandler>) {
+				// we can simply copy from the input to the output, no questions asked!
+				(void)__from_encoding;
+				(void)__to_encoding;
+				(void)__from_error_handler;
+				(void)__to_error_handler;
+				(void)__from_state;
+				(void)__to_state;
+				(void)__pivot;
+				auto __result = ::ztd::ranges::__rng_detail::__copy(
+					::ztd::ranges::ranges_adl::adl_cbegin(::std::forward<_Input>(__input)),
+					::ztd::ranges::ranges_adl::adl_cend(__input),
+					::ztd::ranges::ranges_adl::adl_begin(::std::forward<_Output>(__output)),
+					::ztd::ranges::ranges_adl::adl_end(__output));
+				using _Result
+					= __txt_detail::__reconstruct_transcode_result_t<_UInput, _UOutput, _FromState, _ToState>;
+				return _Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__result.in)),
+					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__result.out)), __from_state,
+					__to_state);
+			}
+			else if constexpr (__txt_detail::__is_decode_same_as_encode_v<_UFromEncoding, _UToEncoding>) {
+				// We can skip one of the steps. This tends to be the case for e.g.
+				// UTF-16 to UTF-32 transcoding conversions, where decoding from UTF-16 does not need a further
+				// filtering through UTF-32. For example, the decoded ID for ztd::text::utf16_t is
+				// ztd::text_encoding_id::utf32, and the encoded ID for ztd::text::utf32_t is
+				// ztd::text_encoding_id::utf32. So, this path should trigger.
+				using _Result
+					= __txt_detail::__reconstruct_transcode_result_t<_UInput, _UOutput, _FromState, _ToState>;
+				(void)__to_encoding;
+				(void)__to_error_handler;
+				(void)__pivot;
+				auto __result = decode_into(::std::forward<_Input>(__input),
+					::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+					::std::forward<_FromErrorHandler>(__from_error_handler), __from_state);
+				return _Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__result.input)),
+					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__result.output)),
+					__from_state, __to_state);
+			}
+			else if constexpr (__txt_detail::__is_already_decoded_v<_UFromEncoding, _UToEncoding>) {
+				// We can skip one of the steps. This tends to be the case for e.g.
+				// UTF-16 to UTF-32 transcoding conversions, where decoding from UTF-16 does not need a further
+				// filtering through UTF-32. For example, the decoded ID for ztd::text::utf16_t is
+				// ztd::text_encoding_id::utf32, and the encoded ID for ztd::text::utf32_t is
+				// ztd::text_encoding_id::utf32. So, this path should trigger.
+				using _Result
+					= __txt_detail::__reconstruct_transcode_result_t<_UInput, _UOutput, _FromState, _ToState>;
+				(void)__from_encoding;
+				(void)__from_error_handler;
+				(void)__pivot;
+				auto __result = encode_into(::std::forward<_Input>(__input),
+					::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_Output>(__output),
+					::std::forward<_FromErrorHandler>(__to_error_handler), __to_state);
+				return _Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__result.input)),
+					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__result.output)),
+					__from_state, __to_state);
+			}
+			else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_transcode_one, _Input,
+				                   _FromEncoding, _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler,
+				                   _FromState, _ToState, _PivotRange>) {
+				return __text_transcode(
+					::ztd::tag<::ztd::remove_cvref_t<_FromEncoding>, ::ztd::remove_cvref_t<_ToEncoding>> {},
+					::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+					::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
+					::std::forward<_FromErrorHandler>(__from_error_handler),
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
+			}
+			else {
+				return basic_transcode_into(::std::forward<_Input>(__input),
+					::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+					::std::forward<_ToEncoding>(__to_encoding),
+					::std::forward<_FromErrorHandler>(__from_error_handler),
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
+			}
+		}
+	}
+
+	//////
+	/// @brief Converts the code units of the given input view through the from encoding to code units of the to
+	/// encoding into the output view.
+	///
+	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// produce intermediate code points.
+	/// @param[in]     __from_encoding The encoding that will be used to decode the input's code units into
+	/// intermediate code points.
+	/// @param[in]     __output An output_view to write code units to as the result of the encode operation from the
+	/// intermediate code points.
+	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
+	/// final code units.
+	/// @param[in]     __from_error_handler The error handlers for the from and to encodings,
+	/// respectively.
+	/// @param[in]     __to_error_handler The error handlers for the from and to encodings,
+	/// respectively.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	///
+	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
+	/// __to_state.
+	///
+	/// @remark This function detects whether or not the ADL extension point `text_transcode` can be called with the
+	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
+	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
+	/// points, then encoding the intermediate code points to the desired, output code units.
+	//////
+	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state) {
-		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_transcode, _Input, _Output, _FromEncoding,
-			              _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
-			return text_transcode(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-		}
-		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_transcode, _Input, _FromEncoding,
-			                   _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
-			return __text_transcode(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-		}
-		else {
-			return basic_transcode_into(::std::forward<_Input>(__input),
-				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
-				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
-		}
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotSpan     = ::ztd::span<_CodePoint>;
+
+		constexpr ::std::size_t __intermediate_buffer_max
+			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
+			     < max_code_points_v<_UFromEncoding>
+			? max_code_points_v<_UFromEncoding>
+			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
+
+		_CodePoint __intermediate[__intermediate_buffer_max] {};
+		pivot<_PivotSpan> __pivot { _PivotSpan(__intermediate), encoding_error::ok };
+		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
+			::std::forward<_FromErrorHandler>(__from_error_handler),
+			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 	}
 
 	//////
@@ -391,24 +511,26 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		template <typename _Input, typename _FromEncoding, typename _OutputContainer, typename _ToEncoding,
-			typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+			typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+			typename _PivotRange>
 		constexpr auto __intermediate_transcode_to_storage(_Input&& __input, _FromEncoding&& __from_encoding,
 			_OutputContainer& __output, _ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
-			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
+			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state,
+			pivot<_PivotRange>& __pivot) {
 			// … Weeeellll. Here we go …
-			using _UToEncoding   = remove_cvref_t<_ToEncoding>;
-			using _UFromEncoding = remove_cvref_t<_FromEncoding>;
+			using _UToEncoding                 = remove_cvref_t<_ToEncoding>;
+			using _UFromEncoding               = remove_cvref_t<_FromEncoding>;
+			using _IntermediateInputValueType  = code_point_t<_UFromEncoding>;
+			using _IntermediateOutputValueType = code_unit_t<_UToEncoding>;
 			constexpr ::std::size_t _IntermediateOutputMax
-				= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_unit_t<_UToEncoding>)
+				= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(_IntermediateOutputValueType)
 				     < max_code_units_v<_UToEncoding>
 				? max_code_units_v<_UToEncoding>
-				: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_unit_t<_UToEncoding>);
-			using _IntermediateOutputValueType = code_unit_t<_UToEncoding>;
-			using _InitialInput                = __string_view_or_span_or_reconstruct_t<_Input>;
-			using _IntermediateInputValueType  = code_point_t<_UFromEncoding>;
-			using _IntermediateInput           = ::ztd::span<_IntermediateInputValueType>;
-			using _IntermediateOutputInitial   = ::ztd::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
-			using _IntermediateOutput          = ::ztd::span<_IntermediateOutputValueType>;
+				: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(_IntermediateOutputValueType);
+			using _InitialInput              = __string_view_or_span_or_reconstruct_t<_Input>;
+			using _IntermediateInput         = ::ztd::span<_IntermediateInputValueType>;
+			using _IntermediateOutputInitial = ::ztd::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
+			using _IntermediateOutput        = ::ztd::span<_IntermediateOutputValueType>;
 			using _DecodeResult = decltype(__txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
 				::std::declval<_InitialInput>(), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::declval<_IntermediateInput>(), __from_error_handler, __from_state));
@@ -427,9 +549,9 @@ namespace ztd { namespace text {
 			_IntermediateOutputValueType __intermediate_output_storage[_IntermediateOutputMax] {};
 			_IntermediateOutputInitial __intermediate_initial(__intermediate_output_storage);
 			for (;;) {
-				auto __result
-					= transcode_into(::std::move(__working_input), __from_encoding, __intermediate_initial,
-					     __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state);
+				auto __result = transcode_into(::std::move(__working_input), __from_encoding,
+					__intermediate_initial, __to_encoding, __from_error_handler, __to_error_handler, __from_state,
+					__to_state, __pivot);
 				_IntermediateOutput __intermediate_output(
 					__intermediate_initial.data(), __result.output.data() - __intermediate_initial.data());
 				ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
@@ -455,10 +577,11 @@ namespace ztd { namespace text {
 
 		template <bool _OutputOnly, typename _OutputContainer, typename _Input, typename _FromEncoding,
 			typename _ToEncoding, typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState,
-			typename _ToState>
+			typename _ToState, typename _PivotRange>
 		constexpr auto __transcode_dispatch(_Input&& __input, _FromEncoding&& __from_encoding,
 			_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
-			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state) {
+			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state,
+			pivot<_PivotRange>& __pivot) {
 			using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 
 			_OutputContainer __output {};
@@ -478,7 +601,7 @@ namespace ztd { namespace text {
 					::std::forward<_FromEncoding>(__from_encoding), ::std::move(__insert_view),
 					::std::forward<_ToEncoding>(__to_encoding),
 					::std::forward<_FromErrorHandler>(__from_error_handler),
-					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 				if constexpr (_OutputOnly) {
 					(void)__stateful_result;
 					return __output;
@@ -493,7 +616,7 @@ namespace ztd { namespace text {
 					::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding), __output,
 					::std::forward<_ToEncoding>(__to_encoding),
 					::std::forward<_FromErrorHandler>(__from_error_handler),
-					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+					::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 				if constexpr (_OutputOnly) {
 					(void)__stateful_result;
 					return __output;
@@ -531,10 +654,11 @@ namespace ztd { namespace text {
 	/// to aid with `push_back` / `insert` reallocation pains.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
-		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+		typename _PivotRange>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
-		_ToState& __to_state) {
+		_ToState& __to_state, pivot<_PivotRange>& __pivot) {
 		using _UToEncoding              = remove_cvref_t<_ToEncoding>;
 		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
 		using _OutputCodeUnit           = code_unit_t<_UToEncoding>;
@@ -547,7 +671,7 @@ namespace ztd { namespace text {
 			return __txt_detail::__transcode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
 		else {
 			using _RealOutputContainer
@@ -555,8 +679,55 @@ namespace ztd { namespace text {
 			return __txt_detail::__transcode_dispatch<false, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
+	}
+
+	//////
+	/// @brief Converts the code units of the given input view through the from encoding to code units of the to
+	/// encoding for the output, which is then returned in a result structure with additional information about
+	/// success.
+	///
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
+	/// std::basic_string or a `std::vector` of some sort.
+	///
+	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// produce intermediate code points.
+	/// @param[in]     __from_encoding The encoding that will be used to decode the input's code units into
+	/// intermediate code points.
+	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
+	/// final code units.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	///
+	/// @returns A ztd::text::transcode_result object that contains references to `__from_state` and @p
+	/// __to_state and an `output` parameter that contains the `_OutputContainer` specified. If the container has a
+	/// `container.reserve` function, it is and some multiple of the input's size is used to pre-size the container,
+	/// to aid with `push_back` / `insert` reallocation pains.
+	//////
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
+		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
+		_ToState& __to_state) {
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotSpan     = ::ztd::span<_CodePoint>;
+
+		constexpr ::std::size_t __intermediate_buffer_max
+			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
+			     < max_code_points_v<_UFromEncoding>
+			? max_code_points_v<_UFromEncoding>
+			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
+
+		_CodePoint __intermediate[__intermediate_buffer_max] {};
+		pivot<_PivotSpan> __pivot { _PivotSpan(__intermediate), encoding_error::ok };
+		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+			::std::forward<_FromErrorHandler>(__from_error_handler),
+			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 	}
 
 	//////
@@ -772,10 +943,11 @@ namespace ztd { namespace text {
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
 	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
-		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+		typename _PivotRange>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
-		_ToState& __to_state) {
+		_ToState& __to_state, pivot<_PivotRange>& __pivot) {
 		using _UToEncoding              = remove_cvref_t<_ToEncoding>;
 		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
 		using _OutputCodeUnit           = code_unit_t<_UToEncoding>;
@@ -788,7 +960,7 @@ namespace ztd { namespace text {
 			return __txt_detail::__transcode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
 		else {
 			using _RealOutputContainer
@@ -796,8 +968,54 @@ namespace ztd { namespace text {
 			return __txt_detail::__transcode_dispatch<true, _RealOutputContainer>(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
+	}
+
+	//////
+	/// @brief Converts the code units of the given input view through the from encoding to code units of the to
+	/// encoding for the output, which is then returned in a result structure with additional information about
+	/// success.
+	///
+	/// @tparam _OutputContainer The container to default-construct and serialize data into. Typically, a @c
+	/// std::basic_string or a `std::vector` of some sort.
+	///
+	/// @param[in]     __input An input_view to read code units from and use in the decode operation that will
+	/// produce intermediate code points.
+	/// @param[in]     __from_encoding The encoding that will be used to decode the input's code units into
+	/// intermediate code points.
+	/// @param[in]     __to_encoding The encoding that will be used to encode the intermediate code points into the
+	/// final code units.
+	/// @param[in]     __from_error_handler The error handler for the `__from_encoding` 's decode step.
+	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
+	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
+	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	///
+	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
+	/// looking for error information and not just a quick one-off conversion function, please use
+	/// ztd::text::transcode_to or ztd::text::transcode_into.
+	//////
+	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
+	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
+		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
+		_ToState& __to_state) {
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotSpan     = ::ztd::span<_CodePoint>;
+
+		constexpr ::std::size_t __intermediate_buffer_max
+			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
+			     < max_code_points_v<_UFromEncoding>
+			? max_code_points_v<_UFromEncoding>
+			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
+
+		_CodePoint __intermediate[__intermediate_buffer_max] {};
+		pivot<_PivotSpan> __pivot { _PivotSpan(__intermediate), encoding_error::ok };
+		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+			::std::forward<_FromErrorHandler>(__from_error_handler),
+			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 	}
 
 	//////

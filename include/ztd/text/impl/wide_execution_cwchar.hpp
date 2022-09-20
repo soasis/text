@@ -214,8 +214,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete
 			/// unit of information (alongside std::mbstate_t usage). Whether or not the state is used is based
-			/// on the implementation and what it chooses. If ZTD_TEXT_USE_CUNEICODE is defined, the
-			/// ztd.cuneicode library may be used to fulfill this functionality.
+			/// on the implementation and what it chooses.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
@@ -327,8 +326,7 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete
 			/// unit of information (alongside std::mbstate_t usage). Whether or not the state is used is based
-			/// on the implementation and what it chooses. If `ZTD_TEXT_USE_CUNEICODE` is defined, the
-			/// ztd.cuneicode library may be used to fulfill this functionality.
+			/// on the implementation and what it chooses.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not

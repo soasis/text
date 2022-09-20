@@ -58,10 +58,11 @@ namespace ztd { namespace text {
 
 	template <typename _Type>
 	class is_self_synchronizing_code
-	: public __txt_detail::__is_self_synchronizing_code_sfinae<remove_cvref_t<_Type>> { };
+	: public __txt_detail::__is_self_synchronizing_code_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
 	template <typename _Type>
-	inline constexpr bool is_self_synchronizing_code_v = is_self_synchronizing_code<_Type>::value;
+	inline constexpr bool is_self_synchronizing_code_v
+		= is_self_synchronizing_code<::ztd::remove_cvref_t<_Type>>::value;
 
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

@@ -93,7 +93,8 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A `::value` alias for ztd::text::is_transcoding_compatible.
 	template <typename _From, typename _To>
-	constexpr bool is_bitwise_transcoding_compatible_v = is_bitwise_transcoding_compatible<_From, _To>::value;
+	constexpr bool is_bitwise_transcoding_compatible_v
+		= is_bitwise_transcoding_compatible<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>::value;
 
 	namespace __txt_detail {
 		// clang-format off

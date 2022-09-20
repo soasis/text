@@ -67,14 +67,14 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A typename alias for ztd::text::code_unit.
 	template <typename _Type>
-	using code_unit_t = typename code_unit<_Type>::type;
+	using code_unit_t = typename code_unit<remove_cvref_t<_Type>>::type;
 
 	//////
 	/// @brief Gets the maximum number of code units that can be produced by an encoding during an encode operation,
 	/// suitable for initializing a automatic storage duration ("stack-allocated") buffer.
 	//////
 	template <typename _Type>
-	inline static constexpr ::std::size_t max_code_units_v = _Type::max_code_units;
+	inline static constexpr ::std::size_t max_code_units_v = remove_cvref_t<_Type>::max_code_units;
 
 	//////
 	/// @}

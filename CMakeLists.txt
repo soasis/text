@@ -37,7 +37,8 @@ cmake_policy(VERSION 3.21)
 include(FetchContent)
 FetchContent_Declare(ztd.cmake
 	GIT_REPOSITORY https://github.com/soasis/cmake
-	GIT_TAG main)
+	GIT_SHALLOW    ON
+	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.cmake)
 set(CMAKE_PROJECT_INCLUDE ${ZTD_CMAKE_PROJECT_PRELUDE})
 
@@ -118,32 +119,35 @@ option(ZTD_TEXT_DOCUMENTATION_NO_SPHINX "Turn off Sphinx usage (useful for ReadT
 option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
 option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
-option(ZTD_TEXT_USE_CUNEICODE "Use ztd.cuneicode" OFF)
 
 # # Dependencies
 # ztd.idk
 FetchContent_Declare(ztd.idk
 	GIT_REPOSITORY https://github.com/soasis/idk.git
-	GIT_TAG main)
+	GIT_SHALLOW    ON
+	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.idk)
 
 # ztd.static_containers
 FetchContent_Declare(ztd.static_containers
 	GIT_REPOSITORY https://github.com/soasis/static_containers.git
-	GIT_TAG main)
+	GIT_SHALLOW    ON
+	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.static_containers)
 
 # ztd.cuneicode
 set(ZTD_CUNEICODE_SIMDUTF_SHARED ${ZTD_TEXT_BENCHMARKS})
 FetchContent_Declare(ztd.cuneicode
 	GIT_REPOSITORY https://github.com/soasis/cuneicode.git
-	GIT_TAG main)
+	GIT_SHALLOW    ON
+	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.cuneicode)
 
 # ztd.platform
 FetchContent_Declare(ztd.platform
 	GIT_REPOSITORY https://github.com/soasis/platform.git
-	GIT_TAG main)
+	GIT_SHALLOW    ON
+	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.platform)
 
 if (ZTD_TEXT_BENCHAMRKS OR ZTD_TEXT_GENERATE_SINGLE OR ZTD_TEXT_DOCUMENTATION)
@@ -195,28 +199,29 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 	# # Fetch dependencies for either benchmarks and/or examples
 	function(simdutf_dependency_jail)
 		# simdutf
-		set(SIMDUTF_BENCHMARKS OFF CACHE INTERNAL "")
-		set(BUILD_TESTING OFF CACHE INTERNAL "")
+		set(SIMDUTF_BENCHMARKS OFF)
+		set(BUILD_TESTING OFF)
 		FetchContent_Declare(
 			simdutf
 			GIT_REPOSITORY https://github.com/simdutf/simdutf
-		)
+			GIT_SHALLOW    ON
+			GIT_TAG        main)
 		FetchContent_MakeAvailable(simdutf)
 	endfunction()
 	simdutf_dependency_jail()
 
 	function(boost_text_dependency_jail)
 		# boost.text
-		set(BOOST_TEXT_PERF OFF CACHE INTERNAL "")
-		set(BOOST_TEXT_EXAMPLES OFF CACHE INTERNAL "")
-		set(BOOST_TEXT_TESTS OFF CACHE INTERNAL "")
-		set(BOOST_TEXT_FETCH_BOOST ON CACHE INTERNAL "")
-		set(BOOST_TEXT_INSTALL OFF CACHE INTERNAL "")
-		set(BUILD_TESTING OFF CACHE INTERNAL "")
+		set(BOOST_TEXT_PERF OFF)
+		set(BOOST_TEXT_EXAMPLES OFF)
+		set(BOOST_TEXT_TESTS OFF)
+		set(BOOST_TEXT_INSTALL OFF)
+		set(BUILD_TESTING OFF)
 		FetchContent_Declare(
 			boost.text
 			GIT_REPOSITORY https://github.com/ThePhD/text
-		)
+			GIT_SHALLOW    ON
+			GIT_TAG        main)
 		FetchContent_MakeAvailable(boost.text)
 	endfunction()
 	boost_text_dependency_jail()

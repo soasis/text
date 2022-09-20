@@ -30,13 +30,13 @@
 
 #include <ztd/text.hpp>
 #if ZTD_IS_ON(ZTD_COMPILER_CLANG) || ZTD_IS_ON(ZTD_COMPILER_GCC)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
-#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 #include <boost/text/unencoded_rope.hpp>
 #if ZTD_IS_ON(ZTD_COMPILER_CLANG) || ZTD_IS_ON(ZTD_COMPILER_GCC)
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 #endif
 #include <cstdint>
 

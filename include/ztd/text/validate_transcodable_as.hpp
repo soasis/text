@@ -43,10 +43,11 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
+#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
+#include <ztd/idk/tag.hpp>
 
 #include <algorithm>
 #include <string_view>
@@ -71,17 +72,18 @@ namespace ztd { namespace text {
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __from_encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __to_encoding The encoding to verify can properly encode the input of code units.
-	/// @param[in] __decode_state The state to use for the decoding portion of the validation check.
-	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
+	/// @param[in, out] __decode_state The state to use for the decoding portion of the validation check.
+	/// @param[in, out] __encode_state The state to use for the encoding portion of the validation check.
 	///
 	/// @remarks This function explicitly does not call any extension points. It defers to doing a typical loop over
 	/// the code points to verify it can be decoded into code points, and then encoded back into code units, with no
 	/// errors and with the exact same value sequence as the original.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
-		typename _EncodeState>
+		typename _EncodeState, typename _PivotRange>
 	constexpr auto basic_validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
-		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
+		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state,
+		pivot<_PivotRange>& __pivot) {
 		using _UInput         = remove_cvref_t<_Input>;
 		using _InputValueType = ranges::range_value_type_t<_UInput>;
 		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
@@ -96,11 +98,11 @@ namespace ztd { namespace text {
 			ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as_one, _WorkingInput,
-			              _FromEncoding, _ToEncoding, _DecodeState, _EncodeState>) {
+			              _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
 			(void)__encode_state;
 			for (;;) {
-				auto __result = text_validate_transcodable_as_one(text_tag<_UFromEncoding, _UToEncoding> {},
-					__working_input, __from_encoding, __to_encoding, __decode_state);
+				auto __result = text_validate_transcodable_as_one(::ztd::tag<_UFromEncoding, _UToEncoding> {},
+					__working_input, __from_encoding, __to_encoding, __decode_state, __pivot);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state);
 				}
@@ -119,11 +121,11 @@ namespace ztd { namespace text {
 				true, __decode_state, __encode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_transcodable_as_one,
-			                   _WorkingInput, _FromEncoding, _ToEncoding, _DecodeState, _EncodeState>) {
+			                   _WorkingInput, _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
 			(void)__encode_state;
 			for (;;) {
-				auto __result = __text_validate_transcodable_as_one(text_tag<_UFromEncoding, _UToEncoding> {},
-					__working_input, __from_encoding, __to_encoding, __decode_state);
+				auto __result = __text_validate_transcodable_as_one(::ztd::tag<_UFromEncoding, _UToEncoding> {},
+					__working_input, __from_encoding, __to_encoding, __decode_state, __pivot);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state);
 				}
@@ -142,10 +144,7 @@ namespace ztd { namespace text {
 				true, __decode_state, __encode_state);
 		}
 		else {
-			using _CodePoint = code_point_t<_UFromEncoding>;
-			using _CodeUnit  = code_unit_t<_UToEncoding>;
-
-			_CodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
+			using _CodeUnit = code_unit_t<_UToEncoding>;
 
 			_CodeUnit __output_storage[max_code_units_v<_UToEncoding>] {};
 			::ztd::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
@@ -153,9 +152,8 @@ namespace ztd { namespace text {
 			pass_handler_t __handler {};
 
 			for (;;) {
-				auto __transcode_result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					::std::move(__working_input), __from_encoding, __output, __to_encoding, __handler, __handler,
-					__decode_state, __encode_state, __intermediate);
+				auto __transcode_result = transcode_one_into(::std::move(__working_input), __from_encoding,
+					__output, __to_encoding, __handler, __handler, __decode_state, __encode_state, __pivot);
 				if (__transcode_result.error_code != encoding_error::ok) {
 					return _Result(
 						ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
@@ -184,8 +182,57 @@ namespace ztd { namespace text {
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __from_encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __to_encoding The encoding to verify can properly encode the input of code units.
-	/// @param[in] __decode_state The state to use for the decoding portion of the validation check.
-	/// @param[in] __encode_state The state to use for the encoding portion of the validation check.
+	/// @param[in, out] __decode_state The state to use for the decoding portion of the validation check.
+	/// @param[in, out] __encode_state The state to use for the encoding portion of the validation check.
+	/// @param[in, out] __pivot The pivot state to use for any intermediate data.
+	///
+	/// @remarks This functions checks to see if extension points for `text_validate_transcodable_as` is available
+	/// taking the available 4 parameters. If so, it calls this. Otherwise, it defers to
+	/// ztd::text::validate_transcodable_as.
+	//////
+	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
+		typename _EncodeState, typename _PivotRange>
+	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
+		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state,
+		pivot<_PivotRange>& __pivot) {
+		using _UFromEncoding = remove_cvref_t<_ToEncoding>;
+		using _UToEncoding   = remove_cvref_t<_FromEncoding>;
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as, _Input, _FromEncoding,
+			              _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			(void)__encode_state;
+			return text_validate_transcodable_as(::ztd::tag<_UFromEncoding, _UToEncoding> {},
+				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state, __pivot);
+		}
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as, _Input,
+			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			return text_validate_transcodable_as(::ztd::tag<_UFromEncoding, _UToEncoding> {},
+				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state, __pivot);
+		}
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_transcodable_as, _Input,
+			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			(void)__encode_state;
+			return __text_validate_transcodable_as(::ztd::tag<_UFromEncoding, _UToEncoding> {},
+				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state, __pivot);
+		}
+		else {
+			return basic_validate_transcodable_as(::std::forward<_Input>(__input),
+				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+				__decode_state, __encode_state, __pivot);
+		}
+	}
+
+	//////
+	/// @brief Validates the code units of the `__input` according to the `__encoding` with the given states @p
+	/// __decode_state and `__encode_state` to see if it can be turned into code points.
+	///
+	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
+	/// @param[in] __from_encoding The encoding to verify can properly encode the input of code units.
+	/// @param[in] __to_encoding The encoding to verify can properly encode the input of code units.
+	/// @param[in, out] __decode_state The state to use for the decoding portion of the validation check.
+	/// @param[in, out] __encode_state The state to use for the encoding portion of the validation check.
 	///
 	/// @remarks This functions checks to see if extension points for `text_validate_transcodable_as` is available
 	/// taking the available 4 parameters. If so, it calls this. Otherwise, it defers to
@@ -195,33 +242,13 @@ namespace ztd { namespace text {
 		typename _EncodeState>
 	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
-		using _UFromEncoding = remove_cvref_t<_ToEncoding>;
-		using _UToEncoding   = remove_cvref_t<_FromEncoding>;
-		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as, _Input, _FromEncoding,
-			              _ToEncoding, _DecodeState, _EncodeState>) {
-			(void)__encode_state;
-			return text_validate_transcodable_as(text_tag<_UFromEncoding, _UToEncoding> {},
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state);
-		}
-		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as, _Input,
-			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState>) {
-			return text_validate_transcodable_as(text_tag<_UFromEncoding, _UToEncoding> {},
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state);
-		}
-		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_transcodable_as, _Input,
-			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState>) {
-			(void)__encode_state;
-			return __text_validate_transcodable_as(text_tag<_UFromEncoding, _UToEncoding> {},
-				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state);
-		}
-		else {
-			return basic_validate_transcodable_as(::std::forward<_Input>(__input),
-				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
-				__decode_state, __encode_state);
-		}
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		_CodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
+		pivot<ztd::span<_CodePoint>> __pivot { __intermediate, encoding_error::ok };
+		return validate_transcodable_as(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
+			__decode_state, __encode_state, __pivot);
 	}
 
 	//////
@@ -231,7 +258,7 @@ namespace ztd { namespace text {
 	/// @param[in] __input The input range of code units to validate is possible for encoding into code points.
 	/// @param[in] __from_encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in] __to_encoding The encoding to verify can properly encode the input of code units.
-	/// @param[in] __decode_state The state to use for the decoding portion of the validation check.
+	/// @param[in, out] __decode_state The state to use for the decoding portion of the validation check.
 	///
 	/// @remarks This functions will call ztd::text::make_encode_state with `__to_encoding` to create a default @p
 	/// encode_state.

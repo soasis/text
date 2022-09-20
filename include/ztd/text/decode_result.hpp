@@ -37,12 +37,13 @@
 
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/encoding_error.hpp>
-#include <ztd/text/detail/encoding_range.hpp>
+#include <ztd/text/code_unit.hpp>
+#include <ztd/text/code_point.hpp>
+#include <ztd/text/state.hpp>
 
 #include <ztd/idk/span.hpp>
-#include <ztd/ranges/reconstruct.hpp>
-
 #include <ztd/idk/reference_wrapper.hpp>
+#include <ztd/ranges/reconstruct.hpp>
 
 #include <cstddef>
 #include <array>

@@ -40,14 +40,14 @@
 #include <ztd/text/count_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/text_tag.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
+#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
+#include <ztd/idk/tag.hpp>
 
 #include <string_view>
 
@@ -100,7 +100,7 @@ namespace ztd { namespace text {
 			              _ErrorHandler, _State>) {
 			for (;;) {
 				auto __result = text_count_as_decoded_one(
-					text_tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
 				if (__result.error_code != encoding_error::ok) {
 					return _Result(
 						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
@@ -120,7 +120,7 @@ namespace ztd { namespace text {
 			                   _Encoding, _ErrorHandler, _State>) {
 			for (;;) {
 				auto __result = __text_count_as_decoded_one(
-					text_tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
 				if (__result.error_code != encoding_error::ok) {
 					return _Result(
 						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
@@ -183,12 +183,12 @@ namespace ztd { namespace text {
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_as_decoded, _Input, _Encoding,
 			              _ErrorHandler, _State>) {
-			return text_count_as_decoded(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+			return text_count_as_decoded(::ztd::tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_decoded, _Input, _Encoding,
 			                   _ErrorHandler, _State>) {
-			return __text_count_as_decoded(text_tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
+			return __text_count_as_decoded(::ztd::tag<remove_cvref_t<_Encoding>> {}, ::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {

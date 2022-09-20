@@ -29,17 +29,17 @@
 # ============================================================================>
 
 # # Benchmark Executable
-file(GLOB_RECURSE ztd.text.benchmarks.speed.sources
+file(GLOB_RECURSE ztd.text.benchmarks.conversion_speed.sources
 	CONFIGURE_DEPENDS
 	LIST_DIRECTORIES NO
 	source/**)
 
-add_executable(ztd.text.benchmarks.speed ${ztd.text.benchmarks.speed.sources})
-target_include_directories(ztd.text.benchmarks.speed
+add_executable(ztd.text.benchmarks.conversion_speed ${ztd.text.benchmarks.conversion_speed.sources})
+target_include_directories(ztd.text.benchmarks.conversion_speed
 	PRIVATE
 		include
 )
-target_link_libraries(ztd.text.benchmarks.speed
+target_link_libraries(ztd.text.benchmarks.conversion_speed
 	PRIVATE
 		ztd::platform
 		ztd::cuneicode
@@ -53,7 +53,7 @@ target_link_libraries(ztd.text.benchmarks.speed
 		benchmark::benchmark
 		${CMAKE_DL_LIBS}
 )
-target_compile_options(ztd.text.benchmarks.speed
+target_compile_options(ztd.text.benchmarks.conversion_speed
 	PRIVATE
 		${--utf8-literal-encoding}
 		${--utf8-source-encoding}
@@ -65,14 +65,14 @@ target_compile_options(ztd.text.benchmarks.speed
 		${--warn-errors}
 		${--allow-microsoft-enum-value}
 )
-generate_config_and_manifest_for(ztd.text.benchmarks.speed)
+#generate_config_and_manifest_for(ztd.text.benchmarks.conversion_speed)
 configure_graph_benchmark_targets(
 	NAME
-		speed
+		conversion_speed
 	CONFIG
 		"${CMAKE_CURRENT_SOURCE_DIR}/graph_config.json"
 	TARGETS
-		ztd.text.benchmarks.speed
+		ztd.text.benchmarks.conversion_speed
 	REPETITIONS
 		${ZTD_TEXT_BENCHMARKS_REPETITIONS}
 )

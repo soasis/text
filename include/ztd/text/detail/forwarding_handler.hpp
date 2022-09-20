@@ -60,7 +60,7 @@ namespace ztd { namespace text {
 			template <typename _UnderlyingEncoding, typename _Result, typename _InputProgress,
 				typename _OutputProgress>
 			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _InputProgress&& __input_progress,
-				_OutputProgress&& __output_progress) const& // clang-format hack
+				_OutputProgress&& __output_progress) const& // cf
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
@@ -72,7 +72,7 @@ namespace ztd { namespace text {
 			template <typename _UnderlyingEncoding, typename _Result, typename _InputProgress,
 				typename _OutputProgress>
 			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _InputProgress&& __input_progress,
-				_OutputProgress&& __output_progress) & // clang-format hack
+				_OutputProgress&& __output_progress) & // cf
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
@@ -84,7 +84,7 @@ namespace ztd { namespace text {
 			template <typename _UnderlyingEncoding, typename _Result, typename _InputProgress,
 				typename _OutputProgress>
 			constexpr auto operator()(_UnderlyingEncoding&&, _Result&& __result, _InputProgress&& __input_progress,
-				_OutputProgress&& __output_progress) && // clang-format hack
+				_OutputProgress&& __output_progress) && // cf
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
 				     ::std::forward<_OutputProgress>(__output_progress)))) {

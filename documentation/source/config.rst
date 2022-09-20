@@ -33,14 +33,6 @@ Configuring the Library
 
 There are various configuration macros and CMake/build-time switches that will change the behavior of the library or attempt to use different 
 
-.. _config-ZTD_TEXT_USE_CUNEICODE:
-
-- ``ZTD_TEXT_USE_CUNEICODE`` (CMake: ``ZTD_TEXT_USE_CUNEICODE``)
-	- Enables use of the `Cuneicode project <https://ztdcuneicode.rtfd.io>`_, which has low-level C routines for converting from one encoding form to another encoding form. Only includes a limited number of conversions, specifically from and to the execution encoding to other encodings.
-	- Makes the ``ztd::text::cnc_encoding`` available (accessible directly VIA ``#include <ztd/text/cnc_encoding.hpp>``)
-	- Default: off.
-	- Turned on if the special ``__has_include`` directive is present with the compiler and ``__has_include(<ztd/cuneicode/cuneicode.h>)`` works.
-
 .. _config-ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE:
 
 - ``ZTD_TEXT_UNICODE_CODE_POINT_DISTINCT_TYPE``

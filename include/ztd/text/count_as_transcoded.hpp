@@ -40,14 +40,15 @@
 #include <ztd/text/count_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/text_tag.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
+#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
+#include <ztd/idk/tag.hpp>
 
 #include <string_view>
 
@@ -58,8 +59,10 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_count_as_transcoded ztd::text::count_as_transcoded
+	///
 	/// @brief These functions use a variety of means to count the number of code units that will result from the
 	/// input code units after a transcoding operation.
+	///
 	/// @{
 	//////
 
@@ -78,6 +81,7 @@ namespace ztd { namespace text {
 	/// decode step.
 	/// @param[in,out] __to_state The state related to the `__to_encoding` that will be used for the final encoding
 	/// step.
+	/// @param[in, out] __pivot A reference to the pivot state.
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
@@ -88,10 +92,10 @@ namespace ztd { namespace text {
 	/// unseen buffer being the most basic choice.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
-		typename _ToErrorHandler, typename _FromState, typename _ToState>
+		typename _ToErrorHandler, typename _FromState, typename _ToState, typename _PivotRange>
 	constexpr auto basic_count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
-		_FromState& __from_state, _ToState& __to_state) {
+		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot) {
 		using _UInput         = remove_cvref_t<_Input>;
 		using _InputValueType = ranges::range_value_type_t<_UInput>;
 		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
@@ -108,7 +112,7 @@ namespace ztd { namespace text {
 		::std::size_t __code_unit_count = 0;
 		::std::size_t __errors_handled  = 0;
 
-#define ZTD_TEXT_BASIC_count_as_transcoded_LOOP_BODY_CORE_I_()                                                   \
+#define ZTD_TEXT_BASIC_COUNT_AS_TRANSCODED_LOOP_BODY_CORE_I_()                                                   \
 	if (__result.error_code != encoding_error::ok) {                                                            \
 		return _Result(::std::move(__result.input), __code_unit_count, __result.from_state, __result.to_state, \
 		     __result.error_code, __errors_handled);                                                           \
@@ -128,38 +132,35 @@ namespace ztd { namespace text {
 	do {                                                                                                        \
 	} while (0)
 
-#define ZTD_TEXT_BASIC_count_as_transcoded_LOOP_BODY_I_(...)                                                   \
-	auto __result = __VA_ARGS__(text_tag<_UFromEncoding, _UToEncoding> {}, ::std::move(__working_input),      \
-	     __from_encoding, __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state); \
-	ZTD_TEXT_BASIC_count_as_transcoded_LOOP_BODY_CORE_I_()
+#define ZTD_TEXT_BASIC_COUNT_AS_TRANSCODED_LOOP_BODY_I_(...)                                                        \
+	auto __result                                                                                                  \
+	     = __VA_ARGS__(::ztd::tag<_UFromEncoding, _UToEncoding> {}, ::std::move(__working_input), __from_encoding, \
+	          __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state, __pivot);         \
+	ZTD_TEXT_BASIC_COUNT_AS_TRANSCODED_LOOP_BODY_CORE_I_()
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_as_transcoded_one, _WorkingInput,
-			              _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
+			              _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState,
+			              _PivotRange>) {
 			for (;;) {
-				ZTD_TEXT_BASIC_count_as_transcoded_LOOP_BODY_I_(text_count_as_transcoded_one);
+				ZTD_TEXT_BASIC_COUNT_AS_TRANSCODED_LOOP_BODY_I_(text_count_as_transcoded_one);
 			}
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_transcoded_one,
 			                   _WorkingInput, _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler,
-			                   _FromState, _ToState>) {
+			                   _FromState, _ToState, _PivotRange>) {
 			for (;;) {
-				ZTD_TEXT_BASIC_count_as_transcoded_LOOP_BODY_I_(__text_count_as_transcoded_one);
+				ZTD_TEXT_BASIC_COUNT_AS_TRANSCODED_LOOP_BODY_I_(__text_count_as_transcoded_one);
 			}
 		}
 		else {
-			using _CodePoint = code_point_t<_UFromEncoding>;
-			using _CodeUnit  = code_unit_t<_UToEncoding>;
-
-			_CodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
-			::ztd::span<_CodePoint, max_code_points_v<_UFromEncoding>> __intermediate(__intermediate_storage);
+			using _CodeUnit = code_unit_t<_UToEncoding>;
 
 			_CodeUnit __output_storage[max_code_units_v<_UToEncoding>] {};
 			::ztd::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
 
 			for (;;) {
-				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					::std::move(__working_input), __from_encoding, __output, __to_encoding, __from_error_handler,
-					__to_error_handler, __from_state, __to_state, __intermediate);
+				auto __result = transcode_one_into(::std::move(__working_input), __from_encoding, __output,
+					__to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state, __pivot);
 				if (__result.error_code != encoding_error::ok) {
 					return _Result(::std::move(__result.input), __code_unit_count, __result.from_state,
 						__result.to_state, __result.error_code, __errors_handled);
@@ -207,32 +208,69 @@ namespace ztd { namespace text {
 	/// is possible. Otherwise, this function will defer to ztd::text::basic_count_as_transcoded.
 	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
-		typename _ToErrorHandler, typename _FromState, typename _ToState>
+		typename _ToErrorHandler, typename _FromState, typename _ToState, typename _PivotRange>
 	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
-		_ToState& __to_state) {
+		_ToState& __to_state, pivot<_PivotRange>& __pivot) {
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_as_transcoded, _Input, _FromEncoding,
 			              _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>) {
-			return text_count_as_transcoded(text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+			return text_count_as_transcoded(
+				::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_transcoded, _Input,
 			                   _FromEncoding, _ToEncoding, _FromErrorHandler, _ToErrorHandler, _FromState,
 			                   _ToState>) {
 			return __text_count_as_transcoded(
-				text_tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+				::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
 		else {
 			return basic_count_as_transcoded(::std::forward<_Input>(__input),
 				::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 				::std::forward<_FromErrorHandler>(__from_error_handler),
-				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
+				::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 		}
+	}
+
+	//////
+	/// @brief Counts the number of code units that will result from attempting an transcode operation on the input
+	/// code points.
+	///
+	/// @param[in] __input The input range (of code units) to find out how many code units of the transcoded output
+	/// there are.
+	/// @param[in] __from_encoding The encoding that is going to be used to decode the input into an intermediary
+	/// output.
+	/// @param[in] __to_encoding The encoding that is going to be used to encode the intermediary output.
+	/// @param[in] __from_error_handler The error handler to invoke when an intermediary decoding operation fails.
+	/// @param[in] __to_error_handler The error handler to invoke when the final encoding operation fails.
+	/// @param[in,out] __from_state The state attached to the `__from_encoding` that will be used for the intermediary
+	/// decode step.
+	///
+	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
+	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).
+	///
+	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
+	/// from_error_handler, to_error_handler, from_state, to_state) with an `to_state` created by
+	/// ztd::text::make_encode_state(to_encoding).
+	//////
+	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
+		typename _ToErrorHandler, typename _FromState, typename _ToState>
+	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
+		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
+		_ToState& __to_state) {
+		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotRange    = ::ztd::span<_CodePoint, max_code_points_v<_UFromEncoding>>;
+		_CodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
+		pivot<_PivotRange> __pivot { _PivotRange(__intermediate_storage), encoding_error::ok };
+		return count_as_transcoded(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 	}
 
 	//////
@@ -271,6 +309,7 @@ namespace ztd { namespace text {
 			     ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
 		return __txt_detail::__slice_to_stateless(::std::move(__result));
 	}
+
 
 	//////
 	/// @brief Counts the number of code units that will result from attempting an transcode operation on the input

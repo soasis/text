@@ -36,6 +36,8 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
+#include <ztd/text/error_handler_always_returns_ok.hpp>
+#include <ztd/text/transcode_one.hpp>
 #include <ztd/text/detail/encoding_iterator.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
@@ -44,7 +46,6 @@
 #include <ztd/idk/ebco.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -432,12 +433,31 @@ namespace ztd { namespace text {
 		/// buffer, will never return an error. This is the case with specific encoding operations with
 		/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
 		//////
+		constexpr encoding_error pivot_error_code() const noexcept {
+			if constexpr (_IsErrorless) {
+				return encoding_error::ok;
+			}
+			else {
+				return this->__base_error_cache_t::_M_from_error();
+			}
+		}
+
+		//////
+		/// @brief Returns whether the last read operation had an encoding error or not.
+		///
+		/// @returns The ztd::text::encoding_error that occurred. This can be ztd::text::encoding_error::ok for
+		/// an operation that went just fine.
+		///
+		/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
+		/// buffer, will never return an error. This is the case with specific encoding operations with
+		/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
+		//////
 		constexpr encoding_error error_code() const noexcept {
 			if constexpr (_IsErrorless) {
 				return encoding_error::ok;
 			}
 			else {
-				return this->__base_error_cache_t::_M_error_code;
+				return this->__base_error_cache_t::_M_to_error();
 			}
 		}
 
@@ -562,34 +582,33 @@ namespace ztd { namespace text {
 			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
 			::ztd::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 			_IntermediateCodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
-			::ztd::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>> __intermediate(
-				__intermediate_storage);
+			using _Intermediate = ::ztd::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>>;
+			_Intermediate __intermediate(__intermediate_storage);
+			pivot<_Intermediate> __pivot { __intermediate, encoding_error::ok };
 			if constexpr (_IsInputOrOutput) {
-				auto __result = __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(
-					::std::move(__this_input_range), this->from_encoding(), __cache_view, this->to_encoding(),
-					this->from_handler(), this->to_handler(), this->from_state(), this->to_state(),
-					__intermediate);
-				__this_cache_end = idk_adl::adl_to_address(ranges::ranges_adl::adl_begin(__result.output));
+				auto __result    = transcode_one_into(::std::move(__this_input_range), this->from_encoding(),
+					   __cache_view, this->to_encoding(), this->from_handler(), this->to_handler(),
+					   this->from_state(), this->to_state(), __pivot);
+				__this_cache_end = ::ztd::to_address(ranges::ranges_adl::adl_begin(__result.output));
 				if constexpr (!_IsErrorless) {
-					this->__base_error_cache_t::_M_error_code = __result.error_code;
+					this->__base_error_cache_t::_M_set_errors(__pivot.error_code, __result.error_code);
 				}
 				this->__base_range_t::get_value() = ::std::move(__result.input);
 			}
 			else {
-				auto __result
-					= __txt_detail::__basic_transcode_one<__txt_detail::__consume::__no>(__this_input_range,
-					     this->from_encoding(), __cache_view, this->to_encoding(), this->from_handler(),
-					     this->to_handler(), this->from_state(), this->to_state(), __intermediate);
-				__this_cache_end = idk_adl::adl_to_address(ranges::ranges_adl::adl_begin(__result.output));
+				auto __result    = transcode_one_into(__this_input_range, this->from_encoding(), __cache_view,
+					   this->to_encoding(), this->from_handler(), this->to_handler(), this->from_state(),
+					   this->to_state(), __pivot);
+				__this_cache_end = ::ztd::to_address(ranges::ranges_adl::adl_begin(__result.output));
 				if constexpr (!_IsErrorless) {
-					this->__base_error_cache_t::_M_error_code = __result.error_code;
+					this->__base_error_cache_t::_M_set_errors(__pivot.error_code, __result.error_code);
 				}
 				this->__base_range_t::get_value() = ::std::move(__result.input);
 			}
 			if constexpr (!_IsSingleValueType) {
 				__base_cursor_cache_size_t __data_size
 					= static_cast<__base_cursor_cache_size_t>(__this_cache_end - __this_cache_begin);
-				ZTD_TEXT_ASSERT_MESSAGE_I_("size of produced value can never be bigger thanthe cache",
+				ZTD_TEXT_ASSERT_MESSAGE_I_("size of produced value can never be bigger than the cache",
 					static_cast<::std::size_t>(__data_size) <= this->_M_cache.size());
 				this->__base_cursor_cache_t::_M_position = static_cast<__base_cursor_cache_size_t>(0);
 				this->__base_cursor_cache_t::_M_size     = __data_size;

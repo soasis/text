@@ -36,6 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/idk/charN_t.hpp>
+#include <ztd/platform/version.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -106,34 +107,13 @@ namespace ztd { namespace text {
 	class basic_utf16;
 	template <typename, typename>
 	class basic_utf32;
-	using utf8_t  = basic_utf8<uchar8_t, unicode_code_point>;
-	using utf16_t = basic_utf16<char16_t, unicode_code_point>;
-	using utf32_t = basic_utf32<char32_t, unicode_code_point>;
+	using compat_utf8_t = basic_utf8<char, unicode_code_point>;
+	using utf8_t        = basic_utf8<uchar8_t, unicode_code_point>;
+	using utf16_t       = basic_utf16<char16_t, unicode_code_point>;
+	using utf32_t       = basic_utf32<char32_t, unicode_code_point>;
 
-	using execution_t =
-#if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
-		__txt_impl::__execution_cuchar
-#elif ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
-		__txt_impl::__execution_iconv
-#elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS)
-		__txt_impl::__execution_mac_os
-#else
-		no_encoding_t<char, unicode_code_point>
-#endif
-		;
-
-	using wide_execution_t =
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
-		__txt_impl::__wide_execution_windows
-#elif ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
-		__txt_impl::__iconv_wide_execution
-#elif ZTD_IS_ON(ZTD_WCHAR_T_UTF32_COMPATIBLE)
-		__txt_impl::__wide_execution_iso10646
-#else
-		__txt_impl::__wide_execution_cwchar
-#endif
-		;
-
+	class execution_t;
+	class wide_execution_t;
 	class nfc;
 	class nfd;
 	class nfkc;
@@ -144,9 +124,6 @@ namespace ztd { namespace text {
 
 	template <typename, typename, typename>
 	class basic_text;
-
-	template <typename, typename>
-	class basic_c_string_view;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

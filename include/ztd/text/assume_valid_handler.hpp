@@ -62,9 +62,9 @@ namespace ztd { namespace text {
 		//////
 		using assume_valid = ::std::integral_constant<bool,
 #if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION)
-			true
-#else
 			false
+#else
+			true
 #endif
 			>;
 

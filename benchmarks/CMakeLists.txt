@@ -36,20 +36,20 @@ function(googlebenchmark_dependency_jail)
 	FetchContent_Declare(
 		googlebenchmark
 		GIT_REPOSITORY https://github.com/google/benchmark.git
-		GIT_TAG 108ca84820dc932957b75e6b31faa6c3cf0aa37a
-	)
+		GIT_SHALLOW    ON
+		GIT_TAG        main)
 	FetchContent_GetProperties(googlebenchmark)
 
 	if(NOT googlebenchmark_POPULATED)
 		FetchContent_Populate(googlebenchmark)
-		set(BENCHMARK_ENABLE_INSTALL OFF CACHE INTERNAL "")
-		set(BENCHMARK_ENABLE_TESTING OFF CACHE INTERNAL "")
-		set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE INTERNAL "")
-		set(BENCHMARK_ENABLE_WERROR OFF CACHE INTERNAL "")
-		set(BENCHMARK_FORCE_WERROR OFF CACHE INTERNAL "")
+		set(BENCHMARK_ENABLE_INSTALL OFF)
+		set(BENCHMARK_ENABLE_TESTING OFF)
+		set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+		set(BENCHMARK_ENABLE_WERROR OFF)
+		set(BENCHMARK_FORCE_WERROR OFF)
 		if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND WIN32)
 			# google benchmark is broken, so we need to force HAVE_STD_REGEX to be on for this.
-			set(HAVE_STD_REGEX ON CACHE INTERNAL "")
+			set(HAVE_STD_REGEX ON)
 		endif()
 		add_subdirectory(${googlebenchmark_SOURCE_DIR} ${googlebenchmark_BINARY_DIR})
 	endif()
@@ -60,6 +60,7 @@ function (utf8cpp_dependency_jail)
 	FetchContent_Declare(
 		utf8cpp
 		GIT_REPOSITORY https://github.com/nemtrif/utfcpp
+		GIT_SHALLOW    ON
 	)
 	FetchContent_MakeAvailable(utf8cpp)
 endfunction()
@@ -69,8 +70,8 @@ function (ctre_dependency_jail)
 	FetchContent_Declare(
 		ctre
 		GIT_REPOSITORY https://github.com/hanickadot/compile-time-regular-expressions
-		GIT_TAG main
-	)
+		GIT_SHALLOW    ON
+		GIT_TAG        main)
 	FetchContent_MakeAvailable(ctre)
 endfunction()
 ctre_dependency_jail()
@@ -80,12 +81,12 @@ function(ztd_platform_dependency_jail)
 	FetchContent_Declare(
 		ztd.platform
 		GIT_REPOSITORY https://github.com/soasis/platform
-		GIT_TAG main
-	)
+		GIT_SHALLOW    ON
+		GIT_TAG        main)
 	FetchContent_MakeAvailable(ztd.platform)
 endfunction()
 ztd_platform_dependency_jail()
 
 add_subdirectory(barrier)
 add_subdirectory(function_form)
-add_subdirectory(speed)
+add_subdirectory(conversion_speed)

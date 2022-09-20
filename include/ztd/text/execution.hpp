@@ -56,24 +56,25 @@ namespace ztd { namespace text {
 	/// typically associated with the locale, which is tied to the C standard library's setlocale function.
 	///
 	/// @remarks Use of this type is subject to the C Standard Library or platform defaults. Some locales (such as the
-	/// Big5 Hong King Supplementary Character Set (Big5-HKSCS)) are broken when accessed without @c
-	/// ZTD_TEXT_USE_CUNEICODE beingdefined, due to fundamental design issues in the C Standard Library and bugs in
-	/// glibc/musl libc's current locale encoding support. On Apple, this is cuurrently assumed to be UTF-8 since they
-	/// do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
+	/// Big5 Hong King Supplementary Character Set (Big5-HKSCS)) are broken due to fundamental design issues in the C
+	/// Standard Library and bugs in glibc/musl libc's current locale encoding support. On Apple, this is cuurrently
+	/// assumed to be UTF-8 since they do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
 	//////
-	using execution_t =
+	class execution_t : public
 #if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
-		__txt_impl::__execution_cuchar
+		               __txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS)
-		__txt_impl::__execution_mac_os
+		               __txt_impl::__execution_mac_os
 #elif ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
-		__txt_impl::__execution_iconv
+		               __txt_impl::__execution_iconv
 #else
-		no_encoding_t<char, unicode_code_point>
+		               no_encoding_t<char, unicode_code_point>
 #error \
-     "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
+     "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to" \
+	"work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
 #endif
-		;
+	{
+	};
 
 	//////
 	/// @brief An instance of the execution_t type for ease of use.

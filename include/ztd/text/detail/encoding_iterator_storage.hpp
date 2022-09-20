@@ -40,6 +40,7 @@
 
 #include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
+#include <ztd/idk/to_underlying.hpp>
 #include <ztd/idk/detail/math.hpp>
 #include <ztd/ranges/range.hpp>
 
@@ -332,11 +333,34 @@ namespace ztd { namespace text {
 		template <bool>
 		class __error_cache {
 		public:
-			encoding_error _M_error_code = encoding_error::ok;
+			unsigned char _M_error_code = static_cast<unsigned char>(
+				ztd::to_underlying(encoding_error::ok) | (ztd::to_underlying(encoding_error::ok) << 2));
+
+			constexpr encoding_error _M_from_error() const noexcept {
+				return static_cast<encoding_error>((_M_error_code & (0x02 << 0)) >> 0);
+			}
+
+			constexpr encoding_error _M_to_error() const noexcept {
+				return static_cast<encoding_error>((_M_error_code & (0x02 << 2)) >> 2);
+			}
+
+			constexpr void _M_set_errors(encoding_error __from_error, encoding_error __to_error) noexcept {
+				this->_M_error_code = 0;
+				this->_M_error_code |= (::ztd::to_underlying(__from_error) << 0);
+				this->_M_error_code |= (::ztd::to_underlying(__to_error) << 2);
+			}
 		};
 
 		template <>
-		class __error_cache<true> { };
+		class __error_cache<true> {
+			constexpr encoding_error _M_from_error() const noexcept {
+				return encoding_error::ok;
+			}
+
+			constexpr encoding_error _M_to_error() const noexcept {
+				return encoding_error::ok;
+			}
+		};
 
 	} // namespace __txt_detail
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

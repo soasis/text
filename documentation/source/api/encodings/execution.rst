@@ -46,7 +46,7 @@ Even if, on a given platform, it can be assumed to be a static encoding (e.g., A
 
 .. doxygenvariable:: ztd::text::execution
 
-.. doxygentypedef:: ztd::text::execution_t
+.. doxygenclass:: ztd::text::execution_t
 
 
 

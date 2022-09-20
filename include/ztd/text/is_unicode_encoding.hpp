@@ -36,6 +36,9 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/is_unicode_code_point.hpp>
+#include <ztd/text/code_point.hpp>
+#include <ztd/text/code_unit.hpp>
+#include <ztd/text/is_full_range_representable.hpp>
 
 #include <ztd/idk/encoding_name.hpp>
 #include <ztd/idk/type_traits.hpp>
@@ -69,11 +72,24 @@ namespace ztd { namespace text {
 		template <typename _Type, typename = void>
 		struct __decoded_id_sfinae
 		: ::std::integral_constant<text_encoding_id,
-			  is_unicode_code_point_v<_Type> ? text_encoding_id::utf32 : text_encoding_id::unknown> { };
+			  is_unicode_code_point_v<code_point_t<_Type>> ? text_encoding_id::utf32 : text_encoding_id::unknown> {
+		};
 
 		template <typename _Type>
 		struct __decoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_decoded_id, _Type>>>
 		: ::std::integral_constant<text_encoding_id, _Type::decoded_id> { };
+
+		template <typename _Type>
+		using __detect_encoded_id = decltype(_Type::encoded_id);
+
+		template <typename _Type, typename = void>
+		struct __encoded_id_sfinae
+		: ::std::integral_constant<text_encoding_id,
+			  is_unicode_code_point_v<code_unit_t<_Type>> ? text_encoding_id::utf32 : text_encoding_id::unknown> { };
+
+		template <typename _Type>
+		struct __encoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_encoded_id, _Type>>>
+		: ::std::integral_constant<text_encoding_id, _Type::encoded_id> { };
 	} // namespace __txt_detail
 
 	//////
@@ -91,12 +107,12 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<_Type> { };
+	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
 	//////
 	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
 	template <typename _Type>
-	inline constexpr bool is_unicode_encoding_v = is_unicode_encoding<_Type>::value;
+	inline constexpr bool is_unicode_encoding_v = is_unicode_encoding<::ztd::remove_cvref_t<_Type>>::value;
 
 	//////
 	/// @brief Whether or not the provided encoding is a Unicode encoding.
@@ -136,7 +152,24 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
 	template <typename _Type>
-	inline constexpr bool decoded_id_v = decoded_id<_Type>::value;
+	inline constexpr text_encoding_id decoded_id_v = decoded_id<_Type>::value;
+
+	//////
+	/// @brief Returns the ID of what an encoding encodes into.
+	///
+	/// @tparam _Type The encoding type to retrieve the ID from.
+	///
+	/// @remarks If the encoding type does not have a `static constexpr text_encoding_id` member with the name
+	/// `encoded_id`, it will assume it decodes to UTF-32 code points if the ztd::text::code_unit_t type matches
+	/// ztd::text::is_unicode_code_point_v. Otherwise, it will return ztd::text_encoding_id::unknown.
+	//////
+	template <typename _Type>
+	class encoded_id : public __txt_detail::__encoded_id_sfinae<::ztd::remove_cvref_t<_Type>> { };
+
+	//////
+	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
+	template <typename _Type>
+	inline constexpr text_encoding_id encoded_id_v = encoded_id<::ztd::remove_cvref_t<_Type>>::value;
 
 	//////
 	/// @}

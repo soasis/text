@@ -38,6 +38,7 @@
 #include <ztd/text/no_normalization.hpp>
 
 #include <type_traits>
+#include <utility>
 
 #include <ztd/prologue.hpp>
 

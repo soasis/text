@@ -237,6 +237,13 @@ namespace ztd { namespace text {
 		/// @brief The maximum code units a single complete operation of encoding can produce.
 		inline static constexpr const ::std::size_t max_code_units
 			= (max_code_units_v<_UBaseEncoding> * sizeof(_BaseCodeUnit)) / (sizeof(_Byte));
+		//////
+		/// @brief The id representing the decoded text.
+		inline static constexpr const ::ztd::text_encoding_id decoded_id = decoded_id_v<_UBaseEncoding>;
+		//////
+		/// @brief The id representing the encoded text.
+		inline static constexpr const ::ztd::text_encoding_id encoded_id = ::ztd::to_byte_text_encoding_id(
+			encoded_id_v<_UBaseEncoding>, _Endian, sizeof(code_unit_t<_UBaseEncoding>));
 
 		//////
 		/// @brief Constructs a ztd::text::encoding_scheme with the given arguments.

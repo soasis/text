@@ -29,7 +29,17 @@
 
 #include <benchmark/benchmark.h>
 
+#include <ztd/tests/keep_process_awake.hpp>
+
+#include <iostream>
+
 int main(int argc, char* argv[]) {
+	ztd::tests::keep_process_awake process_wake {};
+	if (!process_wake.awake_request_successful()) {
+		std::cerr << "[ztd.text/benchmarks] the process awake request did not set successfully; process may fall "
+		             "asleep during benchmarks."
+		          << std::endl;
+	}
 	benchmark::Initialize(&argc, argv);
 	benchmark::RunSpecifiedBenchmarks();
 	benchmark::Shutdown();

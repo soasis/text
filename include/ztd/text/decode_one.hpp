@@ -41,7 +41,6 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
-#include <ztd/text/text_tag.hpp>
 #include <ztd/text/detail/span_or_reconstruct.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
@@ -53,6 +52,7 @@
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
+#include <ztd/idk/tag.hpp>
 #include <ztd/static_containers.hpp>
 
 #include <ztd/prologue.hpp>

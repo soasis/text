@@ -625,7 +625,7 @@ namespace ztd { namespace text {
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
 			const _InputProgress& __input_progress,
-			const _OutputProgress& __output_progress) const& // clang-format hack
+			const _OutputProgress& __output_progress) const& // cf
 			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
 			     const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {
@@ -666,7 +666,7 @@ namespace ztd { namespace text {
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
 			const _InputProgress& __input_progress,
-			const _OutputProgress& __output_progress) & // clang-format hack
+			const _OutputProgress& __output_progress) & // cf
 			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
 			     const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {
@@ -707,7 +707,7 @@ namespace ztd { namespace text {
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
 			const _InputProgress& __input_progress,
-			const _OutputProgress& __output_progress) && // clang-format hack
+			const _OutputProgress& __output_progress) && // cf
 			noexcept(::std::is_nothrow_invocable_v<_ErrorHandler, const _Encoding&, _Result&&, const _InputProgress&,
 			     const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::incomplete_sequence) {

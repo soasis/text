@@ -164,8 +164,8 @@ namespace ztd { namespace text {
 			) {
 				auto __in_it               = ::ztd::ranges::ranges_adl::adl_cbegin(__input);
 				auto __out_it              = ::ztd::ranges::ranges_adl::adl_begin(__output);
-				auto __in_ptr              = ztd::idk_adl::adl_to_address(__in_it);
-				auto __out_ptr             = ztd::idk_adl::adl_to_address(__out_it);
+				auto __in_ptr              = ::ztd::to_address(__in_it);
+				auto __out_ptr             = ::ztd::to_address(__out_it);
 				::std::size_t __in_size    = ztd::ranges::ranges_adl::adl_size(__input);
 				::std::size_t __out_size   = ztd::ranges::ranges_adl::adl_size(__output);
 				const char* __typed_in_ptr = reinterpret_cast<const char*>(__in_ptr);
@@ -285,8 +285,8 @@ namespace ztd { namespace text {
 			) {
 				auto __in_it                   = ::ztd::ranges::ranges_adl::adl_cbegin(__input);
 				auto __out_it                  = ::ztd::ranges::ranges_adl::adl_begin(__output);
-				auto __in_ptr                  = ztd::idk_adl::adl_to_address(__in_it);
-				auto __out_ptr                 = ztd::idk_adl::adl_to_address(__out_it);
+				auto __in_ptr                  = ::ztd::to_address(__in_it);
+				auto __out_ptr                 = ::ztd::to_address(__out_it);
 				::std::size_t __in_size        = ztd::ranges::ranges_adl::adl_size(__input);
 				::std::size_t __out_size       = ztd::ranges::ranges_adl::adl_size(__output);
 				const char32_t* __typed_in_ptr = reinterpret_cast<const char32_t*>(__in_ptr);

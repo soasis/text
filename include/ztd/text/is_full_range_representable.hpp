@@ -94,14 +94,15 @@ namespace ztd { namespace text {
 	/// default).
 	//////
 	template <typename _Type>
-	class is_decode_injective : public ::std::integral_constant<bool,
-		                            __txt_detail::__is_decode_injective_sfinae<_Type>::value
-		                                 || __txt_detail::__is_injective_sfinae<_Type>::value> { };
+	class is_decode_injective
+	: public ::std::integral_constant<bool,
+		  __txt_detail::__is_decode_injective_sfinae<::ztd::remove_cvref_t<_Type>>::value
+		       || __txt_detail::__is_injective_sfinae<::ztd::remove_cvref_t<_Type>>::value> { };
 
 	//////
 	/// @brief A `::value` alias for ztd::text::is_decode_injective.
 	template <typename _Type>
-	inline constexpr bool is_decode_injective_v = is_decode_injective<_Type>::value;
+	inline constexpr bool is_decode_injective_v = is_decode_injective<::ztd::remove_cvref_t<_Type>>::value;
 
 	//////
 	/// @brief Checks whether or not the encoding step for `_Type` is injective (cannot possibly lose information

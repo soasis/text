@@ -181,23 +181,28 @@
 		},
 		{
 			"name": "ztd.text",
-			"pattern": "_ztd_text$",
+			"pattern": "ztd_text$",
 			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
 		},
 		{
 			"name": "ztd.text (unbounded)",
-			"pattern": "_ztd_text_unbounded$",
-			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
+			"pattern": "ztd_text_unbounded$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off."
 		},
 		{
 			"name": "ztd.text (single loop)",
-			"pattern": "_ztd_text_single$",
-			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
+			"pattern": "ztd_text_single$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function."
 		},
 		{
 			"name": "ztd.text (single loop, unbounded)",
-			"pattern": "_ztd_text_single_unbounded$",
-			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
+			"pattern": "ztd_text_single_unbounded$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function in a loop, with output bounds checking turned off."
+		},
+		{
+			"name": "ztd.text view",
+			"pattern": "ztd_text_view$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction."
 		}
 	],
 	"data_labels": [
