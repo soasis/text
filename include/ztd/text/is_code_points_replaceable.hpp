@@ -71,7 +71,7 @@ namespace ztd { namespace text {
 	: public is_detected<__txt_detail::__detect_is_code_points_maybe_replaceable, _Type, _Args...> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_code_points_maybe_replaceable
+	/// @brief An alias of the inner `value` for ztd::text::is_code_points_maybe_replaceable
 	template <typename _Type, typename... _Args>
 	inline constexpr bool is_code_points_maybe_replaceable_v
 		= is_code_points_maybe_replaceable<_Type, _Args...>::value;
@@ -90,7 +90,7 @@ namespace ztd { namespace text {
 	: public is_detected<__txt_detail::__detect_is_code_points_replaceable, _Type, _Args...> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_code_points_replaceable
+	/// @brief An alias of the inner `value` for ztd::text::is_code_points_replaceable
 	template <typename _Type, typename... _Args>
 	inline constexpr bool is_code_points_replaceable_v = is_code_points_replaceable<_Type, _Args...>::value;
 

@@ -68,6 +68,7 @@
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
@@ -173,7 +174,6 @@ namespace ztd { namespace text {
 	/// ``encoding_scheme<ztd::text::utf16_t, ztd::endian::big>``. It can be made interopable with ``unsigned
 	/// char`` buffers rather than ``std::byte`` buffers by doing: ``ztd::text::encoding_scheme<ztd::text::utf32_t,
 	/// ztd::endian::native, unsigned char>``.
-	//////
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
 	class encoding_scheme : public __txt_detail::__is_unicode_encoding_es<encoding_scheme<_Encoding, _Endian, _Byte>,
 		                        unwrap_remove_cvref_t<_Encoding>>,
@@ -253,7 +253,6 @@ namespace ztd { namespace text {
 		/// @brief Retrives the underlying encoding object.
 		///
 		/// @returns An l-value reference to the encoding object.
-		//////
 		constexpr encoding_type& base() & noexcept {
 			return this->__base_t::get_value();
 		}
@@ -262,7 +261,6 @@ namespace ztd { namespace text {
 		/// @brief Retrives the underlying encoding object.
 		///
 		/// @returns An l-value reference to the encoding object.
-		//////
 		constexpr const encoding_type& base() const& noexcept {
 			return this->__base_t::get_value();
 		}
@@ -271,7 +269,6 @@ namespace ztd { namespace text {
 		/// @brief Retrives the underlying encoding object.
 		///
 		/// @returns An l-value reference to the encoding object.
-		//////
 		constexpr encoding_type&& base() && noexcept {
 			return this->__base_t::get_value();
 		}
@@ -281,7 +278,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This is only callable if the function call exists on the wrapped encoding. It is broken down into
 		/// a contiguous view type formulated from bytes if the wrapped code unit types do not match.
-		//////
 		template <typename _Unused                                     = encoding_type,
 			::std::enable_if_t<is_code_units_replaceable_v<_Unused>>* = nullptr>
 		constexpr decltype(auto) replacement_code_units() const noexcept {
@@ -307,7 +303,6 @@ namespace ztd { namespace text {
 		/// @brief Returns the desired replacement code points to use.
 		///
 		/// @remarks Is only callable if the function call exists on the wrapped encoding.
-		//////
 		template <typename _Unused                                      = encoding_type,
 			::std::enable_if_t<is_code_points_replaceable_v<_Unused>>* = nullptr>
 		constexpr decltype(auto) replacement_code_points() const noexcept {
@@ -320,7 +315,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This is only callable if the function call exists on the wrapped encoding. It is broken down into
 		/// a contiguous view type formulated from bytes if the wrapped code unit types do not match.
-		//////
 		template <typename _Unused                                           = encoding_type,
 			::std::enable_if_t<is_code_units_maybe_replaceable_v<_Unused>>* = nullptr>
 		constexpr decltype(auto) maybe_replacement_code_units() const noexcept {
@@ -350,7 +344,6 @@ namespace ztd { namespace text {
 		/// @brief Returns the desired replacement code units to use.
 		///
 		/// @remarks This Is only callable if the function call exists on the wrapped encoding.
-		//////
 		template <typename _Unused                                            = encoding_type,
 			::std::enable_if_t<is_code_points_maybe_replaceable_v<_Unused>>* = nullptr>
 		constexpr decltype(auto) maybe_replacement_code_points() const noexcept {
@@ -380,7 +373,6 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		//////
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			decode_state& __s) const {
@@ -420,7 +412,6 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		//////
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 			encode_state& __s) const {
@@ -445,80 +436,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
-	///
-	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or `uchar.`
-	//////
-	template <typename _Byte>
-	using basic_utf16_le = encoding_scheme<utf16_t, endian::little, _Byte>;
-
-	//////
-	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	///
-	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt>.
-	//////
-	template <typename _Byte>
-	using basic_utf16_be = encoding_scheme<utf16_t, endian::big, _Byte>;
-
-	//////
-	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
-	///
-	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt>.
-	//////
-	template <typename _Byte>
-	using basic_utf16_ne = encoding_scheme<utf16_t, endian::native, _Byte>;
-
-	//////
-	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
-	using utf16_le_t = basic_utf16_le<::std::byte>;
-
-	//////
-	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	using utf16_be_t = basic_utf16_be<::std::byte>;
-
-	//////
-	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
-	using utf16_ne_t = basic_utf16_ne<::std::byte>;
-
-	//////
-	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
-	///
-	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
-	//////
-	template <typename _Byte>
-	using basic_utf32_le = encoding_scheme<utf32_t, endian::little, _Byte>;
-
-	//////
-	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	///
-	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
-	//////
-	template <typename _Byte>
-	using basic_utf32_be = encoding_scheme<utf32_t, endian::big, _Byte>;
-
-	//////
-	/// @brief A UTF-32 encoding, in Native Endian format, with inputs as a sequence of bytes.
-	///
-	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
-	//////
-	template <typename _Byte>
-	using basic_utf32_ne = encoding_scheme<utf32_t, endian::native, _Byte>;
-
-	//////
-	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
-	using utf32_le_t = basic_utf32_le<::std::byte>;
-
-	//////
-	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	using utf32_be_t = basic_utf32_be<::std::byte>;
-
-	//////
-	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
-	using utf32_ne_t = basic_utf32_ne<::std::byte>;
-
-	//////
 	/// @}
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

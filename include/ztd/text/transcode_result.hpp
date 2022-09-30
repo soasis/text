@@ -56,15 +56,15 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_result Result Types
+	///
 	/// @brief The result types are used in the transcoding, validation and counting functions. Their sole goal is to
 	/// make sure.
+	///
 	/// @{
-	/////
 
 	//////
 	/// @brief The result of transcoding operations (such as ztd_text_transcode) that specifically do not include
 	/// a reference to the state.
-	//////
 	template <typename _Input, typename _Output>
 	class stateless_transcode_result {
 	public:

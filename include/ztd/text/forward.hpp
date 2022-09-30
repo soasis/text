@@ -111,19 +111,65 @@ namespace ztd { namespace text {
 	using utf8_t        = basic_utf8<uchar8_t, unicode_code_point>;
 	using utf16_t       = basic_utf16<char16_t, unicode_code_point>;
 	using utf32_t       = basic_utf32<char32_t, unicode_code_point>;
-
 	class execution_t;
 	class wide_execution_t;
+
 	class nfc;
 	class nfd;
 	class nfkc;
 	class nfkd;
+
+	template <typename>
+	class pivot;
+
+	template <typename, typename>
+	class stateless_transcode_result;
+	template <typename, typename, typename>
+	class transcode_result;
+	template <typename, typename>
+	class stateless_decode_result;
+	template <typename, typename, typename>
+	class decode_result;
+	template <typename, typename>
+	class stateless_encode_result;
+	template <typename, typename, typename>
+	class encode_result;
 
 	template <typename, typename, typename, typename, typename>
 	class basic_text_view;
 
 	template <typename, typename, typename>
 	class basic_text;
+
+	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
+	constexpr auto decode_one_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+		_ErrorHandler&& __error_handler, _State& __state);
+
+	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
+	constexpr auto encode_one_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+		_ErrorHandler&& __error_handler, _State& __state);
+
+	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
+	constexpr auto basic_decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+		_ErrorHandler&& __error_handler, _State& __state);
+
+	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
+	constexpr auto basic_encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+		_ErrorHandler&& __error_handler, _State& __state);
+
+	template <typename _Input, typename _Output, typename _FromEncoding, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+		typename _PivotRange>
+	constexpr auto basic_transcode_one_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
+		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
+		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot);
+
+	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
+		typename _PivotRange>
+	constexpr auto basic_transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
+		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
+		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot);
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -100,7 +100,7 @@ namespace ztd { namespace text {
 		       || __txt_detail::__is_injective_sfinae<::ztd::remove_cvref_t<_Type>>::value> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_decode_injective.
+	/// @brief An alias of the inner `value` for ztd::text::is_decode_injective.
 	template <typename _Type>
 	inline constexpr bool is_decode_injective_v = is_decode_injective<::ztd::remove_cvref_t<_Type>>::value;
 
@@ -119,7 +119,7 @@ namespace ztd { namespace text {
 		                                 || __txt_detail::__is_injective_sfinae<_Type>::value> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_encode_injective.
+	/// @brief An alias of the inner `value` for ztd::text::is_encode_injective.
 	template <typename _Type>
 	inline constexpr bool is_encode_injective_v = is_encode_injective<_Type>::value;
 
@@ -131,7 +131,7 @@ namespace ztd { namespace text {
 		  is_decode_injective_v<remove_cvref_t<_From>> && is_encode_injective_v<remove_cvref_t<_To>>> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_full_range_representable_between.
+	/// @brief An alias of the inner `value` for ztd::text::is_full_range_representable_between.
 	template <typename _From, typename _To>
 	inline constexpr bool is_full_range_representable_bewtween_v
 		= is_full_range_representable_between<_From, _To>::value;
@@ -142,7 +142,7 @@ namespace ztd { namespace text {
 	using is_full_range_representable = is_full_range_representable_between<_Type, _Type>;
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_full_range_representable_between<_Type, _Type>.
+	/// @brief An alias of the inner `value` for ztd::text::is_full_range_representable_between<_Type, _Type>.
 	template <typename _Type>
 	inline constexpr bool is_full_range_representable_v = is_full_range_representable<_Type>::value;
 

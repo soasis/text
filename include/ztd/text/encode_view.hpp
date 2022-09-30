@@ -53,8 +53,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief A view over a range of code points, presenting the code points as code units. Uses the `_Encoding`
@@ -214,7 +214,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The reconstruct extension point for rebuilding an encoding view from its iterator and sentinel
 	/// type.
-	//////
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
 	constexpr encode_view<_Encoding, _Range, _ErrorHandler, _State> tag_invoke(ztd::tag_t<ranges::reconstruct>,
 		::std::in_place_type_t<encode_view<_Encoding, _Range, _ErrorHandler, _State>>,
@@ -244,11 +243,13 @@ namespace std { namespace ranges {
 #else
 
 namespace ztd { namespace ranges {
+
 	//////
 	/// @brief Mark subranges as appropriately borrowed ranges.
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
 	inline constexpr bool enable_borrowed_range<::ztd::text::encode_view<_Encoding, _Range, _ErrorHandler,
 		_State>> = ::ztd::ranges::enable_borrowed_range<_Range>;
+
 }} // namespace ztd::ranges
 
 #endif

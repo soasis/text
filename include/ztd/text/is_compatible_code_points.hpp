@@ -61,7 +61,7 @@ namespace ztd { namespace text {
 		       || (is_unicode_code_point_v<_LeftCodePoint> && is_unicode_code_point_v<_RightCodePoint>)> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_compatible_code_points
+	/// @brief An alias of the inner `value` for ztd::text::is_compatible_code_points
 	template <typename _LeftCodePoint, typename _RightCodePoint>
 	inline constexpr bool is_compatible_code_points_v
 		= is_compatible_code_points<_LeftCodePoint, _RightCodePoint>::value;

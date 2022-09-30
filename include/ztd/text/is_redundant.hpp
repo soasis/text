@@ -64,7 +64,7 @@ namespace ztd { namespace text {
 	using is_decode_redundant = ::std::is_same<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>;
 
 	//////
-	/// @brief A `::value` alias for `ztd::text::is_decode_redundant<_From, _To>`.
+	/// @brief An alias of the inner `value` for `ztd::text::is_decode_redundant<_From, _To>`.
 	template <typename _From, typename _To>
 	inline constexpr bool is_decode_redundant_v = is_decode_redundant<_From, _To>::value;
 
@@ -74,7 +74,7 @@ namespace ztd { namespace text {
 	using is_encode_redundant = ::std::is_same<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>;
 
 	//////
-	/// @brief A `::value` alias for `ztd::text::is_encode_redundant<_From, _To>`.
+	/// @brief An alias of the inner `value` for `ztd::text::is_encode_redundant<_From, _To>`.
 	template <typename _From, typename _To>
 	inline constexpr bool is_encode_redundant_v
 		= is_encode_redundant<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>::value;

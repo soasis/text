@@ -53,7 +53,7 @@ namespace ztd { namespace text {
 
 	namespace __txt_impl {
 		//////
-		/// @brief Internal text_tag for detecting a ztd::text-derved UTF-32 type.
+		/// @brief Internal ag for detecting a ztd::text-derved UTF-32 type.
 		///
 		/// @internal
 		//////

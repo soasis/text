@@ -81,7 +81,11 @@ namespace ztd { namespace text {
 	/// decode step.
 	/// @param[in,out] __to_state The state related to the `__to_encoding` that will be used for the final encoding
 	/// step.
-	/// @param[in, out] __pivot A reference to the pivot state.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
@@ -199,6 +203,11 @@ namespace ztd { namespace text {
 	/// decode step.
 	/// @param[in,out] __to_state The state related to the `__to_encoding` that will be used for the final encoding
 	/// step.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @returns A ztd::text::count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t) and a reference
@@ -250,6 +259,8 @@ namespace ztd { namespace text {
 	/// @param[in] __to_error_handler The error handler to invoke when the final encoding operation fails.
 	/// @param[in,out] __from_state The state attached to the `__from_encoding` that will be used for the intermediary
 	/// decode step.
+	/// @param[in,out] __to_state The state attached to the `__to_encoding` that will be used for the final encode
+	/// step.
 	///
 	/// @returns A ztd::text::stateless_count_result that includes information about how many code units are present,
 	/// taking into account any invoked errors (like replacement from ztd::text::replacement_handler_t).

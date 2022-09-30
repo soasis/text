@@ -110,7 +110,7 @@ namespace ztd { namespace text {
 	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
+	/// @brief An alias of the inner `value` for ztd::text::is_unicode_encoding.
 	template <typename _Type>
 	inline constexpr bool is_unicode_encoding_v = is_unicode_encoding<::ztd::remove_cvref_t<_Type>>::value;
 
@@ -150,7 +150,7 @@ namespace ztd { namespace text {
 	class decoded_id : public __txt_detail::__decoded_id_sfinae<_Type> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
+	/// @brief An alias of the inner `value` for ztd::text::is_unicode_encoding.
 	template <typename _Type>
 	inline constexpr text_encoding_id decoded_id_v = decoded_id<_Type>::value;
 
@@ -167,7 +167,7 @@ namespace ztd { namespace text {
 	class encoded_id : public __txt_detail::__encoded_id_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_unicode_encoding.
+	/// @brief An alias of the inner `value` for ztd::text::is_unicode_encoding.
 	template <typename _Type>
 	inline constexpr text_encoding_id encoded_id_v = encoded_id<::ztd::remove_cvref_t<_Type>>::value;
 

@@ -39,7 +39,8 @@ include(GNUInstallDirs)
 file(GLOB_RECURSE ztd_text_public_headers
 	LIST_DIRECTORIES NO
 	CONFIGURE_DEPENDS
-	${PROJECT_SOURCE_DIR}/include/**.*)
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp)
 
 # make a list copy for use with dependency tracking later down below
 set(ztd_text_doxygen_public_headers ${ztd_text_public_headers})
@@ -100,14 +101,13 @@ set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES
 
 add_custom_command(OUTPUT ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 	COMMAND ${DOXYGEN_EXECUTABLE} ${ZTD_TEXT_DOXYFILE_OUT}
-	MAIN_DEPENDENCY ${ZTD_TEXT_DOXYFILE_IN} ${ZTD_TEXT_DOXYFILE_OUT}
-	DEPENDS ${ztd_text_public_headers}
+	DEPENDS ${ZTD_TEXT_DOXYFILE_IN} ${ZTD_TEXT_DOXYFILE_OUT} ${ztd_text_public_headers}
 	COMMENT "[ztd.text/documentation] Generating Doxygen XML..."
 	COMMAND_EXPAND_LISTS
 	VERBATIM
 )
 add_custom_target(ztd.text.documentation.doxygen ALL
-	DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
+	DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_public_headers} 
 )
 
 if(NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
@@ -119,7 +119,7 @@ if(NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
 		${ZTD_TEXT_SPHINX_SOURCE_DIR}
 		${ZTD_TEXT_SPHINX_BUILD_DIR}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		DEPENDS ${ztd_text_sphinx_sources} ${ztd_text_public_headers} ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
+		DEPENDS ztd.text.documentation.doxygen ${ztd_text_sphinx_sources} ${ZTD_TEXT_DOXYGEN_INDEX_FILE}
 		COMMENT "[ztd.text/documentation] Generating Sphinx documentation..."
 		COMMAND_EXPAND_LISTS
 		VERBATIM

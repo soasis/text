@@ -28,39 +28,4 @@
 //
 // ============================================================================ //
 
-#pragma once
-
-#ifndef ZTD_TEXT_EXTENSION_HPP
-#define ZTD_TEXT_EXTENSION_HPP
-
-#include <ztd/text/version.hpp>
-
-#include <ztd/text/forward.hpp>
-#include <ztd/text/encoding_error.hpp>
-#include <ztd/text/code_unit.hpp>
-#include <ztd/text/code_point.hpp>
-#include <ztd/text/state.hpp>
-#include <ztd/text/pivot.hpp>
-#include <ztd/text/assume_valid_handler.hpp>
-#include <ztd/text/is_ignorable_error_handler.hpp>
-#include <ztd/text/is_full_range_representable.hpp>
-#include <ztd/text/is_unicode_encoding.hpp>
-#include <ztd/text/is_compatible_code_points.hpp>
-#include <ztd/text/is_transcoding_compatible.hpp>
-#include <ztd/text/decode_result.hpp>
-#include <ztd/text/encode_result.hpp>
-#include <ztd/text/transcode_result.hpp>
-
-#include <ztd/idk/tag.hpp>
-
-#include <ztd/prologue.hpp>
-
-namespace ztd { namespace text {
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text
-
-#include <ztd/epilogue.hpp>
-
-#endif // ZTD_TEXT_EXTENSION_HPP
+#include <ztd/text/any_encoding_with.hpp>

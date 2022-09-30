@@ -81,7 +81,7 @@ namespace ztd { namespace text {
 	: public __txt_detail::__is_ignorable_error_handler_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
 	//////
-	/// @brief A `::value` alias for ztd::text::is_ignorable_error_handler.
+	/// @brief An alias of the inner `value` for ztd::text::is_ignorable_error_handler.
 	template <typename _Type>
 	inline constexpr bool is_ignorable_error_handler_v
 		= is_ignorable_error_handler<::ztd::remove_cvref_t<_Type>>::value;

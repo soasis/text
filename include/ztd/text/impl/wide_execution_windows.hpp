@@ -49,8 +49,6 @@
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
 
-#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
-
 #include <iterator>
 #include <utility>
 
@@ -61,8 +59,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	namespace __txt_impl {
 
@@ -77,7 +75,6 @@ namespace ztd { namespace text {
 		/// fundamental limitations which may treat your UTF-16 data like UCS-2, and result in broken input/output.
 		/// This object uses UTF-16 directly on Windows when possible to avoid some of the platform-specific
 		/// shenanigans.
-		//////
 		class __wide_execution_windows : private basic_utf16<wchar_t> {
 		private:
 			using __base_t = basic_utf16<wchar_t>;
@@ -85,32 +82,25 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief The code point type that is decoded to, and encoded from.
-			//////
 			using code_point = code_point_t<__base_t>;
 			//////
 			/// @brief The code unit type that is decoded from, and encoded to.
-			//////
 			using code_unit = code_unit_t<__base_t>;
 			//////
 			/// @brief The associated state for decode operations.
-			//////
 			using decode_state = decode_state_t<__base_t>;
 			//////
 			/// @brief The associated state for encode operations.
-			//////
 			using encode_state = encode_state_t<__base_t>;
 
 			//////
 			/// @brief Whether or not this encoding is a unicode encoding or not.
-			//////
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<__base_t>>;
 			//////
 			/// @brief Whether or not this encoding's `decode_one` step is injective or not.
-			//////
 			using is_decode_injective = ::std::false_type;
 			//////
 			/// @brief Whether or not this encoding's `encode_one` step is injective or not.
-			//////
 			using is_encode_injective = ::std::false_type;
 
 			//////
@@ -184,7 +174,5 @@ namespace ztd { namespace text {
 }} // namespace ztd::text
 
 #include <ztd/epilogue.hpp>
-
-#endif
 
 #endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP

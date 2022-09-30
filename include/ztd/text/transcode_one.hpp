@@ -98,8 +98,11 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
-	/// @param[in, out] __pivot A reference to the pivot range (typically a `std::span` or similar) to use for any
-	/// intermediate step's code points.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p __to_state.
 	///
@@ -209,6 +212,11 @@ namespace ztd { namespace text {
 	/// respectively.
 	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @result A ztd::text::transcode_result object that contains references to `__from_state` and @p
 	/// __to_state.
@@ -920,6 +928,11 @@ namespace ztd { namespace text {
 	/// @param[in]     __to_error_handler The error handler for the `__to_encoding` 's encode step.
 	/// @param[in,out] __from_state A reference to the associated state for the `__from_encoding` 's decode step.
 	/// @param[in,out] __to_state A reference to the associated state for the `__to_encoding` 's encode step.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use

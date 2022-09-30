@@ -46,7 +46,8 @@ namespace ztd { namespace text {
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
 	///
-	/// @brief Type-trait like properties and helpers, with `_t` ( @c \::type ) and `_v` ( `::value` ).
+	/// @brief Type-trait like properties and helpers, with `_t` ( @c the inner `type` type definition ) and `_v` ( the
+	/// inner `value` variable, typically an `inline constexpr bool` ).
 	///
 	/// @remarks These should be the go-to way to reference necessary type and constant static data out of encoding
 	/// objects when not interfacing with the well-defined, guaranteed members. For example, directly accessing the @c

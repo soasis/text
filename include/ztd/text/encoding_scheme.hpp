@@ -50,6 +50,78 @@ namespace ztd { namespace text {
 	//////
 
 	//////
+	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or `uchar.`
+	//////
+	template <typename _Byte>
+	using basic_utf16_le = encoding_scheme<utf16_t, endian::little, _Byte>;
+
+	//////
+	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt>.
+	//////
+	template <typename _Byte>
+	using basic_utf16_be = encoding_scheme<utf16_t, endian::big, _Byte>;
+
+	//////
+	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt>.
+	//////
+	template <typename _Byte>
+	using basic_utf16_ne = encoding_scheme<utf16_t, endian::native, _Byte>;
+
+	//////
+	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
+	using utf16_le_t = basic_utf16_le<::std::byte>;
+
+	//////
+	/// @brief A UTF-16 encoding, in Big Endian format, with inputs as a sequence of bytes.
+	using utf16_be_t = basic_utf16_be<::std::byte>;
+
+	//////
+	/// @brief A UTF-16 encoding, in Native Endian format, with inputs as a sequence of bytes.
+	using utf16_ne_t = basic_utf16_ne<::std::byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
+	//////
+	template <typename _Byte>
+	using basic_utf32_le = encoding_scheme<utf32_t, endian::little, _Byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
+	//////
+	template <typename _Byte>
+	using basic_utf32_be = encoding_scheme<utf32_t, endian::big, _Byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Native Endian format, with inputs as a sequence of bytes.
+	///
+	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or <tt>unsigned char</tt> .
+	//////
+	template <typename _Byte>
+	using basic_utf32_ne = encoding_scheme<utf32_t, endian::native, _Byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Little Endian format, with inputs as a sequence of bytes.
+	using utf32_le_t = basic_utf32_le<::std::byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
+	using utf32_be_t = basic_utf32_be<::std::byte>;
+
+	//////
+	/// @brief A UTF-32 encoding, in Big Endian format, with inputs as a sequence of bytes.
+	using utf32_ne_t = basic_utf32_ne<::std::byte>;
+
+	//////
 	/// @brief An instance of the utf16_le_t type for ease of use.
 	inline constexpr utf16_le_t utf16_le = {};
 

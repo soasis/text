@@ -74,6 +74,11 @@ namespace ztd { namespace text {
 	/// @param[in] __to_encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in, out] __decode_state The state to use for the decoding portion of the validation check.
 	/// @param[in, out] __encode_state The state to use for the encoding portion of the validation check.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @remarks This function explicitly does not call any extension points. It defers to doing a typical loop over
 	/// the code points to verify it can be decoded into code points, and then encoded back into code units, with no
@@ -184,7 +189,11 @@ namespace ztd { namespace text {
 	/// @param[in] __to_encoding The encoding to verify can properly encode the input of code units.
 	/// @param[in, out] __decode_state The state to use for the decoding portion of the validation check.
 	/// @param[in, out] __encode_state The state to use for the encoding portion of the validation check.
-	/// @param[in, out] __pivot The pivot state to use for any intermediate data.
+	/// @param[in, out] __pivot A reference to a descriptor of a (potentially usable) pivot range, usually a range of
+	/// contiguous data from a span provided by the implementation but customizable by the end-user. If the
+	/// intermediate conversion is what failed, then the ztd::text::pivot's `error_code` member will be set to that
+	/// error. This only happens if the overall operation also fails, and need not be checked unless to obtain
+	/// additional information for when a top-level operation fails.
 	///
 	/// @remarks This functions checks to see if extension points for `text_validate_transcodable_as` is available
 	/// taking the available 4 parameters. If so, it calls this. Otherwise, it defers to

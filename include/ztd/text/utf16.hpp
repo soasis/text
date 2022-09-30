@@ -54,7 +54,7 @@ namespace ztd { namespace text {
 
 	namespace __txt_impl {
 		//////
-		/// @brief Internal text_tag for detecting a ztd::text-derved UTF-16 type.
+		/// @brief Internal tag for detecting a ztd::text-derved UTF-16 type.
 		///
 		/// @internal
 		//////
