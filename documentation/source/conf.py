@@ -118,9 +118,10 @@ def run_cmake_doxygen():
 		return
 
 	try:
-		retcode = subprocess.call("cmake --build .",
-		                          shell=True,
-		                          cwd=cmake_dir)
+		retcode = subprocess.call(
+		    "cmake --build . --target \"ztd.text.documentation.doxygen\"",
+		    shell=True,
+		    cwd=cmake_dir)
 	except OSError as e:
 		sys.stderr.write("cmake generation execution failed: %s\n" % e)
 		return
