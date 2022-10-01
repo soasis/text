@@ -33,34 +33,13 @@
 #ifndef ZTD_TEXT_BASIC_ENCODING_SCHEME_HPP
 #define ZTD_TEXT_BASIC_ENCODING_SCHEME_HPP
 
-//////
-/// @file basic_encoding_scheme.hpp
-///
-/// @brief Generate docs.
-//////
-
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-#include <ztd/text/is_code_points_replaceable.hpp>
-#include <ztd/text/is_code_units_replaceable.hpp>
-#include <ztd/text/is_ignorable_error_handler.hpp>
-#include <ztd/text/is_bidirectional_encoding.hpp>
-#include <ztd/text/is_full_range_representable.hpp>
-#include <ztd/text/is_unicode_encoding.hpp>
-#include <ztd/text/encode_result.hpp>
-#include <ztd/text/decode_result.hpp>
-#include <ztd/text/detail/scheme_handler.hpp>
-
-#include <ztd/idk/endian.hpp>
-#include <ztd/idk/ebco.hpp>
-#include <ztd/idk/reference_wrapper.hpp>
-#include <ztd/idk/unwrap.hpp>
-#include <ztd/ranges/subrange.hpp>
-#include <ztd/idk/span.hpp>
-#include <ztd/ranges/word_iterator.hpp>
+#include <ztd/text/detail/constant_encoding_traits.hpp>
+#include <ztd/text/detail/basic_encoding_scheme_includes.hpp>
 
 #include <optional>
 #include <cstddef>
@@ -68,99 +47,12 @@
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
-
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-
-	namespace __txt_detail {
-		template <typename _Super, bool = is_code_units_maybe_replaceable_v<typename _Super::encoding_type>>
-		class __maybe_replacement_code_units_es { };
-
-		template <typename _Super>
-		class __maybe_replacement_code_units_es<_Super, true> {
-		private:
-			const _Super& _M_super() const noexcept {
-				return static_cast<const _Super&>(*this);
-			}
-
-		public:
-			constexpr auto maybe_replacement_code_units() const noexcept {
-				using _OriginalCodeUnit         = code_unit_t<typename _Super::encoding_type>;
-				using _CodeUnit                 = typename _Super::code_unit;
-				decltype(auto) __maybe_original = this->_M_super().base().maybe_replacement_code_units();
-				if constexpr (::std::is_same_v<_OriginalCodeUnit, _CodeUnit>) {
-					return __maybe_original;
-				}
-				else {
-					using _OriginalSpan         = ::ztd::span<const _OriginalCodeUnit>;
-					using _TransformedSpan      = ::ztd::span<const _CodeUnit>;
-					using _MaybeTransformedSpan = ::std::optional<_TransformedSpan>;
-					if (!__maybe_original) {
-						return _MaybeTransformedSpan(::std::nullopt);
-					}
-					decltype(auto) __original = *::std::forward<decltype(__maybe_original)>(__maybe_original);
-					_OriginalSpan __guaranteed_code_unit_view(__original);
-					// transform into proper type...
-					auto __transformed_ptr
-						= reinterpret_cast<const _CodeUnit*>(__guaranteed_code_unit_view.data());
-					auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
-						/ sizeof(const _CodeUnit);
-					return _MaybeTransformedSpan(::std::in_place, __transformed_ptr, __transformed_size);
-				}
-			}
-		};
-
-		template <typename _Super, bool = is_code_points_maybe_replaceable_v<typename _Super::encoding_type>>
-		class __maybe_replacement_code_points_es { };
-
-		template <typename _Super>
-		class __maybe_replacement_code_points_es<_Super, true> {
-		private:
-			const _Super& _M_super() const noexcept {
-				return static_cast<const _Super&>(*this);
-			}
-
-		public:
-			constexpr auto maybe_replacement_code_points() const noexcept {
-				using _OriginalCodePoint        = code_point_t<typename _Super::encoding_type>;
-				using _CodePoint                = typename _Super::code_point;
-				decltype(auto) __maybe_original = this->_M_super().base().maybe_replacement_code_points();
-				if constexpr (::std::is_same_v<_OriginalCodePoint, _CodePoint>) {
-					return __maybe_original;
-				}
-				else {
-					using _OriginalSpan         = ::ztd::span<const _OriginalCodePoint>;
-					using _TransformedSpan      = ::ztd::span<const _CodePoint>;
-					using _MaybeTransformedSpan = ::std::optional<_TransformedSpan>;
-					if (!__maybe_original) {
-						return _MaybeTransformedSpan(::std::nullopt);
-					}
-					decltype(auto) __original = *::std::forward<decltype(__maybe_original)>(__maybe_original);
-					_OriginalSpan __guaranteed_code_point_view(__original);
-					// transform into proper type...
-					auto __transformed_ptr
-						= reinterpret_cast<const _CodePoint*>(__guaranteed_code_point_view.data());
-					auto __transformed_size = (__guaranteed_code_point_view.size() * sizeof(_OriginalCodePoint))
-						/ sizeof(const _CodePoint);
-					return _MaybeTransformedSpan(::std::in_place, __transformed_ptr, __transformed_size);
-				}
-			}
-		};
-
-		template <typename _Super, typename _Encoding, typename = void>
-		class __is_unicode_encoding_es { };
-
-		template <typename _Super, typename _Encoding>
-		class __is_unicode_encoding_es<_Super, _Encoding,
-			::std::enable_if_t<is_detected_v<__detect_is_unicode_encoding, _Encoding>>> {
-		public:
-			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<_Encoding>>;
-		};
-	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief Decomposes the provided Encoding type into a specific endianness (big, little, or native) to allow for a
@@ -190,15 +82,13 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-		//////
 		using code_point = code_point_t<_UBaseEncoding>;
 		///////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
 		///
 		/// @remarks Typically, this type is usually always some kind of byte type (unsigned char or std::byte or
-		/// other ``sizeof(obj) == 1`` type).
-		///////
+		/// other ``sizeof(obj) == 1`` type)./
 		using code_unit = _Byte;
 		//////
 		/// @brief The state that can be used between calls to the decode function.
@@ -206,7 +96,6 @@ namespace ztd { namespace text {
 		/// @remarks Even if the underlying encoding only has a single `state` type, we need to separate the two out
 		/// in order to generically handle all encodings. Therefore, the encoding_scheme will always have both
 		/// `encode_state` and `decode_state.`
-		//////
 		using decode_state = decode_state_t<_UBaseEncoding>;
 		//////
 		/// @brief The state that can be used between calls to the encode function.
@@ -214,24 +103,20 @@ namespace ztd { namespace text {
 		/// @remarks Even if the underlying encoding only has a single `state` type, we need to separate the two out
 		/// in order to generically handle all encodings. Therefore, the encoding_scheme will always have both
 		/// `encode_state` and `decode_state.`
-		//////
 		using encode_state = encode_state_t<_UBaseEncoding>;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code point values.
 		///
 		/// @remarks Defers to what the underlying `encoding_type` does.
-		//////
 		using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<_UBaseEncoding>>;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
 		/// @remarks Defers to what the underlying `encoding_type` does.
-		//////
 		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<_UBaseEncoding>>;
 		//////
 		/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
 		/// 1 for all Unicode Transformation Format (UTF) encodings.
-		//////
 		inline static constexpr const ::std::size_t max_code_points = max_code_points_v<_UBaseEncoding>;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.

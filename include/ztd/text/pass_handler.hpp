@@ -46,7 +46,6 @@ namespace ztd { namespace text {
 	/// @brief An error handler that tells an encoding that it will pass through any errors, without doing any
 	/// adjustment, correction or checking. Does not imply it is ignorable, unlike ztd::text::assume_valid_handler_t
 	/// which can invoke UB if an error occurs.
-	//////
 	class pass_handler_t : public __txt_detail::__pass_through_handler_with<false> { };
 
 	//////

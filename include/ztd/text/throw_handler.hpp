@@ -54,7 +54,6 @@ namespace ztd { namespace text {
 	/// especially for text processing that deals with input vectors. This can result in many exceptions being thrown,
 	/// which for resource-intensive applications could cause issues and result in Denial of Service by way of
 	/// repeated, unhandled, and unexpected failure.
-	//////
 	class throw_handler_t {
 	public:
 		//////

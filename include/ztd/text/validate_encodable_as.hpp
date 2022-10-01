@@ -63,7 +63,6 @@ namespace ztd { namespace text {
 	/// does not mean that an error handler will be invoked that can "smooth over" any possible errors: this checks
 	/// solely if it will encode from code points into code units cleanly.
 	/// @{
-	//////
 
 	//////
 	/// @brief Validates the code points of the `__input` according to the `__encoding` with the given states @p
@@ -77,7 +76,6 @@ namespace ztd { namespace text {
 	/// @remarks This function explicitly does not check any of the extension points. It defers to doing a typical loop
 	/// over the code points to verify it can be encoded into code units, and then decoded into code points, with no
 	/// errors.
-	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState, typename _DecodeState>
 	constexpr auto basic_validate_encodable_as(
 		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
@@ -243,7 +241,6 @@ namespace ztd { namespace text {
 	/// @remarks This functions checks to see if extension points for `text_validate_encodable_as` is available taking
 	/// the available 4 parameters. If so, it calls this. Otherwise, it defers to doing a typical loop over the code
 	/// points to verify it can be encoded into code units, and then decoded into code points, with no errors.
-	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState, typename _DecodeState>
 	constexpr auto validate_encodable_as(
 		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
@@ -287,7 +284,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions checks to see if extension points for `text_validate_encodable_as` is available taking
 	/// the available 3 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_encodable_as.
-	//////
 	template <typename _Input, typename _Encoding, typename _EncodeState>
 	constexpr auto validate_encodable_as(_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
@@ -321,7 +317,6 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __input The input range of code points to validate is possible for encoding into code units.
 	/// @param[in] __encoding The encoding to verify can properly encode the input of code units.
-	//////
 	template <typename _Input, typename _Encoding>
 	constexpr auto validate_encodable_as(_Input&& __input, _Encoding&& __encoding) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
@@ -340,7 +335,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This passes the default encoding as inferred from the discernible `value_type` of the input range
 	/// input into the ztd::text::default_code_point_encoding.
-	//////
 	template <typename _Input>
 	constexpr auto validate_encodable_as(_Input&& __input) {
 		using _UInput    = remove_cvref_t<_Input>;

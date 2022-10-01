@@ -70,7 +70,6 @@ namespace ztd { namespace text {
 	/// present each code unit one at a time. If you are looking to explicitly know what a single encode operation maps
 	/// into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
-	//////
 	template <typename _Encoding, typename _Range = __txt_detail::__default_char_view_t<code_point_t<_Encoding>>,
 		typename _ErrorHandler = default_handler_t, typename _State = encode_state_t<_Encoding>>
 	class encode_view {
@@ -115,7 +114,6 @@ namespace ztd { namespace text {
 		/// @param[in] __range The input range to wrap and iterate over.
 		///
 		/// @remarks the stored encoding, error handler, and state type are default-constructed.
-		//////
 		template <typename _ArgRange,
 			::std::enable_if_t<
 			     !::std::is_same_v<remove_cvref_t<_ArgRange>,
@@ -129,7 +127,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __encoding The encoding object to call `.encode` or equivalent functionality on.
-		//////
 		constexpr encode_view(range_type __range, encoding_type __encoding) noexcept(
 			::std::is_nothrow_constructible_v<iterator, range_type, encoding_type>)
 		: _M_it(::std::move(__range), ::std::move(__encoding)) {
@@ -141,7 +138,6 @@ namespace ztd { namespace text {
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __encoding The encoding object to call `.encode` or equivalent functionality on.
 		/// @param[in] __error_handler A previously-made encode_view iterator.
-		//////
 		constexpr encode_view(range_type __range, encoding_type __encoding,
 			error_handler_type __error_handler) noexcept(::std::is_nothrow_constructible_v<iterator, range_type,
 			encoding_type, error_handler_type>)
@@ -155,7 +151,6 @@ namespace ztd { namespace text {
 		/// @param[in] __encoding The encoding object to call `.encode` or equivalent functionality on.
 		/// @param[in] __error_handler A previously-made encode_view iterator.
 		/// @param[in] __state The state to user for the encode operation.
-		//////
 		constexpr encode_view(range_type __range, encoding_type __encoding, error_handler_type __error_handler,
 			state_type __state) noexcept(::std::is_nothrow_constructible_v<iterator, range_type, encoding_type,
 			error_handler_type, state_type>)
@@ -166,7 +161,6 @@ namespace ztd { namespace text {
 		/// @brief Constructs an encoding_view from one of its iterators, reconstituting the range.
 		///
 		/// @param[in] __it A previously-made encode_view iterator.
-		//////
 		constexpr encode_view(iterator __it) noexcept(::std::is_nothrow_move_constructible_v<iterator>)
 		: _M_it(::std::move(__it)) {
 		}

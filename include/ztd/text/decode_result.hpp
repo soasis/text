@@ -58,25 +58,23 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_result Result Types
+	///
 	/// @{
 	/////
 
 	//////
 	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as
 	/// ztd_text_decode).
-	//////
 	template <typename _Input, typename _Output>
 	class stateless_decode_result {
 	public:
 		//////
 		/// @brief The reconstructed input_view object, with its .begin() incremented by the number of code units
 		/// successfully read (can be identical to .begin() on original range on failure).
-		//////
 		_Input input;
 		//////
 		/// @brief The reconstructed output_view object, with its .begin() incremented by the number of code units
 		/// successfully written (can be identical to .begin() on original range on failure).
-		//////
 		_Output output;
 		//////
 		/// @brief The kind of error that occured, if any.
@@ -84,7 +82,6 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
 		/// ztd::text::encoding_error::ok.
-		//////
 		::std::size_t handled_errors;
 
 		//////
@@ -94,7 +91,6 @@ namespace ztd { namespace text {
 		/// @param[in] __input The input range to store.
 		/// @param[in] __output The output range to store.
 		/// @param[in] __error_code The error code for the decoding opertion, if any.
-		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
 		constexpr stateless_decode_result(_ArgInput&& __input, _ArgOutput&& __output,
 			encoding_error __error_code
@@ -116,7 +112,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr stateless_decode_result(_ArgInput&& __input, _ArgOutput&& __output, encoding_error __error_code,
 			::std::size_t __handled_errors) noexcept(::std::is_nothrow_constructible_v<_Input,
@@ -131,7 +126,6 @@ namespace ztd { namespace text {
 		/// @brief Whether or not any errors were handled.
 		///
 		/// @returns Simply checks whether `handled_errors` is greater than 0.
-		//////
 		constexpr bool errors_were_handled() const noexcept {
 			return this->handled_errors > 0;
 		}
@@ -140,7 +134,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as
 	/// ztd_text_decode).
-	//////
 	template <typename _Input, typename _Output, typename _State>
 	class decode_result : public stateless_decode_result<_Input, _Output> {
 	private:
@@ -159,7 +152,6 @@ namespace ztd { namespace text {
 		/// @param[in] __output The output range to store.
 		/// @param[in] __state The state related to the Encoding that performed the decode operation.
 		/// @param[in] __error_code The error code for the decoding opertion, if any.
-		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
 		constexpr decode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok)
@@ -180,7 +172,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
 		constexpr decode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgState&& __state,
 			encoding_error __error_code, ::std::size_t __handled_errors)
@@ -193,7 +184,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A type alias to produce a span-containing decode result type. Useful for end-users with fairly standard,
 	/// pointer-based buffer usages.
-	//////
 	template <typename _Encoding>
 	using span_decode_result_for = decode_result<::ztd::span<const code_unit_t<_Encoding>>,
 		::ztd::span<code_point_t<_Encoding>>, decode_state_t<_Encoding>>;
@@ -205,7 +195,6 @@ namespace ztd { namespace text {
 	/// @tparam _Encoding The encoding to base this error handler off of.
 	/// @tparam _Function The template function type that will be used as the base type to insert the function
 	/// signature into.
-	//////
 	template <typename _Encoding, template <class...> class _Function = std::function>
 	using basic_decode_error_handler_for = _Function<span_decode_result_for<_Encoding>(
 		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::span<const code_unit_t<_Encoding>>)>;

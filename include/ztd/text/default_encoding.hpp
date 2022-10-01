@@ -117,7 +117,6 @@ namespace ztd { namespace text {
 			/// - `char32_t` ➡ ztd::text::utf32
 			/// - `unicode_code_point` ➡ ztd::text::utf32_t (if different from `char32_t` type)
 			/// - `unicode_scalar_value` ➡ ztd::text::utf32_t (if different from `char32_t` type)
-			//////
 			using type = _ChosenType;
 		};
 
@@ -135,13 +134,13 @@ namespace ztd { namespace text {
 			/// - `char32_t` ➡ ztd::text::utf8
 			/// - `unicode_code_point` ➡ ztd::text::utf8
 			/// - `unicode_scalar_value` ➡ ztd::text::utf8
-			//////
 			using type = utf8_t;
 		};
 	} // namespace __txt_detail
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
+	///
 	/// @{
 	/////
 
@@ -150,7 +149,6 @@ namespace ztd { namespace text {
 	/// operation or output from an encode operation.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	class default_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, false> { };
 
@@ -158,7 +156,6 @@ namespace ztd { namespace text {
 	/// @brief A `typename` alias for ztd::text::default_code_unit_encoding.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	using default_code_unit_encoding_t = typename default_code_unit_encoding<_Type>::type;
 
@@ -168,7 +165,6 @@ namespace ztd { namespace text {
 	/// not runtime, to help make the decision on what to do.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	class default_consteval_code_unit_encoding : public __txt_detail::__default_code_unit_encoding<_Type, true> { };
 
@@ -176,7 +172,6 @@ namespace ztd { namespace text {
 	/// @brief A `typename` alias for ztd::text::default_consteval_code_unit_encoding.
 	///
 	/// @tparam _Type The code unit type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	using default_consteval_code_unit_encoding_t = typename default_consteval_code_unit_encoding<_Type>::type;
 
@@ -185,7 +180,6 @@ namespace ztd { namespace text {
 	/// operation or output from decode operation.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	class default_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, false> { };
 
@@ -193,7 +187,6 @@ namespace ztd { namespace text {
 	/// @brief A `typename` alias for ztd::text::default_code_point_encoding.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	using default_code_point_encoding_t = typename default_code_point_encoding<_Type>::type;
 
@@ -203,7 +196,6 @@ namespace ztd { namespace text {
 	/// run time, to help make a decision as to what to do.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	class default_consteval_code_point_encoding : public __txt_detail::__default_code_point_encoding<_Type, true> { };
 
@@ -211,7 +203,6 @@ namespace ztd { namespace text {
 	/// @brief A `typename` alias for ztd::text::default_consteval_code_point_encoding.
 	///
 	/// @tparam _Type The code point type, with no cv-qualifiers
-	//////
 	template <typename _Type>
 	using default_consteval_code_point_encoding_t = typename default_consteval_code_point_encoding<_Type>::type;
 

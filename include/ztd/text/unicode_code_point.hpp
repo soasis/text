@@ -64,7 +64,6 @@ namespace ztd { namespace text {
 			/// @brief Constructs a code point value with the given code point value.
 			///
 			/// @remarks
-			//////
 			constexpr __unicode_code_point(char32_t __code_point) noexcept : _M_scalar(__code_point) {
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_CODE_POINT_INVARIANT_ABORT)
 				if (__ztd_idk_detail_is_surrogate(this->_M_scalar)
@@ -112,7 +111,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __left Left hand value of equality operator.
 		/// @param[in] __right Right hand value of equality operator.
-		//////
 		constexpr bool operator==(const __unicode_code_point& __left, const __unicode_code_point& __right) {
 			return __left.value() == __right.value();
 		}
@@ -122,7 +120,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __left Left hand value of inequality operator.
 		/// @param[in] __right Right hand value of inequality operator.
-		//////
 		constexpr bool operator!=(const __unicode_code_point& __left, const __unicode_code_point& __right) {
 			return __left.value() != __right.value();
 		}
@@ -132,7 +129,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __left Left hand value of less than operator.
 		/// @param[in] __right Right hand value of less than operator.
-		//////
 		constexpr bool operator<(const __unicode_code_point& __left, const __unicode_code_point& __right) {
 			return __left.value() < __right.value();
 		}

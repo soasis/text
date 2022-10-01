@@ -61,7 +61,6 @@ namespace ztd { namespace text {
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
 	///
 	/// @{
-	/////
 
 	//////
 	/// @brief Whether or not the given `_Type` is an error handler that can be ignored.
@@ -75,7 +74,6 @@ namespace ztd { namespace text {
 	/// (including checking Macros or other environment data as a means of determining whether or not validity should
 	/// be ignored.) If this results in a type derived from `std::true_type` and the encoder object using it
 	/// encounters an error, then it is Undefined Behavior what occurs afterwards.
-	//////
 	template <typename _Type>
 	class is_ignorable_error_handler
 	: public __txt_detail::__is_ignorable_error_handler_sfinae<::ztd::remove_cvref_t<_Type>> { };

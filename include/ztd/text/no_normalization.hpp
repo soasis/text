@@ -49,6 +49,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_normalization Normalization
+	///
 	/// @{
 
 	//////
@@ -67,7 +68,6 @@ namespace ztd { namespace text {
 		/// @param[in] __output The output range to write to.
 		///
 		/// @returns A ztd::text::normalization_result representing the normalized output.
-		//////
 		template <typename _Input, typename _Output>
 		constexpr auto operator()(_Input&& __input, _Output&& __output) noexcept {
 			using _UInput  = remove_cvref_t<_Input>;

@@ -63,7 +63,6 @@ namespace ztd { namespace text {
 	/// does not mean that an error handler will be invoked that can "smooth over" any possible errors: this checks
 	/// solely if it will decode from code units into code points cleanly.
 	/// @{
-	//////
 
 	//////
 	/// @brief Validates the code units of the `__input` according to the `__from_encoding` with the given states
@@ -83,7 +82,6 @@ namespace ztd { namespace text {
 	/// @remarks This function explicitly does not call any extension points. It defers to doing a typical loop over
 	/// the code points to verify it can be decoded into code points, and then encoded back into code units, with no
 	/// errors and with the exact same value sequence as the original.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
 		typename _EncodeState, typename _PivotRange>
 	constexpr auto basic_validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
@@ -198,7 +196,6 @@ namespace ztd { namespace text {
 	/// @remarks This functions checks to see if extension points for `text_validate_transcodable_as` is available
 	/// taking the available 4 parameters. If so, it calls this. Otherwise, it defers to
 	/// ztd::text::validate_transcodable_as.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
 		typename _EncodeState, typename _PivotRange>
 	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
@@ -246,7 +243,6 @@ namespace ztd { namespace text {
 	/// @remarks This functions checks to see if extension points for `text_validate_transcodable_as` is available
 	/// taking the available 4 parameters. If so, it calls this. Otherwise, it defers to
 	/// ztd::text::validate_transcodable_as.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
 		typename _EncodeState>
 	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
@@ -271,7 +267,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions will call ztd::text::make_encode_state with `__to_encoding` to create a default @p
 	/// encode_state.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState>
 	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _DecodeState& __decode_state) {
@@ -292,7 +287,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions will call ztd::text::make_decode_state with the `__from_encoding` object to create a
 	/// default `decode_state` to use before passing it to the next overload.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto validate_transcodable_as(
 		_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
@@ -311,7 +305,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions will call ztd::text::make_encode_state with `__to_encoding` to create a default @p
 	/// encode_state.
-	//////
 	template <typename _Input, typename _ToEncoding>
 	constexpr auto validate_transcodable_as(_Input&& __input, _ToEncoding&& __to_encoding) {
 		using _UInput   = remove_cvref_t<_Input>;

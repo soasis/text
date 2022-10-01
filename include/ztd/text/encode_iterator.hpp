@@ -47,8 +47,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief The encode sentinel to use as the `end` value for a ztd::text::encode_iterator.
@@ -69,7 +69,6 @@ namespace ztd { namespace text {
 	/// present each code unit one at a time. If you are looking to explicitly know what a single encode operation maps
 	/// into as far as number of code points to code units (and vice-versa), you will have to use lower-level
 	/// interfaces.
-	//////
 	template <typename _Encoding, typename _Range, typename _ErrorHandler = default_handler_t,
 		typename _State = encode_state_t<_Encoding>>
 	class encode_iterator : public __txt_detail::__encoding_iterator<__txt_detail::__transaction::__encode,
@@ -112,13 +111,11 @@ namespace ztd { namespace text {
 		/// @brief The value returned from derefencing the iterator.
 		///
 		/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
-		//////
 		using reference = typename __iterator_base_it::value_type;
 		//////
 		/// @brief The type returned when two of these pointers are subtracted from one another.
 		///
 		/// @remarks It's not a very useful type...
-		//////
 		using difference_type = typename __iterator_base_it::difference_type;
 
 		//////
@@ -138,7 +135,6 @@ namespace ztd { namespace text {
 		/// @param[in] __range The range value that will be read from.
 		///
 		/// @remarks Each argument is moved/forwarded in.
-		//////
 		template <typename _ArgRange,
 			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_ArgRange>, encode_iterator>>* = nullptr>
 		constexpr encode_iterator(_ArgRange&& __range) noexcept(
@@ -153,7 +149,6 @@ namespace ztd { namespace text {
 		/// @param[in] __encoding The encoding object to use.
 		///
 		/// @remarks Each argument is moved in.
-		//////
 		constexpr encode_iterator(range_type __range, encoding_type __encoding) noexcept(
 			::std::is_nothrow_constructible_v<__iterator_base_it, range_type, encoding_type>)
 		: __iterator_base_it(::std::move(__range), ::std::move(__encoding), error_handler_type {}) {
@@ -167,7 +162,6 @@ namespace ztd { namespace text {
 		/// @param[in] __error_handler The error handler to use for reporting errors.
 		///
 		/// @remarks Each argument is moved in.
-		//////
 		constexpr encode_iterator(range_type __range, error_handler_type __error_handler) noexcept(
 			::std::is_nothrow_constructible_v<__iterator_base_it, range_type, error_handler_type>)
 		: __iterator_base_it(::std::move(__range), encoding_type {}, ::std::move(__error_handler)) {
@@ -182,7 +176,6 @@ namespace ztd { namespace text {
 		/// @param[in] __error_handler The error handler to use for reporting errors.
 		///
 		/// @remarks Each argument is moved in.
-		//////
 		constexpr encode_iterator(range_type __range, encoding_type __encoding,
 			error_handler_type __error_handler) noexcept(::std::is_nothrow_constructible_v<__iterator_base_it,
 			range_type, encoding_type, error_handler_type>)
@@ -199,7 +192,6 @@ namespace ztd { namespace text {
 		/// @param[in] __state The current state.
 		///
 		/// @remarks Each argument is moved in.
-		//////
 		constexpr encode_iterator(range_type __range, encoding_type __encoding, error_handler_type __error_handler,
 			state_type __state) noexcept(::std::is_nothrow_constructible_v<__iterator_base_it, range_type,
 			encoding_type, error_handler_type, state_type>)

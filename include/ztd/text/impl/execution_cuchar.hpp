@@ -105,8 +105,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	namespace __txt_impl {
 
@@ -119,7 +119,6 @@ namespace ztd { namespace text {
 		/// in the C Standard Library and bugs in glibc/musl libc's current locale encoding support. On Apple, this is
 		/// cuurrently assumed to be UTF-8 since they do not support the @c \<cuchar\> or @c
 		/// \<uchar.h\> headers.
-		//////
 		class __execution_cuchar {
 		public:
 			//////
@@ -128,7 +127,6 @@ namespace ztd { namespace text {
 			///
 			/// @remarks This type can potentially have lots of state due to the way the C API is specified. It is
 			/// important it is preserved between calls, or text may become mangled / data may become lost.
-			//////
 			using decode_state = __txt_detail::__execution_decode_state;
 
 			//////
@@ -137,7 +135,6 @@ namespace ztd { namespace text {
 			///
 			/// @remarks This type can potentially have lots of state due to the way the C API is specified. It is
 			/// important it is preserved between calls, or text may become mangled / data may become lost.
-			//////
 			using encode_state = __txt_detail::__execution_encode_state;
 			//////
 			/// @brief The individual units that result from an encode operation or are used as input to a decode
@@ -146,12 +143,10 @@ namespace ztd { namespace text {
 			/// @remarks Please note that char can be either signed or unsigned, and so generally can result in bad
 			/// results when promoted to a plain `int` when working with code units or working with the C Standard
 			/// Library.
-			//////
 			using code_unit = char;
 			//////
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
 			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-			//////
 			using code_point = unicode_code_point;
 			//////
 			/// @brief Whether or not the decode operation can process all forms of input into code point values.
@@ -159,13 +154,11 @@ namespace ztd { namespace text {
 			/// @remarks All known execution encodings can decode into Unicode just fine. However, someone may define
 			/// a platform encoding on their machine that does not transform cleanly. Therefore, decoding is not
 			/// marked as injective.
-			//////
 			using is_decode_injective = ::std::false_type;
 			//////
 			/// @brief Whether or not the encode operation can process all forms of input into code unit values. This
 			/// is absolutely not true: many unicode code point values cannot be safely converted to a large number
 			/// of existing (legacy) encodings.
-			//////
 			using is_encode_injective = ::std::false_type;
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
@@ -173,7 +166,6 @@ namespace ztd { namespace text {
 			/// @remarks There are encodings for which one input can produce 3 code points (some Tamil encodings) and
 			/// there are rumours of an encoding that can produce 7 code points from a handful of input. We use a
 			/// protective/conservative 8, here, to make sure ABI isn't broken later.
-			//////
 			inline static constexpr ::std::size_t max_code_points = 8;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
@@ -181,7 +173,6 @@ namespace ztd { namespace text {
 			/// @remarks This is bounded by the platform's `MB_LEN_MAX` macro, which is an integral constant
 			/// expression representing the maximum value of output all C locales can produce from a single complete
 			/// operation.
-			//////
 			inline static constexpr ::std::size_t max_code_units = MB_LEN_MAX;
 			//////
 			/// @brief A range of code unit values that can be used as a replacement value, instead of the ones used
@@ -190,7 +181,6 @@ namespace ztd { namespace text {
 			/// @remarks The default replacement code point / code unit is U+FFFD (). This, obviously, does not fit
 			/// in the majority of the (legacy) locale encodings in C and C++. '?' is a much more conservative
 			/// option, here, and most (all?) locale encodings have some form of representation for it.
-			//////
 			inline static constexpr code_unit replacement_code_units[1] = { '?' };
 
 			//////
@@ -199,7 +189,6 @@ namespace ztd { namespace text {
 			/// @remarks This function operates at runtime and queries the existing locale through a variety of
 			/// platform-specific means (such as `nl_langinfo` for POSIX, ACP probing on Windows, or fallin back to
 			/// `std::setlocale` name checking otherwise).
-			//////
 			static bool contains_unicode_encoding() noexcept {
 				return ztd::is_execution_encoding_unicode();
 			}
@@ -226,7 +215,6 @@ namespace ztd { namespace text {
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
 			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any view
 			/// that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output,
 				_ErrorHandler&& __error_handler, encode_state& __s) {
@@ -429,7 +417,6 @@ namespace ztd { namespace text {
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
 			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any view
 			/// that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output,
 				_ErrorHandler&& __error_handler, decode_state& __s) {

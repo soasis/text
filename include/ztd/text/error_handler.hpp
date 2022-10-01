@@ -326,7 +326,6 @@ namespace ztd { namespace text {
 	/// not engaged, then it will explicitly fall back to attempt to insert the default replacement character `U`+FFFD
 	/// (<tt>U'�'</tt>) or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will
 	/// be inserted at all.
-	//////
 	class replacement_handler_t {
 	public:
 		//////
@@ -335,7 +334,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding,
@@ -432,7 +430,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		//////
 		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
 			typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding,
@@ -538,7 +535,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This type is often useful in conjunction with an accumulation state or buffer, which can be very
 	/// handy for I/O (e.g., Networking) operations.
-	//////
 	template <typename _Encoding, typename _ErrorHandler = default_handler_t>
 	class incomplete_handler : private ebco<_ErrorHandler> {
 	private:
@@ -564,7 +560,6 @@ namespace ztd { namespace text {
 		///
 		/// @param __error_handler The provided error handler object to copy in and use when the error is not an
 		/// incomplete error.
-		//////
 		constexpr incomplete_handler(const _ErrorHandler& __error_handler) noexcept(
 			::std::is_nothrow_constructible_v<__error_handler_base_t, const _ErrorHandler&>)
 		: __error_handler_base_t(__error_handler)
@@ -579,7 +574,6 @@ namespace ztd { namespace text {
 		///
 		/// @param __error_handler The provided error handler object to move in and use when the error is not an
 		/// incomplete error.
-		//////
 		constexpr incomplete_handler(_ErrorHandler&& __error_handler) noexcept(
 			::std::is_nothrow_constructible_v<__error_handler_base_t, _ErrorHandler&&>)
 		: __error_handler_base_t(::std::move(__error_handler))
@@ -621,7 +615,6 @@ namespace ztd { namespace text {
 		/// failure occurred. These will be stored in this handler.
 		/// @param[in] __output_progress Any code points or code units that have not yet been written before the
 		/// failure occurred. These will be stored in this handler.
-		//////
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
 			const _InputProgress& __input_progress,
@@ -662,7 +655,6 @@ namespace ztd { namespace text {
 		/// failure occurred. These will be stored in this handler.
 		/// @param[in] __output_progress Any code points or code units that have not yet been written before the
 		/// failure occurred. These will be stored in this handler.
-		//////
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
 			const _InputProgress& __input_progress,
@@ -703,7 +695,6 @@ namespace ztd { namespace text {
 		/// failure occurred. These will be stored in this handler.
 		/// @param[in] __output_progress Any code points or code units that have not yet been written before the
 		/// failure occurred. These will be stored in this handler.
-		//////
 		template <typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, _Result __result,
 			const _InputProgress& __input_progress,
@@ -757,7 +748,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
 	/// time. Without configuration, it defaults to the ztd::text::replacement_handler_t.
-	//////
 	class default_handler_t
 #if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
 	: private throw_handler_t {

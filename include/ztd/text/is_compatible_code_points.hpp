@@ -53,7 +53,6 @@ namespace ztd { namespace text {
 	/// @remarks The `value` boolean is true if the given code point types are:
 	/// - both the same type
 	/// - both considered unicode code points by ztd::text::is_unicode_code_point_v
-	//////
 	template <typename _LeftCodePoint, typename _RightCodePoint>
 	class is_compatible_code_points
 	: public ::std::integral_constant<bool,

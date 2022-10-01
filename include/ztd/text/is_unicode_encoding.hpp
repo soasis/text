@@ -105,7 +105,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks If the encoding object does not define is_unicode_encoding, it is assumed to be false (the safest
 	/// default).
-	//////
 	template <typename _Type>
 	class is_unicode_encoding : public __txt_detail::__is_unicode_encoding_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
@@ -123,7 +122,6 @@ namespace ztd { namespace text {
 	/// present, then it returns the value of that function directly. Otherwise, it checks if
 	/// ztd::text::is_unicode_encoding_v is true for the provided `__encoding` . If that's the case, then `true` is
 	/// returned. Otherwise, it assumes the encoding is not a Unicode-compatible encoding and returns false.
-	//////
 	template <typename _Encoding>
 	constexpr bool contains_unicode_encoding(const _Encoding& __encoding) noexcept {
 		if constexpr (is_detected_v<__txt_detail::__detect_contains_unicode_encoding, _Encoding>) {
@@ -145,7 +143,6 @@ namespace ztd { namespace text {
 	/// @remarks If the encoding type does not have a `static constexpr text_encoding_id` member with the name
 	/// `decoded_id`, it will assume it decodes to UTF-32 code points if the ztd::text::code_point_t type matches
 	/// ztd::text::is_unicode_code_point_v. Otherwise, it will return ztd::text_encoding_id::unknown.
-	//////
 	template <typename _Type>
 	class decoded_id : public __txt_detail::__decoded_id_sfinae<_Type> { };
 
@@ -162,7 +159,6 @@ namespace ztd { namespace text {
 	/// @remarks If the encoding type does not have a `static constexpr text_encoding_id` member with the name
 	/// `encoded_id`, it will assume it decodes to UTF-32 code points if the ztd::text::code_unit_t type matches
 	/// ztd::text::is_unicode_code_point_v. Otherwise, it will return ztd::text_encoding_id::unknown.
-	//////
 	template <typename _Type>
 	class encoded_id : public __txt_detail::__encoded_id_sfinae<::ztd::remove_cvref_t<_Type>> { };
 

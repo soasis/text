@@ -54,8 +54,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief A sentinel type that can be used to compare with a ztd::text::transcode_iterator.
@@ -83,7 +83,6 @@ namespace ztd { namespace text {
 	/// example, one (1) UTF-16 code unit becomes two (2) UTF-8 code units, it will present each code unit one at a
 	/// time. If you are looking to explicitly know each collection of characters, you will have to use lower-level
 	/// interfaces.
-	//////
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
 	class transcode_iterator
@@ -176,19 +175,16 @@ namespace ztd { namespace text {
 		using value_type = code_unit_t<_ToEncoding>;
 		//////
 		/// @brief A pointer type to the value_type.
-		//////
 		using pointer = value_type*;
 		//////
 		/// @brief The value returned from derefencing the iterator.
 		///
 		/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
-		//////
 		using reference = value_type;
 		//////
 		/// @brief The type returned when two of these pointers are subtracted from one another.
 		///
 		/// @remarks It's not a very useful type...
-		//////
 		using difference_type = ranges::iterator_difference_type_t<_BaseIterator>;
 
 		//////
@@ -196,7 +192,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This can only work if the underlying encodings, error handlers, and states can handle default
 		/// construction.
-		//////
 		constexpr transcode_iterator() noexcept(::std::is_nothrow_default_constructible_v<
 			__base_from_encoding_t>&& ::std::is_nothrow_default_constructible_v<__base_to_encoding_t>&& ::std::
 			     is_nothrow_default_constructible_v<__base_from_error_handler_t>&& ::std::
@@ -227,7 +222,6 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		//////
 		constexpr transcode_iterator(range_type __range) noexcept(
 			noexcept(transcode_iterator(::std::move(__range), to_encoding_type {})))
 		: transcode_iterator(::std::move(__range), to_encoding_type {}) {
@@ -238,7 +232,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
-		//////
 		constexpr transcode_iterator(range_type __range, to_encoding_type __to_encoding)
 		: transcode_iterator(::std::move(__range), from_encoding_type {}, ::std::move(__to_encoding)) {
 		}
@@ -249,7 +242,6 @@ namespace ztd { namespace text {
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __from_encoding The encoding object to call `decode_one` or equivalent functionality on.
 		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
-		//////
 		constexpr transcode_iterator(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding)
 		: transcode_iterator(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
@@ -264,7 +256,6 @@ namespace ztd { namespace text {
 		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
-		//////
 		constexpr transcode_iterator(range_type __range, from_encoding_type __from_encoding,
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler)
@@ -283,7 +274,6 @@ namespace ztd { namespace text {
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		/// @param[in] __from_state The state to user for the decode operation.
 		/// @param[in] __to_state The state to user for the decode operation.
-		//////
 		constexpr transcode_iterator(range_type __range, from_encoding_type __from_encoding,
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler, from_state_type __from_state, to_state_type __to_state)
@@ -312,7 +302,6 @@ namespace ztd { namespace text {
 		/// @brief The decoding ("from") encoding object.
 		///
 		/// @returns A const l-value reference to the encoding object used to construct this iterator.
-		//////
 		constexpr const from_encoding_type& from_encoding() const {
 			return this->__base_from_encoding_t::get_value();
 		}
@@ -321,7 +310,6 @@ namespace ztd { namespace text {
 		/// @brief The decoding ("from") encoding object.
 		///
 		/// @returns An l-value reference to the encoding object used to construct this iterator.
-		//////
 		constexpr from_encoding_type& from_encoding() {
 			return this->__base_from_encoding_t::get_value();
 		}
@@ -330,7 +318,6 @@ namespace ztd { namespace text {
 		/// @brief The encoding ("to") encoding object.
 		///
 		/// @returns A const l-value reference to the encoding object used to construct this iterator.
-		//////
 		constexpr const to_encoding_type& to_encoding() const {
 			return this->__base_to_encoding_t::get_value();
 		}
@@ -339,7 +326,6 @@ namespace ztd { namespace text {
 		/// @brief The encoding ("to") encoding object.
 		///
 		/// @returns An l-value reference to the encoding object used to construct this iterator.
-		//////
 		constexpr to_encoding_type& to_encoding() {
 			return this->__base_to_encoding_t::get_value();
 		}
@@ -432,7 +418,6 @@ namespace ztd { namespace text {
 		/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
 		/// buffer, will never return an error. This is the case with specific encoding operations with
 		/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
-		//////
 		constexpr encoding_error pivot_error_code() const noexcept {
 			if constexpr (_IsErrorless) {
 				return encoding_error::ok;
@@ -451,7 +436,6 @@ namespace ztd { namespace text {
 		/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
 		/// buffer, will never return an error. This is the case with specific encoding operations with
 		/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
-		//////
 		constexpr encoding_error error_code() const noexcept {
 			if constexpr (_IsErrorless) {
 				return encoding_error::ok;
@@ -467,7 +451,6 @@ namespace ztd { namespace text {
 		/// @brief Copy then increment the iterator.
 		///
 		/// @returns A copy of iterator, before incrementing.
-		//////
 		constexpr transcode_iterator operator++(int) {
 			transcode_iterator __copy = *this;
 			++(*this);
@@ -478,7 +461,6 @@ namespace ztd { namespace text {
 		/// @brief Increment the iterator.
 		///
 		/// @returns A reference to *this, after incrementing the iterator.
-		//////
 		constexpr transcode_iterator& operator++() {
 			if constexpr (_IsSingleValueType) {
 				this->_M_read_one();
@@ -499,7 +481,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This is a proxy iterator, and therefore only returns a value_type object and not a reference
 		/// object. Encoding iterators are only readable, not writable.
-		//////
 		constexpr value_type operator*() const {
 			if constexpr (_IsSingleValueType) {
 				return this->_M_cache[0];

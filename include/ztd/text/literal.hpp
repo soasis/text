@@ -67,18 +67,15 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not this literal_t encoding is a Unicode Transformation Format, such as UTF-8,
 		/// UTF-EBCDIC, or GB18030.
-		//////
 		using is_unicode_encoding
 			= ::std::integral_constant<bool, is_unicode_encoding_id(__txt_detail::__literal_id)>;
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
-		//////
 		using code_unit = code_unit_t<__underlying_t>;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-		//////
 		using code_point = code_point_t<__underlying_t>;
 		//////
 		/// @brief The state that can be used between calls to encode_one.
@@ -91,14 +88,12 @@ namespace ztd { namespace text {
 		///
 		/// @remarks The decode step should always be injective because every encoding used for literal_ts in C++
 		/// needs to be capable of being represented by UCNs. Whether or not a platform is a jerk, who knows?
-		//////
 		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__underlying_t>>;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values.
 		///
 		/// @remarks This is absolutely not guaranteed to be the case, and as such we must check the provided encoding
 		/// name for us to be sure.
-		//////
 		using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__underlying_t>>;
 
 		//////
@@ -141,7 +136,6 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		//////
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) const {
@@ -178,7 +172,6 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		//////
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) const {

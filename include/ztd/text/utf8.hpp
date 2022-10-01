@@ -61,7 +61,6 @@ namespace ztd { namespace text {
 		/// @brief Internal tag for detecting a ztd::text-derved UTF-8 type.
 		///
 		/// @internal
-		//////
 		class __utf8_tag { };
 
 		//////
@@ -70,7 +69,6 @@ namespace ztd { namespace text {
 		/// @internal
 		///
 		/// @remarks Relies on CRTP.
-		//////
 		template <typename _Derived = void, typename _CodeUnit = uchar8_t, typename _CodePoint = unicode_code_point,
 			typename _DecodeState = __txt_detail::__empty_state, typename _EncodeState = __txt_detail::__empty_state,
 			bool __overlong_allowed = false, bool __surrogates_allowed = false,
@@ -86,45 +84,37 @@ namespace ztd { namespace text {
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an empty
 			/// struct because there is no shift state to preserve between complete units of encoded information.
-			//////
 			using decode_state = _DecodeState;
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an empty
 			/// struct because there is no shift state to preserve between complete units of encoded information.
-			//////
 			using encode_state = _EncodeState;
 			//////
 			/// @brief The individual units that result from an encode operation or are used as input to a decode
 			/// operation. For UTF-8 formats, this is usually char8_t, but this can change (see
 			/// ztd::text::basic_utf8).
-			//////
 			using code_unit = _CodeUnit;
 			//////
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
 			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-			//////
 			using code_point = _CodePoint;
 			//////
 			/// @brief Whether or not the decode operation can process all forms of input into code point values.
 			/// Thsi is true for all Unicode Transformation Formats (UTFs), which can encode and decode without a
 			/// loss of information from a valid collection of code units.
-			//////
 			using is_decode_injective = ::std::true_type;
 			//////
 			/// @brief Whether or not the encode operation can process all forms of input into code unit values.
 			/// This is true for all Unicode Transformation Formats (UTFs), which can encode and decode without loss
 			/// of information from a valid input code point.
-			//////
 			using is_encode_injective = ::std::true_type;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
 			/// 1 for all Unicode Transformation Format (UTF) encodings.
-			//////
 			inline static constexpr ::std::size_t max_code_points = 1;
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce. If overlong
 			/// sequence allowed, this is 6: otherwise, this is 4.
-			//////
 			inline static constexpr ::std::size_t max_code_units = __overlong_allowed ? 6 : 4;
 
 			//////
@@ -144,7 +134,6 @@ namespace ztd { namespace text {
 			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output,
 				_ErrorHandler&& __error_handler, encode_state& __s) {
@@ -322,7 +311,6 @@ namespace ztd { namespace text {
 			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output,
 				_ErrorHandler&& __error_handler, decode_state& __s) {
@@ -514,7 +502,6 @@ namespace ztd { namespace text {
 	/// @brief These classes are implementations of the Encoding concept. They serve as the backbone of the library,
 	/// and the point of extension for users.
 	/// @{
-	//////
 
 	//////
 	/// @brief A UTF-8 Encoding that traffics in, specifically, the desired code unit type provided as a template
@@ -526,7 +513,6 @@ namespace ztd { namespace text {
 	/// @remarks This type as a maximum of 4 input code points and a maximum of 1 output code point. It strictly
 	/// follows the Unicode Specification for allowed conversions. For overlong sequences (e.g., similar to Android or
 	/// Java UTF-8 implementations) and other quirks, see ztd::text::basic_mutf8 or ztd::text::basic_wtf8 .
-	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_utf8 : public __txt_impl::__utf8_with<basic_utf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
@@ -541,7 +527,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A UTF-8 Encoding that traffics in char, for compatibility purposes with older codebases. See
 	/// ztd::text::basic_utf8 for more details.
-	//////
 	using compat_utf8_t = basic_utf8<char>;
 
 	//////
@@ -559,7 +544,6 @@ namespace ztd { namespace text {
 	/// surrogates are allowed in this type, which may be useful for dealing with legacy storage and implementations of
 	/// the Windows Filesystem (modern Windows no longer lets non-Unicode filenames through). For a strict,
 	/// Unicode-compliant UTF-8 Encoding, see ztd::text::basic_utf8 .
-	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_wtf8 : public __txt_impl::__utf8_with<basic_wtf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint,
 		                   __txt_detail::__empty_state, __txt_detail::__empty_state, false, true, false> { };
@@ -567,7 +551,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A "Wobbly Transformation Format 8" (WTF-8) Encoding that traffics in char8_t. See
 	/// ztd::text::basic_wtf8 for more details.
-	//////
 	using wtf8_t = basic_wtf8<uchar8_t>;
 
 	//////
@@ -585,7 +568,6 @@ namespace ztd { namespace text {
 	/// encoded as an overlong sequence to specifically avoid problems with C-style strings, which is useful for
 	/// working with bad implementations sitting on top of POSIX or other Operating System APIs. For a strict,
 	/// Unicode-compliant UTF-8 Encoding, see ztd::text::basic_utf8 .
-	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_mutf8 : public __txt_impl::__utf8_with<basic_mutf8<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint,
 		                    __txt_detail::__empty_state, __txt_detail::__empty_state, true, false, true> { };

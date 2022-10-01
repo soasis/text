@@ -35,19 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/code_point.hpp>
-#include <ztd/text/code_unit.hpp>
-#include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/encode_result.hpp>
-#include <ztd/text/decode_result.hpp>
-#include <ztd/text/error_handler.hpp>
-#include <ztd/text/is_ignorable_error_handler.hpp>
-#include <ztd/text/detail/replacement_units.hpp>
-#include <ztd/text/detail/empty_state.hpp>
-
-#include <ztd/ranges/adl.hpp>
-#include <ztd/ranges/range.hpp>
-#include <ztd/idk/span.hpp>
+#include <ztd/text/detail/ascii_includes.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -56,8 +44,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief The American Standard Code for Information Exchange (ASCII) Encoding.
@@ -67,19 +55,16 @@ namespace ztd { namespace text {
 	/// @remarks The most vanilla and unimaginative encoding there is in the world, excluding tons of other languages,
 	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
 	/// reason!
-	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_ascii {
 	public:
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
-		//////
 		using code_unit = _CodeUnit;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-		//////
 		using code_point = _CodePoint;
 		//////
 		/// @brief The state that can be used between calls to the encoder and decoder.
@@ -87,20 +72,17 @@ namespace ztd { namespace text {
 		/// @remarks It is an empty struct because there is no shift state to preserve between complete units of
 		/// encoded information. It is also only `state` and not separately `decode_state` and `encode_state`
 		/// because one type suffices for both.
-		//////
 		using state = __txt_detail::__empty_state;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
 		/// @remarks ASCII can decode from its 7-bit (unpacked) code units to Unicode Code Points. Since the converion
 		/// is lossless, this property is true.
-		//////
 		using is_decode_injective = ::std::true_type;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values. This is
 		/// not true for ASCII, as many Unicode Code Point and Unicode Scalar Values cannot be represented in ASCII.
 		/// Since the conversion is lossy, this property is false.
-		//////
 		using is_encode_injective = ::std::false_type;
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
@@ -108,12 +90,10 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
 		/// 1 for all Unicode Transformation Format (UTF) encodings.
-		//////
 		inline static constexpr const ::std::size_t max_code_points = 1;
 		//////
 		/// @brief A range of code units representing the values to use when a replacement happen. For ASCII, this
 		/// must be '?' instead of the usual Unicode Replacement Character U'�'.
-		//////
 		static constexpr ::ztd::span<const code_unit, 1> replacement_code_units() noexcept {
 			return __txt_detail::__question_mark_replacement_units<code_unit>;
 		}
@@ -135,7 +115,6 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		//////
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto decode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
@@ -220,7 +199,6 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		//////
 		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 		static constexpr auto encode_one(
 			_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
@@ -297,7 +275,6 @@ namespace ztd { namespace text {
 	/// @remarks The most vanilla and unimaginative encoding there is in the world, excluding tons of other languages,
 	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
 	/// reason!
-	//////
 	using ascii_t = basic_ascii<char>;
 
 

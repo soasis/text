@@ -75,7 +75,6 @@ namespace ztd { namespace text {
 	/// encodings, one will be created with automatic storage duration (as a "stack" variable) for the provided
 	/// encoding.
 	/// @{
-	//////
 
 	//////
 	/// @brief Converts the code units of the given input view through the from encoding to code units of the to
@@ -108,7 +107,6 @@ namespace ztd { namespace text {
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
 		typename _PivotRange>
@@ -194,7 +192,6 @@ namespace ztd { namespace text {
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
 		typename _PivotRange>
@@ -321,7 +318,6 @@ namespace ztd { namespace text {
 	/// provided parameters. If so, it will use that ADL extension point over the default implementation. Otherwise, it
 	/// will loop over the two encodings and attempt to transcode by first decoding the input code units to code
 	/// points, then encoding the intermediate code points to the desired, output code units.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
@@ -369,7 +365,6 @@ namespace ztd { namespace text {
 	/// information is on the stack, and returning the state in those types by reference will result in references to
 	/// memory that has already been cleaned up. If you need access to the state parameters, call the lower-level
 	/// functionality with your own created states.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState>
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
@@ -408,7 +403,6 @@ namespace ztd { namespace text {
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
 	/// access to the state parameters, call the lower-level functionality with your own created states.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler>
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
@@ -444,7 +438,6 @@ namespace ztd { namespace text {
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
 	/// access to the state parameters, call the lower-level functionality with your own created states.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler>
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
@@ -475,7 +468,6 @@ namespace ztd { namespace text {
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
 	/// access to the state parameters, call the lower-level functionality with your own created states.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding>
 	constexpr auto transcode_into(
 		_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output, _ToEncoding&& __to_encoding) {
@@ -503,7 +495,6 @@ namespace ztd { namespace text {
 	/// ztd::text::transcode_result because the state information is on the stack, and returning the state in
 	/// those types by reference will result in references to memory that has already been cleaned up. If you need
 	/// access to the state parameters, call the lower-level functionality with your own created states.
-	//////
 	template <typename _Input, typename _ToEncoding, typename _Output>
 	constexpr auto transcode_into(_Input&& __input, _ToEncoding&& __to_encoding, _Output&& __output) {
 		using _UInput        = remove_cvref_t<_Input>;
@@ -664,7 +655,6 @@ namespace ztd { namespace text {
 	/// __to_state and an `output` parameter that contains the `_OutputContainer` specified. If the container has a
 	/// `container.reserve` function, it is and some multiple of the input's size is used to pre-size the container,
 	/// to aid with `push_back` / `insert` reallocation pains.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
 		typename _PivotRange>
@@ -718,7 +708,6 @@ namespace ztd { namespace text {
 	/// __to_state and an `output` parameter that contains the `_OutputContainer` specified. If the container has a
 	/// `container.reserve` function, it is and some multiple of the input's size is used to pre-size the container,
 	/// to aid with `push_back` / `insert` reallocation pains.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -766,7 +755,6 @@ namespace ztd { namespace text {
 	/// @remarks A default state for the encode step of the operation is create using ztd::text::make_encode_state. The
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
 	/// both of them yourself and pass them into a lower-level function that accepts those parameters.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -805,7 +793,6 @@ namespace ztd { namespace text {
 	/// @remarks A default state for the decode step of the operation is create using ztd::text::make_decode_state. The
 	/// return type is stateless since both states must be passed in. If you want to have access to the states, create
 	/// both of them yourself and pass them into a lower-level function that accepts those parameters.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -844,7 +831,6 @@ namespace ztd { namespace text {
 	/// ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must be
 	/// passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -878,7 +864,6 @@ namespace ztd { namespace text {
 	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
@@ -907,7 +892,6 @@ namespace ztd { namespace text {
 	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
-	//////
 	template <typename _OutputContainer, typename _Input, typename _ToEncoding>
 	constexpr auto transcode_to(_Input&& __input, _ToEncoding&& __to_encoding) {
 		using _UInput   = remove_cvref_t<_Input>;
@@ -958,7 +942,6 @@ namespace ztd { namespace text {
 	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
 		typename _PivotRange>
@@ -1011,7 +994,6 @@ namespace ztd { namespace text {
 	/// @returns An `_OutputContainer` with the result, regardless of whether an error occurs or not. If you are
 	/// looking for error information and not just a quick one-off conversion function, please use
 	/// ztd::text::transcode_to or ztd::text::transcode_into.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -1059,7 +1041,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates an `to_state` for the encoding step of the operation using
 	/// ztd::text::make_encode_state.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -1098,7 +1079,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates an `from_state` for the encoding step of the operation using
 	/// ztd::text::make_decode_state.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -1137,7 +1117,6 @@ namespace ztd { namespace text {
 	/// @remarks This function creates a `to_error_handler` from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -1171,7 +1150,6 @@ namespace ztd { namespace text {
 	/// @remarks This function creates a `from_error_handler` from a class like ztd::text::default_handler_t, but that
 	/// is marked as careless since you did not explicitly provide it. This matters for lossy conversions that are not
 	/// injective.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
@@ -1200,7 +1178,6 @@ namespace ztd { namespace text {
 	/// @remarks This function creates both: a `from_error_handler` from a class like ztd::text::default_handler_t,
 	/// but that is marked as careless since you did not explicitly provide it; and, a `from_encoding` derived from
 	/// the `__input`'s `value_type.` The careless marking matters for lossy conversions that are not injective.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _ToEncoding>
 	constexpr auto transcode(_Input&& __input, _ToEncoding&& __to_encoding) {
 		using _UInput   = remove_cvref_t<_Input>;

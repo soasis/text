@@ -47,8 +47,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. The wide execution
@@ -60,7 +60,6 @@ namespace ztd { namespace text {
 	/// and result in broken input/output. This object uses UTF-16 directly on Windows when possible to avoid some of
 	/// the platform-specific shenanigans. It will attempt to do UTF-32 conversions where possible as well, relying on
 	/// C Standard definitions.
-	//////
 	class wide_execution_t : public
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 		                    __txt_impl::__wide_execution_windows
@@ -80,7 +79,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

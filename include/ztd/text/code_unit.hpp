@@ -73,7 +73,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Gets the maximum number of code units that can be produced by an encoding during an encode operation,
 	/// suitable for initializing a automatic storage duration ("stack-allocated") buffer.
-	//////
 	template <typename _Type>
 	inline static constexpr ::std::size_t max_code_units_v = remove_cvref_t<_Type>::max_code_units;
 

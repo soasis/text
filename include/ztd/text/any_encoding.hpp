@@ -45,13 +45,12 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief A type-erased encoding that uses the specified code unit, code point, and input/output ranges for the
 	/// various operations.
-	//////
 	template <typename _EncodeCodeUnit, typename _EncodeCodePoint = const unicode_code_point,
 		typename _DecodeCodeUnit     = ::std::add_const_t<_EncodeCodeUnit>,
 		typename _DecodeCodePoint    = ::std::remove_const_t<_EncodeCodePoint>,
@@ -72,7 +71,6 @@ namespace ztd { namespace text {
 	/// at the moment, and we are looking to make this experience better.) It is recommended to use the provided
 	/// ztd::text::any_encoding type definition instead of accessing this directly, unless you have a reason for using
 	/// a different byte type (e.g., interfacing with legacy APIs).
-	//////
 	template <typename _Byte, typename _CodePoint = unicode_code_point>
 	class any_byte_encoding : public any_encoding_of<_Byte, const _CodePoint, const _Byte, _CodePoint> {
 	private:
@@ -92,7 +90,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks If the provided encoding does not have a byte code_unit type, it is wrapped in an
 		/// ztd::text::encoding_scheme first.
-		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<
 			     !::std::is_same_v<_Encoding,
@@ -111,7 +108,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks If the provided encoding does not have a byte code_unit type, it is wrapped in an
 		/// ztd::text::encoding_scheme first.
-		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<!::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_Encoding>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_Encoding>, _Args&&... __args)
@@ -129,7 +125,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks If the provided encoding does not have a byte code_unit type, it is wrapped in an
 		/// ztd::text::encoding_scheme first.
-		//////
 		template <typename _Encoding, typename... _Args,
 			::std::enable_if_t<::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_Encoding>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_Encoding> __tag, _Args&&... __args)
@@ -150,7 +145,6 @@ namespace ztd { namespace text {
 		/// @remarks This leaves the passed-in r-value reference without an encoding object. Calling any function on a
 		/// moved-fron ztd::text::any_byte_encoding, except for destruction, is a violation and invokes Undefined
 		/// Behavior (generally, a crash).
-		//////
 		any_byte_encoding(any_byte_encoding&&) = default;
 
 		//////
@@ -159,7 +153,6 @@ namespace ztd { namespace text {
 		/// @remarks This leaves the passed-in r-value reference without an encoding object. Calling any function on a
 		/// moved-fron ztd::text::any_byte_encoding, except for destruction, is a violation and invokes Undefined
 		/// Behavior (generally, a crash).
-		//////
 		any_byte_encoding& operator=(any_byte_encoding&&) = default;
 	};
 
@@ -169,7 +162,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks If the input encoding does not match `std::byte`, it will be first wrapped in a
 	/// ztd::text::encoding_scheme first.
-	//////
 	using any_encoding = any_byte_encoding<::std::byte>;
 
 	//////

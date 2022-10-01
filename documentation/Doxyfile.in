@@ -993,6 +993,7 @@ EXCLUDE_PATTERNS       = */detail/* \
 EXCLUDE_SYMBOLS        = ztd::text::__txt_detail* \
                          _M_* \
                          std \
+                         ztd::ranges::enable_borrowed_range* \
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

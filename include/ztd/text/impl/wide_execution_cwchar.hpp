@@ -97,8 +97,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	namespace __txt_impl {
 
@@ -111,7 +111,6 @@ namespace ztd { namespace text {
 		/// UTF-32, and vice-versa. This is only used when `wchar_t` and its locale-based runtime encoding
 		/// cannot be determined to be UTF-32, UTF-16, or some other statically-known encoding. These conversions
 		/// may also be lossy.
-		//////
 		class __wide_execution_cwchar {
 		public:
 			//////
@@ -120,13 +119,11 @@ namespace ztd { namespace text {
 			///
 			/// @remarks Please note that wchar_t is a variably sized type across platforms and may not
 			/// represent either UTF-16 or UTF-32, including on *nix or POSIX platforms.
-			//////
 			using code_unit = wchar_t;
 			//////
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
 			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar
 			/// Value.
-			//////
 			using code_point = unicode_code_point;
 
 		private:
@@ -139,21 +136,18 @@ namespace ztd { namespace text {
 			/// shift state.
 			///
 			/// @remarks This type can potentially have lots of state due to the way the C API is specified.
-			//////
 			using decode_state = __wide_decode_state;
 			//////
 			/// @brief The state of the wide encoding used between calls, which may potentially manage
 			/// shift state.
 			///
 			/// @remarks This type can potentially have lots of state due to the way the C API is specified.
-			//////
 			using encode_state = __wide_encode_state;
 			//////
 			/// @brief Whether or not the decode operation can process all forms of input into code point
 			/// values.
 			///
 			/// @remarks All known wide encodings can decode into Unicode just fine.
-			//////
 			using is_decode_injective = ::std::false_type;
 
 			//////
@@ -162,7 +156,6 @@ namespace ztd { namespace text {
 			/// on *nix/POSIX machines, but it can (and has been) changed before, sometimes even at runtime.
 			///
 			/// @remarks IBM encodings/computers make life interesting...
-			//////
 			using is_encode_injective = ::std::false_type;
 
 			//////
@@ -170,7 +163,6 @@ namespace ztd { namespace text {
 			///
 			/// @remarks On Windows, this is always true. On other platforms, the guarantees are not quite
 			/// there. IBM encodings/computers make life interesting...
-			//////
 			using is_unicode_encoding = ::std::false_type;
 
 			//////
@@ -187,7 +179,6 @@ namespace ztd { namespace text {
 			/// platform-specific means (such as `nl_langinfo` for POSIX, ACP probing on Windows, or fallin
 			/// back to
 			/// `std::setlocale` name checking otherwise).
-			//////
 			static bool contains_unicode_encoding() noexcept {
 				// even if the wide encoding is unicode, we have to round-trip through the execution encoding, so if
 				// this doesn't work then nothing works with all unicode code points!
@@ -220,7 +211,6 @@ namespace ztd { namespace text {
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
 			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any
 			/// view that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 				encode_state& __s) {
@@ -332,7 +322,6 @@ namespace ztd { namespace text {
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
 			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any
 			/// view that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
 				decode_state& __s) {

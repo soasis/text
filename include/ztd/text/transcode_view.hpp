@@ -53,8 +53,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief A transcoding iterator that takes an input of code units and provides an output over the code units of
@@ -78,7 +78,6 @@ namespace ztd { namespace text {
 	/// operation. This means if, for example, one (1) UTF-16 code unit becomes two (2) UTF-8 code units, it will
 	/// present each code unit one at a time. If you are looking to explicitly know each collection of characters, you
 	/// will have to use lower-level interfaces.
-	//////
 	template <typename _FromEncoding, typename _ToEncoding = utf8_t,
 		typename _Range            = __txt_detail::__default_char_view_t<code_unit_t<_FromEncoding>>,
 		typename _FromErrorHandler = default_handler_t, typename _ToErrorHandler = default_handler_t,
@@ -118,7 +117,6 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_view from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		//////
 		constexpr transcode_view(range_type __range) noexcept
 		: transcode_view(::std::move(__range), to_encoding_type {}) {
 		}
@@ -128,7 +126,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
-		//////
 		constexpr transcode_view(range_type __range, to_encoding_type __to_encoding) noexcept
 		: transcode_view(::std::move(__range), from_encoding_type {}, ::std::move(__to_encoding)) {
 		}
@@ -139,7 +136,6 @@ namespace ztd { namespace text {
 		/// @param[in] __range The input range to wrap and iterate over.
 		/// @param[in] __from_encoding The encoding object to call `decode_one` or equivalent functionality on.
 		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
-		//////
 		constexpr transcode_view(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding) noexcept
 		: transcode_view(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
@@ -154,7 +150,6 @@ namespace ztd { namespace text {
 		/// @param[in] __to_encoding The encoding object to call `encode_one` or equivalent functionality on.
 		/// @param[in] __from_error_handler The error handler for decode operations to store in this view.
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
-		//////
 		constexpr transcode_view(range_type __range, from_encoding_type __from_encoding,
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler) noexcept
@@ -172,7 +167,6 @@ namespace ztd { namespace text {
 		/// @param[in] __to_error_handler The error handler for encode operations to store in this view.
 		/// @param[in] __from_state The state to user for the decode operation.
 		/// @param[in] __to_state The state to user for the decode operation.
-		//////
 		constexpr transcode_view(range_type __range, from_encoding_type __from_encoding,
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler, from_state_type __from_state,

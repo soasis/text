@@ -55,8 +55,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	namespace __txt_impl {
 
@@ -70,7 +70,6 @@ namespace ztd { namespace text {
 		/// text. Their documentation states that all text "should" be UTF-8, but very explicitly goes out of its way
 		/// to not make that hard guarantee. Since it is a BSD-like system and they left plenty of that data behind
 		/// from C libraries, this may break in extremely obscure cases. Please be careful on Apple machines!
-		//////
 		class __execution_mac_os : private __utf8_with<__execution_mac_os, char, char32_t> {
 		private:
 			using __base_t = __utf8_with<__execution_mac_os, char, char32_t>;
@@ -78,32 +77,25 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief The code point type that is decoded to, and encoded from.
-			//////
 			using code_point = code_point_t<__base_t>;
 			//////
 			/// @brief The code unit type that is decoded from, and encoded to.
-			//////
 			using code_unit = code_unit_t<__base_t>;
 			//////
 			/// @brief The associated state for decode operations.
-			//////
 			using decode_state = decode_state_t<__base_t>;
 			//////
 			/// @brief The associated state for encode operations.
-			//////
 			using encode_state = encode_state_t<__base_t>;
 
 			//////
 			/// @brief Whether or not this encoding is a unicode encoding or not.
-			//////
 			using is_unicode_encoding = ::std::integral_constant<bool, is_unicode_encoding_v<__base_t>>;
 			//////
 			/// @brief Whether or not this encoding's `decode_one` step is injective or not.
-			//////
 			using is_decode_injective = ::std::false_type;
 			//////
 			/// @brief Whether or not this encoding's `encode_one` step is injective or not.
-			//////
 			using is_encode_injective = ::std::false_type;
 
 			//////
@@ -112,7 +104,6 @@ namespace ztd { namespace text {
 			/// @remarks There are encodings for which one input can produce 3 code points (some Tamil encodings) and
 			/// there are rumours of an encoding that can produce 7 code points from a handful of input. We use a
 			/// protective/conservative 8, here, to make sure ABI isn't broken later.
-			//////
 			inline static constexpr ::std::size_t max_code_points = 8;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce.
@@ -120,7 +111,6 @@ namespace ztd { namespace text {
 			/// @remarks This is bounded by the platform's `MB_LEN_MAX` macro, which is an integral constant
 			/// expression representing the maximum value of output all C locales can produce from a single complete
 			/// operation.
-			//////
 			inline static constexpr ::std::size_t max_code_units = MB_LEN_MAX;
 
 			//////

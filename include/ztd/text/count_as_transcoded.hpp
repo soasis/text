@@ -64,7 +64,6 @@ namespace ztd { namespace text {
 	/// input code units after a transcoding operation.
 	///
 	/// @{
-	//////
 
 	//////
 	/// @brief Counts the number of code units that will result from attempting an transcode operation on the input
@@ -94,7 +93,6 @@ namespace ztd { namespace text {
 	/// @remarks This method will not check any ADL extension points. A combination of implementation techniques will
 	/// be used to count code units, with a loop over the `.encode_one` / `.decode_one` call into an intermediate,
 	/// unseen buffer being the most basic choice.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState, typename _PivotRange>
 	constexpr auto basic_count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding,
@@ -215,7 +213,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This method checks for the ADL extension point `text_count_as_transcoded` . It will be called if it
 	/// is possible. Otherwise, this function will defer to ztd::text::basic_count_as_transcoded.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState, typename _PivotRange>
 	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -268,7 +265,6 @@ namespace ztd { namespace text {
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
 	/// from_error_handler, to_error_handler, from_state, to_state) with an `to_state` created by
 	/// ztd::text::make_encode_state(to_encoding).
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
 	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -304,7 +300,6 @@ namespace ztd { namespace text {
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
 	/// from_error_handler, to_error_handler, from_state, to_state) with an `to_state` created by
 	/// ztd::text::make_encode_state(to_encoding).
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState>
 	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -342,7 +337,6 @@ namespace ztd { namespace text {
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
 	/// from_error_handler, to_error_handler, from_state) with an `from_state` created by
 	/// ztd::text::make_decode_state(from_encoding).
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler,
 		typename _ToErrorHandler>
 	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
@@ -374,7 +368,6 @@ namespace ztd { namespace text {
 	/// @remarks This method will call ztd::text::count_as_transcoded(input, from_encoding, to_encoding,
 	/// from_error_handler, to_error_handler) by creating an `to_error_handler` similar to
 	/// ztd::text::default_handler_t.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _FromErrorHandler>
 	constexpr auto count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler) {
@@ -399,7 +392,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This method will call ztd::text::count_as_transcoded(Input, Encoding, ErrorHandler) by creating
 	/// an `error_handler` similar to ztd::text::default_handler_t.
-	//////
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding>
 	constexpr auto count_as_transcoded(
 		_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
@@ -422,7 +414,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks Calls ztd::text::count_as_transcoded(Input, Encoding) with an `encoding` that is derived from
 	/// ztd::text::default_code_unit_encoding.
-	//////
 	template <typename _Input, typename _ToEncoding>
 	constexpr auto count_as_transcoded(_Input&& __input, _ToEncoding&& __to_encoding) {
 		using _UInput   = remove_cvref_t<_Input>;

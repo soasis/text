@@ -47,6 +47,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_normalization Normalization
+	///
 	/// @{
 
 	//////
@@ -68,12 +69,10 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The reconstructed input_view object, with its .begin() incremented by the number of code units
 		/// successfully read (can be identical to .begin() on original range on failure).
-		//////
 		_Input input;
 		//////
 		/// @brief The reconstructed output_view object, with its .begin() incremented by the number of code units
 		/// successfully written (can be identical to .begin() on original range on failure).
-		//////
 		_Output output;
 		//////
 		/// @brief The kind of error that occured, if any.
@@ -86,7 +85,6 @@ namespace ztd { namespace text {
 		/// @param[in] __input The input range to store.
 		/// @param[in] __output The output range to store.
 		/// @param[in] __error_code The error code for the decoding opertion, if any.
-		//////
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr normalization_result(_ArgInput&& __input, _ArgOutput&& __output,
 			normalization_error __error_code) noexcept(::std::is_nothrow_constructible_v<_Input, _ArgInput> // cf

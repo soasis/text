@@ -46,6 +46,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
+	///
 	/// @{
 	/////
 
@@ -69,7 +70,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Gets the maximum number of code points that can be produced by an encoding during a decode operation,
 	/// suitable for initializing a automatic storage duration ("stack-allocated") buffer.
-	//////
 	template <typename _Type>
 	inline static constexpr ::std::size_t max_code_points_v = _Type::max_code_points;
 

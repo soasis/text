@@ -141,7 +141,6 @@ namespace ztd { namespace text {
 	/// runtime conditions, then this should return false. This is meant for cases where it is provable at compile
 	/// time, this should return true. For example, if the ztd::text::replacement_handler_t is used in conjunction with
 	/// ztd::text::utf8_t, then this will return true as
-	//////
 	template <typename _Encoding, typename _ErrorHandler>
 	class decode_error_handler_always_returns_ok
 	: public __txt_detail::__decode_error_handler_always_returns_ok<_Encoding, _ErrorHandler> { };

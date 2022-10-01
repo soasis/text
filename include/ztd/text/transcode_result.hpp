@@ -71,12 +71,10 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The reconstructed input_view object, with its .begin() incremented by the number of code units
 		/// successfully read (can be identical to .begin() on original range on failure).
-		//////
 		_Input input;
 		//////
 		/// @brief The reconstructed output_view object, with its .begin() incremented by the number of code units
 		/// successfully written (can be identical to .begin() on original range on failure).
-		//////
 		_Output output;
 		//////
 		/// @brief The kind of error that occured, if any.
@@ -84,7 +82,6 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
 		/// ztd::text::encoding_error::ok.
-		//////
 		::std::size_t handled_errors;
 
 
@@ -96,7 +93,6 @@ namespace ztd { namespace text {
 		/// @param[in] __output The output range to store.
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
-		//////
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr stateless_transcode_result(_ArgInput&& __input, _ArgOutput&& __output,
 			encoding_error __error_code
@@ -117,7 +113,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr stateless_transcode_result(_ArgInput&& __input, _ArgOutput&& __output, encoding_error __error_code,
 			::std::size_t __handled_errors) noexcept(::std::is_nothrow_constructible_v<_Input,
@@ -132,7 +127,6 @@ namespace ztd { namespace text {
 		/// @brief Whether or not any errors were handled.
 		///
 		/// @returns Simply checks whether `handled_errors` is greater than 0.
-		//////
 		constexpr bool errors_were_handled() const noexcept {
 			return this->handled_errors > 0;
 		}
@@ -149,12 +143,10 @@ namespace ztd { namespace text {
 		//////
 		/// @brief A reference to the state of the associated Encoding used for decoding input code units to
 		/// intermediate code points.
-		//////
 		::ztd::reference_wrapper<_FromState> from_state;
 		//////
 		/// @brief A reference to the state of the associated Encoding used for encoding intermediate code points to
 		/// code units.
-		//////
 		::ztd::reference_wrapper<_ToState> to_state;
 
 		//////
@@ -169,7 +161,6 @@ namespace ztd { namespace text {
 		/// operation.
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
-		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>
 		constexpr transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
@@ -193,7 +184,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>
 		constexpr transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __handled_errors)

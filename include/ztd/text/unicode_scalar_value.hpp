@@ -57,7 +57,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks The invariant is enforced with an assertion in normal modes, and can optionally be enforced by
 		/// turning on `ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT.`
-		//////
 		class alignas(alignof(char32_t)) __unicode_scalar_value {
 		public:
 			//////
@@ -70,7 +69,6 @@ namespace ztd { namespace text {
 			/// @brief Constructs a scalar value with the given code point value.
 			///
 			/// @remarks
-			//////
 			constexpr __unicode_scalar_value(char32_t __code_point) noexcept : _M_scalar(__code_point) {
 #if ZTD_IS_ON(ZTD_TEXT_UNICODE_SCALAR_VALUE_INVARIANT_ABORT)
 				if (__ztd_idk_detail_is_surrogate(this->_M_scalar)
@@ -120,7 +118,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __left Left hand value of equality operator.
 		/// @param[in] __right Right hand value of equality operator.
-		//////
 		constexpr bool operator==(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
 			return __left.value() == __right.value();
 		}
@@ -130,7 +127,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __left Left hand value of inequality operator.
 		/// @param[in] __right Right hand value of inequality operator.
-		//////
 		constexpr bool operator!=(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
 			return __left.value() != __right.value();
 		}
@@ -140,7 +136,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __left Left hand value of less than operator.
 		/// @param[in] __right Right hand value of less than operator.
-		//////
 		constexpr bool operator<(const __unicode_scalar_value& __left, const __unicode_scalar_value& __right) {
 			return __left.value() < __right.value();
 		}

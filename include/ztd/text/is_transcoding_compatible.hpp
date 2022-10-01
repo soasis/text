@@ -85,7 +85,6 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _From The encoding that is going to decode the input code units into the intermediate code points.
 	/// @tparam _To The encoding that is going to encode the intermediate code points into the final code units.
-	//////
 	template <typename _From, typename _To>
 	class is_bitwise_transcoding_compatible
 	: public ::std::integral_constant<bool, __txt_detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };
@@ -121,7 +120,6 @@ namespace ztd { namespace text {
 	/// the code point types are the same or if it's putting unicode scalar values into unicode code points (which is
 	/// valid one way, but not the other way since scalar values do not allow surrogates). If none of these are true,
 	/// then, the intermediate code point likely cannot convert between the two losslessly.
-	//////
 	template <typename _From, typename _To>
 	class is_transcoding_compatible
 	: public ::std::integral_constant<bool, __txt_detail::__is_bitwise_transcoding_compatible_v<_From, _To>> { };

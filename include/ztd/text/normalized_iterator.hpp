@@ -71,8 +71,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	///
 	/// @{
-	//////
 
 	using normalized_sentinel_t = ranges::default_sentinel_t;
 
@@ -82,7 +82,6 @@ namespace ztd { namespace text {
 	/// @tparam _NormalizationForm The normalization form to apply to the sequence of code points.
 	/// @tparam _Range The sequence of code points to iterate over.
 	/// @tparam _Storage The storage medium to use to hold output from the normalization algorithm.
-	//////
 	template <typename _NormalizationForm, typename _Range,
 		typename _Storage = __txt_detail::__default_normal_storage_t<_Range, _NormalizationForm>>
 	class normalized_iterator : private ebco<_NormalizationForm, 0>, private ebco<_Range, 1> {
@@ -114,7 +113,6 @@ namespace ztd { namespace text {
 		/// @brief Constructs with the given `__range`.
 		///
 		/// @param[in] __range The range this normalization iterator will walk over.
-		//////
 		constexpr normalized_iterator(_Range __range) noexcept(::std::is_nothrow_move_constructible_v<_Range> // cf
 			     && ::std::is_nothrow_default_constructible_v<_NormalizationForm>)
 		: __base_normalization_form_t(), __base_range_t(::std::move(__range)) {
@@ -126,7 +124,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __range The range this normalization iterator will walk over.
 		/// @param[in] __normalization_form The normalization form object to use for this iterator.
-		//////
 		constexpr normalized_iterator(_Range __range, _NormalizationForm __normalization_form) noexcept(
 			::std::is_nothrow_move_constructible_v<_NormalizationForm> // cf
 			     && ::std::is_nothrow_move_constructible_v<_Range>)
@@ -170,7 +167,6 @@ namespace ztd { namespace text {
 		/// @brief Compares an iterator to its sentinel, which tests for whether the iteration is complete.
 		///
 		/// @param[in] __it The iterator to check against the sentinel.
-		//////
 		friend constexpr bool operator==(const normalized_iterator& __it, const normalized_sentinel_t&) noexcept {
 			return __it._M_base_is_empty()
 				&& __it._M_cursor == ::ztd::ranges::ranges_adl::adl_size(__it._M_normalized);
@@ -181,7 +177,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __it The iterator to check against the sentinel.
 		/// @param[in] __sen The sentinel that triggers this comparison.
-		//////
 		friend constexpr bool operator==(
 			const normalized_sentinel_t& __sen, const normalized_iterator& __it) noexcept {
 			return __it == __sen;
@@ -191,7 +186,6 @@ namespace ztd { namespace text {
 		/// @brief Compares an iterator to its sentinel, which tests for whether the iteration is complete.
 		///
 		/// @param[in] __it The iterator to check against the sentinel.
-		//////
 		friend constexpr bool operator!=(const normalized_iterator& __it, const normalized_sentinel_t&) noexcept {
 			return !__it._M_base_is_empty()
 				|| __it._M_cursor != ::ztd::ranges::ranges_adl::adl_size(__it._M_normalized);
@@ -202,7 +196,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __it The iterator to check against the sentinel.
 		/// @param[in] __sen The sentinel that triggers this comparison.
-		//////
 		friend constexpr bool operator!=(
 			const normalized_sentinel_t& __sen, const normalized_iterator& __it) noexcept {
 			return __it != __sen;
@@ -236,7 +229,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

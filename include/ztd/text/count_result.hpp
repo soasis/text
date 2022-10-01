@@ -54,20 +54,18 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_result Result Types
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief The result of counting operations (such as ztd_text_count_as_encoded and
 	/// ztd_text_count_as_encoded) that specifically do not include a reference to the state.
-	//////
 	template <typename _Input>
 	class stateless_count_result {
 	public:
 		//////
 		/// @brief The reconstructed input_view object, with its .begin() incremented by the number of code units
 		/// successfully read (can be identical to .begin() on original range on failure).
-		//////
 		_Input input;
 		//////
 		/// @brief The number of code units or code points counted successfully, so far.
@@ -78,7 +76,6 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
 		/// ztd::text::encoding_error::ok.
-		//////
 		::std::size_t handled_errors;
 
 		//////
@@ -89,7 +86,6 @@ namespace ztd { namespace text {
 		/// @param[in] __count The number of code points or code units successfully counted.
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
-		//////
 		template <typename _ArgInput>
 		constexpr stateless_count_result(
 			_ArgInput&& __input, ::std::size_t __count, encoding_error __error_code = encoding_error::ok)
@@ -108,7 +104,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput>
 		constexpr stateless_count_result(
 			_ArgInput&& __input, ::std::size_t __count, encoding_error __error_code, ::std::size_t __handled_errors)
@@ -122,7 +117,6 @@ namespace ztd { namespace text {
 		/// @brief Whether or not any errors were handled.
 		///
 		/// @returns Simply checks whether `handled_errors` is greater than 0.
-		//////
 		constexpr bool errors_were_handled() const noexcept {
 			return this->handled_errors > 0;
 		}
@@ -131,7 +125,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The result of counting operations (such as ztd_text_count_as_encoded and
 	/// ztd_text_count_as_encoded).
-	//////
 	template <typename _Input, typename _State>
 	class count_result : public stateless_count_result<_Input> {
 	private:
@@ -151,7 +144,6 @@ namespace ztd { namespace text {
 		/// @param[in] __state The state related to the encoding for the counting operation.
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
-		//////
 		template <typename _ArgInput, typename _ArgState>
 		constexpr count_result(_ArgInput&& __input, ::std::size_t __count, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok)
@@ -171,7 +163,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput, typename _ArgState>
 		constexpr count_result(_ArgInput&& __input, ::std::size_t __count, _ArgState&& __state,
 			encoding_error __error_code, ::std::size_t __handled_errors)
@@ -183,7 +174,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The result of counting operations (such as ztd_text_count_as_encoded and
 	/// ztd_text_count_as_encoded).
-	//////
 	template <typename _Input, typename _FromState, typename _ToState>
 	class count_transcode_result : public stateless_count_result<_Input> {
 	private:
@@ -193,13 +183,11 @@ namespace ztd { namespace text {
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting which covers the decoding
 		/// portion of the transcode operation.
-		//////
 		::ztd::reference_wrapper<_FromState> from_state;
 
 		//////
 		/// @brief A reference to the state of the associated Encoding used for counting which covers the encoding
 		/// portion of the transcode operation.
-		//////
 		::ztd::reference_wrapper<_ToState> to_state;
 
 		//////
@@ -214,7 +202,6 @@ namespace ztd { namespace text {
 		/// operation.
 		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
 		/// or decode operation that failed.
-		//////
 		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
 		constexpr count_transcode_result(_ArgInput&& __input, ::std::size_t __count, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
@@ -238,7 +225,6 @@ namespace ztd { namespace text {
 		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
-		//////
 		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
 		constexpr count_transcode_result(_ArgInput&& __input, ::std::size_t __count, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __handled_errors)

@@ -57,7 +57,6 @@ namespace ztd { namespace text {
 		/// @brief Internal tag for detecting a ztd::text-derved UTF-16 type.
 		///
 		/// @internal
-		//////
 		class __utf16_tag { };
 
 		//////
@@ -66,7 +65,6 @@ namespace ztd { namespace text {
 		/// @internal
 		///
 		/// @remarks Relies on CRTP.
-		//////
 		template <typename _Derived = void, typename _CodeUnit = char16_t, typename _CodePoint = unicode_code_point,
 			bool __surrogates_allowed = false>
 		class __utf16_with : public __utf16_tag {
@@ -80,35 +78,29 @@ namespace ztd { namespace text {
 			//////
 			/// @brief The state that can be used between calls to the encoder and decoder. It is an empty struct
 			/// because there is no shift state to preserve between complete units of encoded information.
-			//////
 			using state = __txt_detail::__empty_state;
 			//////
 			/// @brief The individual units that result from an encode operation or are used as input to a decode
 			/// operation. For UTF-16 formats, this is usually char16_t, but this can change (see
 			/// ztd::text::basic_utf16).
-			//////
 			using code_unit = _CodeUnit;
 			//////
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
 			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-			//////
 			using code_point = _CodePoint;
 			//////
 			/// @brief Whether or not the decode operation can process all forms of input into code point values.
 			/// Thsi is true for all Unicode Transformation Formats (UTFs), which can encode and decode without a
 			/// loss of information from a valid collection of code units.
-			//////
 			using is_decode_injective = ::std::true_type;
 			//////
 			/// @brief Whether or not the encode operation can process all forms of input into code unit values.
 			/// This is true for all Unicode Transformation Formats (UTFs), which can encode and decode without loss
 			/// of information from a valid input code point.
-			//////
 			using is_encode_injective = ::std::true_type;
 			//////
 			/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
 			/// 1 for all Unicode Transformation Format (UTF) encodings.
-			//////
 			inline static constexpr ::std::size_t max_code_points = 1;
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
@@ -131,7 +123,6 @@ namespace ztd { namespace text {
 			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
@@ -258,7 +249,6 @@ namespace ztd { namespace text {
 			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-			//////
 			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
 			static constexpr auto encode_one(
 				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
@@ -364,8 +354,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief A UTF-16 Encoding that traffics in, specifically, the desired code unit type provided as a template
@@ -375,7 +365,6 @@ namespace ztd { namespace text {
 	/// @tparam _CodePoint The code point type to use.
 	///
 	/// @remarks This is a strict UTF-16 implementation that does not allow lone, unpaired surrogates either in or out.
-	//////
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_utf16 : public __txt_impl::__utf16_with<basic_utf16<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 

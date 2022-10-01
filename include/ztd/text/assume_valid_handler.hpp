@@ -53,13 +53,11 @@ namespace ztd { namespace text {
 	/// @remarks This error handler is useful in conjunction with a ztd::text::ranges::unbounded_view for the fastest
 	/// possible encoding and decoding in a general sense. However: IT IS ALSO EXTREMELY DANGEROUS AND CAN INVOKE
 	/// UNDEFINED BEHAVIOR IF YOUR TEXT IS, IN FACT, MESSED UP. PLEASE DO NOT USE THIS WITHOUT A GOOD REASON!
-	//////
 	class assume_valid_handler_t {
 	public:
 		//////
 		/// @brief A type that is true when calling code can not call this function and ignore it, and false when
 		/// it cannot ignore it. See ztd::text::assume_valid_handler_t for details.
-		//////
 		using assume_valid = ::std::integral_constant<bool,
 #if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION)
 			false
@@ -73,7 +71,6 @@ namespace ztd { namespace text {
 		/// with no changes made.
 		///
 		/// @param[in] __result The current state of the encode operation to pass through.
-		//////
 		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
 		constexpr auto operator()(
 			const _Encoding&, _Result __result, const _InputProgress&, const _OutputProgress&) const {

@@ -50,7 +50,6 @@ namespace ztd { namespace text {
 	/// @addtogroup ztd_text_transcode_helpers ztd::text Transcode Helpers
 	///
 	/// @{
-	//////
 
 	//////
 	/// @brief Transcoding helper. Takes the given `__to_encoding` and `__encode_error_handler` and launders the failed
@@ -74,7 +73,6 @@ namespace ztd { namespace text {
 	/// called by transcode-style functions written by the end user (e.g., writing overriding hooks for
 	/// ztd::text::transcode). This function attempts to take care of any unread/unwritten characters and other minor
 	/// points in its pursuit of properly making sure the error manifests on the other side.
-	//////
 	template <typename _Result, typename _Output, typename _ToEncoding, typename _EncodeErrorHandler,
 		typename _ToState, typename _ToInputProgress, typename _ToOutputProgress, typename _Input,
 		typename _Intermediate, typename _FromState>
@@ -117,7 +115,6 @@ namespace ztd { namespace text {
 	/// points in its pursuit of properly making sure the error manifests on the other side. Unlike it's counterpart,
 	/// this function does not take an `_Result` template parameter and instead deduces the returned transcode result
 	/// type from inputs.
-	//////
 	template <typename _Output, typename _ToEncoding, typename _EncodeErrorHandler, typename _ToState,
 		typename _ToInputProgress, typename _ToOutputProgress, typename _Input, typename _Intermediate,
 		typename _FromState>
@@ -141,7 +138,6 @@ namespace ztd { namespace text {
 	//////
 	///
 	/// @}
-	//////
 
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

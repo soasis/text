@@ -58,7 +58,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Whether or not the encode and decode steps of an punycode check need to take into account IDNA-specific
 	/// quirks.
-	//////
 	enum class idna {
 		//////
 		/// @brief Do not use IDNA-specific quirks and do pure punycode encoding/decoding.
@@ -66,7 +65,6 @@ namespace ztd { namespace text {
 		//////
 		/// @brief Use IDNA-specific quirks (e.g., looking for the prefix and passing-through strings as ASCII if they
 		/// do not meet the requirements on decode.)
-		//////
 		yes
 	};
 
@@ -78,7 +76,6 @@ namespace ztd { namespace text {
 	/// @tparam _CodePoint The code point type for the Unicode Code Point decoded text.
 	///
 	/// @remarks See https://datatracker.ietf.org/doc/html/rfc5890 and https://datatracker.ietf.org/doc/html/rfc3492.
-	//////
 	template <idna _IsIdna, typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_any_punycode {
 	public:
@@ -114,17 +111,14 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The maximum number of code points output by a decode operation. In this case, only 1 code point is
 		/// output at a time.
-		//////
 		inline static constexpr ::std::size_t max_code_points = 1;
 		//////
 		/// @brief The maximum number of code units output by a encode operation. In this case, only 1 code unit is
 		/// output at a time.
-		//////
 		inline static constexpr ::std::size_t max_code_units = 1;
 		//////
 		/// @brief Punycode is an injective encoding that is lossless, capable of encoding all input Unicode code
 		/// points.
-		//////
 		using is_injective = std::true_type;
 
 		//////
@@ -145,7 +139,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This function may need to be called with empty input data repeatedly to fully drain any stored
 		/// information in the provided `__state`. The entire input may be consumed before any information is output.
-		//////
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		static auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) {
@@ -266,7 +259,6 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This function may need to be called with empty input data repeatedly to fully drain any stored
 		/// information in the provided `__state`. The entire input may be consumed before any information is output.
-		//////
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		static auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) {
@@ -376,7 +368,6 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _CodeUnit The code unit type for encoded text.
 	/// @tparam _CodePoint The code point type for decoded text.
-	//////
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	using basic_punycode = basic_any_punycode<idna::no, _CodeUnit, _CodePoint>;
 
@@ -385,7 +376,6 @@ namespace ztd { namespace text {
 	///
 	/// @tparam _CodeUnit The code unit type for encoded text.
 	/// @tparam _CodePoint The code point type for decoded text.
-	//////
 	template <typename _CodeUnit, typename _CodePoint>
 	using basic_punycode_idna = basic_any_punycode<idna::yes, _CodeUnit, _CodePoint>;
 

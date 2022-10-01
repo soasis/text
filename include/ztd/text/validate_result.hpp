@@ -52,20 +52,19 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_result Result Types
+	///
 	/// @{
 	/////
 
 	//////
 	/// @brief The result of valdation operations (such as ztd_text_validate_decodable_as and
 	/// ztd_text_validate_encodable_as) that specifically do not include a reference to the state.
-	//////
 	template <typename _Input>
 	class stateless_validate_result {
 	public:
 		//////
 		/// @brief The reconstructed input_view object, with its .begin() incremented by the number of code units
 		/// successfully read (can be identical to .begin() on original range on failure).
-		//////
 		_Input input;
 		//////
 		/// @brief Whether or not the specified input is valid or not.
@@ -77,7 +76,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __input The input range to store.
 		/// @param[in] __is_valid Whether or not the validation succeeded.
-		//////
 		template <typename _ArgInput>
 		constexpr stateless_validate_result(_ArgInput&& __input, bool __is_valid)
 		: input(::std::forward<_ArgInput>(__input)), valid(__is_valid) {
@@ -87,7 +85,6 @@ namespace ztd { namespace text {
 		/// @brief A conversion for use in if statements and conditional operators.
 		///
 		/// @return Whether or not the result is valid or not.
-		//////
 		constexpr explicit operator bool() const noexcept {
 			return valid;
 		}
@@ -114,7 +111,6 @@ namespace ztd { namespace text {
 		/// @param[in] __input The input range to store.
 		/// @param[in] __is_valid Whether or not the validation succeeded.
 		/// @param[in] __state The state related to the encoding that was used to do validation.
-		//////
 		template <typename _ArgInput, typename _ArgState>
 		constexpr validate_result(_ArgInput&& __input, bool __is_valid, _ArgState&& __state)
 		: __base_t(::std::forward<_ArgInput>(__input), __is_valid), state(::std::forward<_ArgState>(__state)) {
@@ -144,7 +140,6 @@ namespace ztd { namespace text {
 		/// @param[in] __is_valid Whether or not the validation succeeded.
 		/// @param[in] __from_state The state related to the encoding that was used to do validation.
 		/// @param[in] __to_state The state related to the encoding that was used to do validation.
-		//////
 		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
 		constexpr validate_transcode_result(
 			_ArgInput&& __input, bool __is_valid, _ArgFromState&& __from_state, _ArgToState&& __to_state)

@@ -92,7 +92,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks If the encoding object does not define is_decode_injective, it is assumed to be false (the safest
 	/// default).
-	//////
 	template <typename _Type>
 	class is_decode_injective
 	: public ::std::integral_constant<bool,
@@ -112,7 +111,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks If the encoding object does not define is_encode_injective, it is assumed to be false (the safest
 	/// default).
-	//////
 	template <typename _Type>
 	class is_encode_injective : public ::std::integral_constant<bool,
 		                            __txt_detail::__is_encode_injective_sfinae<_Type>::value

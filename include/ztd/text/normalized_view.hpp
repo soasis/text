@@ -48,8 +48,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
+	///
 	/// @{
-	//////
 
 	template <typename _NormalizationForm, typename _Range,
 		typename _Storage = ::std::vector<ranges::range_value_type_t<unwrap_remove_cvref_t<_Range>>>>
@@ -76,7 +76,6 @@ namespace ztd { namespace text {
 		/// @brief Constructs with the given `__normalization_form`.
 		///
 		/// @param[in] __normalization_form The normalization form object to use for this iterator.
-		//////
 		constexpr normalized_view(normalization_form __normalization_form) noexcept(
 			::std::is_nothrow_constructible_v<iterator, normalization_form>)
 		: _M_it(::std::move(__normalization_form)) {
@@ -87,7 +86,6 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __normalization_form The normalization form object to use for this iterator.
 		/// @param[in] __range The range this normalization iterator will walk over.
-		//////
 		constexpr normalized_view(normalization_form __normalization_form, range_type __range) noexcept(
 			::std::is_nothrow_constructible_v<iterator, normalization_form, range_type>)
 		: _M_it(::std::move(__normalization_form), ::std::move(__range)) {
@@ -97,7 +95,6 @@ namespace ztd { namespace text {
 		/// @brief Constructs from one of its iterators, reconstituting the range.
 		///
 		/// @param[in] __it A previously-made normalized_view iterator.
-		//////
 		constexpr normalized_view(iterator __it) noexcept(::std::is_nothrow_move_constructible_v<iterator>)
 		: _M_it(::std::move(__it)) {
 		}

@@ -48,8 +48,8 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @{
-	//////
 
 	//////
 	/// @brief The Encoding that represents the "Execution" (narrow locale-based) encoding. The encoding is
@@ -59,7 +59,6 @@ namespace ztd { namespace text {
 	/// Big5 Hong King Supplementary Character Set (Big5-HKSCS)) are broken due to fundamental design issues in the C
 	/// Standard Library and bugs in glibc/musl libc's current locale encoding support. On Apple, this is cuurrently
 	/// assumed to be UTF-8 since they do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
-	//////
 	class execution_t : public
 #if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 		               __txt_impl::__execution_cuchar
@@ -82,7 +81,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	//////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

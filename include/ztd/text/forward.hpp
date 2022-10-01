@@ -124,7 +124,7 @@ namespace ztd { namespace text {
 
 	template <typename, typename>
 	class stateless_transcode_result;
-	template <typename, typename, typename>
+	template <typename, typename, typename, typename>
 	class transcode_result;
 	template <typename, typename>
 	class stateless_decode_result;

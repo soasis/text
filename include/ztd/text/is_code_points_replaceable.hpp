@@ -65,7 +65,6 @@ namespace ztd { namespace text {
 	/// @remarks The `value` boolean is true if the given `_Type` has a function named @c
 	/// maybe_replacement_code_points() on it that can be called from a `const` -qualified `_Type` object which
 	/// returns a `std::optional` containing a contiguous view of code points.
-	//////
 	template <typename _Type, typename... _Args>
 	class is_code_points_maybe_replaceable
 	: public is_detected<__txt_detail::__detect_is_code_points_maybe_replaceable, _Type, _Args...> { };
@@ -84,7 +83,6 @@ namespace ztd { namespace text {
 	/// @remarks The `value` boolean is true if the given `_Type` has a function named @c
 	/// replacement_code_points() on it that can be called from a `const` -qualified `_Type` object which returns a
 	/// contiguous view of code points.
-	//////
 	template <typename _Type, typename... _Args>
 	class is_code_points_replaceable
 	: public is_detected<__txt_detail::__detect_is_code_points_replaceable, _Type, _Args...> { };

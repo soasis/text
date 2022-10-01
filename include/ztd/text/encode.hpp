@@ -68,7 +68,6 @@ namespace ztd { namespace text {
 	/// ztd::text::default_handler_t is used by default. If no associated state is provided for the encoding, one
 	/// will be created with automatic storage duration (as a "stack" variable) for the provided encoding.
 	/// @{
-	//////
 
 	//////
 	/// @brief Converts the code points of the given `__input` view through the encoding to code units into the
@@ -88,7 +87,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function does not attempt to call any extension points for encoding. It simply uses the
 	/// encoding and attempts to encode by repeatedly calling the encoding's required `encode_one` function.
-	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto basic_encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
@@ -150,7 +148,6 @@ namespace ztd { namespace text {
 	/// the provided parameters. If so, it will use that ADL extension point over the default implementation.
 	/// Otherwise, it will loop over the two encodings and attempt to encode by repeatedly calling the encoding's
 	/// required `encode_one` function.
-	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
 	constexpr auto encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
@@ -334,7 +331,6 @@ namespace ztd { namespace text {
 	/// @result A ztd::text::stateless_encode_result object that contains references to `__state`.
 	///
 	/// @remarks Creates a default `state` using ztd::text::make_encode_state.
-	//////
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler>
 	constexpr auto encode_into(
 		_Input&& __input, _Encoding&& __encoding, _Output&& __output, _ErrorHandler&& __error_handler) {
@@ -362,7 +358,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks Creates a default `error_handler` that is similar to ztd::text::default_handler_t, but marked as
 	/// careless.
-	//////
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
 		default_handler_t __handler {};
@@ -384,7 +379,6 @@ namespace ztd { namespace text {
 	/// @remarks Creates a default `encoding` by figuring out the `value_type` of the `__input`, then passing
 	/// that type into ztd::text::default_code_point_encoding_t. That encoding is that used to encode the input
 	/// code points, by default.
-	//////
 	template <typename _Input, typename _Output>
 	constexpr auto encode_into(_Input&& __input, _Output&& __output) {
 		using _UInput    = remove_cvref_t<_Input>;
@@ -425,7 +419,6 @@ namespace ztd { namespace text {
 	/// @remarks This function detects creates a container of type `_OutputContainer` and uses a typical @c
 	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to. The result is
 	/// then returned, with the `.output` value put into the container.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
 		typename _State>
 	constexpr auto encode_to(
@@ -466,7 +459,6 @@ namespace ztd { namespace text {
 	/// @result A ztd::text::stateless_encode_result object whose output is of type `_OutputContainer`.
 	///
 	/// @remarks This function creates a `state` using ztd::text::make_encode_state.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
@@ -492,7 +484,6 @@ namespace ztd { namespace text {
 	/// @result A ztd::text::stateless_encode_result object whose output is of type `_OutputContainer`.
 	///
 	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
@@ -513,7 +504,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
-	//////
 	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto encode_to(_Input&& __input) {
 		using _UInput    = remove_cvref_t<_Input>;
@@ -552,7 +542,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function detects creates a container of type `_OutputContainer` and uses a typical @c
 	/// std::back_inserter or `std::push_back_inserter` to fill in elements as it is written to.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler,
 		typename _State>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
@@ -592,7 +581,6 @@ namespace ztd { namespace text {
 	/// @result An object of type `_OutputContainer` .
 	///
 	/// @remarks This function creates a `state` using ztd::text::make_encode_state.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding, typename _ErrorHandler>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
@@ -617,7 +605,6 @@ namespace ztd { namespace text {
 	/// @result An object of type `_OutputContainer` .
 	///
 	/// @remarks This function creates a `handler` using ztd::text::default_handler_t, but marks it as careless.
-	//////
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
@@ -638,7 +625,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This function creates an `encoding` by using the `value_type` of the `__input` which is then
 	/// passed through the ztd::text::default_code_point_encoding type to get the default desired encoding.
-	//////
 	template <typename _OutputContainer = void, typename _Input>
 	constexpr auto encode(_Input&& __input) {
 		using _UInput    = remove_cvref_t<_Input>;

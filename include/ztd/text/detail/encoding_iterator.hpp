@@ -158,13 +158,11 @@ namespace ztd { namespace text {
 			/// @brief The value returned from derefencing the iterator.
 			///
 			/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
-			//////
 			using reference = value_type;
 			//////
 			/// @brief The type returned when two of these pointers are subtracted from one another.
 			///
 			/// @remarks It's not a very useful type...
-			//////
 			using difference_type = ranges::iterator_difference_type_t<_BaseIterator>;
 
 			constexpr __encoding_iterator() = default;
@@ -222,7 +220,6 @@ namespace ztd { namespace text {
 			/// @brief The encoding object.
 			///
 			/// @returns A const l-value reference to the encoding object used to construct this iterator.
-			//////
 			constexpr const encoding_type& encoding() const noexcept {
 				return this->__base_storage_t::_M_get_encoding();
 			}
@@ -231,7 +228,6 @@ namespace ztd { namespace text {
 			/// @brief The encoding object.
 			///
 			/// @returns An l-value reference to the encoding object used to construct this iterator.
-			//////
 			constexpr encoding_type& encoding() noexcept {
 				return this->__base_storage_t::_M_get_encoding();
 			}
@@ -240,7 +236,6 @@ namespace ztd { namespace text {
 			/// @brief The state object.
 			///
 			/// @returns A const l-value reference to the state object used to construct this iterator.
-			//////
 			constexpr const state_type& state() const noexcept {
 				return this->__base_storage_t::_M_get_encoding();
 			}
@@ -249,7 +244,6 @@ namespace ztd { namespace text {
 			/// @brief The state object.
 			///
 			/// @returns An l-value reference to the state object used to construct this iterator.
-			//////
 			constexpr state_type& state() noexcept {
 				return this->__base_storage_t::_M_get_state();
 			}
@@ -258,7 +252,6 @@ namespace ztd { namespace text {
 			/// @brief The error handler object.
 			///
 			/// @returns A const l-value reference to the error handler used to construct this iterator.
-			//////
 			constexpr const error_handler_type& error_handler() const& noexcept {
 				return this->__base_storage_t::_M_get_error_handler();
 			}
@@ -267,7 +260,6 @@ namespace ztd { namespace text {
 			/// @brief The error handler object.
 			///
 			/// @returns An l-value reference to the error handler used to construct this iterator.
-			//////
 			constexpr error_handler_type& error_handler() & noexcept {
 				return this->__base_storage_t::_M_get_error_handler();
 			}
@@ -276,7 +268,6 @@ namespace ztd { namespace text {
 			/// @brief The error handler object.
 			///
 			/// @returns An r-value reference to the error handler used to construct this iterator.
-			//////
 			constexpr error_handler_type&& error_handler() && noexcept {
 				return this->__base_storage_t::_M_get_error_handler();
 			}
@@ -285,7 +276,6 @@ namespace ztd { namespace text {
 			/// @brief The input range used to construct this object.
 			///
 			/// @returns A const l-value reference to the input range used to construct this iterator.
-			//////
 			constexpr range_type range() const& noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
 				return this->__base_storage_t::_M_get_range();
 			}
@@ -308,7 +298,6 @@ namespace ztd { namespace text {
 			/// @brief The input range used to construct this object.
 			///
 			/// @returns An r-value reference to the input range used to construct this iterator.
-			//////
 			constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
 				return ::std::move(this->__base_storage_t::_M_get_range());
 			}
@@ -322,7 +311,6 @@ namespace ztd { namespace text {
 			/// @remarks If the error handler is identified as an error handler that, if given a suitably sized
 			/// buffer, will never return an error. This is the case with specific encoding operations with
 			/// ztd::text::replacement_handler_t, or ztd::text::throw_handler_t.
-			//////
 			constexpr encoding_error error_code() const noexcept {
 				if constexpr (_IsErrorless) {
 					return encoding_error::ok;
@@ -336,7 +324,6 @@ namespace ztd { namespace text {
 			/// @brief Copy then increment the iterator.
 			///
 			/// @returns A copy of iterator, before incrementing.
-			//////
 			constexpr _Derived operator++(int) {
 				_Derived __copy = this->_M_derived();
 				++(*this);
@@ -347,7 +334,6 @@ namespace ztd { namespace text {
 			/// @brief Increment the iterator.
 			///
 			/// @returns A reference to *this, after incrementing the iterator.
-			//////
 			constexpr _Derived& operator++() {
 				if constexpr (_IsSingleValueType) {
 					this->_M_read_one();
@@ -368,7 +354,6 @@ namespace ztd { namespace text {
 			/// non-const reference object. This is deliberately to work around the standard not allowing stand-alone
 			/// proxy iterators that do not return reference types. Encoding iterators are only readable, not
 			/// writable.
-			//////
 			constexpr reference operator*() const noexcept {
 				if constexpr (_IsSingleValueType) {
 					return this->_M_cache[0];

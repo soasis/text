@@ -64,7 +64,6 @@ namespace ztd { namespace text {
 	/// does not mean that an error handler will be invoked that can "smooth over" any possible errors: this checks
 	/// solely if it will decode from code units into code points cleanly.
 	/// @{
-	//////
 
 	//////
 	/// @brief Validates the code units of the `__input` according to the `__encoding` with the given states @p
@@ -78,7 +77,6 @@ namespace ztd { namespace text {
 	/// @remarks This function explicitly does not call any extension points. It defers to doing a typical loop over
 	/// the code points to verify it can be decoded into code points, and then encoded back into code units, with no
 	/// errors and with the exact same value sequence as the original.
-	//////
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
 	constexpr auto basic_validate_decodable_as(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
@@ -219,7 +217,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions checks to see if extension points for `text_validate_decodable_as` is available taking
 	/// the available 4 parameters. If so, it calls this. Otherwise, it defers to ztd::text::validate_decodable_as.
-	//////
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
 	constexpr auto validate_decodable_as(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
@@ -266,7 +263,6 @@ namespace ztd { namespace text {
 	/// ztd::text::make_encode_state before calling ztd::text::validate_decodable_as(__input, __encoding,
 	/// __decode_state,
 	/// __encode_state).
-	//////
 	template <typename _Input, typename _Encoding, typename _DecodeState>
 	constexpr auto validate_decodable_as(_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
@@ -304,7 +300,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions creates an encoding `state` through ztd::text::make_decode_state before calling
 	/// the next overload of ztd::text::validate_decodable_as.
-	//////
 	template <typename _Input, typename _Encoding>
 	constexpr auto validate_decodable_as(_Input&& __input, _Encoding&& __encoding) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
@@ -326,7 +321,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks This functions creates an `encoding` by passing the `value_type` of the `__input` range through
 	/// ztd::text::default_code_unit_encoding.
-	//////
 	template <typename _Input>
 	constexpr auto validate_decodable_as(_Input&& __input) {
 		using _UInput   = remove_cvref_t<_Input>;

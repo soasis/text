@@ -37,4 +37,4 @@ This encoding is tied to the `iconv library <https://www.gnu.org/software/libico
 
 iconv has a fixed set of encodings it can be compiled with to support. States are pre-constructed in the encoding itself and copied as necessary when ``encode_state`` or ``decode_state``\ s are being created to call the iconv functions. The user can inspect the output error parameter from the ``basic_iconv`` constructor to know of failure, or not pass in the output error parameter and instead take one of a assert, thrown exception, or ``abort`` (preferred invocation in that order).
 
-.. doxygentypedef:: ztd::text::basic_iconv
+.. doxygenclass:: ztd::text::basic_iconv

@@ -50,7 +50,6 @@ namespace ztd { namespace text {
 			//////
 			/// @brief A type that is true when calling code can not call this function and ignore it, and false when
 			/// it cannot ignore it. See ztd::text::assume_valid_handler_t for details.
-			//////
 			using assume_valid = ::std::integral_constant<bool, _AssumeVailidity>;
 
 			//////
@@ -58,7 +57,6 @@ namespace ztd { namespace text {
 			/// with no changes made.
 			///
 			/// @param[in] __result The current state of the encode operation to pass through.
-			//////
 			template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
 			constexpr auto operator()(
 				const _Encoding&, _Result __result, const _InputProgress&, const _OutputProgress&) const {

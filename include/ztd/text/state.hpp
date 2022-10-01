@@ -81,7 +81,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Retrieves the `decode_state` of the encoding type if it has one, or the `state` type of the
 	/// encoding.
-	//////
 	template <typename _Type>
 	class decode_state {
 	public:
@@ -98,7 +97,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Retrieves the `encode_state` of the encoding type if it has one, or the `state` type of the
 	/// encoding.
-	//////
 	template <typename _Type>
 	class encode_state {
 	public:
@@ -122,7 +120,6 @@ namespace ztd { namespace text {
 	/// @remarks This value tells users at compile time whether or not they need to be careful with the state. Rather
 	/// than let users have to work this independently, two functions — ztd::text::make_encode_state(_Encoding) and
 	/// ztd::text::make_encode_state(_Encoding) — handle the details here.
-	//////
 	template <typename _Encoding, typename _Type>
 	inline constexpr bool is_state_independent_v
 		= !::std::is_constructible_v<_Type, _Encoding> && ::std::is_default_constructible_v<_Type>;
@@ -130,14 +127,12 @@ namespace ztd { namespace text {
 	//////
 	/// @brief Whether or not the encoding's `decode_state` can be constructed without information from the
 	/// encoding itself.
-	//////
 	template <typename _Encoding>
 	inline constexpr bool is_decode_state_independent_v = is_state_independent_v<_Encoding, decode_state_t<_Encoding>>;
 
 	//////
 	/// @brief Whether or not the encoding's `decode_state` can be constructed without information from the
 	/// encoding itself.
-	//////
 	template <typename _Encoding>
 	inline constexpr bool is_encode_state_independent_v = is_state_independent_v<_Encoding, encode_state_t<_Encoding>>;
 
@@ -152,7 +147,6 @@ namespace ztd { namespace text {
 	/// meet the criteria of ztd::text::is_decode_state_independent_v.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
-	//////
 	template <typename _Encoding>
 	constexpr decode_state_t<remove_cvref_t<_Encoding>> make_decode_state(_Encoding& __encoding) noexcept {
 		using _UEncoding   = remove_cvref_t<_Encoding>;
@@ -171,7 +165,6 @@ namespace ztd { namespace text {
 	/// meet the criteria of ztd::text::is_encode_state_independent_v.
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
-	//////
 	template <typename _Encoding>
 	constexpr encode_state_t<remove_cvref_t<_Encoding>> make_encode_state(_Encoding& __encoding) noexcept {
 		using _UEncoding   = remove_cvref_t<_Encoding>;
@@ -192,7 +185,6 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __encode_state A preexisting state from the encoder.
-	//////
 	template <typename _Encoding>
 	constexpr decode_state_t<remove_cvref_t<_Encoding>> make_decode_state_with(
 		_Encoding& __encoding, const encode_state_t<remove_cvref_t<_Encoding>>& __encode_state) noexcept {
@@ -228,7 +220,6 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __decode_state A preexisting state from the decoder.
-	//////
 	template <typename _Encoding>
 	constexpr encode_state_t<remove_cvref_t<_Encoding>> make_encode_state_with(
 		_Encoding& __encoding, const decode_state_t<remove_cvref_t<_Encoding>>& __decode_state) noexcept {
@@ -264,7 +255,6 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __decode_state A preexisting state from the decoder.
-	//////
 	template <typename _Encoding>
 	constexpr decode_state_t<remove_cvref_t<_Encoding>> copy_decode_state_with(
 		_Encoding& __encoding, const decode_state_t<remove_cvref_t<_Encoding>>& __decode_state) noexcept {
@@ -299,7 +289,6 @@ namespace ztd { namespace text {
 	///
 	/// @param[in] __encoding The encoding object to use, if applicable, for the construction of the state.
 	/// @param[in] __encode_state A preexisting state from the encoder to attempt to copy.
-	//////
 	template <typename _Encoding>
 	constexpr encode_state_t<remove_cvref_t<_Encoding>> copy_encode_state_with(
 		_Encoding& __encoding, const encode_state_t<remove_cvref_t<_Encoding>>& __encode_state) noexcept {
@@ -335,7 +324,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks If the state does not have a member function `is_complete`, then this will simply return `true`.
 	/// Otherwise, it invokes `__state.is_complete()`.
-	//////
 	template <typename _State>
 	constexpr bool is_state_complete(_State& __state) noexcept {
 		if constexpr (is_state_output_capable_v<_State>) {

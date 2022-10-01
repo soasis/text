@@ -60,14 +60,12 @@ namespace ztd { namespace text {
 	/// @brief This enumeration describes the kind of failures that can happen in ztd_text_transcode,
 	/// ztd_text_decode, ztd_text_encode, and lower-level operations.
 	/// @{
-	//////
 
 	//////
 	/// @brief Describes a failure to encode, decode, transcode, or count, for four core various reasons.
 	///
 	/// @remarks This does not cover specific failures, like if a sequence was overlong (e.g., UTF-8) or if an encode
 	/// operation produced an uunpaired surrogate value (e.g. UTF-16).
-	//////
 	enum class encoding_error : int {
 		//////
 		/// @brief The okay status; everything is fine.
@@ -75,12 +73,10 @@ namespace ztd { namespace text {
 		/// @remarks This does not necessarily mean an error handler was not called. An error handler can set the
 		/// error code to ztd::text::encoding_error::ok after performing corrective action: see
 		/// ztd::text::replacement_handler_t for an example.
-		//////
 		ok = 0x00,
 		//////
 		/// Input contains ill-formed sequences. This means there were available units of input to read, but what was
 		/// read resulted in an error.
-		//////
 		invalid_sequence = 0x01,
 		//////
 		/// Input contains incomplete sequences. This means that the input was exhausted, without finding an invalid
@@ -89,7 +85,6 @@ namespace ztd { namespace text {
 		/// @remarks Depending on context, this may or may not be an error in your use case (e.g., reading part of an
 		/// incomplete network buffer and waiting for more). See ztd::text::incomplete_handler as a way to aid with
 		/// this use case.
-		//////
 		incomplete_sequence = 0x02,
 		//////
 		/// Output cannot receive the successfully encoded or decoded sequence. This means that, while there were no
@@ -98,7 +93,6 @@ namespace ztd { namespace text {
 		/// @remarks Provide a bigger storage area or guarantee that it meets the minimum required size for potential
 		/// output. This can be queried for an encoding by using ztd::text::max_code_points_v<the_encoding> for code
 		/// points, and ztd::text::max_code_units_v<the_encoding> for code units.
-		//////
 		insufficient_output_space = 0x03
 	};
 
@@ -119,7 +113,6 @@ namespace ztd { namespace text {
 	/// @returns A null-terminated string_view to the data.
 	///
 	/// @remarks If a value outside of the allowed encoding_error is passed, then undefined behavior happens.
-	//////
 	inline constexpr ::std::string_view to_name(encoding_error __error_code) {
 		constexpr ::std::array<::std::string_view, 4> __translation { { "ok", "invalid_sequence",
 			"incomplete_sequence", "insufficient_output_space" } };
@@ -162,7 +155,6 @@ namespace ztd { namespace text {
 	///
 	/// @remarks Not constexpr in general because of ABI shenanigans from the 2019 Belfast Meeting, where it did not
 	/// successfully pass through Incubator review.
-	//////
 	inline const ::std::error_category& encoding_category() {
 		static const __txt_detail::__encoding_category __category = __txt_detail::__encoding_category();
 		return __category;

@@ -59,6 +59,11 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
+	/// @addtogroup ztd_text_properties Property and Trait Helpers
+	///
+	/// @{
+
+	//////
 	/// @brief Whether or not the decode encoding is
 	template <typename _From, typename _To>
 	using is_decode_redundant = ::std::is_same<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>;
@@ -81,7 +86,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
