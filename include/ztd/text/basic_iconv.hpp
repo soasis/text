@@ -48,7 +48,7 @@ namespace ztd { namespace text {
 #if ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
 			__empty_state
 #else
-			= basic_no_encoding<_CodeUnit, _CodePoint>
+			basic_no_encoding<_CodeUnit, _CodePoint>
 #endif
 			;
 	} // namespace __txt_detail
