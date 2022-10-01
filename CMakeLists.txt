@@ -221,7 +221,7 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 			boost.text
 			GIT_REPOSITORY https://github.com/ThePhD/text
 			GIT_SHALLOW    ON
-			GIT_TAG        main)
+			GIT_TAG        master)
 		FetchContent_MakeAvailable(boost.text)
 	endfunction()
 	boost_text_dependency_jail()
