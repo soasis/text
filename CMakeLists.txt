@@ -205,7 +205,7 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 			simdutf
 			GIT_REPOSITORY https://github.com/simdutf/simdutf
 			GIT_SHALLOW    ON
-			GIT_TAG        main)
+			GIT_TAG        master)
 		FetchContent_MakeAvailable(simdutf)
 	endfunction()
 	simdutf_dependency_jail()
