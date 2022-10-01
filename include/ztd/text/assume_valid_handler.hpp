@@ -37,6 +37,7 @@
 
 #include <ztd/text/assert.hpp>
 
+#include <type_traits>
 #if ZTD_IS_ON(ZTD_TEXT_ASSUME_VALID_HANDLER_TRAPS_ON_INVOCATION)
 #include <cstdlib>
 #endif

@@ -44,6 +44,7 @@
 #include <ztd/idk/ebco.hpp>
 #include <ztd/idk/type_traits.hpp>
 
+#include <type_traits>
 #include <utility>
 #include <array>
 #include <cstddef>
