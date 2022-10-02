@@ -194,7 +194,7 @@ public:
 		// needs to go into an intermediate buffer instead
 		code_unit intermediate_buffer[MB_LEN_MAX];
 
-		for (int times_around = 0;; ++times_around) {
+		for ([[maybe_unused]] int times_around = 0;; ++times_around) {
 			if (input.size() < 1) {
 				// no more input: everything is fine
 				return rtl_encode_result(input, output, current);
