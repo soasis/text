@@ -69,8 +69,8 @@ namespace ztd { namespace text {
 #else
 		               no_encoding_t<char, unicode_code_point>
 #error \
-     "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar> is currently not supported. One way to" \
-	"work aroudn this is by making sure iconv is available and turning on ZTD_TEXT_ICONV."
+     "This platform configuration (no POSIX conversions, no <uchar.h> or <cuchar>) is currently not supported. Please" \
+	" report the platform you are on and any other relevant information to the maintainer."
 #endif
 	{
 	};

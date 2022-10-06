@@ -44,7 +44,8 @@ static void utf8_to_utf32_unchecked_well_formed_ctre(benchmark::State& state) {
 	std::vector<ztd_char32_t> output_data(c_span_char32_t_size(u32_data));
 	bool result = true;
 	for (auto _ : state) {
-		ctre::utf8_range view(std::basic_string_view<unsigned char>(input_data.data(), input_data.size()));
+		ctre::utf8_range view(std::basic_string_view<ztd_char8_t>(
+		     reinterpret_cast<const ztd_char8_t*>(input_data.data()), input_data.size()));
 		auto out_it = output_data.begin();
 		auto last   = view.end();
 		for (auto it = view.begin(); it != last; (void)++it, ++out_it) {

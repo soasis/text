@@ -41,11 +41,12 @@
 #include <cstdint>
 
 int main() {
-	using rope_t      = boost::text::basic_unencoded_rope<char32_t>;
-	using rope_view_t = boost::text::basic_unencoded_rope_view<char32_t>;
-	rope_t rope       = U"✨🌃⭐❣";
+	using rope_t      = boost::text::basic_unencoded_rope<char16_t>;
+	using rope_view_t = boost::text::basic_unencoded_rope_view<char16_t>;
+	rope_t rope       = u"✨🌃⭐❣";
 	rope_view_t rope_view(rope, 0, rope.size());
-	ztd::text::encode_view<ztd::text::compat_utf8_t, rope_view_t> utf8_rope_view { std::move(rope_view) };
+	ztd::text::transcode_view<ztd::text::utf16_t, ztd::text::compat_utf8_t, rope_view_t> utf8_rope_view { std::move(
+		rope_view) };
 	// allows us to iterate over a rope and print things
 	for (const auto& code_unit : utf8_rope_view) {
 		std::cout.write(&code_unit, 1);

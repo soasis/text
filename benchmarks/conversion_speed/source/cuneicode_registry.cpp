@@ -62,7 +62,7 @@ struct registry_deleter {
 			cnc_conversion* raw_conversion        = nullptr;                                                     \
 			cnc_conversion_info info              = {};                                                          \
 			const cnc_open_error err              = cnc_new_registry(&raw_registry, CNC_REGISTRY_OPTIONS_NONE);  \
-			if (err != CNC_OPEN_ERROR_OKAY) {                                                                    \
+			if (err != CNC_OPEN_ERROR_OK) {                                                                      \
 				/* something went wrong, get out of here quick! */                                              \
 				state.SkipWithError("bad benchmark result");                                                    \
 				return;                                                                                         \
@@ -77,7 +77,7 @@ struct registry_deleter {
 			}                                                                                                    \
 			const cnc_open_error conv_err = cnc_conv_new(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N,   \
 			     (const ztd_char8_t*)u8"UTF-" #TO_N, &raw_conversion, &info);                                    \
-			if (conv_err != CNC_OPEN_ERROR_OKAY) {                                                               \
+			if (conv_err != CNC_OPEN_ERROR_OK) {                                                                 \
 				/* something went wrong, get out of here quick! */                                              \
 				state.SkipWithError("bad benchmark result");                                                    \
 				return;                                                                                         \

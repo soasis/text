@@ -98,6 +98,22 @@ namespace ztd { namespace text {
 		using value_type = __code_point;
 
 		//////
+		/// @brief The reference type.
+		using reference = value_type;
+
+		//////
+		/// @brief The difference type.
+		using difference_type = ranges::range_difference_type_t<_URange>;
+
+		//////
+		/// @brief The iterator category. Always a forward iterator.
+		using iterator_category = ::std::forward_iterator_tag;
+
+		//////
+		/// @brief The iterator concept. Always considered a forward iterator.
+		using iterator_concept = ::std::forward_iterator_tag;
+
+		//////
 		/// @brief The code point type.
 		using range_type = _Range;
 

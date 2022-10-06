@@ -99,9 +99,10 @@ namespace ztd { namespace text {
 		       unwrap_remove_cvref_t<_FromErrorHandler>> // cf
 		  && encode_error_handler_always_returns_ok_v<unwrap_remove_cvref_t<_ToEncoding>,
 		       unwrap_remove_cvref_t<_ToErrorHandler>>>,
-	  private ebco<_Range, 4> {
+	  private ebco<ranges::range_reconstruct_t<unwrap_remove_cvref_t<_Range>>, 4> {
 	private:
-		using _URange                                    = unwrap_remove_cvref_t<_Range>;
+		using _UNonRRange                                = unwrap_remove_cvref_t<_Range>;
+		using _URange                                    = ranges::range_reconstruct_t<_UNonRRange>;
 		using _UFromEncoding                             = unwrap_remove_cvref_t<_FromEncoding>;
 		using _UToEncoding                               = unwrap_remove_cvref_t<_ToEncoding>;
 		using _UFromErrorHandler                         = unwrap_remove_cvref_t<_FromErrorHandler>;
@@ -128,7 +129,7 @@ namespace ztd { namespace text {
 			= __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>;
 		using __base_to_state_t
 			= __txt_detail::__state_storage<remove_cvref_t<_ToEncoding>, remove_cvref_t<_ToState>, 1>;
-		using __base_range_t = ebco<_Range, 4>;
+		using __base_range_t = ebco<_URange, 4>;
 
 		inline static constexpr bool _IsBackwards = is_detected_v<__txt_detail::__detect_object_encode_one_backwards,
 			_UFromEncoding, _URange, _UFromErrorHandler, _UFromState>;
@@ -284,7 +285,7 @@ namespace ztd { namespace text {
 		, __base_from_state_t(this->from_encoding(), ::std::move(__from_state))
 		, __base_to_state_t(this->to_encoding(), ::std::move(__to_state))
 		, __base_cursor_cache_t()
-		, __base_range_t(::std::move(__range))
+		, __base_range_t(ranges::reconstruct(std::in_place_type<_UNonRRange>, ::std::move(__range)))
 		, _M_cache() {
 			this->_M_read_one();
 		}
