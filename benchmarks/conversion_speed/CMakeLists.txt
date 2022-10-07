@@ -34,6 +34,10 @@ file(GLOB_RECURSE ztd.text.benchmarks.conversion_speed.sources
 	LIST_DIRECTORIES NO
 	source/**)
 
+if (NOT ZTD_TEXT_BOOST.TEXT)
+	list(FILTER ztd.text.benchmarks.conversion_speed.sources EXCLUDE REGEX boost.text)
+endif()
+
 add_executable(ztd.text.benchmarks.conversion_speed ${ztd.text.benchmarks.conversion_speed.sources})
 target_include_directories(ztd.text.benchmarks.conversion_speed
 	PRIVATE
@@ -49,7 +53,7 @@ target_link_libraries(ztd.text.benchmarks.conversion_speed
 		ztd::text
 		ctre::ctre
 		utf8::cpp
-		Boost::text
+		$<$<BOOL:${ZTD_TEXT_BOOST.TEXT}>:Boost::text>
 		benchmark::benchmark
 		${CMAKE_DL_LIBS}
 )

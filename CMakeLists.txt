@@ -119,6 +119,7 @@ option(ZTD_TEXT_DOCUMENTATION_NO_SPHINX "Turn off Sphinx usage (useful for ReadT
 option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
 option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
+option(ZTD_TEXT_BOOST.TEXT "Enable usage of Boost.Text benchmarks and examples" OFF)
 
 # # Dependencies
 # ztd.idk
@@ -224,7 +225,9 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 			GIT_TAG        master)
 		FetchContent_MakeAvailable(boost.text)
 	endfunction()
-	boost_text_dependency_jail()
+	if (ZTD_TEXT_BOOST.TEXT)
+		boost_text_dependency_jail()
+	endif()
 endif()
 
 if(ZTD_TEXT_TESTS)
