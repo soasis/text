@@ -206,10 +206,11 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 		set(BUILD_TESTING OFF)
 		FetchContent_Declare(
 			simdutf
-			GIT_REPOSITORY https://github.com/ThePhD/simdutf
+			GIT_REPOSITORY https://github.com/simdutf/simdutf
 			GIT_SHALLOW    ON
 			GIT_TAG        master)
 		FetchContent_MakeAvailable(simdutf)
+		set_property(DIRECTORY "${simdutf_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 	endfunction()
 	simdutf_dependency_jail()
 
@@ -226,6 +227,7 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 			GIT_SHALLOW    ON
 			GIT_TAG        master)
 		FetchContent_MakeAvailable(boost.text)
+		set_property(DIRECTORY "${boost.text_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 	endfunction()
 	if (ZTD_TEXT_BOOST.TEXT)
 		boost_text_dependency_jail()

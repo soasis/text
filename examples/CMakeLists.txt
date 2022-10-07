@@ -30,7 +30,7 @@
 
 add_subdirectory(basic)
 add_subdirectory(documentation)
+add_subdirectory(shift_jis)
 if (ZTD_TEXT_BOOST.TEXT)
 	add_subdirectory(boost.text)
 endif()
-add_subdirectory(shift_jis)

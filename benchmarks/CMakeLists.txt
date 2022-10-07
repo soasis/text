@@ -31,30 +31,35 @@ include(FetchContent)
 include(GraphBenchmarks)
 
 # # Fetch dependencies
-# Google Benchmark
-function(googlebenchmark_dependency_jail)
+# google benchmark
+function (google_benchmark_dependency_jail)
 	FetchContent_Declare(
-		googlebenchmark
+		google_benchmark
 		GIT_REPOSITORY https://github.com/google/benchmark.git
-		GIT_SHALLOW    ON
-		GIT_TAG        main)
-	FetchContent_GetProperties(googlebenchmark)
-
-	if(NOT googlebenchmark_POPULATED)
-		FetchContent_Populate(googlebenchmark)
-		set(BENCHMARK_ENABLE_INSTALL OFF)
-		set(BENCHMARK_ENABLE_TESTING OFF)
-		set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
-		set(BENCHMARK_ENABLE_WERROR OFF)
-		set(BENCHMARK_FORCE_WERROR OFF)
-		if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND WIN32)
-			# google benchmark is broken, so we need to force HAVE_STD_REGEX to be on for this.
-			set(HAVE_STD_REGEX ON)
-		endif()
-		add_subdirectory(${googlebenchmark_SOURCE_DIR} ${googlebenchmark_BINARY_DIR})
+		GIT_TAG main
+	)
+	# Benchmark variables, internal setup
+	set(BENCHMARK_ENABLE_EXCEPTIONS ON)
+	set(BENCHMARK_ENABLE_TESTING OFF)
+	set(BENCHMARK_DOWNLOAD_DEPENDENCIES OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	set(BENCHMARK_ENABLE_WERROR OFF)
+	set(BENCHMARK_FORCE_WERROR OFF)
+	set(BENCHMARK_ENABLE_INSTALL OFF)
+	set(BENCHMARK_ENABLE_TESTING OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	set(BENCHMARK_ENABLE_WERROR OFF)
+	set(BENCHMARK_FORCE_WERROR OFF)
+	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND WIN32)
+		# google benchmark is broken, so we need to force HAVE_STD_REGEX to be on for this.
+		set(HAVE_STD_REGEX ON)
 	endif()
+	FetchContent_MakeAvailable(google_benchmark)
+	set_property(DIRECTORY "${google_benchmark_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 endfunction()
-googlebenchmark_dependency_jail()
+google_benchmark_dependency_jail()
+
 
 function (utf8cpp_dependency_jail)
 	FetchContent_Declare(
