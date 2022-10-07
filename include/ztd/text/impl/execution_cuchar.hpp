@@ -465,7 +465,7 @@ namespace ztd { namespace text {
 					}
 				}
 
-				code_unit __intermediary_input[max_code_units] {};
+				code_unit __intermediary_input[max_code_units * 2] {};
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS) && ZTD_IS_OFF(ZTD_COMPILER_MINGW)
 				__intermediary_input[0] = *__in_it;
 				ranges::advance(__in_it);
