@@ -201,10 +201,12 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 	function(simdutf_dependency_jail)
 		# simdutf
 		set(SIMDUTF_BENCHMARKS OFF)
+		set(SIMDUTF_SINGLE_HEADER OFF)
+		set(SIMDUTF_TOOLS OFF)
 		set(BUILD_TESTING OFF)
 		FetchContent_Declare(
 			simdutf
-			GIT_REPOSITORY https://github.com/simdutf/simdutf
+			GIT_REPOSITORY https://github.com/ThePhD/simdutf
 			GIT_SHALLOW    ON
 			GIT_TAG        master)
 		FetchContent_MakeAvailable(simdutf)
