@@ -563,13 +563,16 @@ namespace ztd { namespace text {
 				}
 				if (ranges::ranges_adl::adl_empty(__result.input)) {
 					if (!text::is_state_complete(__from_state)) {
+						__working_input = ::std::move(__result.input);
 						continue;
 					}
 					if (!text::is_state_complete(__to_state)) {
+						__working_input = ::std::move(__result.input);
 						continue;
 					}
 					return __result;
 				}
+				__working_input = ::std::move(__result.input);
 			}
 		}
 
