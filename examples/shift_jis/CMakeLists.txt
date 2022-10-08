@@ -62,6 +62,7 @@ target_compile_options(ztd.text.examples.shift_jis
 	${--warn-all}
 	${--warn-extra}
 	${--warn-errors}
+	${--allow-alignas-extra-padding}
 )
 target_include_directories(ztd.text.examples.shift_jis
 	PRIVATE

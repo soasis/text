@@ -67,7 +67,7 @@ target_compile_options(ztd.text.benchmarks.conversion_speed
 		${--warn-default}
 		${--warn-extra}
 		${--warn-errors}
-		${--allow-microsoft-enum-value}
+		${--allow-alignas-extra-padding}
 )
 #generate_config_and_manifest_for(ztd.text.benchmarks.conversion_speed)
 configure_graph_benchmark_targets(

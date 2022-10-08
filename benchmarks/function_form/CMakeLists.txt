@@ -43,7 +43,7 @@ target_compile_options(ztd.text.benchmarks.function_form
 	${--warn-pedantic}
 	${--warn-all}
 	${--warn-extra}
-
+	${--allow-alignas-extra-padding}
 	# MSVC is BROKEN
 	# ${--warn-errors}
 )

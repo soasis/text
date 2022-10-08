@@ -45,6 +45,7 @@ foreach (example_name ${ztd.text.examples.documentation.compile_fails.sources})
 		${--warn-all}
 		${--warn-extra}
 		${--warn-errors}
+		${--allow-alignas-extra-padding}
 	)
 	set_target_properties(${example_target}
 		PROPERTIES

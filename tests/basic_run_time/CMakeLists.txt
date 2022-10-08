@@ -46,10 +46,13 @@ target_compile_options(ztd.text.tests.basic_run_time
 	${--warn-pedantic}
 	${--warn-all}
 	${--warn-extra}
-	${--warn-errors})
+	${--warn-errors}
+	${--allow-alignas-extra-padding}
+)
 target_include_directories(ztd.text.tests.basic_run_time
 	PRIVATE 
-	"${CMAKE_CURRENT_SOURCE_DIR}/../shared/include")
+	"${CMAKE_CURRENT_SOURCE_DIR}/../shared/include"
+)
 target_link_libraries(ztd.text.tests.basic_run_time
 	PRIVATE
 	ztd::text

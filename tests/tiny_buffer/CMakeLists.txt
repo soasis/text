@@ -49,7 +49,9 @@ target_compile_options(ztd.text.tests.tiny_buffer
 	${--warn-pedantic}
 	${--warn-all}
 	${--warn-extra}
-	${--warn-errors})
+	${--warn-errors}
+	${--allow-alignas-extra-padding}
+)
 target_include_directories(ztd.text.tests.tiny_buffer
 	PRIVATE
 	include/

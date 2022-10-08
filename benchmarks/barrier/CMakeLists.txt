@@ -56,7 +56,9 @@ target_compile_options(ztd.text.benchmarks.barrier
 	${--warn-pedantic}
 	${--warn-all}
 	${--warn-extra}
-	${--warn-errors})
+	${--warn-errors}
+	${--allow-alignas-extra-padding}
+)
 target_link_libraries(ztd.text.benchmarks.barrier
 	PRIVATE
 	ztd::cuneicode

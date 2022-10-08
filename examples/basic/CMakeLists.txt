@@ -66,6 +66,7 @@ foreach (example_source_name ${ztd.text.examples.basic.sources})
 		${--warn-all}
 		${--warn-extra}
 		${--warn-errors}
+		${--allow-alignas-extra-padding}
 	)
 	
 	target_link_libraries(${example_target}

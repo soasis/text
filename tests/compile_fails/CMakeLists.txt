@@ -45,7 +45,9 @@ foreach (test_name ${ztd.text.tests.tests.compile_fails.sources})
 		${--warn-pedantic}
 		${--warn-all}
 		${--warn-extra}
-		${--warn-errors})
+		${--warn-errors}
+		${--allow-alignas-extra-padding}
+	)
 	target_link_libraries(${test_target}
 		PRIVATE
 		ztd::text

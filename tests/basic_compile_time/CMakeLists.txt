@@ -50,7 +50,9 @@ target_compile_options(ztd.text.tests.basic_compile_time
 	${--warn-errors}
 	${--template-debugging-mode}
 	${--extra-constexpr-depth}
-	${--extra-constexpr-steps})
+	${--extra-constexpr-steps}
+	${--allow-alignas-extra-padding}
+)
 target_include_directories(ztd.text.tests.basic_compile_time
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/../shared/include")

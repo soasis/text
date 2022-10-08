@@ -96,17 +96,18 @@ if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 	if(ZTD_TEXT_BENCHMARKS OR ZTD_TEXT_EXAMPLES OR ZTD_TEXT_TESTS OR ZTD_TEXT_SCRATCH)
 		# normal flags
 		check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
+		check_compiler_flag(utf8-literal-encoding MSVC /execution-charset:utf-8 GCC -fexec-charset=utf-8)
+		check_compiler_flag(utf8-source-encoding MSVC /source-charset:utf-8 GCC -finput-charset=utf-8)
+		check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 Clang -fconstexpr-depth=2147483647 LANGUAGES CXX)
+		check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 Clang -fconstexpr-steps=2147483647 LANGUAGES CXX)
+		check_compiler_flag(template-debugging-mode GCC -ftemplate-backtrace-limit=0 LANGUAGES CXX)
 
 		# Warning flags
 		check_compiler_flag(warn-pedantic MSVC /permissive- GCC -pedantic)
 		check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
 		check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
 		check_compiler_flag(warn-extra GCC -Wextra Clang -Wextra)
-		check_compiler_flag(utf8-literal-encoding MSVC /execution-charset:utf-8 GCC -fexec-charset=utf-8)
-		check_compiler_flag(utf8-source-encoding MSVC /source-charset:utf-8 GCC -finput-charset=utf-8)
-		check_compiler_flag(extra-constexpr-depth MSVC /constexpr:depth2147483647 GCC -fconstexpr-depth=2147483647 Clang -fconstexpr-depth=2147483647)
-		check_compiler_flag(extra-constexpr-steps MSVC /constexpr:steps2147483647 GCC -fconstexpr-ops-limit=2147483647 Clang -fconstexpr-steps=2147483647)
-		check_compiler_flag(template-debugging-mode GCC -ftemplate-backtrace-limit=0)
+		check_compiler_diagnostic(alignas-extra-padding MSVC 4324 LANGUAGES CXX)
 	endif()
 endif()
 

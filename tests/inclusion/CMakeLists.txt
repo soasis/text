@@ -43,7 +43,9 @@ target_compile_options(ztd.text.tests.inclusion
 	${--warn-pedantic}
 	${--warn-all}
 	${--warn-extra}
-	${--warn-errors})
+	${--warn-errors}
+	${--allow-alignas-extra-padding}
+)
 target_link_libraries(ztd.text.tests.inclusion
 	PRIVATE
 	ztd::text

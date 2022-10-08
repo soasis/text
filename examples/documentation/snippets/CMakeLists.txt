@@ -43,7 +43,9 @@ foreach (example_source_name ${ztd.text.examples.documentation.snippets.sources}
 		${--disable-permissive}
 		${--warn-pedantic}
 		${--warn-all}
-		${--warn-errors})
+		${--warn-errors}
+		${--allow-alignas-extra-padding}
+	)
 
 	target_link_libraries(${example_target}
 		PRIVATE

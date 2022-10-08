@@ -42,7 +42,9 @@ target_compile_options(ztd.text.examples.boost_text
 		${--warn-pedantic}
 		${--warn-all}
 		${--warn-extra}
-		${--warn-errors})
+		${--warn-errors}
+		${--allow-alignas-extra-padding}
+)
 
 target_include_directories(ztd.text.examples.boost_text
 	PRIVATE
