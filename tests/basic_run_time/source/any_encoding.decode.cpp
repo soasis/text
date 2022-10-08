@@ -48,7 +48,6 @@ inline namespace ztd_text_tests_basic_runtime_any_encoding_decode {
 		using Encoding      = ztd::text::any_encoding;
 
 		const auto& expected0 = ztd::tests::u32_basic_source_character_set;
-		const auto& expected1 = ztd::tests::u32_unicode_sequence_truth_native_endian;
 
 		ztd::text::any_encoding encoding(
 		     ztd::text::encoding_scheme<UBaseEncoding, Endian>(std::forward<BaseEncoding>(base_encoding)));
@@ -68,6 +67,7 @@ inline namespace ztd_text_tests_basic_runtime_any_encoding_decode {
 		REQUIRE(is_equal0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
+			const auto& expected1                        = ztd::tests::u32_unicode_sequence_truth_native_endian;
 			ztd::text::any_encoding::decode_state state1 = ztd::text::make_decode_state(encoding);
 			std::basic_string<char32_t> result1_storage(
 			     std::size(input1) * ztd::text::max_code_points_v<Encoding>, char32_t {});
