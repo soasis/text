@@ -193,9 +193,8 @@ namespace ztd { namespace text {
 		/// object to store.
 		/// @param[in] __args Any additional arguments used to construct the encoding in the erased storage.
 		template <typename _Encoding, typename... _Args,
-			::std::enable_if_t<
-			     !::std::is_same_v<_Encoding,
-			          any_encoding_with> && !is_specialization_of_v<remove_cvref_t<_Encoding>, ::std::in_place_type_t>>* = nullptr>
+			::std::enable_if_t<!::std::is_same_v<_Encoding, any_encoding_with> && // cf
+			     !is_specialization_of_v<remove_cvref_t<_Encoding>, ::std::in_place_type_t>>* = nullptr>
 		any_encoding_with(_Encoding&& __encoding, _Args&&... __args)
 		: any_encoding_with(::std::in_place_type<remove_cvref_t<_Encoding>>, ::std::forward<_Encoding>(__encoding),
 			::std::forward<_Args>(__args)...) {

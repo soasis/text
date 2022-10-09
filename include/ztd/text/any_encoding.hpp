@@ -90,44 +90,46 @@ namespace ztd { namespace text {
 		///
 		/// @remarks If the provided encoding does not have a byte code_unit type, it is wrapped in an
 		/// ztd::text::encoding_scheme first.
-		template <typename _Encoding, typename... _Args,
-			::std::enable_if_t<
-			     !::std::is_same_v<_Encoding,
-			          any_byte_encoding> && !::std::is_same_v<_Encoding, __base_t> && !is_specialization_of_v<remove_cvref_t<_Encoding>, ::std::in_place_type_t>>* = nullptr>
-		any_byte_encoding(_Encoding&& __encoding, _Args&&... __args)
-		: any_byte_encoding(::std::in_place_type<remove_cvref_t<_Encoding>>, ::std::forward<_Encoding>(__encoding),
-			::std::forward<_Args>(__args)...) {
+		template <typename _EncodingArg, typename... _Args,
+			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_EncodingArg>, any_byte_encoding>               // cf
+			     && !::std::is_same_v<__txt_detail::__code_unit_or_void_t<remove_cvref_t<_EncodingArg>>, _Byte> // cf
+			     && !is_specialization_of_v<remove_cvref_t<_EncodingArg>, ::ztd::text::any_byte_encoding>       // cf
+			     && !::std::is_same_v<remove_cvref_t<_EncodingArg>, __base_t>                                   // cf
+			     && !is_specialization_of_v<remove_cvref_t<_EncodingArg>, ::std::in_place_type_t>>* = nullptr>
+		any_byte_encoding(_EncodingArg&& __encoding, _Args&&... __args)
+		: any_byte_encoding(::std::in_place_type<remove_cvref_t<_EncodingArg>>,
+			::std::forward<_EncodingArg>(__encoding), ::std::forward<_Args>(__args)...) {
 		}
 
 		//////
 		/// @brief Constructs a ztd::text::any_byte_encoding with the encoding object and any additional arguments.
 		///
-		/// @tparam _Encoding The Encoding specified by the `std::in_place_type<...>` argument.
+		/// @tparam _EncodingArg The Encoding specified by the `std::in_place_type<...>` argument.
 		///
 		/// @param[in] __args Any additional arguments used to construct the encoding in the erased storage.
 		///
 		/// @remarks If the provided encoding does not have a byte code_unit type, it is wrapped in an
 		/// ztd::text::encoding_scheme first.
-		template <typename _Encoding, typename... _Args,
-			::std::enable_if_t<!::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_Encoding>>>>* = nullptr>
-		any_byte_encoding(::std::in_place_type_t<_Encoding>, _Args&&... __args)
-		: __base_t(::std::in_place_type_t<encoding_scheme<remove_cvref_t<_Encoding>, endian::native, _Byte>> {},
+		template <typename _EncodingArg, typename... _Args,
+			::std::enable_if_t<!::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_EncodingArg>>>>* = nullptr>
+		any_byte_encoding(::std::in_place_type_t<_EncodingArg>, _Args&&... __args)
+		: __base_t(::std::in_place_type_t<encoding_scheme<remove_cvref_t<_EncodingArg>, endian::native, _Byte>> {},
 			::std::forward<_Args>(__args)...) {
 		}
 
 		//////
 		/// @brief Constructs a ztd::text::any_byte_encoding with the encoding object and any additional arguments.
 		///
-		/// @tparam _Encoding The Encoding specified by the `std::in_place_type<...>` argument.
+		/// @tparam _EncodingArg The Encoding specified by the `std::in_place_type<...>` argument.
 		///
 		/// @param[in] __tag A tag containing the encoding type.
 		/// @param[in] __args Any additional arguments used to construct the encoding in the erased storage.
 		///
 		/// @remarks If the provided encoding does not have a byte code_unit type, it is wrapped in an
 		/// ztd::text::encoding_scheme first.
-		template <typename _Encoding, typename... _Args,
-			::std::enable_if_t<::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_Encoding>>>>* = nullptr>
-		any_byte_encoding(::std::in_place_type_t<_Encoding> __tag, _Args&&... __args)
+		template <typename _EncodingArg, typename... _Args,
+			::std::enable_if_t<::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_EncodingArg>>>>* = nullptr>
+		any_byte_encoding(::std::in_place_type_t<_EncodingArg> __tag, _Args&&... __args)
 		: __base_t(::std::move(__tag), ::std::forward<_Args>(__args)...) {
 		}
 

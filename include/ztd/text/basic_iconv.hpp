@@ -92,7 +92,7 @@ namespace ztd { namespace text {
 				char* __p_faux_drain                          = __faux_drain;
 				const ::std::size_t __initial_faux_drain_size = sizeof(__faux_drain);
 				::std::size_t __faux_drain_size               = __initial_faux_drain_size;
-				char* __p_input                               = __drain;
+				const char* __p_input                         = __drain;
 				const ::std::size_t __initial_input_size      = __initial_drain_size - __drain_size;
 				::std::size_t __input_size                    = __initial_input_size;
 				const ::std::size_t __clear_result            = __iconv_functions.convert(
@@ -162,7 +162,7 @@ namespace ztd { namespace text {
 				::std::size_t __drain_size = sizeof(__drain);
 				char __input_write_bom[__max_input_size];
 				ranges::__rng_detail::__copy_n_unsafe(__input + 0, __max_input_size, __input_write_bom + 0);
-				char* __p_input_write_bom              = __input_write_bom;
+				const char* __p_input_write_bom              = __input_write_bom;
 				::std::size_t __input_write_bom_size   = __from_size;
 				const ::std::size_t __write_bom_result = ::ztd::plat::icnv::functions().convert(
 					__desc, &__p_input_write_bom, &__input_write_bom_size, &__p_drain, &__drain_size);

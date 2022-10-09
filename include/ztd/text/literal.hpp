@@ -40,10 +40,10 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
+#include <ztd/text/is_unicode_encoding.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 
-#include <ztd/idk/ebco.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -53,15 +53,14 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		inline constexpr text_encoding_id __literal_id
 			= __idk_detail::__to_encoding_id(ZTD_CXX_COMPILE_TIME_ENCODING_NAME_GET_I_());
-		using __literal = decltype(__select_encoding<char, __literal_id>());
+		using __literal = decltype(__select_compile_time_encoding<char, __literal_id>());
 	} // namespace __txt_detail
 
 	//////
 	/// @brief The encoding of string literal_ts ( e.g. @c "👍" ) at compile time.
-	class literal_t : private ebco<__txt_detail::__literal> {
+	class literal_t : private __txt_detail::__literal {
 	private:
-		using __underlying_t = __txt_detail::__literal;
-		using __base_t       = ebco<__underlying_t>;
+		using __base_t = __txt_detail::__literal;
 
 	public:
 		//////
@@ -72,29 +71,36 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
-		using code_unit = code_unit_t<__underlying_t>;
+		using code_unit = code_unit_t<__base_t>;
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
-		using code_point = code_point_t<__underlying_t>;
+		using code_point = code_point_t<__base_t>;
 		//////
 		/// @brief The state that can be used between calls to encode_one.
-		using encode_state = encode_state_t<__underlying_t>;
+		using encode_state = encode_state_t<__base_t>;
 		//////
 		/// @brief The state that can be used between calls to decode_one.
-		using decode_state = decode_state_t<__underlying_t>;
+		using decode_state = decode_state_t<__base_t>;
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
 		/// @remarks The decode step should always be injective because every encoding used for literal_ts in C++
 		/// needs to be capable of being represented by UCNs. Whether or not a platform is a jerk, who knows?
-		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__underlying_t>>;
+		using is_decode_injective = ::std::integral_constant<bool, is_decode_injective_v<__base_t>>;
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values.
 		///
 		/// @remarks This is absolutely not guaranteed to be the case, and as such we must check the provided encoding
 		/// name for us to be sure.
-		using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__underlying_t>>;
+		using is_encode_injective = ::std::integral_constant<bool, is_encode_injective_v<__base_t>>;
+
+		//////
+		/// @brief The id representing the decoded text.
+		inline static constexpr const ::ztd::text_encoding_id decoded_id = decoded_id_v<__base_t>;
+		//////
+		/// @brief The id representing the encoded text.
+		inline static constexpr const ::ztd::text_encoding_id encoded_id = encoded_id_v<__base_t>;
 
 		//////
 		/// @brief The maximum number of code points a single complete operation of decoding can produce.
@@ -151,7 +157,7 @@ namespace ztd { namespace text {
 #endif
 			__txt_detail::__forwarding_handler<const literal_t, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
-			return this->__base_t::get_value().decode_one(
+			return this->__base_t::decode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 
@@ -187,7 +193,7 @@ namespace ztd { namespace text {
 #endif
 			__txt_detail::__forwarding_handler<const literal_t, ::std::remove_reference_t<_ErrorHandler>>
 				__underlying_handler(*this, __error_handler);
-			return this->__base_t::get_value().encode_one(
+			return this->__base_t::encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 	};
