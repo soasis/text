@@ -89,7 +89,7 @@ bool encoding_c_convert_through_utf8(encoding_rs::Decoder* decoder, encoding_rs:
 		size_t encoder_read                                     = 0;
 		size_t encoder_written                                  = 0;
 		std::tie(encoder_result, encoder_read, encoder_written) = encoder->encode_from_utf8_without_replacement(
-		     std::string_view((const char*)input.data(), input.size()), output, true);
+		     std::string_view((const char*)input.data(), input.size()), output, false);
 		if (encoder_result != INPUT_EMPTY) {
 			return false;
 		}
@@ -133,23 +133,53 @@ bool encoding_c_convert_through_utf8(encoding_rs::Decoder* decoder, encoding_rs:
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),    \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));        \
 		if (!result || !is_equal) {                                                                                \
-			state.SkipWithError("bad benchmark result");                                                          \
+			if (TO_N == 16 && FROM_N == 8) {                                                                      \
+				state.SkipWithError("unsupported");                                                              \
+			}                                                                                                     \
+			else {                                                                                                \
+				state.SkipWithError("bad benchmark result");                                                     \
+			}                                                                                                     \
 			return;                                                                                               \
 		}                                                                                                          \
 	}                                                                                                               \
 	static_assert(true, "")
-
-
 
 UTF_CONVERSION_BENCHMARK(8, 16, , , BE, LE);
 UTF_CONVERSION_BENCHMARK(16, 8, BE, LE, , );
 
 #undef UTF_CONVERSION_BENCHMARK
 
+static void utf8_to_utf16_well_formed_encoding_c_direct(benchmark::State& state) {
+	const std::vector<ztd_char8_t> input_data(
+	     c_span_char8_t_data(u8_data), c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data));
+	std::vector<ztd_char16_t> output_data(c_span_char16_t_size(u16_data));
+	bool result = true;
+	for (auto _ : state) {
+		// we can skip one half, we are already have data in UTF-8
+		uint32_t decoder_result                                 = INPUT_EMPTY;
+		size_t decoder_read                                     = 0;
+		size_t decoder_written                                  = 0;
+		std::unique_ptr<encoding_rs::Decoder> decoder           = UTF_8_ENCODING->new_decoder_without_bom_handling();
+		std::tie(decoder_result, decoder_read, decoder_written) = decoder->decode_to_utf16_without_replacement(
+		     ztd::span<const unsigned char>((const unsigned char*)input_data.data(), input_data.size()), output_data,
+		     true);
+		if (decoder_result != INPUT_EMPTY) {
+			result = false;
+		}
+	}
+	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(), c_span_char16_t_data(u16_data),
+	     c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
+	if (!result || !is_equal) {
+		state.SkipWithError("bad benchmark result");
+		return;
+	}
+}
+
 // This is intentionally broken, as per the WHATWG spec.
 // Don't ask me why anyone thought it was a good idea,
 // from the spec writers to the implementers.
 BENCHMARK(utf8_to_utf16_well_formed_encoding_c);
+BENCHMARK(utf8_to_utf16_well_formed_encoding_c_direct);
 BENCHMARK(utf16_to_utf8_well_formed_encoding_c);
 
 #endif

@@ -62,23 +62,23 @@ struct registry_deleter {
 			cnc_conversion* raw_conversion        = nullptr;                                                        \
 			cnc_conversion_info info              = {};                                                             \
 			const cnc_open_error err              = cnc_new_registry(&raw_registry, CNC_REGISTRY_OPTIONS_NONE);     \
-			if (err != CNC_OPEN_ERROR_OK) {                                                                       \
+			if (err != CNC_OPEN_ERROR_OK) {                                                                         \
 				/* something went wrong, get out of here quick! */                                                 \
 				state.SkipWithError("bad benchmark result");                                                       \
 				return;                                                                                            \
 			}                                                                                                       \
 			registry.reset(raw_registry);                                                                           \
 			if constexpr (Fast) {                                                                                   \
-				if (!add_simdutf_to_registry(registry.get())) {                                                    \
+				if (!cnc_shared_add_simdutf_to_registry(registry.get())) {                                         \
 					/* something went wrong, get out of here quick! */                                            \
 					state.SkipWithError("bad benchmark result");                                                  \
 					return;                                                                                       \
 				}                                                                                                  \
 			}                                                                                                       \
 			const cnc_open_error conv_err                                                                           \
-			     = cnc_conv_new(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N "-unchecked",                  \
+			     = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N "-unchecked",               \
 			          (const ztd_char8_t*)u8"UTF-" #TO_N "-unchecked", &raw_conversion, &info);                     \
-			if (conv_err != CNC_OPEN_ERROR_OK) {                                                                  \
+			if (conv_err != CNC_OPEN_ERROR_OK) {                                                                    \
 				/* something went wrong, get out of here quick! */                                                 \
 				state.SkipWithError("bad benchmark result");                                                       \
 				return;                                                                                            \

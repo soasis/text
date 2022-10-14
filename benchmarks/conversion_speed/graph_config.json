@@ -42,37 +42,37 @@
 			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 		},
 		{
-			"name": "UTF-16 to UTF-32 (Well-Formed, Unchecked)",
+			"name": "UTF-16 to UTF-32 (Well-Formed, Assumed Valid)",
 			"pattern": "utf16_to_utf32_unchecked_well_formed_",
 			"ascending": false,
 			"description": "A conversion from UTF-16 data to UTF-32 data that contains no ill-formed or incomplete sequences."
 		},
 		{
-			"name": "UTF-16 to UTF-8 (Well-Formed, Unchecked)",
+			"name": "UTF-16 to UTF-8 (Well-Formed, Assumed Valid)",
 			"pattern": "utf16_to_utf8_unchecked_well_formed_",
 			"ascending": false,
 			"description": "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
 		},
 		{
-			"name": "UTF-8 to UTF-16 (Well-Formed, Unchecked)",
+			"name": "UTF-8 to UTF-16 (Well-Formed, Assumed Valid)",
 			"pattern": "utf8_to_utf16_unchecked_well_formed_",
 			"ascending": false,
 			"description": "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 		},
 		{
-			"name": "UTF-8 to UTF-32 (Well-Formed, Unchecked)",
+			"name": "UTF-8 to UTF-32 (Well-Formed, Assumed Valid)",
 			"pattern": "utf8_to_utf32_unchecked_well_formed_",
 			"ascending": false,
 			"description": "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences."
 		},
 		{
-			"name": "UTF-32 to UTF-8 (Well-Formed, Unchecked)",
+			"name": "UTF-32 to UTF-8 (Well-Formed, Assumed Valid)",
 			"pattern": "utf32_to_utf8_unchecked_well_formed_",
 			"ascending": false,
 			"description": "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
 		},
 		{
-			"name": "UTF-32 to UTF-16 (Well-Formed, Unchecked)",
+			"name": "UTF-32 to UTF-16 (Well-Formed, Assumed Valid)",
 			"pattern": "utf32_to_utf16_unchecked_well_formed_",
 			"ascending": false,
 			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
@@ -80,7 +80,7 @@
 	],
 	"data_groups": [
 		{
-			"name": "boost.text",
+			"name": "boost.text (unbounded)",
 			"pattern": "boost_text$",
 			"description": "Measures the boost.text library from Zach Laine and its encoding routines, particularly the all-at-once bulk routines."
 		},
@@ -125,13 +125,18 @@
 			"description": "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call \"iconv\"."
 		},
 		{
-			"name": "simdutf",
+			"name": "simdutf (unbounded)",
 			"pattern": "simdutf$",
 			"description": "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads."
 		},
 		{
 			"name": "Rust's encoding_c",
 			"pattern": "encoding_c$",
+			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
+		},
+		{
+			"name": "Rust's encoding_c (manual)",
+			"pattern": "encoding_c_direct$",
 			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c directly (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
 		},
 		{
@@ -140,7 +145,7 @@
 			"description": "Measures the performance of the Compile-Time Regular Expression (CTRE) library's internal encoding conversion routines."
 		},
 		{
-			"name": "utf8cpp",
+			"name": "utf8cpp (unbounded)",
 			"pattern": "utf8cpp$",
 			"description": "Measures the utf8cpp library and its conversion routines."
 		},
@@ -203,6 +208,11 @@
 			"name": "ztd.text view",
 			"pattern": "ztd_text_view$",
 			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction."
+		},
+		{
+			"name": "Win32",
+			"pattern": "windows_api$",
+			"description": "Measures the Win32 API conversion routine using MultibyteToWideChar function or the WideCharToMultibyte function."
 		}
 	],
 	"data_labels": [
