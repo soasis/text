@@ -27,6 +27,10 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICU_BENCHMARKS)
+
 #include <ztd/platform.hpp>
 
 #if ZTD_IS_ON(ZTD_PLATFORM_ICU)
@@ -58,7 +62,7 @@ static void utf16_to_utf8_well_formed_icu_UnicodeString_toUTF8(benchmark::State&
 	const bool is_input_equal = !std::equal(str.getBuffer(), str.getBuffer() + str.length(),
 	     c_span_char16_t_data(u16_data), c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
 	if (is_input_equal) {
-		state.SkipWithError("bad benchmark result");
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 		return;
 	}
 	bool result = true;
@@ -68,8 +72,11 @@ static void utf16_to_utf8_well_formed_icu_UnicodeString_toUTF8(benchmark::State&
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(), c_span_char8_t_data(u8_data),
 	     c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -79,7 +86,7 @@ static void utf16_to_utf8_well_formed_icu_u_strToUTF8(benchmark::State& state) {
 	const bool is_input_equal = !std::equal(str.getBuffer(), str.getBuffer() + str.length(),
 	     c_span_char16_t_data(u16_data), c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
 	if (is_input_equal) {
-		state.SkipWithError("bad benchmark result");
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 		return;
 	}
 	bool result = true;
@@ -94,8 +101,11 @@ static void utf16_to_utf8_well_formed_icu_u_strToUTF8(benchmark::State& state) {
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend() - 1, c_span_char8_t_data(u8_data),
 	     c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -115,8 +125,11 @@ static void utf8_to_utf16_well_formed_icu_u_strFromUTF8(benchmark::State& state)
 	}
 	const bool is_equal = std::equal(str.getBuffer(), str.getBuffer() + str.length(), c_span_char16_t_data(u16_data),
 	     c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -136,8 +149,11 @@ static void utf32_to_utf16_well_formed_icu_u_strFromUTF32(benchmark::State& stat
 	}
 	const bool is_equal = std::equal(str.getBuffer(), str.getBuffer() + str.length(), c_span_char16_t_data(u16_data),
 	     c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -147,7 +163,7 @@ static void utf16_to_utf8_well_formed_icu_ucnv_fromUChars(benchmark::State& stat
 	const bool is_input_equal = !std::equal(str.getBuffer(), str.getBuffer() + str.length(),
 	     c_span_char16_t_data(u16_data), c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
 	if (is_input_equal) {
-		state.SkipWithError("bad benchmark result");
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 		return;
 	}
 	std::unique_ptr<UConverter, uconv_close_converter> conv = nullptr;
@@ -155,7 +171,7 @@ static void utf16_to_utf8_well_formed_icu_ucnv_fromUChars(benchmark::State& stat
 		UErrorCode open_err  = U_ZERO_ERROR;
 		UConverter* raw_conv = ucnv_open("UTF-8", &open_err);
 		if (!U_SUCCESS(open_err)) {
-			state.SkipWithError("bad benchmark result");
+			state.SkipWithError("conversion succeeded but produced illegitimate data");
 			return;
 		}
 		conv.reset(raw_conv);
@@ -172,8 +188,11 @@ static void utf16_to_utf8_well_formed_icu_ucnv_fromUChars(benchmark::State& stat
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend() - 1, c_span_char8_t_data(u8_data),
 	     c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -183,7 +202,7 @@ static void utf16_to_utf32_well_formed_icu_ucnv_fromUChars(benchmark::State& sta
 	const bool is_input_equal = !std::equal(str.getBuffer(), str.getBuffer() + str.length(),
 	     c_span_char16_t_data(u16_data), c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
 	if (is_input_equal) {
-		state.SkipWithError("bad benchmark result");
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 		return;
 	}
 	std::unique_ptr<UConverter, uconv_close_converter> conv = nullptr;
@@ -192,7 +211,7 @@ static void utf16_to_utf32_well_formed_icu_ucnv_fromUChars(benchmark::State& sta
 		UConverter* raw_conv
 		     = ucnv_open(ztd::endian::native == ztd::endian::big ? "UTF-32BE" : "UTF-32LE", &open_err);
 		if (!U_SUCCESS(open_err)) {
-			state.SkipWithError("bad benchmark result");
+			state.SkipWithError("conversion succeeded but produced illegitimate data");
 			return;
 		}
 		conv.reset(raw_conv);
@@ -209,8 +228,11 @@ static void utf16_to_utf32_well_formed_icu_ucnv_fromUChars(benchmark::State& sta
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend() - 1, c_span_char32_t_data(u32_data),
 	     c_span_char32_t_data(u32_data) + c_span_char32_t_size(u32_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -224,7 +246,7 @@ static void utf32_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state
 		UConverter* raw_conv
 		     = ucnv_open(ztd::endian::native == ztd::endian::big ? "UTF-32BE" : "UTF-32LE", &open_err);
 		if (!U_SUCCESS(open_err)) {
-			state.SkipWithError("bad benchmark result");
+			state.SkipWithError("conversion succeeded but produced illegitimate data");
 			return;
 		}
 		conv.reset(raw_conv);
@@ -241,8 +263,11 @@ static void utf32_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state
 	}
 	const bool is_equal = std::equal(str.getBuffer(), str.getBuffer() + str.length(), c_span_char16_t_data(u16_data),
 	     c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -255,7 +280,7 @@ static void utf8_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state)
 		UErrorCode open_err  = U_ZERO_ERROR;
 		UConverter* raw_conv = ucnv_open("UTF-8", &open_err);
 		if (!U_SUCCESS(open_err)) {
-			state.SkipWithError("bad benchmark result");
+			state.SkipWithError("conversion succeeded but produced illegitimate data");
 			return;
 		}
 		conv.reset(raw_conv);
@@ -272,8 +297,11 @@ static void utf8_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state)
 	}
 	const bool is_equal = std::equal(str.getBuffer(), str.getBuffer() + str.length(), c_span_char16_t_data(u16_data),
 	     c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -290,7 +318,7 @@ static void utf8_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state)
 			                                                         : "UTF-" #FROM_N #LIL_FROM_SUFFIX,             \
 			          &open_err);                                                                                   \
 			if (!U_SUCCESS(open_err)) {                                                                             \
-				state.SkipWithError("bad benchmark result");                                                       \
+				state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
 				return;                                                                                            \
 			}                                                                                                       \
 			from_conv.reset(raw_conv);                                                                              \
@@ -302,7 +330,7 @@ static void utf8_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state)
 			                                                                         : "UTF-" #TO_N #LIL_TO_SUFFIX, \
 			     &open_err);                                                                                        \
 			if (!U_SUCCESS(open_err)) {                                                                             \
-				state.SkipWithError("bad benchmark result");                                                       \
+				state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
 				return;                                                                                            \
 			}                                                                                                       \
 			to_conv.reset(raw_conv);                                                                                \
@@ -323,8 +351,65 @@ static void utf8_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state)
 		const bool is_equal                                                                                          \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),      \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));          \
-		if (!result || !is_equal) {                                                                                  \
-			state.SkipWithError("bad benchmark result");                                                            \
+		if (!result) {                                                                                               \
+			state.SkipWithError("conversion failed with an error");                                                 \
+		}                                                                                                            \
+		else if (!is_equal) {                                                                                        \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                             \
+		}                                                                                                            \
+	}                                                                                                                 \
+                                                                                                                       \
+	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_icu_ucnv_convertEx(benchmark::State& state) {           \
+		std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),                 \
+		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));       \
+		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                     \
+		bool result = true;                                                                                          \
+		for (auto _ : state) {                                                                                       \
+			std::unique_ptr<UConverter, uconv_close_converter> from_conv = nullptr;                                 \
+			{                                                                                                       \
+				UErrorCode open_err = U_ZERO_ERROR;                                                                \
+				UConverter* raw_conv                                                                               \
+				     = ucnv_open(ztd::endian::native == ztd::endian::big ? "UTF-" #FROM_N #BIG_FROM_SUFFIX         \
+				                                                         : "UTF-" #FROM_N #LIL_FROM_SUFFIX,        \
+				          &open_err);                                                                              \
+				if (!U_SUCCESS(open_err)) {                                                                        \
+					state.SkipWithError("conversion succeeded but produced illegitimate data");                   \
+					return;                                                                                       \
+				}                                                                                                  \
+				from_conv.reset(raw_conv);                                                                         \
+			}                                                                                                       \
+			std::unique_ptr<UConverter, uconv_close_converter> to_conv = nullptr;                                   \
+			{                                                                                                       \
+				UErrorCode open_err = U_ZERO_ERROR;                                                                \
+				UConverter* raw_conv                                                                               \
+				     = ucnv_open(ztd::endian::native == ztd::endian::big ? "UTF-" #TO_N #BIG_TO_SUFFIX             \
+				                                                         : "UTF-" #TO_N #LIL_TO_SUFFIX,            \
+				          &open_err);                                                                              \
+				if (!U_SUCCESS(open_err)) {                                                                        \
+					state.SkipWithError("conversion succeeded but produced illegitimate data");                   \
+					return;                                                                                       \
+				}                                                                                                  \
+				to_conv.reset(raw_conv);                                                                           \
+			}                                                                                                       \
+			UErrorCode err          = U_ZERO_ERROR;                                                                 \
+			const ztd_char_t* input = (const ztd_char_t*)input_data.data();                                         \
+			int32_t input_size      = (int32_t)(input_data.size() * sizeof(input_data[0]));                         \
+			ztd_char_t* output      = (ztd_char_t*)output_data.data();                                              \
+			int32_t output_size     = (int32_t)(output_data.size() * sizeof(output_data[0]));                       \
+			ucnv_convertEx(to_conv.get(), from_conv.get(), &output, output + output_size, &input,                   \
+			     input + input_size, nullptr, nullptr, nullptr, nullptr, true, true, &err);                         \
+			if (!U_SUCCESS(err)) {                                                                                  \
+				result = false;                                                                                    \
+			}                                                                                                       \
+		}                                                                                                            \
+		const bool is_equal                                                                                          \
+		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),      \
+		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));          \
+		if (!result) {                                                                                               \
+			state.SkipWithError("conversion failed with an error");                                                 \
+		}                                                                                                            \
+		else if (!is_equal) {                                                                                        \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                             \
 		}                                                                                                            \
 	}                                                                                                                 \
 	static_assert(true, "")
@@ -358,5 +443,16 @@ BENCHMARK(utf32_to_utf8_well_formed_icu_ucnv_convertEx);
 BENCHMARK(utf32_to_utf16_well_formed_icu_ucnv_convertEx);
 BENCHMARK(utf32_to_utf16_well_formed_icu_u_strFromUTF32);
 BENCHMARK(utf32_to_utf16_well_formed_icu_ucnv_toUChars);
+
+BENCHMARK(utf8_to_utf16_init_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf8_to_utf32_init_well_formed_icu_ucnv_convertEx);
+
+BENCHMARK(utf16_to_utf8_init_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf16_to_utf32_init_well_formed_icu_ucnv_convertEx);
+
+BENCHMARK(utf32_to_utf8_init_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf32_to_utf16_init_well_formed_icu_ucnv_convertEx);
+
+#endif
 
 #endif

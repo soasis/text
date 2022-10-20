@@ -39,10 +39,10 @@
 
 #include <array>
 
-static const ztd_char32_t* expected_input     = c_span_char32_t_data(u32_data);
-static const std::size_t expected_input_size  = c_span_char32_t_size(u32_data);
-static const ztd_char8_t* expected_output     = c_span_char8_t_data(u8_data);
-static const std::size_t expected_output_size = c_span_char8_t_size(u8_data);
+static const ztd_char32_t* expected_input     = c_span_char32_t_data(u32_unicode_data);
+static const std::size_t expected_input_size  = c_span_char32_t_size(u32_unicode_data);
+static const ztd_char8_t* expected_output     = c_span_char8_t_data(u8_unicode_data);
+static const std::size_t expected_output_size = c_span_char8_t_size(u8_unicode_data);
 
 static void err_ptrptr_ptrsize_ptrptr_ptrsize(benchmark::State& state) {
 	std::vector<ztd_char8_t> output_buffer;

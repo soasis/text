@@ -27,6 +27,10 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICONV_BENCHMARKS)
+
 #include <ztd/platform.hpp>
 
 #if ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
@@ -103,7 +107,7 @@ struct descriptor_deleter {
 				raw_convd = iconv_functions.open("UTF-" #TO_N #BIG_TO_SUFFIX, "UTF-" #FROM_N #BIG_FROM_SUFFIX);   \
 			}                                                                                                      \
 			if (!ztd::plat::icnv::descriptor_is_valid(raw_convd)) {                                                \
-				state.SkipWithError("bad benchmark result");                                                      \
+				state.SkipWithError("conversion succeeded but produced illegitimate data");                       \
 				return;                                                                                           \
 			}                                                                                                      \
 			convd.reset(raw_convd);                                                                                \
@@ -123,8 +127,54 @@ struct descriptor_deleter {
 		const bool is_equal                                                                                         \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),     \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));         \
-		if (!result || !is_equal) {                                                                                 \
-			state.SkipWithError("bad benchmark result");                                                           \
+		if (!result) {                                                                                              \
+			state.SkipWithError("conversion failed with an error");                                                \
+		}                                                                                                           \
+		else if (!is_equal) {                                                                                       \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                            \
+		}                                                                                                           \
+	}                                                                                                                \
+	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_iconv(benchmark::State& state) {                       \
+		const auto& iconv_functions = ztd::plat::icnv::functions();                                                 \
+		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),          \
+		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));      \
+		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                    \
+		bool result = true;                                                                                         \
+		for (auto _ : state) {                                                                                      \
+			std::unique_ptr<ztd::plat::icnv::descriptor, descriptor_deleter> convd = nullptr;                      \
+			{                                                                                                      \
+				descriptor_deleter::pointer raw_convd = nullptr;                                                  \
+				if (ztd::endian::native == ztd::endian::little) {                                                 \
+					raw_convd                                                                                    \
+					     = iconv_functions.open("UTF-" #TO_N #LIL_TO_SUFFIX, "UTF-" #FROM_N #LIL_FROM_SUFFIX);   \
+				}                                                                                                 \
+				else {                                                                                            \
+					raw_convd                                                                                    \
+					     = iconv_functions.open("UTF-" #TO_N #BIG_TO_SUFFIX, "UTF-" #FROM_N #BIG_FROM_SUFFIX);   \
+				}                                                                                                 \
+				if (!ztd::plat::icnv::descriptor_is_valid(raw_convd)) {                                           \
+					state.SkipWithError("conversion succeeded but produced illegitimate data");                  \
+					return;                                                                                      \
+				}                                                                                                 \
+				convd.reset(raw_convd);                                                                           \
+			}                                                                                                      \
+			size_t input_size  = input_data.size() * sizeof(input_data[0]);                                        \
+			const char* input  = (const char*)input_data.data();                                                   \
+			size_t output_size = output_data.size() * sizeof(output_data[0]);                                      \
+			char* output       = (char*)output_data.data();                                                        \
+			size_t conv_result = iconv_functions.convert(convd.get(), &input, &input_size, &output, &output_size); \
+			if (conv_result != ztd::plat::icnv::conversion_success) {                                              \
+				result = false;                                                                                   \
+			}                                                                                                      \
+		}                                                                                                           \
+		const bool is_equal                                                                                         \
+		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),     \
+		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));         \
+		if (!result) {                                                                                              \
+			state.SkipWithError("conversion failed with an error");                                                \
+		}                                                                                                           \
+		else if (!is_equal) {                                                                                       \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                            \
 		}                                                                                                           \
 	}                                                                                                                \
 	static_assert(true, "")
@@ -148,5 +198,16 @@ BENCHMARK(utf16_to_utf32_well_formed_iconv);
 
 BENCHMARK(utf32_to_utf8_well_formed_iconv);
 BENCHMARK(utf32_to_utf16_well_formed_iconv);
+
+BENCHMARK(utf8_to_utf16_init_well_formed_iconv);
+BENCHMARK(utf8_to_utf32_init_well_formed_iconv);
+
+BENCHMARK(utf16_to_utf8_init_well_formed_iconv);
+BENCHMARK(utf16_to_utf32_init_well_formed_iconv);
+
+BENCHMARK(utf32_to_utf8_init_well_formed_iconv);
+BENCHMARK(utf32_to_utf16_init_well_formed_iconv);
+
+#endif
 
 #endif

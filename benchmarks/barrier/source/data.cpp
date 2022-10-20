@@ -36,6 +36,8 @@
 #include <ztd/idk/c_span.h>
 #include <ztd/idk/detail/unicode.h>
 
+#include <ztd/tests/basic_unicode_strings.hpp>
+
 #include <vector>
 #include <stdexcept>
 
@@ -104,16 +106,45 @@ static auto init_u32_unicode_data() {
 	return data;
 }
 
-static auto u8_vec  = init_u8_unicode_data();
-static auto u16_vec = init_u16_unicode_data();
-static auto u32_vec = init_u32_unicode_data();
+static auto u8_unicode_vec  = init_u8_unicode_data();
+static auto u16_unicode_vec = init_u16_unicode_data();
+static auto u32_unicode_vec = init_u32_unicode_data();
 
 
-ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_data
-     = make_c_span_char8_t(u8_vec.data(), u8_vec.data() + u8_vec.size());
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_unicode_data
+     = make_c_span_char8_t(u8_unicode_vec.data(), u8_unicode_vec.data() + u8_unicode_vec.size());
 
-ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_data
-     = make_c_span_char16_t(u16_vec.data(), u16_vec.data() + u16_vec.size());
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_unicode_data
+     = make_c_span_char16_t(u16_unicode_vec.data(), u16_unicode_vec.data() + u16_unicode_vec.size());
 
-ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char32_t u32_data
-     = make_c_span_char32_t(u32_vec.data(), u32_vec.data() + u32_vec.size());
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char32_t u32_unicode_data
+     = make_c_span_char32_t(u32_unicode_vec.data(), u32_unicode_vec.data() + u32_unicode_vec.size());
+
+static auto init_u8_basic_source_data() {
+	std::vector<ztd_char8_t> data(ztd::tests::u8_basic_source_character_set.cbegin(), ztd::tests::u8_basic_source_character_set.cend());
+	return data;
+}
+
+static auto init_u16_basic_source_data() {
+	std::vector<ztd_char16_t> data(ztd::tests::u16_basic_source_character_set.cbegin(), ztd::tests::u16_basic_source_character_set.cend());
+	return data;
+}
+
+static auto init_u32_basic_source_data() {
+	std::vector<ztd_char32_t> data(ztd::tests::u32_basic_source_character_set.cbegin(), ztd::tests::u32_basic_source_character_set.cend());
+	return data;
+}
+
+static auto u8_basic_source_vec  = init_u8_basic_source_data();
+static auto u16_basic_source_vec = init_u16_basic_source_data();
+static auto u32_basic_source_vec = init_u32_basic_source_data();
+
+
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_basic_source_data
+     = make_c_span_char8_t(u8_basic_source_vec.data(), u8_basic_source_vec.data() + u8_basic_source_vec.size());
+
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_basic_source_data
+     = make_c_span_char16_t(u16_basic_source_vec.data(), u16_basic_source_vec.data() + u16_basic_source_vec.size());
+
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char32_t u32_basic_source_data
+     = make_c_span_char32_t(u32_basic_source_vec.data(), u32_basic_source_vec.data() + u32_basic_source_vec.size());

@@ -27,13 +27,18 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_SIMDUTF_BENCHMARKS)
+
 #include <benchmark/benchmark.h>
 
-#include <ztd/cuneicode.h>
+#include <simdutf.h>
+
 #include <ztd/idk/c_span.h>
 #include <ztd/idk/endian.hpp>
+#include <ztd/idk/charN_t.hpp>
 #include <barrier/barrier.h>
-#include <simdutf.h>
 
 #include <vector>
 
@@ -63,8 +68,11 @@
 		const bool is_equal                                                                                     \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result || !is_equal) {                                                                             \
-			state.SkipWithError("bad benchmark result");                                                       \
+		if (!result) {                                                                                          \
+			state.SkipWithError("conversion failed with an error");                                            \
+		}                                                                                                       \
+		else if (!is_equal) {                                                                                   \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
 		}                                                                                                       \
 	}                                                                                                            \
 	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_simdutf(benchmark::State& state) {            \
@@ -92,8 +100,11 @@
 		const bool is_equal                                                                                     \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result || !is_equal) {                                                                             \
-			state.SkipWithError("bad benchmark result");                                                       \
+		if (!result) {                                                                                          \
+			state.SkipWithError("conversion failed with an error");                                            \
+		}                                                                                                       \
+		else if (!is_equal) {                                                                                   \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
 		}                                                                                                       \
 	}                                                                                                            \
 	static_assert(true, "")
@@ -126,3 +137,5 @@ BENCHMARK(utf16_to_utf32_unchecked_well_formed_simdutf);
 
 BENCHMARK(utf32_to_utf8_unchecked_well_formed_simdutf);
 BENCHMARK(utf32_to_utf16_unchecked_well_formed_simdutf);
+
+#endif

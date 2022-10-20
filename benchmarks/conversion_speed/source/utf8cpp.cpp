@@ -27,7 +27,9 @@
 //
 // ========================================================================= //
 
-#include <ztd/version.hpp>
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_UTF8CPP_BENCHMARKS)
 
 #include <utf8.h>
 
@@ -51,8 +53,11 @@
 		const bool is_equal                                                                                       \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),   \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));       \
-		if (!result || !is_equal) {                                                                               \
-			state.SkipWithError("bad benchmark result");                                                         \
+		if (!result) {                                                                                            \
+			state.SkipWithError("conversion failed with an error");                                              \
+		}                                                                                                         \
+		else if (!is_equal) {                                                                                     \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                          \
 			return;                                                                                              \
 		}                                                                                                         \
 	}                                                                                                              \
@@ -71,8 +76,11 @@
 		const bool is_equal                                                                                       \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),   \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));       \
-		if (!result || !is_equal) {                                                                               \
-			state.SkipWithError("bad benchmark result");                                                         \
+		if (!result) {                                                                                            \
+			state.SkipWithError("conversion failed with an error");                                              \
+		}                                                                                                         \
+		else if (!is_equal) {                                                                                     \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                          \
 			return;                                                                                              \
 		}                                                                                                         \
 	}                                                                                                              \
@@ -90,12 +98,12 @@ BENCHMARK(utf8_to_utf32_well_formed_utf8cpp);
 BENCHMARK(utf8_to_utf16_well_formed_utf8cpp);
 
 BENCHMARK(utf32_to_utf8_well_formed_utf8cpp);
-
 BENCHMARK(utf16_to_utf8_well_formed_utf8cpp);
 
 BENCHMARK(utf8_to_utf32_unchecked_well_formed_utf8cpp);
 BENCHMARK(utf8_to_utf16_unchecked_well_formed_utf8cpp);
 
 BENCHMARK(utf32_to_utf8_unchecked_well_formed_utf8cpp);
-
 BENCHMARK(utf16_to_utf8_unchecked_well_formed_utf8cpp);
+
+#endif

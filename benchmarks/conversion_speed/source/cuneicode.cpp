@@ -27,6 +27,10 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_BENCHMARKS)
+
 #include <benchmark/benchmark.h>
 
 #include <ztd/cuneicode.h>
@@ -53,8 +57,11 @@
 		const bool is_equal                                                                                       \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),   \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));       \
-		if (!result || !is_equal) {                                                                               \
-			state.SkipWithError("bad benchmark result");                                                         \
+		if (!result) {                                                                                            \
+			state.SkipWithError("conversion failed with an error");                                              \
+		}                                                                                                         \
+		else if (!is_equal) {                                                                                     \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                          \
 		}                                                                                                         \
 	}                                                                                                              \
                                                                                                                     \
@@ -81,8 +88,11 @@
 		const bool is_equal                                                                                       \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),   \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));       \
-		if (!result || !is_equal) {                                                                               \
-			state.SkipWithError("bad benchmark result");                                                         \
+		if (!result) {                                                                                            \
+			state.SkipWithError("conversion failed with an error");                                              \
+		}                                                                                                         \
+		else if (!is_equal) {                                                                                     \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                          \
 		}                                                                                                         \
 	}                                                                                                              \
 	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_unbounded(benchmark::State& state) {            \
@@ -102,8 +112,11 @@
 		const bool is_equal                                                                                       \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),   \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));       \
-		if (!result || !is_equal) {                                                                               \
-			state.SkipWithError("bad benchmark result");                                                         \
+		if (!result) {                                                                                            \
+			state.SkipWithError("conversion failed with an error");                                              \
+		}                                                                                                         \
+		else if (!is_equal) {                                                                                     \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                          \
 		}                                                                                                         \
 	}                                                                                                              \
                                                                                                                     \
@@ -128,8 +141,11 @@
 		const bool is_equal                                                                                       \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),   \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));       \
-		if (!result || !is_equal) {                                                                               \
-			state.SkipWithError("bad benchmark result");                                                         \
+		if (!result) {                                                                                            \
+			state.SkipWithError("conversion failed with an error");                                              \
+		}                                                                                                         \
+		else if (!is_equal) {                                                                                     \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                          \
 		}                                                                                                         \
 	}                                                                                                              \
 	static_assert(true, "")
@@ -171,3 +187,5 @@ BENCHMARK(utf32_to_utf16_well_formed_cuneicode);
 BENCHMARK(utf32_to_utf16_well_formed_cuneicode_single);
 BENCHMARK(utf32_to_utf16_well_formed_cuneicode_unbounded);
 BENCHMARK(utf32_to_utf16_well_formed_cuneicode_single_unbounded);
+
+#endif

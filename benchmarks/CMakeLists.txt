@@ -28,7 +28,6 @@
 # =========================================================================== #
 
 include(FetchContent)
-include(GraphBenchmarks)
 
 # # Fetch dependencies
 # google benchmark
@@ -95,3 +94,10 @@ ztd_platform_dependency_jail()
 add_subdirectory(barrier)
 add_subdirectory(function_form)
 add_subdirectory(conversion_speed)
+
+add_custom_target(ztd.text.benchmarks.all_graphs
+	COMMENT "[ztd.text] graphing all benchmarks...")
+add_dependencies(ztd.text.benchmarks.all_graphs
+	ztd.tools.benchmark_grapher.function_form
+	ztd.tools.benchmark_grapher.conversion_speed.small
+	ztd.tools.benchmark_grapher.conversion_speed.large)

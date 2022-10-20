@@ -28,55 +28,81 @@
 #
 # ============================================================================>
 
-# # Benchmark Executable
+# all sources
 file(GLOB_RECURSE ztd.text.benchmarks.conversion_speed.sources
 	CONFIGURE_DEPENDS
 	LIST_DIRECTORIES NO
 	source/**)
 
-if (NOT ZTD_TEXT_BOOST.TEXT)
-	list(FILTER ztd.text.benchmarks.conversion_speed.sources EXCLUDE REGEX boost.text)
-endif()
+function (generate_converion_speed_benchmark_targets name data_name title)
+	add_executable(ztd.text.benchmarks.conversion_speed.${name} ${ztd.text.benchmarks.conversion_speed.sources})
+	target_include_directories(ztd.text.benchmarks.conversion_speed.${name}
+		PRIVATE
+			include
+	)
+	target_link_libraries(ztd.text.benchmarks.conversion_speed.${name}
+		PRIVATE
+			ztd::platform
+			ztd::cuneicode
+			ztd::cuneicode::shared
+			ztd::cuneicode::benchmarks::barrier
+			ztd::cuneicode::shared::simdutf
+			ztd::text
+			ctre::ctre
+			utf8::cpp
+			$<$<BOOL:${ZTD_TEXT_BOOST.TEXT}>:Boost::text>
+			benchmark::benchmark
+			${CMAKE_DL_LIBS}
+	)
+	target_compile_options(ztd.text.benchmarks.conversion_speed.${name}
+		PRIVATE
+			${--utf8-literal-encoding}
+			${--utf8-source-encoding}
+			${--disable-permissive}
+			${--updated-cpp-version-flag}
+			${--warn-pedantic}
+			${--warn-default}
+			${--warn-extra}
+			${--warn-errors}
+			${--allow-alignas-extra-padding}
+	)
+	target_compile_definitions(ztd.text.benchmarks.conversion_speed.${name}
+		PRIVATE
+			u8_data=u8_${data_name}_data
+			u16_data=u16_${data_name}_data
+			u32_data=u32_${data_name}_data
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_BOOST_TEXT_BENCHMARKS=$<IF:$<BOOL:${ZTD_TEXT_BOOST.TEXT}>,1,0>
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ZTD_TEXT_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ZTD_TEXT_UNCHECKED_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICU_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICONV_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ENCODING_C_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CTRE_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_SIMDUTF_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_STANDARD_C_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_STANDARD_CPP_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_WINDOWS_BENCHMARKS=1
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_UTF8CPP_BENCHMARKS=1
+			_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1
+	)
+	generate_target_manifest(ztd.text.benchmarks.conversion_speed.${name})
+	set(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_TITLE ${title})
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/graph_config.in.json
+		${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json
+		@ONLY
+	)
+	ztd_tools_add_benchmark_grapher(
+		NAME
+			conversion_speed.${name}
+		CONFIG
+			"${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json"
+		TARGETS
+			ztd.text.benchmarks.conversion_speed.${name}
+		REPETITIONS
+			${ZTD_TEXT_BENCHMARKS_REPETITIONS}
+	)
+endfunction()
 
-add_executable(ztd.text.benchmarks.conversion_speed ${ztd.text.benchmarks.conversion_speed.sources})
-target_include_directories(ztd.text.benchmarks.conversion_speed
-	PRIVATE
-		include
-)
-target_link_libraries(ztd.text.benchmarks.conversion_speed
-	PRIVATE
-		ztd::platform
-		ztd::cuneicode
-		ztd::cuneicode::shared
-		ztd::cuneicode::benchmarks::barrier
-		ztd::cuneicode::shared::simdutf
-		ztd::text
-		ctre::ctre
-		utf8::cpp
-		$<$<BOOL:${ZTD_TEXT_BOOST.TEXT}>:Boost::text>
-		benchmark::benchmark
-		${CMAKE_DL_LIBS}
-)
-target_compile_options(ztd.text.benchmarks.conversion_speed
-	PRIVATE
-		${--utf8-literal-encoding}
-		${--utf8-source-encoding}
-		${--disable-permissive}
-		${--updated-cpp-version-flag}
-		${--warn-pedantic}
-		${--warn-default}
-		${--warn-extra}
-		${--warn-errors}
-		${--allow-alignas-extra-padding}
-)
-#generate_config_and_manifest_for(ztd.text.benchmarks.conversion_speed)
-configure_graph_benchmark_targets(
-	NAME
-		conversion_speed
-	CONFIG
-		"${CMAKE_CURRENT_SOURCE_DIR}/graph_config.json"
-	TARGETS
-		ztd.text.benchmarks.conversion_speed
-	REPETITIONS
-		${ZTD_TEXT_BENCHMARKS_REPETITIONS}
-)
+generate_converion_speed_benchmark_targets(large unicode "All Unicode Scalar Values (~4.4 MB)")
+generate_converion_speed_benchmark_targets(small basic_source "C Character Set (97 Bytes)")

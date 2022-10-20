@@ -27,6 +27,10 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_BOOST_TEXT_BENCHMARKS)
+
 #include <benchmark/benchmark.h>
 
 #include <ztd/cuneicode.h>
@@ -66,8 +70,11 @@
 		const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(),                                 \
 		     (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data),                                               \
 		     (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data)); \
-		if (!result || !is_equal) {                                                                                \
-			state.SkipWithError("bad benchmark result");                                                          \
+		if (!result) {                                                                                             \
+			state.SkipWithError("conversion failed with an error");                                               \
+		}                                                                                                          \
+		else if (!is_equal) {                                                                                      \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                           \
 			return;                                                                                               \
 		}                                                                                                          \
 	}                                                                                                               \
@@ -96,7 +103,10 @@
 		const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(),                                 \
 		     (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data),                                               \
 		     (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data)); \
-		if (!result || !is_equal) {                                                                                \
+		if (!result) {                                                                                             \
+			state.SkipWithError("conversion failed with an error");                                               \
+		}                                                                                                          \
+		else if (!is_equal) {                                                                                      \
 			/*const auto mismatch = std::mismatch(output_data.cbegin(), output_data.cend(),                       \
 			     (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data),                                          \
 			     (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data)                                           \
@@ -107,7 +117,7 @@
 			          << (mismatch.second                                                                         \
 			                  - (to_char_t*)c_span_char##TO_N##_t_data(u##TO_N##_data))                           \
 			          << std::endl;*/                                                                             \
-			state.SkipWithError("bad benchmark result");                                                          \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                           \
 			return;                                                                                               \
 		}                                                                                                          \
 	}                                                                                                               \
@@ -138,3 +148,5 @@ BENCHMARK(utf16_to_utf8_well_formed_boost_text);
 BENCHMARK(utf16_to_utf8_well_formed_boost_text_view);
 BENCHMARK(utf8_to_utf16_well_formed_boost_text);
 BENCHMARK(utf8_to_utf16_well_formed_boost_text_view);
+
+#endif

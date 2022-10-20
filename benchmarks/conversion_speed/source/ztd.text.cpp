@@ -27,9 +27,13 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ZTD_TEXT_BENCHMARKS)
+
 #include <benchmark/benchmark.h>
 
-#include <ztd.text_transcode_speed.hpp>
+#include <ztd/text/benchmarks/fast_transcode.ztd.text.hpp>
 
 #include <ztd/text.hpp>
 #include <barrier/barrier.h>
@@ -58,8 +62,11 @@
 		const bool is_equal                                                                                                 \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),             \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));                 \
-		if (!result || !is_equal) {                                                                                         \
-			state.SkipWithError("bad benchmark result");                                                                   \
+		if (!result) {                                                                                                      \
+			state.SkipWithError("conversion failed with an error");                                                        \
+		}                                                                                                                   \
+		else if (!is_equal) {                                                                                               \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                                    \
 		}                                                                                                                   \
 	}                                                                                                                        \
                                                                                                                               \
@@ -90,8 +97,11 @@
 		const bool is_equal                                                                                                 \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),             \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));                 \
-		if (!result || !is_equal) {                                                                                         \
-			state.SkipWithError("bad benchmark result");                                                                   \
+		if (!result) {                                                                                                      \
+			state.SkipWithError("conversion failed with an error");                                                        \
+		}                                                                                                                   \
+		else if (!is_equal) {                                                                                               \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                                    \
 		}                                                                                                                   \
 	}                                                                                                                        \
                                                                                                                               \
@@ -115,8 +125,11 @@
 		const bool is_equal                                                                                                 \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),             \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));                 \
-		if (!result || !is_equal) {                                                                                         \
-			state.SkipWithError("bad benchmark result");                                                                   \
+		if (!result) {                                                                                                      \
+			state.SkipWithError("conversion failed with an error");                                                        \
+		}                                                                                                                   \
+		else if (!is_equal) {                                                                                               \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                                    \
 		}                                                                                                                   \
 	}                                                                                                                        \
                                                                                                                               \
@@ -146,8 +159,11 @@
 		const bool is_equal                                                                                                 \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),             \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));                 \
-		if (!result || !is_equal) {                                                                                         \
-			state.SkipWithError("bad benchmark result");                                                                   \
+		if (!result) {                                                                                                      \
+			state.SkipWithError("conversion failed with an error");                                                        \
+		}                                                                                                                   \
+		else if (!is_equal) {                                                                                               \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                                    \
 		}                                                                                                                   \
 	}                                                                                                                        \
                                                                                                                               \
@@ -175,14 +191,17 @@
 		const bool is_equal                                                                                                 \
 		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),             \
 		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));                 \
-		if (!result || !is_equal) {                                                                                         \
-			state.SkipWithError("bad benchmark result");                                                                   \
+		if (!result) {                                                                                                      \
+			state.SkipWithError("conversion failed with an error");                                                        \
+		}                                                                                                                   \
+		else if (!is_equal) {                                                                                               \
+			state.SkipWithError("conversion succeeded but produced illegitimate data");                                    \
 		}                                                                                                                   \
 	}                                                                                                                        \
 	static_assert(true, "")
 
-UTF_CONVERSION_BENCHMARK(8, 16);
-UTF_CONVERSION_BENCHMARK(16, 8);
+// UTF_CONVERSION_BENCHMARK(8, 16);
+// UTF_CONVERSION_BENCHMARK(16, 8);
 
 UTF_CONVERSION_BENCHMARK(8, 32);
 UTF_CONVERSION_BENCHMARK(32, 8);
@@ -192,16 +211,16 @@ UTF_CONVERSION_BENCHMARK(32, 16);
 
 #undef UTF_CONVERSION_BENCHMARK
 
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unbounded);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_view);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unbounded);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_view);
+// BENCHMARK(utf8_to_utf16_well_formed_ztd_text);
+// BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unbounded);
+// BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single);
+// BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unbounded);
+// BENCHMARK(utf8_to_utf16_well_formed_ztd_text_view);
+// BENCHMARK(utf16_to_utf8_well_formed_ztd_text);
+// BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unbounded);
+// BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single);
+// BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unbounded);
+// BENCHMARK(utf16_to_utf8_well_formed_ztd_text_view);
 
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text);
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text_unbounded);
@@ -224,3 +243,5 @@ BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_unbounded);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single_unbounded);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_view);
+
+#endif

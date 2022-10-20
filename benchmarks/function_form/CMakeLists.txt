@@ -64,7 +64,7 @@ target_include_directories(ztd.text.benchmarks.function_form
 	../include
 )
 #generate_config_and_manifest_for(ztd.text.benchmarks.function_form)
-configure_graph_benchmark_targets(
+ztd_tools_add_benchmark_grapher(
 	NAME
 		function_form
 	CONFIG

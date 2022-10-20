@@ -29,6 +29,10 @@
 
 #include <ztd/version.hpp>
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_WINDOWS_BENCHMARKS)
+
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 
 #include <benchmark/benchmark.h>
@@ -58,8 +62,11 @@ static void utf16_to_utf8_well_formed_windows_api(benchmark::State& state) {
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(), c_span_char8_t_data(u8_data),
 	     c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 	}
 }
 
@@ -81,8 +88,11 @@ static void utf8_to_utf16_well_formed_windows_api(benchmark::State& state) {
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(), c_span_char16_t_data(u16_data),
 	     c_span_char16_t_data(u16_data) + c_span_char16_t_size(u16_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 		return;
 	}
 }
@@ -91,3 +101,5 @@ BENCHMARK(utf16_to_utf8_well_formed_windows_api);
 BENCHMARK(utf8_to_utf16_well_formed_windows_api);
 
 #endif // Windows-only
+
+#endif

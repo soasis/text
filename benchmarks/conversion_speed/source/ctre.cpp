@@ -27,12 +27,16 @@
 //
 // ========================================================================= //
 
+#include <ztd/text/benchmarks/version.hpp>
+
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CTRE_BENCHMARKS)
+
 #include <ztd/version.hpp>
 
 #include <benchmark/benchmark.h>
 
 #include <barrier/barrier.h>
-#include <ctre_utf8_cxx17.hpp>
+#include <ztd/text/benchmarks/ctre_utf8_cxx17.hpp>
 
 #include <vector>
 #include <string_view>
@@ -57,10 +61,15 @@ static void utf8_to_utf32_unchecked_well_formed_ctre(benchmark::State& state) {
 	}
 	const bool is_equal = std::equal(output_data.cbegin(), output_data.cend(), c_span_char32_t_data(u32_data),
 	     c_span_char32_t_data(u32_data) + c_span_char32_t_size(u32_data));
-	if (!result || !is_equal) {
-		state.SkipWithError("bad benchmark result");
+	if (!result) {
+		state.SkipWithError("conversion failed with an error");
+	}
+	else if (!is_equal) {
+		state.SkipWithError("conversion succeeded but produced illegitimate data");
 		return;
 	}
 }
 
 BENCHMARK(utf8_to_utf32_unchecked_well_formed_ctre);
+
+#endif
