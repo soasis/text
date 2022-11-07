@@ -47,7 +47,7 @@ struct conversion_deleter {
 
 struct registry_deleter {
 	void operator()(cnc_conversion_registry* registry) const noexcept {
-		cnc_delete_registry(registry);
+		cnc_registry_delete(registry);
 	}
 };
 

@@ -28,49 +28,62 @@
 # =========================================================================== #
 
 # # Benchmarks
-file(GLOB_RECURSE ztd.text.benchmarks.function_form.sources
-	LIST_DIRECTORIES FALSE
-	CONFIGURE_DEPENDS
-	source/*.c source/*.cpp)
+function (generate_function_form_benchmark_targets name data_name title)
+	file(GLOB_RECURSE sources
+		LIST_DIRECTORIES FALSE
+		CONFIGURE_DEPENDS
+		source/*.c source/*.cpp)
 
-add_executable(ztd.text.benchmarks.function_form ${ztd.text.benchmarks.function_form.sources})
-target_compile_options(ztd.text.benchmarks.function_form
-	PRIVATE
-	${--utf8-literal-encoding}
-	${--utf8-source-encoding}
-	${--disable-permissive}
-	${--updated-cpp-version-flag}
-	${--warn-pedantic}
-	${--warn-all}
-	${--warn-extra}
-	${--allow-alignas-extra-padding}
-	# MSVC is BROKEN
-	# ${--warn-errors}
-)
-target_compile_definitions(ztd.text.benchmarks.function_form
-	PRIVATE
-	CATCH_CONFIG_ENABLE_BENCHMARKING=1
-)
-target_link_libraries(ztd.text.benchmarks.function_form
-	PRIVATE
-	ztd::cuneicode::benchmarks::barrier
-	ztd::cuneicode
-	benchmark::benchmark
-	${CMAKE_DL_LIBS}
-)
-target_include_directories(ztd.text.benchmarks.function_form
-	PRIVATE
-	include
-	../include
-)
-#generate_config_and_manifest_for(ztd.text.benchmarks.function_form)
-ztd_tools_add_benchmark_grapher(
-	NAME
-		function_form
-	CONFIG
-		"${CMAKE_CURRENT_SOURCE_DIR}/graph_config.json"
-	TARGETS
-		ztd.text.benchmarks.function_form
-	REPETITIONS
-		${ZTD_TEXT_BENCHMARKS_REPETITIONS}
-)
+	add_executable(ztd.text.benchmarks.function_form.${name} ${sources})
+	target_compile_options(ztd.text.benchmarks.function_form.${name}
+		PRIVATE
+		${--utf8-literal-encoding}
+		${--utf8-source-encoding}
+		${--disable-permissive}
+		${--updated-cpp-version-flag}
+		${--warn-pedantic}
+		${--warn-all}
+		${--warn-extra}
+		${--allow-alignas-extra-padding}
+		# MSVC is BROKEN
+		# ${--warn-errors}
+	)
+	target_compile_definitions(ztd.text.benchmarks.function_form.${name}
+		PRIVATE
+		CATCH_CONFIG_ENABLE_BENCHMARKING=1
+		u8_data=u8_${data_name}_data
+		u16_data=u16_${data_name}_data
+		u32_data=u32_${data_name}_data
+	)
+	target_link_libraries(ztd.text.benchmarks.function_form.${name}
+		PRIVATE
+		ztd::cuneicode::benchmarks::barrier
+		ztd::cuneicode
+		benchmark::benchmark
+		${CMAKE_DL_LIBS}
+	)
+	target_include_directories(ztd.text.benchmarks.function_form.${name}
+		PRIVATE
+		include
+		../include
+	)
+	generate_target_manifest(ztd.text.benchmarks.function_form.${name})
+	set(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_TITLE ${title})
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/graph_config.in.json
+		${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json
+		@ONLY
+	)
+	ztd_tools_add_benchmark_grapher(
+		NAME
+			function_form.${name}
+		CONFIG
+			"${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json"
+		TARGETS
+			ztd.text.benchmarks.function_form.${name}
+		REPETITIONS
+			${ZTD_TEXT_BENCHMARKS_REPETITIONS}
+	)
+endfunction()
+
+generate_function_form_benchmark_targets(large unicode "All Unicode Scalar Values (~4.4 MB)")
+generate_function_form_benchmark_targets(small basic_source "C Character Set (97 Bytes)")

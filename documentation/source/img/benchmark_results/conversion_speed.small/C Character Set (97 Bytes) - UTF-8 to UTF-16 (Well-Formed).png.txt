@@ -1,0 +1,46 @@
+Title: "C Character Set (97 Bytes) - UTF-8 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+
+There are 21 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- boost_text is 21st. Described as: "Measures the boost.text library from Zach Laine and its encoding routines, particularly the all-at-once bulk routines.".
+  This group had an error: "conversion succeeded but produced illegitimate data".
+- encoding_c is 20th. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
+  This group had an error: "unsupported".
+- cuneicode is 19th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines.".
+  Measures to a mean of "754.3518749994942" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_single is 18th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines that use the "indivisable unit fo conversion" functions.".
+  Measures to a mean of "701.8299669663455" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_unbounded is 17th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines (without providing an output size).".
+  Measures to a mean of "695.8281428555243" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_single_unbounded is 16th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines "indivisable unit fo conversion" functions (without providing an output size).".
+  Measures to a mean of "662.2610502251649" nanoseconds, from 100 multi-iteration samples.
+- standard_c is 15th. It has no description.
+  Measures to a mean of "614.6889710030518" nanoseconds, from 100 multi-iteration samples.
+- iconv is 14th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "456.3344275004056" nanoseconds, from 100 multi-iteration samples.
+- icu_ucnv_convertEx is 13th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "226.83548450833283" nanoseconds, from 100 multi-iteration samples.
+- boost_text_view is 12th. Described as: "Measures the boost.text library from Zach laine and its encoding routines, partocularly the one-at-a-time views that can be fed into C and C++ algorithms using the view's iterator abstraction.".
+  Measures to a mean of "212.64174119980638" nanoseconds, from 100 multi-iteration samples.
+- utf8cpp is 11th. Described as: "Measures the utf8cpp library and its conversion routines.".
+  Measures to a mean of "136.57179821374095" nanoseconds, from 100 multi-iteration samples.
+- standard_cpp is 10th. It has no description.
+  Measures to a mean of "122.48891546914822" nanoseconds, from 100 multi-iteration samples.
+- icu_u_strFromUTF8 is 9th. Described as: "Measures the ICU library conversion routine using the specific u_strFromUTF8 function.".
+  Measures to a mean of "111.65116671800207" nanoseconds, from 100 multi-iteration samples.
+- icu_ucnv_toUChars is 8th. Described as: "Measures the ICU library conversion routine using the specific ucnv_toUChars function.".
+  Measures to a mean of "78.92503783464885" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_registry is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "58.0133725444674" nanoseconds, from 100 multi-iteration samples.
+- windows_api is 6th. Described as: "Measures the Win32 API conversion routine using MultibyteToWideChar function or the WideCharToMultibyte function.".
+  Measures to a mean of "38.32828000877129" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_registry_unbounded is 5th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "24.434906178230133" nanoseconds, from 100 multi-iteration samples.
+- encoding_c_direct is 4th. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c directly (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
+  Measures to a mean of "22.765254781479598" nanoseconds, from 100 multi-iteration samples.
+- simdutf is 3rd. Described as: "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads.".
+  Measures to a mean of "16.108175742549967" nanoseconds, from 100 multi-iteration samples.
+- memcpy is 2nd. It has no description.
+  Measures to a mean of "4.251330969901756" nanoseconds, from 100 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.9299797713756563e-07" nanoseconds, from 100 multi-iteration samples.

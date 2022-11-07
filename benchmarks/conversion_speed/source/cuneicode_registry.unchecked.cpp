@@ -55,7 +55,7 @@
 			cnc_conversion_registry* raw_registry = nullptr;                                                        \
 			cnc_conversion* raw_conversion        = nullptr;                                                        \
 			cnc_conversion_info info              = {};                                                             \
-			const cnc_open_error err              = cnc_new_registry(&raw_registry, CNC_REGISTRY_OPTIONS_NONE);     \
+			const cnc_open_error err              = cnc_registry_new(&raw_registry, CNC_REGISTRY_OPTIONS_NONE);     \
 			if (err != CNC_OPEN_ERROR_OK) {                                                                         \
 				/* something went wrong, get out of here quick! */                                                 \
 				state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
@@ -127,7 +127,7 @@
 				cnc_conversion_registry* raw_registry = nullptr;                                                   \
 				cnc_conversion* raw_conversion        = nullptr;                                                   \
 				cnc_conversion_info info              = {};                                                        \
-				const cnc_open_error err = cnc_open_registry(&raw_registry, &mbr_heap, CNC_REGISTRY_OPTIONS_NONE); \
+				const cnc_open_error err = cnc_registry_open(&raw_registry, &mbr_heap, CNC_REGISTRY_OPTIONS_NONE); \
 				if (err != CNC_OPEN_ERROR_OK) {                                                                    \
 					/* something went wrong, get out of here quick! */                                            \
 					result = false;                                                                               \

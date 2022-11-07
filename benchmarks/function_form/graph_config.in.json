@@ -1,5 +1,5 @@
 {
-	"name": "Function Forms",
+	"name": "@ZTD_TEXT_BENCHMARKS_FUNCTION_FORM_TITLE@",
 	"scale": {
 		"type": "relative",
 		"to": "base"
@@ -42,6 +42,11 @@
 			"name": "{ err, ptr, ptr }(T*, size_t, T*, size_t)",
 			"pattern": "structptr_ptr_size_ptr_size",
 			"description": "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans."
+		},
+		{
+			"name": "memcpy",
+			"pattern": "memcpy_",
+			"description": "Copying the data directly to the output."
 		}
 	],
 	"data_labels": [

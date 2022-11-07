@@ -1,0 +1,26 @@
+Title: "C Character Set (97 Bytes) - UTF-32 to UTF-8 (Well-Formed, Assumed Valid)". Description: "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+
+There are 11 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- ztd_text is 11th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
+  Measures to a mean of "598.1888714283872" nanoseconds, from 100 multi-iteration samples.
+- ztd_text_view is 10th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction.".
+  Measures to a mean of "301.57383080534476" nanoseconds, from 100 multi-iteration samples.
+- ztd_text_single is 9th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function.".
+  Measures to a mean of "145.8724055199417" nanoseconds, from 100 multi-iteration samples.
+- ztd_text_single_unbounded is 8th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function in a loop, with output bounds checking turned off.".
+  Measures to a mean of "145.40291893168842" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_registry is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "53.49711439874955" nanoseconds, from 100 multi-iteration samples.
+- utf8cpp is 6th. Described as: "Measures the utf8cpp library and its conversion routines.".
+  Measures to a mean of "48.942440196859" nanoseconds, from 100 multi-iteration samples.
+- cuneicode_registry_unbounded is 5th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "25.429804906096305" nanoseconds, from 100 multi-iteration samples.
+- simdutf is 4th. Described as: "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads.".
+  Measures to a mean of "20.452148749973276" nanoseconds, from 100 multi-iteration samples.
+- ztd_text_unbounded is 3rd. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
+  Measures to a mean of "20.200143591835378" nanoseconds, from 100 multi-iteration samples.
+- memcpy is 2nd. It has no description.
+  Measures to a mean of "3.447653676422151" nanoseconds, from 100 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.9299797713756563e-07" nanoseconds, from 100 multi-iteration samples.

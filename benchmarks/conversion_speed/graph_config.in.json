@@ -263,7 +263,7 @@
 		{
 			"name": "noop",
 			"pattern": "noop$",
-			"description": "Measures doing literally nothing (no written expressoins/statements in the benchmarking loop). Can be useful for determining potential environment noise.",
+			"description": "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.",
 			"always_included": true
 		}
 	],
