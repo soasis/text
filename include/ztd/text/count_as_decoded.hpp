@@ -80,17 +80,12 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto basic_count_as_decoded(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UInput         = remove_cvref_t<_Input>;
-		using _InputValueType = ranges::range_value_type_t<_UInput>;
-		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<is_char_traitable_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
-                    ::ztd::span<const _InputValueType>>,
-               _UInput>>;
-		using _UEncoding      = remove_cvref_t<_Encoding>;
-		using _Result         = count_result<_WorkingInput, _State>;
+		using _WorkingInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _UEncoding    = remove_cvref_t<_Encoding>;
+		using _Result       = count_result<_WorkingInput, _State>;
 
-		_WorkingInput __working_input(
-			ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+		_WorkingInput __working_input
+			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 
 		::std::size_t __code_point_count = 0;
 
@@ -105,10 +100,10 @@ namespace ztd { namespace text {
 				}
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
-				if (!text::is_state_complete(__state)) {
+				if (!::ztd::text::is_state_complete(__encoding, __state)) {
 					continue;
 				}
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
+				if (::ztd::ranges::empty(__working_input)) {
 					break;
 				}
 			}
@@ -125,10 +120,10 @@ namespace ztd { namespace text {
 				}
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
-				if (!text::is_state_complete(__state)) {
+				if (!::ztd::text::is_state_complete(__encoding, __state)) {
 					continue;
 				}
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
+				if (::ztd::ranges::empty(__working_input)) {
 					break;
 				}
 			}
@@ -149,8 +144,8 @@ namespace ztd { namespace text {
 				}
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __state)) {
 						continue;
 					}
 					break;
@@ -272,4 +267,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_count_as_decoded_HPP
+#endif

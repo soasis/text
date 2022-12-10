@@ -99,4 +99,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ASSUME_VALID_HANDLER_HPP
+#endif

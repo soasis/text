@@ -233,4 +233,4 @@
 #include <ztd/prologue.hpp>
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_VERSION_HPP
+#endif

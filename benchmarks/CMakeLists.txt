@@ -95,9 +95,9 @@ add_subdirectory(barrier)
 add_subdirectory(function_form)
 add_subdirectory(conversion_speed)
 
-add_custom_target(ztd.text.benchmarks.all_graphs
+add_custom_target(ztd.text.benchmarks.graphs.all
 	COMMENT "[ztd.text] graphing all benchmarks...")
-add_dependencies(ztd.text.benchmarks.all_graphs
+add_dependencies(ztd.text.benchmarks.graphs.all
 	ztd.tools.benchmark_grapher.function_form.large
 	ztd.tools.benchmark_grapher.function_form.small
 	ztd.tools.benchmark_grapher.conversion_speed.small

@@ -81,7 +81,7 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 		template <typename _Type>
-		using __detect_code_unit_type = decltype(typename _Type::code_unit{});
+		using __detect_code_unit_type = decltype(typename _Type::code_unit {});
 
 		template <typename, typename = void>
 		struct __code_unit_or_void {
@@ -95,11 +95,11 @@ namespace ztd { namespace text {
 
 		template <typename _Type>
 		using __code_unit_or_void_t = __code_unit_or_void<::ztd::remove_cvref_t<_Type>>;
-	}
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_CODE_UNIT_HPP
+#endif

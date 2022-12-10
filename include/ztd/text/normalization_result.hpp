@@ -105,4 +105,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_NORMALIZATION_RESULT_HPP
+#endif

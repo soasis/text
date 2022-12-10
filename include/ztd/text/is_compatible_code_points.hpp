@@ -70,4 +70,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_IS_COMPATIBLE_CODE_POINTS_HPP
+#endif

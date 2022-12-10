@@ -215,14 +215,13 @@ namespace ztd { namespace text {
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
 			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any view
 			/// that models an input_range.
-			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-			static constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output,
-				_ErrorHandler&& __error_handler, encode_state& __s) {
-				using _UInputRange   = remove_cvref_t<_InputRange>;
-				using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			template <typename _Input, typename _Output, typename _ErrorHandler>
+			static constexpr auto encode_one(
+				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) {
+				using _UInputRange   = remove_cvref_t<_Input>;
+				using _UOutputRange  = remove_cvref_t<_Output>;
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _Result
-					= __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
+				using _Result        = __txt_detail::__reconstruct_encode_result_t<_Input, _Output, encode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				if (ztd::is_execution_encoding_utf8()) {
@@ -230,33 +229,32 @@ namespace ztd { namespace text {
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;
 					__execution_utf8 __base_encoding {};
-					return __base_encoding.encode_one(::std::forward<_InputRange>(__input),
-						::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler),
-						__s);
+					return __base_encoding.encode_one(::std::forward<_Input>(__input),
+						::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
 				}
 
-				auto __in_it   = ranges::ranges_adl::adl_begin(__input);
-				auto __in_last = ranges::ranges_adl::adl_end(__input);
+				auto __in_it   = ::ztd::ranges::begin(__input);
+				auto __in_last = ::ztd::ranges::end(__input);
 
 				if (__in_it == __in_last) {
 					// an exhausted sequence is fine
 					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 						               ::std::move(__in_last)),
 						ranges::reconstruct(
-						     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
+						     ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 						__s, encoding_error::ok);
 				}
 
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
-				auto __out_it  = ranges::ranges_adl::adl_begin(__output);
-				auto __outlast = ranges::ranges_adl::adl_end(__output);
+				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __outlast = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
 					if (__out_it == __outlast) {
 						__execution_cuchar __self {};
-						return __error_handler(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-							             ::std::forward<_InputRange>(__input)),
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(ranges::reconstruct(
+							             ::std::in_place_type<_UInputRange>, ::std::forward<_Input>(__input)),
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
 							          ::std::move(__outlast)),
 							     __s, encoding_error::insufficient_output_space),
@@ -273,16 +271,15 @@ namespace ztd { namespace text {
 					__intermediate_handler {};
 				wchar_t __wide_intermediary[8] {};
 				::ztd::span<wchar_t> __wide_write_buffer(__wide_intermediary);
-				auto __intermediate_result
-					= __intermediate_encoding.encode_one(::std::forward<_InputRange>(__input), __wide_write_buffer,
-					     __intermediate_handler, __intermediate_s);
+				auto __intermediate_result = __intermediate_encoding.encode_one(::std::forward<_Input>(__input),
+					__wide_write_buffer, __intermediate_handler, __intermediate_s);
 				if constexpr (__call_error_handler) {
 					if (__intermediate_result.error_code != encoding_error::ok) {
 						__execution_cuchar __self {};
-						return __error_handler(__self,
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__intermediate_result.input),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-							          ::std::forward<_OutputRange>(__output)),
+							     ranges::reconstruct(
+							          ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 							     __s, __intermediate_result.error_code),
 							__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
 					}
@@ -300,9 +297,9 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__res == 0) {
 						__execution_cuchar __self {};
-						return __error_handler(__self,
-							_Result(::std::move(__intermediate_result.input),
-							     ::std::forward<_OutputRange>(__output), __s,
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output),
+							     __s,
 							     ::GetLastError() == ERROR_INSUFFICIENT_BUFFER
 							          ? encoding_error::insufficient_output_space
 							          : encoding_error::invalid_sequence),
@@ -315,10 +312,10 @@ namespace ztd { namespace text {
 							__execution_cuchar __self {};
 							::ztd::span<code_unit> __code_unit_progress(
 								__intermediary_it, static_cast<::std::size_t>(__res + 1));
-							return __error_handler(__self,
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ranges::ranges_adl::adl_begin(__intermediate_result.input),
-								             ranges::ranges_adl::adl_end(__intermediate_result.input)),
+								             ::ztd::ranges::begin(__intermediate_result.input),
+								             ::ztd::ranges::end(__intermediate_result.input)),
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
 								          ::std::move(__out_it), ::std::move(__outlast)),
 								     __s, encoding_error::insufficient_output_space),
@@ -326,7 +323,7 @@ namespace ztd { namespace text {
 						}
 					}
 					*__out_it = *__intermediary_it;
-					ranges::advance(__out_it);
+					::ztd::ranges::iter_advance(__out_it);
 				}
 				return _Result(::std::move(__intermediate_result.input),
 					ranges::reconstruct(
@@ -334,13 +331,13 @@ namespace ztd { namespace text {
 					__s, __intermediate_result.error_code);
 #else
 
-				auto __out_it  = ranges::ranges_adl::adl_begin(__output);
-				auto __outlast = ranges::ranges_adl::adl_end(__output);
+				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __outlast = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
 					if (__out_it == __outlast) {
 						__execution_cuchar __self {};
-						return __error_handler(__self,
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 							             ::std::move(__in_last)),
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
@@ -351,14 +348,14 @@ namespace ztd { namespace text {
 				}
 
 				code_point __codepoint = *__in_it;
-				ranges::advance(__in_it);
+				::ztd::ranges::iter_advance(__in_it);
 				code_unit __intermediary_output[(MB_LEN_MAX * 2)] {};
 				::std::size_t __res = ZTD_UCHAR_ACCESSOR_I_ c32rtomb(
 					__intermediary_output, __codepoint, ::std::addressof(__s.__narrow_state));
 				if constexpr (__call_error_handler) {
 					if (__res == static_cast<::std::size_t>(-1)) {
 						__execution_cuchar __self {};
-						return __error_handler(__self,
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 							             ::std::move(__in_last)),
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
@@ -374,7 +371,7 @@ namespace ztd { namespace text {
 							__execution_cuchar __self {};
 							::ztd::span<code_unit> __code_unit_progress(
 								__intermediary_it, static_cast<::std::size_t>(__res + 1));
-							return __error_handler(__self,
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 								             ::std::move(__in_it), ::std::move(__in_last)),
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
@@ -384,7 +381,7 @@ namespace ztd { namespace text {
 						}
 					}
 					*__out_it = *__intermediary_it;
-					ranges::advance(__out_it);
+					::ztd::ranges::iter_advance(__out_it);
 				}
 
 				return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
@@ -417,14 +414,13 @@ namespace ztd { namespace text {
 			/// returned untouched (e.g., the input models at least a view and a forward_range). If it is not
 			/// possible, returned ranges may be incremented even if an error occurs due to the semantics of any view
 			/// that models an input_range.
-			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-			static constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output,
-				_ErrorHandler&& __error_handler, decode_state& __s) {
-				using _UInputRange   = remove_cvref_t<_InputRange>;
-				using _UOutputRange  = remove_cvref_t<_OutputRange>;
+			template <typename _Input, typename _Output, typename _ErrorHandler>
+			static constexpr auto decode_one(
+				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) {
+				using _UInputRange   = remove_cvref_t<_Input>;
+				using _UOutputRange  = remove_cvref_t<_Output>;
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _Result
-					= __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
+				using _Result        = __txt_detail::__reconstruct_decode_result_t<_Input, _Output, decode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				if (ztd::is_execution_encoding_utf8()) {
@@ -432,30 +428,29 @@ namespace ztd { namespace text {
 					using __execution_utf8 = __txt_impl::__utf8_with<__execution_cuchar, code_unit, code_point,
 						decode_state, encode_state>;
 					__execution_utf8 __base_encoding {};
-					return __base_encoding.decode_one(::std::forward<_InputRange>(__input),
-						::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler),
-						__s);
+					return __base_encoding.decode_one(::std::forward<_Input>(__input),
+						::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
 				}
 
-				auto __in_it   = ranges::ranges_adl::adl_begin(__input);
-				auto __in_last = ranges::ranges_adl::adl_end(__input);
+				auto __in_it   = ::ztd::ranges::begin(__input);
+				auto __in_last = ::ztd::ranges::end(__input);
 
 				if (__in_it == __in_last) {
 					// an exhausted sequence is fine
 					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 						               ::std::move(__in_last)),
 						ranges::reconstruct(
-						     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
+						     ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 						__s, encoding_error::ok);
 				}
 
-				auto __out_it  = ranges::ranges_adl::adl_begin(__output);
-				auto __outlast = ranges::ranges_adl::adl_end(__output);
+				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __outlast = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
 					if (__out_it == __outlast) {
 						__execution_cuchar __self {};
-						return __error_handler(__self,
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 							             ::std::move(__in_last)),
 							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
@@ -468,7 +463,7 @@ namespace ztd { namespace text {
 				code_unit __intermediary_input[max_code_units * 2] {};
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS) && ZTD_IS_OFF(ZTD_COMPILER_MINGW)
 				__intermediary_input[0] = *__in_it;
-				ranges::advance(__in_it);
+				::ztd::ranges::iter_advance(__in_it);
 				::std::size_t __state_count = 1;
 				for (; __state_count < max_code_units; ++__state_count) {
 					using __wutf16             = __txt_impl::__utf16_with<void, wchar_t, code_point, false>;
@@ -486,7 +481,7 @@ namespace ztd { namespace text {
 							if constexpr (__call_error_handler) {
 								if (__in_it == __in_last) {
 									__execution_cuchar __self {};
-									return __error_handler(__self,
+									return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 										_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 										             ::std::move(__in_it), ::std::move(__in_last)),
 										     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
@@ -497,12 +492,12 @@ namespace ztd { namespace text {
 								}
 							}
 							__intermediary_input[__state_count] = *__in_it;
-							ranges::advance(__in_it);
+							::ztd::ranges::iter_advance(__in_it);
 							continue;
 						}
 						if constexpr (__call_error_handler) {
 							__execution_cuchar __self {};
-							return __error_handler(__self,
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 								             ::std::move(__in_it), ::std::move(__in_last)),
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
@@ -521,11 +516,11 @@ namespace ztd { namespace text {
 					::ztd::span<wchar_t, sizeof(__wide_intermediary) / sizeof(wchar_t)> __wide_intermediary_view(
 						__wide_intermediary);
 					auto __intermediate_result = __intermediate_encoding.encode_one(__wide_intermediary_view,
-						::std::forward<_OutputRange>(__output), __intermediate_handler, __intermediate_s);
+						::std::forward<_Output>(__output), __intermediate_handler, __intermediate_s);
 					if constexpr (__call_error_handler) {
 						if (__intermediate_result.error_code != encoding_error::ok) {
 							__execution_cuchar __self {};
-							return __error_handler(__self,
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 								             ::std::move(__in_it), ::std::move(__in_last)),
 								     ::std::move(__intermediate_result.output), __s,
@@ -547,7 +542,7 @@ namespace ztd { namespace text {
 					if constexpr (__call_error_handler) {
 						if (__res == static_cast<::std::size_t>(-1)) {
 							__execution_cuchar __self {};
-							return __error_handler(__self,
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 								             ::std::move(__in_it), ::std::move(__in_last)),
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
@@ -557,7 +552,7 @@ namespace ztd { namespace text {
 						}
 					}
 					*__out_it = __intermediary_output[0];
-					ranges::advance(__out_it);
+					::ztd::ranges::iter_advance(__out_it);
 					__s.__output_pending = __res == static_cast<::std::size_t>(-3);
 					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 						               ::std::move(__in_last)),
@@ -571,7 +566,7 @@ namespace ztd { namespace text {
 				for (; __state_offset < max_code_units; (void)++__state_offset, (void)++__state_count) {
 					::std::mbstate_t __preserved_state   = __s.__narrow_state;
 					__intermediary_input[__state_offset] = *__in_it;
-					ranges::advance(__in_it);
+					::ztd::ranges::iter_advance(__in_it);
 					char32_t __intermediary_output[1] {};
 					::std::size_t __res = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(
 						::std::addressof(__intermediary_output[0]), ::std::addressof(__intermediary_input[0]),
@@ -583,7 +578,7 @@ namespace ztd { namespace text {
 						if constexpr (__call_error_handler) {
 							if (__in_it == __in_last) {
 								__execution_cuchar __self {};
-								return __error_handler(__self,
+								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 									_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 									             ::std::move(__in_it), ::std::move(__in_last)),
 									     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
@@ -596,7 +591,7 @@ namespace ztd { namespace text {
 						break;
 					case static_cast<::std::size_t>(-3):
 						*__out_it = __intermediary_output[0];
-						ranges::advance(__out_it);
+						::ztd::ranges::iter_advance(__out_it);
 						__s.__narrow_state   = __preserved_state;
 						__s.__output_pending = true;
 						__state_offset       = __state_count;
@@ -612,7 +607,7 @@ namespace ztd { namespace text {
 							// everything has gone to shit
 							// even the __narrow_state is unspecified ;;
 							__execution_cuchar __self {};
-							return __error_handler(__self,
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 								             ::std::move(__in_it), ::std::move(__in_last)),
 								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
@@ -628,7 +623,7 @@ namespace ztd { namespace text {
 					case static_cast<::std::size_t>(0):
 						// 0 means null character; ok
 						*__out_it = __intermediary_output[0];
-						ranges::advance(__out_it);
+						::ztd::ranges::iter_advance(__out_it);
 						return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 							               ::std::move(__in_it), ::std::move(__in_last)),
 							ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
@@ -636,7 +631,7 @@ namespace ztd { namespace text {
 							__s, encoding_error::ok);
 					default:
 						*__out_it = __intermediary_output[0];
-						ranges::advance(__out_it);
+						::ztd::ranges::iter_advance(__out_it);
 						__s.__narrow_state = __preserved_state;
 						return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
 							               ::std::move(__in_it), ::std::move(__in_last)),
@@ -650,7 +645,7 @@ namespace ztd { namespace text {
 					// if it was invalid, we would have caught it before
 					// this is for incomplete sequences only
 					__execution_cuchar __self {};
-					return __error_handler(__self,
+					return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 						_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 						             ::std::move(__in_last)),
 						     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
@@ -682,4 +677,4 @@ namespace ztd { namespace text {
 
 #endif
 
-#endif // ZTD_TEXT_DETAIL_EXECUTION_CUCHAR_HPP
+#endif

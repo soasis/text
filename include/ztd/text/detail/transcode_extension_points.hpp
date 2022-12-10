@@ -68,8 +68,8 @@ namespace ztd { namespace text {
 		encode_state_t<remove_cvref_t<_ToEncoding>>& __to_state) {
 		using _FromState = decode_state_t<remove_cvref_t<_FromEncoding>>;
 		using _ToState   = encode_state_t<remove_cvref_t<_ToEncoding>>;
-		__txt_detail::__copy(ranges::ranges_adl::adl_begin(__input), ranges::ranges_adl::adl_end(__input),
-			ranges::ranges_adl::adl_begin(__output), ranges::ranges_adl::adl_end(__output));
+		__txt_detail::__copy(::ztd::ranges::begin(__input), ::ztd::ranges::end(__input),
+			::ztd::ranges::begin(__output), ::ztd::ranges::end(__output));
 		return transcode_result<_Input, _Output, _FromState, _ToState>(::std::forward<_Input>(__input),
 			::std::forward<_Output>(__output), __from_state, __to_state, encoding_error::ok);
 	}
@@ -86,8 +86,8 @@ namespace ztd { namespace text {
 		encode_state_t<remove_cvref_t<_ToEncoding>>& __to_state) {
 		using _FromState = decode_state_t<remove_cvref_t<_FromEncoding>>;
 		using _ToState   = encode_state_t<remove_cvref_t<_ToEncoding>>;
-		__txt_detail::__copy(ranges::ranges_adl::adl_begin(__input), ranges::ranges_adl::adl_end(__input),
-			ranges::ranges_adl::adl_begin(__output), ranges::ranges_adl::adl_end(__output));
+		__txt_detail::__copy(::ztd::ranges::begin(__input), ::ztd::ranges::end(__input),
+			::ztd::ranges::begin(__output), ::ztd::ranges::end(__output));
 		return transcode_result<_Input, _Output, _FromState, _ToState>(::std::forward<_Input>(__input),
 			::std::forward<_Output>(__output), __from_state, __to_state, encoding_error::ok);
 	}
@@ -99,4 +99,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_TRANSCODE_EXTENSION_POINTS_HPP
+#endif

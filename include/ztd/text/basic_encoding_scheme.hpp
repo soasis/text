@@ -67,10 +67,9 @@ namespace ztd { namespace text {
 	/// char`` buffers rather than ``std::byte`` buffers by doing:
 	/// ``ztd::text::encoding_scheme<ztd::text::utf32_t, ztd::endian::native, unsigned char>``.
 	template <typename _Encoding, endian _Endian = endian::native, typename _Byte = ::std::byte>
-	class encoding_scheme
-	: public __txt_detail::__is_unicode_encoding_es<encoding_scheme<_Encoding, _Endian, _Byte>,
-			unwrap_remove_cvref_t<_Encoding>>,
-		private ebco<_Encoding> {
+	class encoding_scheme : public __txt_detail::__is_unicode_encoding_es<encoding_scheme<_Encoding, _Endian, _Byte>,
+		                        unwrap_remove_cvref_t<_Encoding>>,
+		                   private ebco<_Encoding> {
 	private:
 		using __base_t       = ebco<_Encoding>;
 		using _UBaseEncoding = unwrap_remove_cvref_t<_Encoding>;
@@ -144,7 +143,7 @@ namespace ztd { namespace text {
 		/// @param[in] __args Any additional arguments used to construct the stored encoding.
 		template <typename _Arg0, typename... _Args,
 			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_Arg0>, encoding_scheme> // cf
-				&& !::std::is_same_v<remove_cvref_t<_Arg0>, ::std::in_place_t>>* = nullptr>
+			     && !::std::is_same_v<remove_cvref_t<_Arg0>, ::std::in_place_t>>* = nullptr>
 		constexpr encoding_scheme(_Arg0&& __arg0, _Args&&... __args) noexcept(
 			::std::is_nothrow_constructible_v<_UBaseEncoding, _Arg0, _Args...>)
 		: __base_t(::std::forward<_Arg0>(__arg0), ::std::forward<_Args>(__args)...) {
@@ -230,10 +229,9 @@ namespace ztd { namespace text {
 				using _TransformedSpan = ::ztd::span<const code_unit>;
 				_OriginalSpan __guaranteed_code_unit_view(__original);
 				// transform into proper type...
-				auto __transformed_ptr
-					= reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
-				auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
-					/ sizeof(const code_unit);
+				auto __transformed_ptr = reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
+				auto __transformed_size
+					= (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit)) / sizeof(const code_unit);
 				return _TransformedSpan(__transformed_ptr, __transformed_size);
 			}
 		}
@@ -272,10 +270,9 @@ namespace ztd { namespace text {
 				decltype(auto) __original = *__maybe_original;
 				_OriginalSpan __guaranteed_code_unit_view(__original);
 				// transform into proper type...
-				auto __transformed_ptr
-					= reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
-				auto __transformed_size = (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit))
-					/ sizeof(const code_unit);
+				auto __transformed_ptr = reinterpret_cast<const code_unit*>(__guaranteed_code_unit_view.data());
+				auto __transformed_size
+					= (__guaranteed_code_unit_view.size() * sizeof(_OriginalCodeUnit)) / sizeof(const code_unit);
 				return _TransformedSpan(__transformed_ptr, __transformed_size);
 			}
 		}
@@ -313,26 +310,25 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-		constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output,
-			_ErrorHandler&& __error_handler, decode_state& __s) const {
-			using _UInputRange    = remove_cvref_t<_InputRange>;
-			using _UOutputRange   = remove_cvref_t<_OutputRange>;
+		template <typename _Input, typename _Output, typename _ErrorHandler>
+		constexpr auto decode_one(
+			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) const {
+			using _UInputRange    = remove_cvref_t<_Input>;
+			using _UOutputRange   = remove_cvref_t<_Output>;
 			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
-			using _Result
-				= __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
-			using _InByteIt  = ranges::word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
-			using _InByteSen = ranges::word_sentinel;
+			using _Result         = __txt_detail::__reconstruct_decode_result_t<_Input, _Output, decode_state>;
+			using _InByteIt       = ranges::word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
+			using _InByteSen      = ranges::word_sentinel;
 			ranges::subrange<_InByteIt, _InByteSen> __inbytes(
-				_InByteIt(::std::forward<_InputRange>(__input)), _InByteSen());
+				_InByteIt(::std::forward<_Input>(__input)), _InByteSen());
 			__txt_detail::__scheme_handler<_Byte, _UInputRange, _UOutputRange, _CVErrorHandler>
 				__intermediate_handler(__error_handler);
 			auto __result = this->base().decode_one(
-				::std::move(__inbytes), ::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
-			return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-							::std::move(__result.input).begin().range()),
+				::std::move(__inbytes), ::std::forward<_Output>(__output), __intermediate_handler, __s);
+			return _Result(ranges::reconstruct(
+				               ::std::in_place_type<_UInputRange>, ::std::move(__result.input).begin().range()),
 				ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__result.output)), __s,
-				__result.error_code, __result.handled_errors);
+				__result.error_code, __result.error_count);
 		}
 
 		//////
@@ -352,26 +348,26 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-		constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
-		     encode_state& __s) const {
-			using _UInputRange    = remove_cvref_t<_InputRange>;
-			using _UOutputRange   = remove_cvref_t<_OutputRange>;
+		template <typename _Input, typename _Output, typename _ErrorHandler>
+		constexpr auto encode_one(
+			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) const {
+			using _UInputRange    = remove_cvref_t<_Input>;
+			using _UOutputRange   = remove_cvref_t<_Output>;
 			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
-			using _Result     = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
-			using _OutByteIt  = ranges::word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
-			using _OutByteSen = ranges::word_sentinel;
+			using _Result         = __txt_detail::__reconstruct_encode_result_t<_Input, _Output, encode_state>;
+			using _OutByteIt      = ranges::word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
+			using _OutByteSen     = ranges::word_sentinel;
 
 			ranges::subrange<_OutByteIt, _OutByteSen> __outwords(
-			     _OutByteIt(::std::forward<_OutputRange>(__output)), _OutByteSen());
+				_OutByteIt(::std::forward<_Output>(__output)), _OutByteSen());
 			__txt_detail::__scheme_handler<_Byte, _UInputRange, _UOutputRange, _CVErrorHandler>
-			     __intermediate_handler(__error_handler);
-			auto __result = this->base().encode_one(
-			     ::std::forward<_InputRange>(__input), __outwords, __intermediate_handler, __s);
+				__intermediate_handler(__error_handler);
+			auto __result
+				= this->base().encode_one(::std::forward<_Input>(__input), __outwords, __intermediate_handler, __s);
 			return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__result.input)),
-			     ranges::reconstruct(
-			          ::std::in_place_type<_UOutputRange>, ::std::move(__result.output).begin().range()),
-			     __s, __result.error_code, __result.handled_errors);
+				ranges::reconstruct(
+				     ::std::in_place_type<_UOutputRange>, ::std::move(__result.output).begin().range()),
+				__s, __result.error_code, __result.error_count);
 		}
 	};
 
@@ -383,4 +379,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_BASIC_ENCODING_SCHEME_HPP
+#endif

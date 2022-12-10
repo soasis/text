@@ -80,9 +80,8 @@ namespace ztd { namespace text {
 		/// @brief The kind of error that occured, if any.
 		encoding_error error_code;
 		//////
-		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
-		/// ztd::text::encoding_error::ok.
-		::std::size_t handled_errors;
+		/// @brief The number of times an error occurred in the processed input text.
+		::std::size_t error_count;
 
 		//////
 		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
@@ -109,25 +108,25 @@ namespace ztd { namespace text {
 		/// @param[in] __output The output range to store.
 		/// @param[in] __error_code The error code for the decode operation, taken as the first of either the decode
 		/// operation that failed.
-		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
+		/// @param[in] __error_count Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr stateless_decode_result(_ArgInput&& __input, _ArgOutput&& __output, encoding_error __error_code,
-			::std::size_t __handled_errors) noexcept(::std::is_nothrow_constructible_v<_Input,
+			::std::size_t __error_count) noexcept(::std::is_nothrow_constructible_v<_Input,
 			_ArgInput>&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput>)
 		: input(::std::forward<_ArgInput>(__input))
 		, output(::std::forward<_ArgOutput>(__output))
 		, error_code(__error_code)
-		, handled_errors(__handled_errors) {
+		, error_count(__error_count) {
 		}
 
 		//////
 		/// @brief Whether or not any errors were handled.
 		///
-		/// @returns Simply checks whether `handled_errors` is greater than 0.
+		/// @returns Simply checks whether `error_count` is greater than 0.
 		constexpr bool errors_were_handled() const noexcept {
-			return this->handled_errors > 0;
+			return this->error_count > 0;
 		}
 	};
 
@@ -169,14 +168,14 @@ namespace ztd { namespace text {
 		/// @param[in] __state The state related to the Encoding that performed the decode operation.
 		/// @param[in] __error_code The error code for the decode operation, taken as the first of either the decode
 		/// operation that failed.
-		/// @param[in] __handled_errors Whether or not an error was handled. Some error handlers are corrective (see
+		/// @param[in] __error_count Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
 		constexpr decode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgState&& __state,
-			encoding_error __error_code, ::std::size_t __handled_errors)
+			encoding_error __error_code, ::std::size_t __error_count)
 		: __base_t(
-			::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __handled_errors)
+			::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
 		, state(::std::forward<_ArgState>(__state)) {
 		}
 	};
@@ -220,7 +219,7 @@ namespace ztd { namespace text {
 			_Input&&, _DesiredOutput, _State&, encoding_error, ::std::size_t>) {
 			using _Result = decode_result<_Input, remove_cvref_t<_DesiredOutput>, _State>;
 			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
-				__result.state, __result.error_code, __result.handled_errors);
+				__result.state, __result.error_code, __result.error_count);
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _State>
@@ -231,14 +230,14 @@ namespace ztd { namespace text {
 			typename _OutFirst, typename _OutLast, typename _ArgState>
 		constexpr decltype(auto) __reconstruct_stateless_decode_result(_InFirst&& __in_first, _InLast&& __in_last,
 			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgState&& __state, encoding_error __error_code,
-			::std::size_t __handled_errors) {
+			::std::size_t __error_count) {
 			decltype(auto) __in_range  = ranges::reconstruct(::std::in_place_type<_InputRange>,
 				 ::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
 			decltype(auto) __out_range = ranges::reconstruct(::std::in_place_type<_OutputRange>,
 				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last));
 			return decode_result<_InputRange, _OutputRange, _State>(::std::forward<decltype(__in_range)>(__in_range),
 				::std::forward<decltype(__out_range)>(__out_range), ::std::forward<_ArgState>(__state),
-				__error_code, __handled_errors);
+				__error_code, __error_count);
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _State, typename _InFirst, typename _InLast,
@@ -258,4 +257,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DECODE_RESULT_HPP
+#endif

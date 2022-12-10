@@ -28,5 +28,6 @@
 #
 # ============================================================================>
 
+add_subdirectory(quick)
 add_subdirectory(compile_fails)
 add_subdirectory(snippets)

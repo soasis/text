@@ -44,7 +44,8 @@ In particular, we are interested in the operation that helps us go from the enco
 
 Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``code_unit``\ s with an ``encoding``, a target ``output``, and any necessary additional ``state``, we can generically bulk convert the input sequence to a form of ``code_point``\ s in the ``output``:
 
-* ⏩ Is the ``input`` value empty? Return the current results with the the empty ``input``, ``output``, and ``state``, everything is okay ✅! Otherwise,
+* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results with the the empty ``input``, ``output``, and ``state``, everything is okay ✅!
+* ⏩ Otherwise,
 
    0. Do the ``decode_one`` step from ``input`` (using its ``begin()`` and ``end()``) into the ``output`` ``code_point`` storage location.
 

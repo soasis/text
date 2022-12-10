@@ -37,4 +37,4 @@
 #include <barrier/convert.h>
 #include <barrier/data.h>
 
-#endif // ZTD_TEXT_BENCHMARKS_BARRIER_BARRIER_H
+#endif

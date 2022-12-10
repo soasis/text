@@ -118,6 +118,8 @@ Properties and Classifications
 	api/is_unicode_code_point
 	api/is_unicode_scalar_value
 	api/is_transcoding_compatible
+	api/is_input_error_skippable
+	api/is_self_synchronizing_code
 	api/default_code_point_encoding
 	api/default_code_unit_encoding
 
@@ -129,6 +131,7 @@ Result Types, Status Codes and Quality Aides
 .. toctree::
 	:maxdepth: 1
 
+	api/pivot
 	api/encoding_error
 	api/make_decode_state
 	api/make_encode_state
@@ -145,4 +148,5 @@ Result Types, Status Codes and Quality Aides
 	api/stateless_validate_result
 	api/validate_result
 	api/validate_transcode_result
+	api/skip_input_error
 	api/propagate_error

@@ -93,6 +93,7 @@ breathe_default_project = "ztd.text"
 # autosectionlabel Configuration
 #
 autosectionlabel_prefix_document = True
+autosectionlabel_maxdepth = 5
 
 
 # ReadTheDocs Build Help

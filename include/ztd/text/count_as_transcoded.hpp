@@ -98,18 +98,13 @@ namespace ztd { namespace text {
 	constexpr auto basic_count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot) {
-		using _UInput         = remove_cvref_t<_Input>;
-		using _InputValueType = ranges::range_value_type_t<_UInput>;
-		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<is_char_traitable_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
-                    ::ztd::span<const _InputValueType>>,
-               _UInput>>;
-		using _UFromEncoding  = remove_cvref_t<_FromEncoding>;
-		using _UToEncoding    = remove_cvref_t<_ToEncoding>;
-		using _Result         = count_transcode_result<_WorkingInput, _FromState, _ToState>;
+		using _WorkingInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
+		using _UToEncoding   = remove_cvref_t<_ToEncoding>;
+		using _Result        = count_transcode_result<_WorkingInput, _FromState, _ToState>;
 
-		_WorkingInput __working_input(
-			ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::forward<_Input>(__input)));
+		_WorkingInput __working_input
+			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 
 		::std::size_t __code_unit_count = 0;
 		::std::size_t __errors_handled  = 0;
@@ -120,13 +115,13 @@ namespace ztd { namespace text {
 		     __result.error_code, __errors_handled);                                                           \
 	}                                                                                                           \
 	__code_unit_count += __result.count;                                                                        \
-	__errors_handled += __result.handled_errors;                                                                \
+	__errors_handled += __result.error_count;                                                                   \
 	__working_input = ::std::move(__result.input);                                                              \
-	if (ranges::ranges_adl::adl_empty(__working_input)) {                                                       \
-		if (!text::is_state_complete(__result.from_state)) {                                                   \
+	if (::ztd::ranges::empty(__working_input)) {                                                                \
+		if (!::ztd::text::is_state_complete(__from_encoding, __result.from_state)) {                           \
 			continue;                                                                                         \
 		}                                                                                                      \
-		if (!text::is_state_complete(__result.to_state)) {                                                     \
+		if (!::ztd::text::is_state_complete(__to_encoding, __result.to_state)) {                               \
 			continue;                                                                                         \
 		}                                                                                                      \
 		break;                                                                                                 \
@@ -169,13 +164,13 @@ namespace ztd { namespace text {
 				}
 				::std::size_t __written = static_cast<::std::size_t>(__result.output.data() - __output.data());
 				__code_unit_count += __written;
-				__errors_handled += __result.handled_errors;
+				__errors_handled += __result.error_count;
 				__working_input = ::std::move(__result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__from_state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__from_encoding, __from_state)) {
 						continue;
 					}
-					if (!text::is_state_complete(__to_state)) {
+					if (!::ztd::text::is_state_complete(__to_encoding, __to_state)) {
 						continue;
 					}
 					break;
@@ -444,4 +439,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_count_as_transcoded_HPP
+#endif

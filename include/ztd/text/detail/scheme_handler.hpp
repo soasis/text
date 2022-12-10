@@ -112,7 +112,7 @@ namespace ztd { namespace text {
 				_Byte* __byte_progress_data
 					= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__output_progress.data()));
 				auto __byte_progress_size
-					= (ranges::ranges_adl::adl_size(__output_progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
+					= (::ztd::ranges::size(__output_progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
 				::ztd::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
 				return this->_M_handler.get()(__encoding, ::std::move(__result), __input_progress, __byte_progress);
 			}
@@ -129,7 +129,7 @@ namespace ztd { namespace text {
 				_Byte* __byte_progress_data
 					= reinterpret_cast<_Byte*>(const_cast<_ProgressPointer>(__input_progress.data()));
 				auto __byte_progress_size
-					= (ranges::ranges_adl::adl_size(__input_progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
+					= (::ztd::ranges::size(__input_progress) * sizeof(_ProgressWord)) / (sizeof(_Byte));
 				::ztd::span<_Byte> __byte_progress(__byte_progress_data, __byte_progress_size);
 				return this->_M_handler.get()(
 					__encoding, ::std::move(__result), __byte_progress, __output_progress);
@@ -194,4 +194,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_SCHEME_HANDLER_HPP
+#endif

@@ -253,4 +253,4 @@ namespace ztd {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_UNICODE_SCALAR_VALUE_HPP
+#endif

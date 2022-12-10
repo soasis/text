@@ -71,4 +71,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_DEFAULT_CHAR_VIEW_HPP
+#endif

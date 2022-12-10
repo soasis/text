@@ -162,7 +162,7 @@ namespace ztd { namespace text {
 				::std::size_t __drain_size = sizeof(__drain);
 				char __input_write_bom[__max_input_size];
 				ranges::__rng_detail::__copy_n_unsafe(__input + 0, __max_input_size, __input_write_bom + 0);
-				const char* __p_input_write_bom              = __input_write_bom;
+				const char* __p_input_write_bom        = __input_write_bom;
 				::std::size_t __input_write_bom_size   = __from_size;
 				const ::std::size_t __write_bom_result = ::ztd::plat::icnv::functions().convert(
 					__desc, &__p_input_write_bom, &__input_write_bom_size, &__p_drain, &__drain_size);
@@ -289,42 +289,41 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-		auto decode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
+		template <typename _Input, typename _Output, typename _ErrorHandler>
+		auto decode_one(_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler,
 			decode_state& __state) const noexcept {
 			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result = __txt_detail::__reconstruct_decode_result_t<_InputRange, _OutputRange, decode_state>;
+			using _Result        = __txt_detail::__reconstruct_decode_result_t<_Input, _Output, decode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
-			using _UInputRange                  = remove_cvref_t<_InputRange>;
-			using _UOutputRange                 = remove_cvref_t<_OutputRange>;
+			using _UInputRange                  = remove_cvref_t<_Input>;
+			using _UOutputRange                 = remove_cvref_t<_Output>;
 
 			if constexpr (__call_error_handler) {
 				if (!__state._M_is_valid()) {
 					// bail instead of destroying everything
 					return ::std::forward<_ErrorHandler>(__error_handler)(*this,
 						_Result(ranges::reconstruct(
-						             ::std::in_place_type<_UInputRange>, ::std::forward<_InputRange>(__input)),
+						             ::std::in_place_type<_UInputRange>, ::std::forward<_Input>(__input)),
 						     ranges::reconstruct(
-						          ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
+						          ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 						     __state, encoding_error::invalid_sequence),
 						::ztd::span<const code_unit, 0>(), ::ztd::span<const code_point, 0>());
 				}
 			}
 
-			auto __in_it   = ranges::ranges_adl::adl_begin(__input);
-			auto __in_last = ranges::ranges_adl::adl_end(__input);
+			auto __in_it   = ::ztd::ranges::begin(__input);
+			auto __in_last = ::ztd::ranges::end(__input);
 
 			if (__in_it == __in_last) {
 				// an exhausted sequence is fine
 				return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 					               ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
+					ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 					__state, encoding_error::ok);
 			}
 
-			auto __out_it  = ranges::ranges_adl::adl_begin(__output);
-			auto __outlast = ranges::ranges_adl::adl_end(__output);
+			auto __out_it  = ::ztd::ranges::begin(__output);
+			auto __outlast = ::ztd::ranges::end(__output);
 
 			code_unit __read_buffer[max_code_units];
 			code_point __write_buffer[max_code_points];
@@ -447,42 +446,41 @@ namespace ztd { namespace text {
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
 		/// incremented even if an error occurs due to the semantics of any view that models an input_range.
-		template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-		auto encode_one(_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler,
+		template <typename _Input, typename _Output, typename _ErrorHandler>
+		auto encode_one(_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler,
 			encode_state& __state) const noexcept {
 			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result = __txt_detail::__reconstruct_encode_result_t<_InputRange, _OutputRange, encode_state>;
+			using _Result        = __txt_detail::__reconstruct_encode_result_t<_Input, _Output, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
-			using _UInputRange                  = remove_cvref_t<_InputRange>;
-			using _UOutputRange                 = remove_cvref_t<_OutputRange>;
+			using _UInputRange                  = remove_cvref_t<_Input>;
+			using _UOutputRange                 = remove_cvref_t<_Output>;
 
 			if constexpr (__call_error_handler) {
 				if (!__state._M_is_valid()) {
 					// bail instead of destroying everything
 					return ::std::forward<_ErrorHandler>(__error_handler)(*this,
 						_Result(ranges::reconstruct(
-						             ::std::in_place_type<_UInputRange>, ::std::forward<_InputRange>(__input)),
+						             ::std::in_place_type<_UInputRange>, ::std::forward<_Input>(__input)),
 						     ranges::reconstruct(
-						          ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
+						          ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 						     __state, encoding_error::invalid_sequence),
 						::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
 				}
 			}
 
-			auto __in_it   = ranges::ranges_adl::adl_begin(__input);
-			auto __in_last = ranges::ranges_adl::adl_end(__input);
+			auto __in_it   = ::ztd::ranges::begin(__input);
+			auto __in_last = ::ztd::ranges::end(__input);
 
 			if (__in_it == __in_last) {
 				// an exhausted sequence is fine
 				return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
 					               ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutputRange>, ::std::forward<_OutputRange>(__output)),
+					ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
 					__state, encoding_error::ok);
 			}
 
-			auto __out_it  = ranges::ranges_adl::adl_begin(__output);
-			auto __outlast = ranges::ranges_adl::adl_end(__output);
+			auto __out_it  = ::ztd::ranges::begin(__output);
+			auto __outlast = ::ztd::ranges::end(__output);
 
 			code_point __read_buffer[max_code_points];
 			code_unit __write_buffer[max_code_units];
@@ -614,4 +612,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_BASIC_ICONV_HPP
+#endif

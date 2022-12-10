@@ -38,13 +38,14 @@ Transcoding is the action of converting from one sequence of encoded information
 .. figure:: /img/transcoding-path.png
    :alt: The typical encoding path, from one encoding to another.
 
-   The generic pathway from one encoding to another for most text Encodings.
+   The generic pathway from one encoding to another for all text Encodings.
 
 The core tenant here is that as long as there is a common intermediary between the 2 encodings, you can decode from the given input into that shared common intermediary (e.g., :term:`unicode code points <unicode code point>` or :term:`unicode scalar values <unicode scalar value>`), then encode from the common intermediary to the second encoding's output. This is a pretty basic way of translating data and it's not even a particularly new idea (:term:`iconv <iconv>` has been doing this for well over a decade now, :term:`libogonek <libogonek>` got this core idea rolling in a C++ interface, and in general this is quite literally how all data interchange has been done since forever). The equalizer here is that, unlike other industries that struggle to define an interchange format, Unicode Code Points has become the clear and overwhelming interoperation choice for people handling text all over the world.
 
 Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``code_unit``\ s with a ``from_encoding``, a ``to_encoding`` with a target ``output``, and any necessary additional ``state``\ s, we can generically convert that one encoding to the other so long as those encodings follow the Lucky 7 design:
 
-* ⏩ Is the ``input`` value empty? Return the current results with the the empty ``input``, ``output``, and ``state``\ s, everything is okay ✅! Otherwise,
+* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results with the the empty ``input``, ``output``, and ``state``, everything is okay ✅!
+* ⏩ Otherwise,
 
    0. Set up an ``intermediate`` storage location of ``code_point``\ s, using the ``max_code_points`` of the input encoding as the maximum size of the storage location, for the next operation.
    1. Do the ``decode_one`` step from ``input`` (using its ``begin()`` and ``end()``) into the ``intermediate`` ``code_point`` storage location.

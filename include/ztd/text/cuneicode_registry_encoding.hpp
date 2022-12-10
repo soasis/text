@@ -47,4 +47,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_CUNEICODE_REGISTRY_ENCODING_HPP
+#endif

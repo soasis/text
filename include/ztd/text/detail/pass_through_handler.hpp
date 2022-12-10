@@ -73,4 +73,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_PASS_THROUGH_HANDLER_HPP
+#endif

@@ -151,4 +151,4 @@ namespace ztd { namespace text { namespace tests {
 #pragma warning(pop)
 #endif
 
-#endif // ZTD_TEXT_TESTS_BASIC_UNICODE_STRINGS_HPP
+#endif

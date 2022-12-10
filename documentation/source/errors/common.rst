@@ -31,4 +31,4 @@
 Common Compile/Runtime Errors
 =============================
 
-- Passing a non-borrowed range (a range which, effectively, cannot be cheaply copied) is considered an error since it has grace performance impacts. If you know that you are passing a range into the ``*_into`` class of functions, please mark that range as a borrowed range using ``std::ranges::enable_borrowed_range`` (C++20) or ``ztd::ranges::enable_borrowed_range`` (C++17 and lower) so that ``ztd.text`` `knows how to handle it <https://en.cppreference.com/w/cpp/ranges/borrowed_range>`_.
+- Passing a non-borrowed range (a range which, effectively, cannot be cheaply copied) is considered an error since it has grace performance impacts. If you know that you are passing a range into the ``*_into`` class of functions, please mark that range as a borrowed range using ``std::ranges::enable_borrowed_range`` (C++20) or ``ztd::ranges::enable_borrowed_range`` (C++17 and lower) so that ztd.text `knows how to handle it <https://en.cppreference.com/w/cpp/ranges/borrowed_range>`_.

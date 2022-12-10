@@ -32,7 +32,7 @@ Licenses, Thanks and Attribution
 =================================
 
 
-``ztd.text`` is dual-licensed under either the Apache 2 License, or a corporate license if you bought it with special support. See the LICENSE file or your copy of the corporate license agreement for more details!
+ztd.text is dual-licensed under either the Apache 2 License, or a corporate license if you bought it with special support. See the LICENSE file or your copy of the corporate license agreement for more details!
 
 
 
@@ -76,7 +76,7 @@ Whether it's just a little bit of time, a point towards the right direction, or 
 Charitable Contributions
 ------------------------
 
-``ztd.text`` has been made possible by charitable contributions from patrons and sponsors around the world:
+ztd.text has been made possible by charitable contributions from patrons and sponsors around the world:
 
 - Shepherd's Oasis, LLC (https://soasis.org)
 - Jane Lusby

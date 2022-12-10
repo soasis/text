@@ -95,7 +95,7 @@ namespace ztd { namespace text {
 		using _IntermediateInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
 		using _IntermediateOutput = ranges::range_reconstruct_t<_Output>;
 		using _Result             = decltype(__encoding.decode_one(
-			            ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
+               ::std::declval<_IntermediateInput>(), ::std::declval<_IntermediateOutput>(), __error_handler, __state));
 		using _WorkingInput       = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 		using _WorkingOutput      = remove_cvref_t<decltype(::std::declval<_Result>().output)>;
 		using _UEncoding          = remove_cvref_t<_Encoding>;
@@ -108,7 +108,7 @@ namespace ztd { namespace text {
 			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 		_WorkingOutput __working_output(
 			ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output)));
-		::std::size_t __handled_errors = 0;
+		::std::size_t __error_count = 0;
 
 		for (;;) {
 			auto __result = __encoding.decode_one(
@@ -116,18 +116,18 @@ namespace ztd { namespace text {
 			if (__result.error_code != encoding_error::ok) {
 				return __result;
 			}
-			__handled_errors += __result.handled_errors;
+			__error_count += __result.error_count;
 			__working_input  = ::std::move(__result.input);
 			__working_output = ::std::move(__result.output);
-			if (ranges::ranges_adl::adl_empty(__result.input)) {
-				if (!text::is_state_complete(__state)) {
+			if (::ztd::ranges::empty(__result.input)) {
+				if (!::ztd::text::is_state_complete(__encoding, __state)) {
 					continue;
 				}
 				break;
 			}
 		}
-		return _Result(::std::move(__working_input), ::std::move(__working_output), __state, encoding_error::ok,
-			__handled_errors);
+		return _Result(
+			::std::move(__working_input), ::std::move(__working_output), __state, encoding_error::ok, __error_count);
 	}
 
 	//////
@@ -190,7 +190,7 @@ namespace ztd { namespace text {
 			using _InitialOutput         = ::ztd::span<_IntermediateValueType, __intermediate_buffer_max>;
 			using _Output                = ::ztd::span<_IntermediateValueType>;
 			using _Result                = decltype(__encoding.decode_one(
-				               ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
+                    ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
 			using _WorkingInput          = remove_cvref_t<decltype(::std::declval<_Result>().input)>;
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_Encoding, _ErrorHandler>,
@@ -205,7 +205,8 @@ namespace ztd { namespace text {
 				_UEncoding>
 				__unused_intermediate_handler {};
 
-			_WorkingInput __working_input = __string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+			_WorkingInput __working_input
+				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
 			_IntermediateValueType __intermediate_translation_buffer[__intermediate_buffer_max] {};
 
 			for (;;) {
@@ -259,8 +260,8 @@ namespace ztd { namespace text {
 						     __intermediate_handler._M_code_points_progress());
 					return __error_result;
 				}
-				if (ranges::ranges_adl::adl_empty(__result.input)) {
-					if (!text::is_state_complete(__state)) {
+				if (::ztd::ranges::empty(__result.input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __state)) {
 						continue;
 					}
 					return __result;
@@ -276,9 +277,9 @@ namespace ztd { namespace text {
 
 			_OutputContainer __output {};
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
+				using _SizeType = decltype(::ztd::ranges::size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-					auto __output_size_hint = ranges::ranges_adl::adl_size(__input);
+					auto __output_size_hint = ::ztd::ranges::size(__input);
 					__output_size_hint *= max_code_points_v<_UEncoding>;
 					__output.reserve(__output_size_hint);
 				}
@@ -662,4 +663,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DECODE_HPP
+#endif

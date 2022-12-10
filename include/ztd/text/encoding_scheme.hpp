@@ -147,4 +147,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ENCODING_SCHEME_HPP
+#endif

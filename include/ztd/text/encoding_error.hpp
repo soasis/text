@@ -83,8 +83,8 @@ namespace ztd { namespace text {
 		/// sequence, and therefore more input may be required.
 		///
 		/// @remarks Depending on context, this may or may not be an error in your use case (e.g., reading part of an
-		/// incomplete network buffer and waiting for more). See ztd::text::incomplete_handler as a way to aid with
-		/// this use case.
+		/// incomplete network buffer and waiting for more). See ztd::text::basic_incomplete_handler as a way to aid
+		/// with this use case.
 		incomplete_sequence = 0x02,
 		//////
 		/// Output cannot receive the successfully encoded or decoded sequence. This means that, while there were no
@@ -188,4 +188,4 @@ namespace std {
 	};
 } // namespace std
 
-#endif // ZTD_TEXT_ENCODING_ERROR_HPP
+#endif

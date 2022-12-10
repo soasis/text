@@ -74,4 +74,4 @@ namespace ztd { namespace text { namespace tests {
 
 }}} // namespace ztd::text::tests
 
-#endif // ZTD_TEXT_TESTS_SOURCE_FOR_TESTS_HPP
+#endif

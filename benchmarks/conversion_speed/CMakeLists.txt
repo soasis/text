@@ -104,5 +104,5 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 	)
 endfunction()
 
-generate_converion_speed_benchmark_targets(large unicode "All Unicode Scalar Values (~4.4 MB)")
-generate_converion_speed_benchmark_targets(small basic_source "C Character Set (97 Bytes)")
+generate_converion_speed_benchmark_targets(large unicode "All Unicode Scalar Values")
+generate_converion_speed_benchmark_targets(small basic_source "C Character Set")

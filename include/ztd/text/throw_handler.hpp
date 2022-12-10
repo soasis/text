@@ -58,21 +58,21 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief Throws a ztd::text::encoding_error as an exception on an encode failure.
-		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _InputProgress, typename _OutputProgress>
-		constexpr encode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
-			encode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
-			const _OutputProgress&) const noexcept(false) {
+		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
+			typename _OutputProgress>
+		constexpr encode_result<_Input, _Output, _State> operator()(const _Encoding&,
+			encode_result<_Input, _Output, _State> __result, const _InputProgress&, const _OutputProgress&) const
+			noexcept(false) {
 			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
 		}
 
 		//////
 		/// @brief Throws a ztd::text::encoding_error code as an exception on a decode failure.
-		template <typename _Encoding, typename _InputRange, typename _OutputRange, typename _State,
-			typename _InputProgress, typename _OutputProgress>
-		constexpr decode_result<_InputRange, _OutputRange, _State> operator()(const _Encoding&,
-			decode_result<_InputRange, _OutputRange, _State> __result, const _InputProgress&,
-			const _OutputProgress&) const noexcept(false) {
+		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
+			typename _OutputProgress>
+		constexpr decode_result<_Input, _Output, _State> operator()(const _Encoding&,
+			decode_result<_Input, _Output, _State> __result, const _InputProgress&, const _OutputProgress&) const
+			noexcept(false) {
 			throw ::std::system_error(static_cast<int>(__result.error_code), ::ztd::text::encoding_category());
 		}
 	};
@@ -87,4 +87,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_THROW_HANDLER_HPP
+#endif

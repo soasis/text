@@ -55,4 +55,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ICONV_NAMES_HPP
+#endif

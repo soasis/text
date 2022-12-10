@@ -211,4 +211,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_WIDE_LITERAL_HPP
+#endif

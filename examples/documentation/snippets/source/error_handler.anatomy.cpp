@@ -81,7 +81,7 @@ int main(int, char* argv[]) {
 	// convert from execution encoding to utf8 encoding,
 	// using our new handler
 	std::string utf8_string = ztd::text::transcode(std::string_view(argv[0]),
-	     ztd::text::execution, ztd::text::basic_utf8<char> {}, my_error_handler {});
+	     ztd::text::execution, ztd::text::compat_utf8, my_error_handler {});
 
 	return 0;
 }

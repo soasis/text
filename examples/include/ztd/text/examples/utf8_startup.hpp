@@ -39,4 +39,4 @@ namespace ztd { namespace text { namespace examples {
 	inline ztd::utf8_startup_hook utf8_startup {};
 }}} // namespace ztd::text::examples
 
-#endif // ZTD_TEXT_EXAMPLES_UTF8_STARTUP_HPP
+#endif

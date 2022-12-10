@@ -61,4 +61,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_REPLACEMENT_HPP
+#endif

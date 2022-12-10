@@ -44,18 +44,18 @@ inline namespace ztd_text_tests_basic_compile_time_validate_encodable_as_unicode
 		// Larger unicode sequences, explicit encoding
 		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
 			static_assert(ztd::text::validate_encodable_as(
-			     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal_t()));
+			     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::literal));
 		}
 		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
 			static_assert(ztd::text::validate_encodable_as(
-			     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal_t()));
+			     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::wide_literal));
 		}
+		static_assert(
+		     ztd::text::validate_encodable_as(ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8));
 		static_assert(ztd::text::validate_encodable_as(
-		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf8_t()));
+		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16));
 		static_assert(ztd::text::validate_encodable_as(
-		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf16_t()));
-		static_assert(ztd::text::validate_encodable_as(
-		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32_t()));
+		     ztd::tests::u32_unicode_sequence_truth_native_endian, ztd::text::utf32));
 	}
 
 	void instantiate() {

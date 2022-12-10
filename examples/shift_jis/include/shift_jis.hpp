@@ -83,4 +83,4 @@ struct shift_jis {
 	     sjis_decode_error_handler error_handler, state& current_state) const;
 };
 
-#endif // ZTD_TEXT_EXAMPLES_SHIFT_JIS_SHIFT_JIS_HPP
+#endif

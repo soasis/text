@@ -60,4 +60,4 @@
 #include <ztd/text/text_view.hpp>
 #include <ztd/text/text.hpp>
 
-#endif // ZTD_TEXT_HPP
+#endif

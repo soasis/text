@@ -117,13 +117,13 @@ namespace ztd { namespace text {
 			///
 			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
-			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-			static constexpr auto decode_one(_InputRange&& __input, _OutputRange&& __output,
-				_ErrorHandler&& __error_handler, decode_state& __s) {
+			template <typename _Input, typename _Output, typename _ErrorHandler>
+			static constexpr auto decode_one(
+				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) {
 				// just go straight from UTF32
 				__base_t __base_encoding {};
-				return __base_encoding.decode_one(::std::forward<_InputRange>(__input),
-					::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
+				return __base_encoding.decode_one(::std::forward<_Input>(__input),
+					::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
 			}
 
 			//////
@@ -139,13 +139,13 @@ namespace ztd { namespace text {
 			///
 			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
-			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
-			static constexpr auto encode_one(_InputRange&& __input, _OutputRange&& __output,
-				_ErrorHandler&& __error_handler, encode_state& __s) {
+			template <typename _Input, typename _Output, typename _ErrorHandler>
+			static constexpr auto encode_one(
+				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) {
 				// just go straight from UTF32
 				__base_t __base_encoding {};
-				return __base_encoding.encode_one(::std::forward<_InputRange>(__input),
-					::std::forward<_OutputRange>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
+				return __base_encoding.encode_one(::std::forward<_Input>(__input),
+					::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __s);
 			}
 		};
 
@@ -159,4 +159,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_ISO10646_HPP
+#endif

@@ -6,7 +6,8 @@ Conversions are one of the more important aspects of dealing with textual data. 
 
 As shown in the :doc:`Lucky 7 Design </design/lucky 7>`, everything here is supported by just having either the required one or two encoding objects with the designated functions, variables and type definitions. The core of the explanation is in this algorithm:
 
-* ⏩ Is the ``input`` value empty? Return the current results, everything is okay ✅. Otherwise,
+* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results, everything is okay ✅.
+* ⏩ Otherwise,
 
    0. Set up an ``intermediate`` buffer of ``code_point``\ s using the ``max_code_points`` of the input encoding count for the next operation.
    1. Do the ``decode_one`` step from ``input`` (using its ``begin()`` and ``end()``) into the ``intermediate`` ``code_point`` buffer.

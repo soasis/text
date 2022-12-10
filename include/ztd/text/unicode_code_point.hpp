@@ -245,4 +245,4 @@ namespace ztd {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_UNICODE_CODE_POINT_HPP
+#endif

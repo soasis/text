@@ -141,104 +141,100 @@ namespace ztd { namespace text {
 		/// information in the provided `__state`. The entire input may be consumed before any information is output.
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		static auto decode_one(
-			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) {
+			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) noexcept {
 			using _UInput        = remove_cvref_t<_Input>;
 			using _UOutput       = remove_cvref_t<_Output>;
 			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result        = __txt_detail::__reconstruct_decode_result_t<_Input, _Output, decode_state>;
+			using _Result        = __txt_detail::__reconstruct_decode_result_t<_UInput, _UOutput, decode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			if constexpr (::ztd::ranges::is_range_contiguous_range_v<_Input>                              // cf
-				&& ::ztd::ranges::is_sized_range_v<_Input>                                               // cf
-				&& ::ztd::is_same_sizeof_alignof_v<::ztd::ranges::range_value_type_t<_Input>, char>      // cf
-				&& ::ztd::ranges::is_range_contiguous_range_v<_Output>                                   // cf
-				&& ::ztd::ranges::is_sized_range_v<_Output>                                              // cf
-				&& ::ztd::is_same_sizeof_alignof_v<::ztd::ranges::range_value_type_t<_Output>, char32_t> // cf
-			) {
-				auto __in_it               = ::ztd::ranges::ranges_adl::adl_cbegin(__input);
-				auto __out_it              = ::ztd::ranges::ranges_adl::adl_begin(__output);
-				auto __in_ptr              = ::ztd::to_address(__in_it);
-				auto __out_ptr             = ::ztd::to_address(__out_it);
-				::std::size_t __in_size    = ztd::ranges::ranges_adl::adl_size(__input);
-				::std::size_t __out_size   = ztd::ranges::ranges_adl::adl_size(__output);
-				const char* __typed_in_ptr = reinterpret_cast<const char*>(__in_ptr);
-				char32_t* __typed_out_ptr  = reinterpret_cast<char32_t*>(__out_ptr);
-				constexpr auto __decode_func
-					= _IsIdna == idna::no ? &cnc_mcnrtoc32n_punycode : &cnc_mcnrtoc32n_punycode_idna;
-				cnc_mcerror __err
-					= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OK) {
-						basic_any_punycode __self {};
-						return __error_handler(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, __typed_in_ptr,
-							             __typed_in_ptr + __in_size),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, __typed_out_ptr,
-							          __typed_out_ptr + __out_size),
-							     __state, encoding_error::insufficient_output_space),
-							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
-					}
-				}
-				return _Result(
-					ranges::reconstruct(::std::in_place_type<_UInput>, __typed_in_ptr, __typed_in_ptr + __in_size),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, __typed_out_ptr, __typed_out_ptr + __out_size),
-					__state, __call_error_handler ? static_cast<encoding_error>(__err) : encoding_error::ok);
+			auto __in_it                              = ::ztd::ranges::cbegin(__input);
+			auto __in_last                            = ::ztd::ranges::cend(__input);
+			auto __out_it                             = ::ztd::ranges::begin(__output);
+			auto __out_last                           = ::ztd::ranges::end(__output);
+			char __intermediate_input[max_code_units] = {};
+			::std::size_t __in_size                   = 0;
+			::std::size_t __incremented_in_size       = 0;
+			basic_any_punycode __self {};
+			if (__in_it != __in_last) {
+				__intermediate_input[0] = *__in_it;
+				__in_size               = 1;
 			}
-			else {
-				auto __in_it                              = ::ztd::ranges::ranges_adl::adl_cbegin(__input);
-				auto __in_last                            = ::ztd::ranges::ranges_adl::adl_cend(__input);
-				auto __out_it                             = ::ztd::ranges::ranges_adl::adl_begin(__output);
-				auto __out_last                           = ::ztd::ranges::ranges_adl::adl_end(__output);
-				char __intermediate_input[max_code_units] = {};
-				::std::size_t __in_size                   = 0;
-				if (__in_it != __in_last) {
-					__intermediate_input[0] = *__in_it;
-					++__in_it;
-					__in_size = ztd_c_array_size(__intermediate_input);
-				}
-				char32_t __intermediate_output[max_code_points] = {};
-				::std::size_t __out_size                        = ztd_c_array_size(__intermediate_output);
-				const char* __typed_in_ptr                      = static_cast<const char*>(__intermediate_input);
-				char32_t* __typed_out_ptr                       = static_cast<char32_t*>(__intermediate_output);
-				constexpr auto __decode_func
-					= _IsIdna == idna::no ? &cnc_mcnrtoc32n_punycode : &cnc_mcnrtoc32n_punycode_idna;
-				cnc_mcerror __err
-					= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OK) {
-						basic_any_punycode __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-							          ::std::move(__out_last), __state, static_cast<encoding_error>(__err)),
-							     ::ztd::span<code_unit, 1>(__intermediate_input), ::ztd::span<code_point, 0>()));
-					}
-				}
-				const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
-				for (::std::size_t __out_index = 0; __out_index < __written_output_size;
-					++__out_it, ++__out_index) {
-					if constexpr (__call_error_handler) {
-						if (__out_it == __out_last) {
-							basic_any_punycode __self {};
-							return __error_handler(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-								             ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-								          ::std::move(__out_last)),
-								     __state, encoding_error::insufficient_output_space),
-								::ztd::span<code_unit, 1>(__intermediate_input), ::ztd::span<code_point, 0>());
-						}
-					}
-					*__out_it = __intermediate_output[__out_index];
-				}
+			else if (::ztd::text::is_state_complete(__self, __state)) {
 				return _Result(ranges::reconstruct(
 					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
 					ranges::reconstruct(
 					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
-					__state, static_cast<encoding_error>(__err));
+					__state, encoding_error::ok);
 			}
+			char32_t __intermediate_output[max_code_points] = {};
+			::std::size_t __out_size                        = ztd_c_array_size(__intermediate_output);
+			for (::std::size_t __index = 1;; ++__index) {
+				const char* __typed_in_ptr = static_cast<const char*>(__intermediate_input);
+				char32_t* __typed_out_ptr  = static_cast<char32_t*>(__intermediate_output);
+				constexpr auto __decode_func
+					= _IsIdna == idna::no ? &cnc_mcnrtoc32n_punycode : &cnc_mcnrtoc32n_punycode_idna;
+				cnc_mcerror __err
+					= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
+				if (__err == CNC_MCERROR_INCOMPLETE_INPUT) {
+					if constexpr (__call_error_handler) {
+						if (__index == max_code_units) {
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+								_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
+								             ::std::move(__in_last)),
+								     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
+								          ::std::move(__out_last)),
+								     __state, encoding_error::invalid_sequence),
+								::ztd::span<const code_unit>(__intermediate_input, __incremented_in_size),
+								::ztd::span<const code_point, 0>());
+						}
+					}
+					++__in_it;
+					if (__in_it != __in_last) {
+						__intermediate_input[__in_size] = *__in_it;
+						++__in_size;
+						++__incremented_in_size;
+					}
+					__out_size = ztd_c_array_size(__intermediate_output);
+					continue;
+				}
+				if constexpr (__call_error_handler) {
+					if (__err != CNC_MCERROR_OK) {
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
+							             ::std::move(__in_last)),
+							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
+							          ::std::move(__out_last)),
+							     __state, static_cast<encoding_error>(__err)),
+							::ztd::span<const code_unit>(__intermediate_input, __incremented_in_size),
+							::ztd::span<const code_point, 0>());
+					}
+				}
+				break;
+			}
+			const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
+			for (::std::size_t __out_index = 0; __out_index < __written_output_size; ++__out_it, ++__out_index) {
+				if constexpr (__call_error_handler) {
+					if (__out_it == __out_last) {
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
+							             ::std::move(__in_last)),
+							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
+							          ::std::move(__out_last)),
+							     __state, encoding_error::insufficient_output_space),
+							::ztd::span<const code_unit>(__intermediate_input, __incremented_in_size),
+							::ztd::span<const code_point, 0>());
+					}
+				}
+				*__out_it = static_cast<code_point>(__intermediate_output[__out_index]);
+			}
+			if (__in_it != __in_last) {
+				++__in_it;
+			}
+			return _Result(
+				ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
+				ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
+				__state, encoding_error::ok);
 		}
 
 		//////
@@ -265,101 +261,96 @@ namespace ztd { namespace text {
 			using _UInput        = remove_cvref_t<_Input>;
 			using _UOutput       = remove_cvref_t<_Output>;
 			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result        = __txt_detail::__reconstruct_encode_result_t<_Input, _Output, encode_state>;
+			using _Result        = __txt_detail::__reconstruct_encode_result_t<_UInput, _UOutput, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			if constexpr (::ztd::ranges::is_range_contiguous_range_v<_Input>                             // cf
-				&& ::ztd::ranges::is_sized_range_v<_Input>                                              // cf
-				&& ::ztd::is_same_sizeof_alignof_v<::ztd::ranges::range_value_type_t<_Input>, char32_t> // cf
-				&& ::ztd::ranges::is_range_contiguous_range_v<_Output>                                  // cf
-				&& ::ztd::ranges::is_sized_range_v<_Output>                                             // cf
-				&& ::ztd::is_same_sizeof_alignof_v<::ztd::ranges::range_value_type_t<_Output>, char>    // cf
-			) {
-				auto __in_it                   = ::ztd::ranges::ranges_adl::adl_cbegin(__input);
-				auto __out_it                  = ::ztd::ranges::ranges_adl::adl_begin(__output);
-				auto __in_ptr                  = ::ztd::to_address(__in_it);
-				auto __out_ptr                 = ::ztd::to_address(__out_it);
-				::std::size_t __in_size        = ztd::ranges::ranges_adl::adl_size(__input);
-				::std::size_t __out_size       = ztd::ranges::ranges_adl::adl_size(__output);
-				const char32_t* __typed_in_ptr = reinterpret_cast<const char32_t*>(__in_ptr);
-				char* __typed_out_ptr          = reinterpret_cast<char*>(__out_ptr);
-				constexpr auto __encode_func
-					= _IsIdna == idna::no ? &cnc_c32nrtomcn_punycode : &cnc_c32nrtomcn_punycode_idna;
-				cnc_mcerror __err
-					= __encode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OK) {
-						basic_any_punycode __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, __typed_in_ptr,
-							             __typed_in_ptr + __in_size),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, __typed_out_ptr,
-							          __typed_out_ptr + __out_size),
-							     __state, static_cast<encoding_error>(__err)),
-							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
-					}
-				}
-				return _Result(
-					ranges::reconstruct(::std::in_place_type<_UInput>, __typed_in_ptr, __typed_in_ptr + __in_size),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, __typed_out_ptr, __typed_out_ptr + __out_size),
-					__state, static_cast<encoding_error>(__err));
+			auto __in_it                                   = ::ztd::ranges::cbegin(__input);
+			auto __in_last                                 = ::ztd::ranges::cend(__input);
+			auto __out_it                                  = ::ztd::ranges::begin(__output);
+			auto __out_last                                = ::ztd::ranges::end(__output);
+			char32_t __intermediate_input[max_code_points] = {};
+			::std::size_t __in_size                        = 0;
+			::std::size_t __incremented_in_size            = 0;
+			basic_any_punycode __self {};
+			if (__in_it != __in_last) {
+				__intermediate_input[0] = *__in_it;
+				__in_size               = 1;
 			}
-			else {
-				auto __in_it                                  = ::ztd::ranges::ranges_adl::adl_cbegin(__input);
-				auto __in_last                                = ::ztd::ranges::ranges_adl::adl_cend(__input);
-				auto __out_it                                 = ::ztd::ranges::ranges_adl::adl_begin(__output);
-				auto __out_last                               = ::ztd::ranges::ranges_adl::adl_end(__output);
-				char32_t __intermediate_input[max_code_units] = {};
-				::std::size_t __in_size                       = 0;
-				if (__in_it != __in_last) {
-					__intermediate_input[0] = *__in_it;
-					++__in_it;
-					__in_size = ztd_c_array_size(__intermediate_input);
-				}
-				char __intermediate_output[max_code_points] = {};
-				::std::size_t __out_size                    = ztd_c_array_size(__intermediate_output);
-				const char32_t* __typed_in_ptr              = static_cast<const char32_t*>(__intermediate_input);
-				char* __typed_out_ptr                       = static_cast<char*>(__intermediate_output);
+			else if (::ztd::text::is_state_complete(__self, __state)) {
+				return _Result(ranges::reconstruct(
+					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
+					ranges::reconstruct(
+					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
+					__state, encoding_error::ok);
+			}
+			char __intermediate_output[max_code_units] = {};
+			::std::size_t __out_size                   = ztd_c_array_size(__intermediate_output);
+			for (::std::size_t __index = 1;; ++__index) {
+				const char32_t* __typed_in_ptr = static_cast<const char32_t*>(__intermediate_input);
+				char* __typed_out_ptr          = static_cast<char*>(__intermediate_output);
 				constexpr auto __encode_func
 					= _IsIdna == idna::no ? &cnc_c32nrtomcn_punycode : &cnc_c32nrtomcn_punycode_idna;
 				cnc_mcerror __err
 					= __encode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
+				if (__err == CNC_MCERROR_INCOMPLETE_INPUT) {
+					if constexpr (__call_error_handler) {
+						if (__index == max_code_points) {
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+								_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
+								             ::std::move(__in_last)),
+								     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
+								          ::std::move(__out_last)),
+								     __state, encoding_error::invalid_sequence),
+								::ztd::span<const code_point>(__intermediate_input, __incremented_in_size),
+								::ztd::span<const code_unit, 0>());
+						}
+					}
+					++__in_it;
+					if (__in_it != __in_last) {
+						__intermediate_input[__in_size] = *__in_it;
+						++__in_size;
+						++__incremented_in_size;
+					}
+					__out_size = ztd_c_array_size(__intermediate_output);
+					continue;
+				}
 				if constexpr (__call_error_handler) {
 					if (__err != CNC_MCERROR_OK) {
-						basic_any_punycode __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
 							             ::std::move(__in_last)),
 							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
 							          ::std::move(__out_last)),
 							     __state, static_cast<encoding_error>(__err)),
-							::ztd::span<code_point, 1>(__intermediate_input), ::ztd::span<code_unit, 0>());
+							::ztd::span<const code_point>(__intermediate_input, __incremented_in_size),
+							::ztd::span<const code_unit, 0>());
 					}
 				}
-				const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
-				for (::std::size_t __out_index = 0; __out_index < __written_output_size;
-					++__out_it, ++__out_index) {
-					if constexpr (__call_error_handler) {
-						if (__out_it == __out_last) {
-							basic_any_punycode __self {};
-							return __error_handler(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-								             ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-								          ::std::move(__out_last)),
-								     __state, encoding_error::insufficient_output_space),
-								::ztd::span<code_point, 1>(__intermediate_input), ::ztd::span<code_unit, 0>());
-						}
-					}
-					*__out_it = __intermediate_output[__out_index];
-				}
-				return _Result(ranges::reconstruct(
-					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
-					__state, static_cast<encoding_error>(__err));
+				break;
 			}
+			const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
+			for (::std::size_t __out_index = 0; __out_index < __written_output_size; ++__out_it, ++__out_index) {
+				if constexpr (__call_error_handler) {
+					if (__out_it == __out_last) {
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
+							             ::std::move(__in_last)),
+							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
+							          ::std::move(__out_last)),
+							     __state, encoding_error::insufficient_output_space),
+							::ztd::span<const code_point>(__intermediate_input, __incremented_in_size),
+							::ztd::span<const code_unit, 0>());
+					}
+				}
+				*__out_it = __intermediate_output[__out_index];
+			}
+			if (__in_it != __in_last) {
+				++__in_it;
+			}
+			return _Result(
+				ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
+				ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
+				__state, encoding_error::ok);
 		}
 	};
 
@@ -400,4 +391,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_PUNYCODE_HPP
+#endif

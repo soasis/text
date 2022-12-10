@@ -123,7 +123,7 @@ Of course, sometimes this is not always possible. ABI stability mandates some fu
 
 	void read_name(const char* untagged_name) {
 		using utf8_view = ztd::text::decode_view<
-			ztd::text::basic_utf8<char>, // use "char" as the code unit type
+			ztd::text::comapt_utf8, // use "char" as the code unit type
 			std::string_view // explicitly use this view type
 		>;
 		// constructs a std::string_view and

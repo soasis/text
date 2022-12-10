@@ -41,7 +41,7 @@
 #include <vector>
 
 #define UTF_CONVERSION_BENCHMARK(FROM_N, TO_N)                                                                    \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_ztd_text(benchmark::State& state) {           \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_unchecked(benchmark::State& state) {           \
 		using from_char_t = ztd_char##FROM_N##_t;                                                               \
 		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
 		const std::vector<from_char_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),               \
@@ -71,7 +71,7 @@
 		}                                                                                                       \
 	}                                                                                                            \
                                                                                                                   \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_ztd_text_single(benchmark::State& state) {    \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_single_unchecked(benchmark::State& state) {    \
 		using from_char_t = ztd_char##FROM_N##_t;                                                               \
 		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
 		const std::vector<from_char_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),               \
@@ -107,7 +107,7 @@
 		}                                                                                                       \
 	}                                                                                                            \
                                                                                                                   \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_ztd_text_unbounded(benchmark::State& state) { \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_unbounded_unchecked(benchmark::State& state) { \
 		using from_char_t = ztd_char##FROM_N##_t;                                                               \
 		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
 		const std::vector<from_char_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),               \
@@ -136,7 +136,7 @@
 		}                                                                                                       \
 	}                                                                                                            \
                                                                                                                   \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_ztd_text_single_unbounded(                    \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_single_unbounded_unchecked(                    \
 	     benchmark::State& state) {                                                                              \
 		using from_char_t = ztd_char##FROM_N##_t;                                                               \
 		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
@@ -172,7 +172,7 @@
 		}                                                                                                       \
 	}                                                                                                            \
                                                                                                                   \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_ztd_text_view(benchmark::State& state) {      \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_view_unchecked(benchmark::State& state) {      \
 		using from_char_t = ztd_char##FROM_N##_t;                                                               \
 		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
 		const std::vector<from_char_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),               \
@@ -217,37 +217,37 @@ UTF_CONVERSION_BENCHMARK(32, 16);
 
 #undef UTF_CONVERSION_BENCHMARK
 
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_ztd_text);
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_ztd_text_unbounded);
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_ztd_text_single);
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_ztd_text_view);
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_ztd_text);
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_ztd_text_unbounded);
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_ztd_text_single);
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_ztd_text_view);
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unchecked);
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unbounded_unchecked);
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unbounded_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_view_unchecked);
 
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_ztd_text);
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_ztd_text_unbounded);
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_ztd_text_single);
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_ztd_text_view);
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_ztd_text);
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_ztd_text_unbounded);
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_ztd_text_single);
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_ztd_text_view);
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_unchecked);
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_unbounded_unchecked);
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_unbounded_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_view_unchecked);
 
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_ztd_text);
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_ztd_text_single);
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_ztd_text_unbounded);
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_ztd_text_view);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_ztd_text);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_ztd_text_single);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_ztd_text_unbounded);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_ztd_text_single_unbounded);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_ztd_text_view);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_unchecked);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_unbounded_unchecked);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf32_to_utf16_well_formed_ztd_text_unchecked);
+BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf32_to_utf16_well_formed_ztd_text_unbounded_unchecked);
+BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf32_to_utf16_well_formed_ztd_text_view_unchecked);
 
 #endif

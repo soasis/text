@@ -58,4 +58,4 @@ ZTD_C_LANGUAGE_LINKAGE_I_
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ error_ptr_ptr ptr_struct_ptr_ptr(ztd_char8_t* output_ptr,
      ztd_char8_t* output_ptr_last, const ztd_char32_t* input_ptr, const ztd_char32_t* input_ptr_last);
 
-#endif // ZTD_TEXT_BENCHMARKS_BARRIER_CONVERT_H
+#endif

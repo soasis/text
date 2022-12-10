@@ -9,109 +9,85 @@
 			"name": "UTF-16 to UTF-32 (Well-Formed)",
 			"pattern": "utf16_to_utf32_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-16 data to UTF-32 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-16 data to UTF-32 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf16_to_utf32_well_formed"
 		},
 		{
 			"name": "UTF-16 to UTF-8 (Well-Formed)",
 			"pattern": "utf16_to_utf8_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf16_to_utf8_well_formed"
 		},
 		{
 			"name": "UTF-8 to UTF-16 (Well-Formed)",
 			"pattern": "utf8_to_utf16_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf8_to_utf16_well_formed"
 		},
 		{
 			"name": "UTF-8 to UTF-32 (Well-Formed)",
 			"pattern": "utf8_to_utf32_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf8_to_utf32_well_formed"
 		},
 		{
 			"name": "UTF-32 to UTF-8 (Well-Formed)",
 			"pattern": "utf32_to_utf8_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf32_to_utf8_well_formed"
 		},
 		{
 			"name": "UTF-32 to UTF-16 (Well-Formed)",
 			"pattern": "utf32_to_utf16_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf32_to_utf16_well_formed"
 		},
 		{
 			"name": "UTF-16 to UTF-32 (Well-Formed, with Init)",
 			"pattern": "utf16_to_utf32_init_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-16 data to UTF-32 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-16 data to UTF-32 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf16_to_utf32_well_formed_init"
 		},
 		{
 			"name": "UTF-16 to UTF-8 (Well-Formed, with Init)",
 			"pattern": "utf16_to_utf8_init_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf16_to_utf8_well_formed_init"
 		},
 		{
 			"name": "UTF-8 to UTF-16 (Well-Formed, with Init)",
 			"pattern": "utf8_to_utf16_init_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf8_to_utf16_well_formed_init"
 		},
 		{
 			"name": "UTF-8 to UTF-32 (Well-Formed, with Init)",
 			"pattern": "utf8_to_utf32_init_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf8_to_utf32_well_formed_init"
 		},
 		{
 			"name": "UTF-32 to UTF-8 (Well-Formed, with Init)",
 			"pattern": "utf32_to_utf8_init_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf32_to_utf8_well_formed_init"
 		},
 		{
 			"name": "UTF-32 to UTF-16 (Well-Formed, with Init)",
 			"pattern": "utf32_to_utf16_init_well_formed_",
 			"ascending": false,
-			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
-		},
-		{
-			"name": "UTF-16 to UTF-32 (Well-Formed, Assumed Valid)",
-			"pattern": "utf16_to_utf32_unchecked_well_formed_",
-			"ascending": false,
-			"description": "A conversion from UTF-16 data to UTF-32 data that contains no ill-formed or incomplete sequences."
-		},
-		{
-			"name": "UTF-16 to UTF-8 (Well-Formed, Assumed Valid)",
-			"pattern": "utf16_to_utf8_unchecked_well_formed_",
-			"ascending": false,
-			"description": "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
-		},
-		{
-			"name": "UTF-8 to UTF-16 (Well-Formed, Assumed Valid)",
-			"pattern": "utf8_to_utf16_unchecked_well_formed_",
-			"ascending": false,
-			"description": "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
-		},
-		{
-			"name": "UTF-8 to UTF-32 (Well-Formed, Assumed Valid)",
-			"pattern": "utf8_to_utf32_unchecked_well_formed_",
-			"ascending": false,
-			"description": "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences."
-		},
-		{
-			"name": "UTF-32 to UTF-8 (Well-Formed, Assumed Valid)",
-			"pattern": "utf32_to_utf8_unchecked_well_formed_",
-			"ascending": false,
-			"description": "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
-		},
-		{
-			"name": "UTF-32 to UTF-16 (Well-Formed, Assumed Valid)",
-			"pattern": "utf32_to_utf16_unchecked_well_formed_",
-			"ascending": false,
-			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+			"description": "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences.",
+			"file_name": "utf32_to_utf16_well_formed_init"
 		}
 	],
 	"data_groups": [
@@ -136,12 +112,12 @@
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone."
 		},
 		{
-			"name": "cuneicode registry (unchecked & unbounded)",
-			"pattern": "cuneicode_registry_unbounded_unchecked$",
+			"name": "cuneicode registry (unbounded, assume valid)",
+			"pattern": "cuneicode_registry_unchecked_unbounded$",
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity)."
 		},
 		{
-			"name": "cuneicode registry (unchecked)",
+			"name": "cuneicode registry (assume valid)",
 			"pattern": "cuneicode_registry_unchecked$",
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input)."
 		},
@@ -176,6 +152,11 @@
 			"description": "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads."
 		},
 		{
+			"name": "simdutf (unbounded, assume valid)",
+			"pattern": "simdutf_unchecked$",
+			"description": "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads."
+		},
+		{
 			"name": "Rust's encoding_c",
 			"pattern": "encoding_c$",
 			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
@@ -183,17 +164,22 @@
 		{
 			"name": "Rust's encoding_c (manual)",
 			"pattern": "encoding_c_direct$",
-			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c directly (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
+			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c and not using the general-purpose conversion routes (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
 		},
 		{
-			"name": "ctre",
-			"pattern": "ctre$",
-			"description": "Measures the performance of the Compile-Time Regular Expression (CTRE) library's internal encoding conversion routines."
+			"name": "ctre (assume valid)",
+			"pattern": "ctre_unchecked$",
+			"description": "Measures the performance of the Compile-Time Regular Expression (CTRE) library's internal encoding conversion routines, which assume the input is valid (or produce invalid code points when it is not)."
 		},
 		{
 			"name": "utf8cpp (unbounded)",
 			"pattern": "utf8cpp$",
-			"description": "Measures the utf8cpp library and its conversion routines."
+			"description": "Measures the utf8cpp library and its conversion routines, which do not check for available output space."
+		},
+		{
+			"name": "utf8cpp (unbounded, assume valid)",
+			"pattern": "utf8cpp_unchecked$",
+			"description": "Measures the utf8cpp library and its conversion routines, which do not check for available output space and also assume the input is valid."
 		},
 		{
 			"name": "ICU (2 UConverter convertEx)",
@@ -256,9 +242,44 @@
 			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction."
 		},
 		{
+			"name": "ztd.text (assume valid)",
+			"pattern": "ztd_text_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
+		},
+		{
+			"name": "ztd.text (unbounded, assume valid)",
+			"pattern": "ztd_text_unbounded_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off."
+		},
+		{
+			"name": "ztd.text (single loop, assume valid)",
+			"pattern": "ztd_text_single_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function."
+		},
+		{
+			"name": "ztd.text (single loop, unbounded, assume valid)",
+			"pattern": "ztd_text_single_unbounded_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function in a loop, with output bounds checking turned off."
+		},
+		{
+			"name": "ztd.text view (assume valid)",
+			"pattern": "ztd_text_view_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction."
+		},
+		{
 			"name": "Win32",
 			"pattern": "windows_api$",
 			"description": "Measures the Win32 API conversion routine using MultibyteToWideChar function or the WideCharToMultibyte function."
+		},
+		{
+			"name": "Standard C",
+			"pattern": "standard_c$",
+			"description": "Measures the <uchar.h>, <wchar.h>, and similar functionality present in the C standard library."
+		},
+		{
+			"name": "Standard C++",
+			"pattern": "standard_cpp$",
+			"description": "Measures the deprecated std::codecvt_* functionality present in the C++ standard library."
 		},
 		{
 			"name": "noop",

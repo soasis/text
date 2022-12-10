@@ -76,4 +76,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_BASIC_TEXT_VIEW_ITERATOR_HPP
+#endif

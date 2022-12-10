@@ -39,45 +39,49 @@
 #include <vector>
 #include <memory_resource>
 
-struct conversion_deleter {
-	void operator()(cnc_conversion* conv) const noexcept {
-		cnc_conv_delete(conv);
+inline namespace ztd_text_benchmarks_conversion_speed_cuneicode_help {
+
+	struct conversion_deleter {
+		void operator()(cnc_conversion* conv) const noexcept {
+			cnc_conv_delete(conv);
+		}
+	};
+
+	struct registry_deleter {
+		void operator()(cnc_conversion_registry* registry) const noexcept {
+			cnc_registry_delete(registry);
+		}
+	};
+
+	struct conversion_closer {
+		void operator()(cnc_conversion* conv) const noexcept {
+			cnc_conv_close(conv);
+		}
+	};
+
+	struct registry_closer {
+		void operator()(cnc_conversion_registry* registry) const noexcept {
+			cnc_registry_close(registry);
+		}
+	};
+
+	inline void* mbr_allocate(size_t requested_size, size_t alignment, size_t* p_actual_size, void* user_data) {
+		std::pmr::monotonic_buffer_resource& mbr = *static_cast<std::pmr::monotonic_buffer_resource*>(user_data);
+		void* ptr                                = mbr.allocate(requested_size, alignment);
+		*p_actual_size                           = requested_size;
+		return ptr;
 	}
-};
 
-struct registry_deleter {
-	void operator()(cnc_conversion_registry* registry) const noexcept {
-		cnc_registry_delete(registry);
+	inline void mbr_deallocate(void* ptr, size_t ptr_size, size_t alignment, void* user_data) {
+		std::pmr::monotonic_buffer_resource& mbr = *static_cast<std::pmr::monotonic_buffer_resource*>(user_data);
+		mbr.deallocate(ptr, ptr_size, alignment);
 	}
-};
 
-struct conversion_closer {
-	void operator()(cnc_conversion* conv) const noexcept {
-		cnc_conv_close(conv);
+	inline cnc_conversion_heap create_monotonic_buffer_heap(std::pmr::monotonic_buffer_resource& resource) {
+		cnc_conversion_heap mbr_heap = { &resource, mbr_allocate, nullptr, nullptr, nullptr, mbr_deallocate };
+		return mbr_heap;
 	}
-};
 
-struct registry_closer {
-	void operator()(cnc_conversion_registry* registry) const noexcept {
-		cnc_close_registry(registry);
-	}
-};
-
-inline void* mbr_allocate(size_t requested_size, size_t alignment, size_t* p_actual_size, void* user_data) {
-	std::pmr::monotonic_buffer_resource& mbr = *static_cast<std::pmr::monotonic_buffer_resource*>(user_data);
-	void* ptr                                = mbr.allocate(requested_size, alignment);
-	*p_actual_size                           = requested_size;
-	return ptr;
-}
-
-inline void mbr_deallocate(void* ptr, size_t ptr_size, size_t alignment, void* user_data) {
-	std::pmr::monotonic_buffer_resource& mbr = *static_cast<std::pmr::monotonic_buffer_resource*>(user_data);
-	mbr.deallocate(ptr, ptr_size, alignment);
-}
-
-inline cnc_conversion_heap create_monotonic_buffer_heap(std::pmr::monotonic_buffer_resource& resource) {
-	cnc_conversion_heap mbr_heap = { &resource, mbr_allocate, nullptr, nullptr, nullptr, mbr_deallocate };
-	return mbr_heap;
-}
+} // namespace ztd_text_benchmarks_conversion_speed_cuneicode_help
 
 #endif

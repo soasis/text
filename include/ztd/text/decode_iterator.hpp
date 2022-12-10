@@ -216,4 +216,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DECODE_ITERATOR_HPP
+#endif

@@ -68,7 +68,7 @@ function (generate_function_form_benchmark_targets name data_name title)
 		../include
 	)
 	generate_target_manifest(ztd.text.benchmarks.function_form.${name})
-	set(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_TITLE ${title})
+	set(ZTD_TEXT_BENCHMARKS_FUNCTION_FORM_TITLE ${title})
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/graph_config.in.json
 		${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json
 		@ONLY
@@ -85,5 +85,5 @@ function (generate_function_form_benchmark_targets name data_name title)
 	)
 endfunction()
 
-generate_function_form_benchmark_targets(large unicode "All Unicode Scalar Values (~4.4 MB)")
-generate_function_form_benchmark_targets(small basic_source "C Character Set (97 Bytes)")
+generate_function_form_benchmark_targets(large unicode "All Unicode Scalar Values")
+generate_function_form_benchmark_targets(small basic_source "C Character Set")

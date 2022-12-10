@@ -102,4 +102,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_FORWARDING_HANDLER_HPP
+#endif

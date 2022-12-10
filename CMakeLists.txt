@@ -266,5 +266,10 @@ if(ZTD_TEXT_SCRATCH)
 		${--warn-pedantic}
 		${--warn-all}
 		${--warn-extra}
-		${--warn-errors})
+		${--warn-errors}
+	)
+	target_compile_definitions(scratch
+		PRIVATE
+		ZTD_ASSERT_CHECKS=1
+	)
 endif()

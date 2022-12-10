@@ -86,9 +86,9 @@ namespace ztd { namespace text {
 				return __encoding.decode_one(
 					::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 			}
-			else if constexpr (
-				(!ranges::is_range_contiguous_range_v<_UOutput> || ranges::is_range_input_or_output_range_v<_UOutput>)&&__is_decode_range_category_contiguous_v<
-				     _UEncoding>) {
+			else if constexpr ((!ranges::is_range_contiguous_range_v<_UOutput>
+				                   || ranges::is_range_input_or_output_range_v<
+				                        _UOutput>)&&__is_decode_range_category_contiguous_v<_UEncoding>) {
 				code_point_t<_UEncoding> __intermediate_output_storage[max_code_points_v<_UEncoding>];
 				::ztd::span<code_point_t<_UEncoding>, max_code_points_v<_UEncoding>> __intermediate_output(
 					__intermediate_output_storage);
@@ -98,8 +98,8 @@ namespace ztd { namespace text {
 					ranges::range_reconstruct_t<_Output>, _State>;
 				if (__intermediate_result.error_code != encoding_error::ok) {
 					auto __intermediate_last = __intermediate_result.output.data();
-					auto __out_it            = ranges::ranges_adl::adl_begin(::std::move(__output));
-					auto __out_last          = ranges::ranges_adl::adl_end(::std::move(__output));
+					auto __out_it            = ::ztd::ranges::begin(::std::move(__output));
+					auto __out_last          = ::ztd::ranges::end(::std::move(__output));
 					for (auto __intermediate_it = __intermediate_output.data();
 						__intermediate_it != __intermediate_last;) {
 						*__out_it = *__intermediate_it;
@@ -109,11 +109,11 @@ namespace ztd { namespace text {
 					return _ReconstructedResult(::std::move(__intermediate_result.input),
 						ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output),
 						     ::std::move(__out_it), ::std::move(__out_last)),
-						__state, __intermediate_result.error_code, __intermediate_result.handled_errors);
+						__state, __intermediate_result.error_code, __intermediate_result.error_count);
 				}
 				return _ReconstructedResult(::std::move(__intermediate_result.input),
 					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)),
-					__state, __intermediate_result.error_code, __intermediate_result.handled_errors);
+					__state, __intermediate_result.error_code, __intermediate_result.error_count);
 			}
 			else {
 				return __encoding.decode_one(
@@ -136,9 +136,9 @@ namespace ztd { namespace text {
 				return __encoding.encode_one(
 					::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 			}
-			else if constexpr (
-				(!ranges::is_range_contiguous_range_v<_UOutput> || ranges::is_range_input_or_output_range_v<_UOutput>)&&__is_encode_range_category_contiguous_v<
-				     _UEncoding>) {
+			else if constexpr ((!ranges::is_range_contiguous_range_v<_UOutput>
+				                   || ranges::is_range_input_or_output_range_v<
+				                        _UOutput>)&&__is_encode_range_category_contiguous_v<_UEncoding>) {
 				constexpr ::std::size_t _IntermediateMax = max_code_units_v<_UEncoding>;
 				code_unit_t<_UEncoding> __intermediate_output_storage[_IntermediateMax];
 				::ztd::span<code_unit_t<_UEncoding>, _IntermediateMax> __intermediate_output(
@@ -149,8 +149,8 @@ namespace ztd { namespace text {
 					ranges::range_reconstruct_t<_Output>, _State>;
 				if (__intermediate_result.error_code != encoding_error::ok) {
 					auto __intermediate_last = __intermediate_result.output.data();
-					auto __out_it            = ranges::ranges_adl::adl_begin(::std::move(__output));
-					auto __out_last          = ranges::ranges_adl::adl_end(::std::move(__output));
+					auto __out_it            = ::ztd::ranges::begin(::std::move(__output));
+					auto __out_last          = ::ztd::ranges::end(::std::move(__output));
 					for (auto __intermediate_it = __intermediate_output.data();
 						__intermediate_it != __intermediate_last;) {
 						*__out_it = *__intermediate_it;
@@ -160,11 +160,11 @@ namespace ztd { namespace text {
 					return _ReconstructedResult(::std::move(__intermediate_result.input),
 						ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output),
 						     ::std::move(__out_it), ::std::move(__out_last)),
-						__state, __intermediate_result.error_code, __intermediate_result.handled_errors);
+						__state, __intermediate_result.error_code, __intermediate_result.error_count);
 				}
 				return _ReconstructedResult(::std::move(__intermediate_result.input),
 					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)),
-					__state, __intermediate_result.error_code, __intermediate_result.handled_errors);
+					__state, __intermediate_result.error_code, __intermediate_result.error_count);
 			}
 			else {
 				return __encoding.encode_one(
@@ -193,4 +193,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_TRANSCODE_ROUTINES_HPP
+#endif

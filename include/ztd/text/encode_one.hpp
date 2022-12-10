@@ -217,9 +217,9 @@ namespace ztd { namespace text {
 
 			_OutputContainer __output {};
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
+				using _SizeType = decltype(::ztd::ranges::size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-					_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
+					_SizeType __output_size_hint = static_cast<_SizeType>(::ztd::ranges::size(__input));
 					__output_size_hint *= (max_code_units_v<_UEncoding> > 1) ? (max_code_units_v<_UEncoding> / 2)
 						                                                    : max_code_units_v<_UEncoding>;
 					__output.reserve(__output_size_hint);
@@ -512,4 +512,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ENCODE_ONE_HPP
+#endif

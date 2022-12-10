@@ -97,4 +97,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_IS_CODE_POINT_UNIT_REPLACEABLE_HPP
+#endif

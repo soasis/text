@@ -97,11 +97,11 @@ namespace ztd { namespace text {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__decode_state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
 						continue;
 					}
-					if (!text::is_state_complete(__encode_state)) {
+					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
 						continue;
 					}
 					break;
@@ -118,11 +118,11 @@ namespace ztd { namespace text {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__decode_state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
 						continue;
 					}
-					if (!text::is_state_complete(__encode_state)) {
+					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
 						continue;
 					}
 					break;
@@ -139,11 +139,11 @@ namespace ztd { namespace text {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__decode_state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
 						continue;
 					}
-					if (!text::is_state_complete(__encode_state)) {
+					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
 						continue;
 					}
 					break;
@@ -160,11 +160,11 @@ namespace ztd { namespace text {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__decode_state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
 						continue;
 					}
-					if (!text::is_state_complete(__encode_state)) {
+					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
 						continue;
 					}
 					break;
@@ -191,11 +191,11 @@ namespace ztd { namespace text {
 						false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__stateless_validate_result.input);
-				if (ranges::ranges_adl::adl_empty(__working_input)) {
-					if (!text::is_state_complete(__decode_state)) {
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
 						continue;
 					}
-					if (!text::is_state_complete(__encode_state)) {
+					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
 						continue;
 					}
 					break;
@@ -349,4 +349,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_VALIDATE_DECODABLE_AS_HPP
+#endif

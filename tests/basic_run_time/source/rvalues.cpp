@@ -50,7 +50,7 @@ TEST_CASE("text/r-values", "r-values placed into top-level commands do not cause
 	SECTION("decode_to") {
 		auto result = ztd::text::decode_to<std::u32string>(message_stream.str(), ztd::text::compat_utf8);
 		REQUIRE(result.error_code == ztd::text::encoding_error::ok);
-		REQUIRE(result.handled_errors == 0);
+		REQUIRE(result.error_count == 0);
 		REQUIRE(result.input.empty());
 		REQUIRE(result.output == ztd::tests::u32_basic_source_character_set);
 	}
@@ -69,7 +69,7 @@ TEST_CASE("text/r-values", "r-values placed into top-level commands do not cause
 		     ztd::tests::u8_basic_source_character_set.begin(), ztd::tests::u8_basic_source_character_set.end());
 		auto result = ztd::text::encode_to<std::vector<ztd::uchar8_t>>(std::move(input), ztd::text::compat_utf8);
 		REQUIRE(result.error_code == ztd::text::encoding_error::ok);
-		REQUIRE(result.handled_errors == 0);
+		REQUIRE(result.error_count == 0);
 		REQUIRE(result.input.empty());
 		REQUIRE(result.output == expected);
 	}
@@ -82,7 +82,7 @@ TEST_CASE("text/r-values", "r-values placed into top-level commands do not cause
 		auto result = ztd::text::transcode_to<std::string>(
 		     message_stream.str(), ztd::text::compat_utf8, ztd::text::compat_utf8);
 		REQUIRE(result.error_code == ztd::text::encoding_error::ok);
-		REQUIRE(result.handled_errors == 0);
+		REQUIRE(result.error_count == 0);
 		REQUIRE(result.input.empty());
 		REQUIRE(result.output == ztd::tests::basic_source_character_set);
 	}

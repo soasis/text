@@ -83,14 +83,13 @@ namespace ztd { namespace text {
 		encode_result<_Intermediate, ranges::reconstruct_t<_Output>, _ToState> __encode_result(
 			::std::move(__result.output),
 			ranges::reconstruct(std::in_place_type<remove_cvref_t<_Output>>, ::std::forward<_Output>(__output)),
-			__to_state, __result.error_code, __result.handled_errors);
+			__to_state, __result.error_code, __result.error_count);
 		auto __encode_error_result
 			= ::std::forward<_EncodeErrorHandler>(__encode_error_handler)(::std::forward<_ToEncoding>(__to_encoding),
 			     ::std::move(__encode_result), ::std::forward<_ToInputProgress>(__to_input_progress),
 			     ::std::forward<_ToOutputProgress>(__to_output_progress));
 		return _Result(::std::move(__result.input), ::std::move(__encode_error_result.output), __result.state,
-			__encode_error_result.state, __encode_error_result.error_code,
-			__result.handled_errors + __encode_error_result.handled_errors);
+			__encode_error_result.state, __encode_error_result.error_code, __encode_error_result.error_count);
 	}
 
 	//////
@@ -125,14 +124,14 @@ namespace ztd { namespace text {
 		encode_result<_Intermediate, ranges::reconstruct_t<_Output>, _ToState> __encode_result(
 			::std::move(__result.output),
 			ranges::reconstruct(std::in_place_type<remove_cvref_t<_Output>>, ::std::forward<_Output>(__output)),
-			__to_state, __result.error_code, __result.handled_errors);
+			__to_state, __result.error_code, __result.error_count);
 		auto __encode_error_result
 			= ::std::forward<_EncodeErrorHandler>(__encode_error_handler)(::std::forward<_ToEncoding>(__to_encoding),
 			     ::std::move(__encode_result), ::std::forward<_ToInputProgress>(__to_input_progress),
 			     ::std::forward<_ToOutputProgress>(__to_output_progress));
 		return _Result(::std::move(__result.input), ::std::move(__encode_error_result.output), __result.state,
 			__encode_error_result.state, __encode_error_result.error_code,
-			__result.handled_errors + __encode_error_result.handled_errors);
+			__result.error_count + __encode_error_result.error_count);
 	}
 
 	//////
@@ -145,4 +144,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_PROPAGATE_ERROR_HPP
+#endif

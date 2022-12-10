@@ -70,7 +70,7 @@
 			state.SkipWithError("memcmp failed somehow???");                                                   \
 		}                                                                                                       \
 	}                                                                                                            \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_memcpy(benchmark::State& state) {             \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_unchecked_memcpy(benchmark::State& state) {             \
 		using to_char_t = ztd_char##TO_N##_t;                                                                   \
 		std::vector<to_char_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                         \
 		bool result = true;                                                                                     \
@@ -109,10 +109,3 @@ BENCHMARK(utf16_to_utf32_init_well_formed_memcpy);
 BENCHMARK(utf16_to_utf8_init_well_formed_memcpy);
 BENCHMARK(utf32_to_utf16_init_well_formed_memcpy);
 BENCHMARK(utf32_to_utf8_init_well_formed_memcpy);
-
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_memcpy);
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_memcpy);
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_memcpy);
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_memcpy);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_memcpy);
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_memcpy);

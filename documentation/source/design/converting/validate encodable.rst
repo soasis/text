@@ -38,7 +38,8 @@ Validation is the way to verify a given sequence of input can have a specific ac
 
 The algorithm for this is as follows:
 
-* ⏩ Is the ``input`` value empty? Return the current results with the the empty ``input``, ``valid`` set to ``true`` and ``state``\ s, everything is okay ✅! Otherwise,
+* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results with the the empty ``input``, ``valid`` set to ``true`` and ``state``\ s, everything is okay ✅!
+* ⏩ Otherwise,
 
    0. Set up an ``intermediate`` storage location of ``code_unit``\ s, using the ``max_code_units`` of the input encoding, for the next operations.
    1. Set up an ``intermediate_checked_output`` storage location of ``code_point``\ s, using the ``max_code_points`` of the input encoding, for the next operations.

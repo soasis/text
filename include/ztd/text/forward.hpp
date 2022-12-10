@@ -94,8 +94,9 @@ namespace ztd { namespace text {
 	class assume_valid_handler_t;
 	class pass_through_handler;
 	template <typename, typename>
-	class incomplete_handler;
+	class basic_incomplete_handler;
 	class replacement_handler_t;
+	class skip_handler_t;
 	class default_handler_t;
 
 	template <typename, typename>
@@ -176,4 +177,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_FORWARD_HPP
+#endif

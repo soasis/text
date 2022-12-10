@@ -135,30 +135,30 @@ namespace ztd { namespace text {
 		_WorkingOutput __working_output
 			= ranges::reconstruct(::std::in_place_type<_WorkingOutput>, ::std::forward<_Output>(__output));
 
-		::std::size_t __handled_errors = 0;
+		::std::size_t __error_count = 0;
 		for (;;) {
 			auto __transcode_result
 				= transcode_one_into(::std::move(__working_input), __from_encoding, ::std::move(__working_output),
 				     __to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state, __pivot);
 			if (__transcode_result.error_code != encoding_error::ok) {
 				return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
-					__to_state, __transcode_result.error_code, __transcode_result.handled_errors);
+					__to_state, __transcode_result.error_code, __transcode_result.error_count);
 			}
-			__handled_errors += __transcode_result.handled_errors;
+			__error_count += __transcode_result.error_count;
 			__working_input  = ::std::move(__transcode_result.input);
 			__working_output = ::std::move(__transcode_result.output);
-			if (ranges::ranges_adl::adl_empty(__working_input)) {
-				if (!text::is_state_complete(__from_state)) {
+			if (::ztd::ranges::empty(__working_input)) {
+				if (!::ztd::text::is_state_complete(__from_encoding, __from_state)) {
 					continue;
 				}
-				if (!text::is_state_complete(__to_state)) {
+				if (!::ztd::text::is_state_complete(__to_encoding, __to_state)) {
 					continue;
 				}
 				break;
 			}
 		}
 		return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state, __to_state,
-			encoding_error::ok, __handled_errors);
+			encoding_error::ok, __error_count);
 	}
 
 	//////
@@ -226,10 +226,8 @@ namespace ztd { namespace text {
 				(void)__to_state;
 				(void)__pivot;
 				auto __result = ::ztd::ranges::__rng_detail::__copy(
-					::ztd::ranges::ranges_adl::adl_cbegin(::std::forward<_Input>(__input)),
-					::ztd::ranges::ranges_adl::adl_cend(__input),
-					::ztd::ranges::ranges_adl::adl_begin(::std::forward<_Output>(__output)),
-					::ztd::ranges::ranges_adl::adl_end(__output));
+					::ztd::ranges::cbegin(::std::forward<_Input>(__input)), ::ztd::ranges::cend(__input),
+					::ztd::ranges::begin(::std::forward<_Output>(__output)), ::ztd::ranges::end(__output));
 				using _Result
 					= __txt_detail::__reconstruct_transcode_result_t<_UInput, _UOutput, _FromState, _ToState>;
 				return _Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__result.in)),
@@ -252,7 +250,7 @@ namespace ztd { namespace text {
 					::std::forward<_FromErrorHandler>(__from_error_handler), __from_state);
 				return _Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__result.input)),
 					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__result.output)),
-					__from_state, __to_state);
+					__from_state, __to_state, __result.error_code, __result.error_count);
 			}
 			else if constexpr (__txt_detail::__is_already_decoded_v<_UFromEncoding, _UToEncoding>) {
 				// We can skip one of the steps. This tends to be the case for e.g.
@@ -270,7 +268,7 @@ namespace ztd { namespace text {
 					::std::forward<_FromErrorHandler>(__to_error_handler), __to_state);
 				return _Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__result.input)),
 					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__result.output)),
-					__from_state, __to_state);
+					__from_state, __to_state, __result.error_code, __result.error_count);
 			}
 			else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_transcode_one, _Input,
 				                   _FromEncoding, _Output, _ToEncoding, _FromErrorHandler, _ToErrorHandler,
@@ -561,12 +559,12 @@ namespace ztd { namespace text {
 				if (__result.error_code != encoding_error::ok) {
 					return __result;
 				}
-				if (ranges::ranges_adl::adl_empty(__result.input)) {
-					if (!text::is_state_complete(__from_state)) {
+				if (::ztd::ranges::empty(__result.input)) {
+					if (!::ztd::text::is_state_complete(__from_encoding, __from_state)) {
 						__working_input = ::std::move(__result.input);
 						continue;
 					}
-					if (!text::is_state_complete(__to_state)) {
+					if (!::ztd::text::is_state_complete(__to_encoding, __to_state)) {
 						__working_input = ::std::move(__result.input);
 						continue;
 					}
@@ -587,9 +585,9 @@ namespace ztd { namespace text {
 
 			_OutputContainer __output {};
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
-				using _SizeType = decltype(ranges::ranges_adl::adl_size(__input));
+				using _SizeType = decltype(::ztd::ranges::size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
-					_SizeType __output_size_hint = static_cast<_SizeType>(ranges::ranges_adl::adl_size(__input));
+					_SizeType __output_size_hint = static_cast<_SizeType>(::ztd::ranges::size(__input));
 					__output.reserve(__output_size_hint);
 				}
 			}
@@ -895,7 +893,7 @@ namespace ztd { namespace text {
 	/// a ztd::text::default_handler_t that is marked as careless. The return type is stateless since both states must
 	/// be passed in. If you want to have access to the states, create both of them yourself and pass them into a
 	/// lower-level function that accepts those parameters.
-	template <typename _OutputContainer, typename _Input, typename _ToEncoding>
+	template <typename _OutputContainer = void, typename _Input, typename _ToEncoding>
 	constexpr auto transcode_to(_Input&& __input, _ToEncoding&& __to_encoding) {
 		using _UInput   = remove_cvref_t<_Input>;
 		using _CodeUnit = ranges::range_value_type_t<_UInput>;
@@ -1211,4 +1209,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_TRANSCODE_HPP
+#endif

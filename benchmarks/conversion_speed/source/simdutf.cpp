@@ -75,38 +75,6 @@
 			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
 		}                                                                                                       \
 	}                                                                                                            \
-	static void utf##FROM_N##_to_utf##TO_N##_unchecked_well_formed_simdutf(benchmark::State& state) {            \
-		using from_char_t = ::std::conditional_t<FROM_N == 8, char, ztd_char##FROM_N##_t>;                      \
-		using to_char_t   = ::std::conditional_t<TO_N == 8, char, ztd_char##TO_N##_t>;                          \
-		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),      \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));  \
-		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                \
-		bool result = true;                                                                                     \
-		for (auto _ : state) {                                                                                  \
-			size_t input_size        = input_data.size();                                                      \
-			const from_char_t* input = (from_char_t*)input_data.data();                                        \
-			size_t output_size       = output_data.size();                                                     \
-			to_char_t* output        = (to_char_t*)output_data.data();                                         \
-                                                                                                                  \
-			size_t output_written = ztd::endian::native == ztd::endian::little                                 \
-			     ? simdutf::convert_valid_utf##FROM_N##LIL_FROM_SUFFIX##_to_utf##TO_N##LIL_TO_SUFFIX(          \
-			          input, input_size, output)                                                               \
-			     : simdutf::convert_valid_utf##FROM_N##BIG_FROM_SUFFIX##_to_utf##TO_N##BIG_TO_SUFFIX(          \
-			          input, input_size, output);                                                              \
-			if (output_written != output_data.size()) {                                                        \
-				result = false;                                                                               \
-			}                                                                                                  \
-		}                                                                                                       \
-		const bool is_equal                                                                                     \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result) {                                                                                          \
-			state.SkipWithError("conversion failed with an error");                                            \
-		}                                                                                                       \
-		else if (!is_equal) {                                                                                   \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
-		}                                                                                                       \
-	}                                                                                                            \
 	static_assert(true, "")
 
 UTF_CONVERSION_BENCHMARK(8, 16, , , be, le);
@@ -128,14 +96,5 @@ BENCHMARK(utf16_to_utf32_well_formed_simdutf);
 
 BENCHMARK(utf32_to_utf8_well_formed_simdutf);
 BENCHMARK(utf32_to_utf16_well_formed_simdutf);
-
-BENCHMARK(utf8_to_utf16_unchecked_well_formed_simdutf);
-BENCHMARK(utf8_to_utf32_unchecked_well_formed_simdutf);
-
-BENCHMARK(utf16_to_utf8_unchecked_well_formed_simdutf);
-BENCHMARK(utf16_to_utf32_unchecked_well_formed_simdutf);
-
-BENCHMARK(utf32_to_utf8_unchecked_well_formed_simdutf);
-BENCHMARK(utf32_to_utf16_unchecked_well_formed_simdutf);
 
 #endif

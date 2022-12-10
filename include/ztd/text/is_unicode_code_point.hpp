@@ -67,4 +67,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_IS_UNICODE_CODE_POINT_HPP
+#endif

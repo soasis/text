@@ -89,11 +89,9 @@ namespace ztd { namespace text {
 					false, __decode_state);
 			}
 
-			const bool __is_equal_transcode
-				= ranges::__rng_detail::__equal(ranges::ranges_adl::adl_begin(__working_input),
-				     ranges::ranges_adl::adl_begin(__transcode_result.input),
-				     ranges::ranges_adl::adl_begin(__working_output),
-				     ranges::ranges_adl::adl_begin(__transcode_result.output));
+			const bool __is_equal_transcode = ranges::__rng_detail::__equal(::ztd::ranges::begin(__working_input),
+				::ztd::ranges::begin(__transcode_result.input), ::ztd::ranges::begin(__working_output),
+				::ztd::ranges::begin(__transcode_result.output));
 			if (!__is_equal_transcode) {
 				return _Result(
 					ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__transcode_result.input)),
@@ -156,11 +154,9 @@ namespace ztd { namespace text {
 					__encode_state);
 			}
 
-			const bool __is_equal_transcode
-				= ranges::__rng_detail::__equal(ranges::ranges_adl::adl_begin(__working_input),
-				     ranges::ranges_adl::adl_begin(__encode_result.input),
-				     ranges::ranges_adl::adl_begin(__working_intermediate),
-				     ranges::ranges_adl::adl_begin(__decode_result.output));
+			const bool __is_equal_transcode = ranges::__rng_detail::__equal(::ztd::ranges::begin(__working_input),
+				::ztd::ranges::begin(__encode_result.input), ::ztd::ranges::begin(__working_intermediate),
+				::ztd::ranges::begin(__decode_result.output));
 			if (!__is_equal_transcode) {
 				return _Result(
 					ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__encode_result.input)), false,
@@ -194,12 +190,11 @@ namespace ztd { namespace text {
 			auto __intermediate_result = __basic_encode_one<__consume::__no>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), __intermediate,
 				::std::forward<_ErrorHandler>(__error_handler), __state);
-			::std::size_t __written
-				= static_cast<::std::size_t>(ranges::ranges_adl::adl_data(__intermediate_result.output)
-				     - ranges::ranges_adl::adl_data(__intermediate));
+			::std::size_t __written    = static_cast<::std::size_t>(
+                    ::ztd::ranges::data(__intermediate_result.output) - ::ztd::ranges::data(__intermediate));
 
 			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state,
-				__intermediate_result.error_code, __intermediate_result.handled_errors);
+				__intermediate_result.error_code, __intermediate_result.error_count);
 		}
 
 		template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
@@ -225,12 +220,11 @@ namespace ztd { namespace text {
 			auto __intermediate_result = __basic_decode_one<__consume::__no>(::std::forward<_Input>(__input),
 				::std::forward<_Encoding>(__encoding), __intermediate,
 				::std::forward<_ErrorHandler>(__error_handler), __state);
-			::std::size_t __written
-				= static_cast<::std::size_t>(ranges::ranges_adl::adl_data(__intermediate_result.output)
-				     - ranges::ranges_adl::adl_data(__intermediate));
+			::std::size_t __written    = static_cast<::std::size_t>(
+                    ::ztd::ranges::data(__intermediate_result.output) - ::ztd::ranges::data(__intermediate));
 
 			return _Result(::std::move(__intermediate_result.input), __written, __intermediate_result.state,
-				__intermediate_result.error_code, __intermediate_result.handled_errors);
+				__intermediate_result.error_code, __intermediate_result.error_count);
 		}
 
 		template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
@@ -254,4 +248,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_VALIDATE_COUNT_ROUTINES_HPP
+#endif

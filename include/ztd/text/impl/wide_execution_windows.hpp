@@ -123,9 +123,9 @@ namespace ztd { namespace text {
 			///
 			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
-			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
+			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto decode_one(
-				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
+				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, state& __s) {
 				using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 
 				// just go straight from UTF32
@@ -133,8 +133,8 @@ namespace ztd { namespace text {
 				__wide_execution_windows __self {};
 				__txt_detail::__forwarding_handler<const __wide_execution_windows, _CVErrorHandler>
 					__intermediate_handler(__self, __error_handler);
-				return __base_encoding.decode_one(::std::forward<_InputRange>(__input),
-					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
+				return __base_encoding.decode_one(::std::forward<_Input>(__input),
+					::std::forward<_Output>(__output), __intermediate_handler, __s);
 			}
 
 			//////
@@ -150,9 +150,9 @@ namespace ztd { namespace text {
 			///
 			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
-			template <typename _InputRange, typename _OutputRange, typename _ErrorHandler>
+			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto encode_one(
-				_InputRange&& __input, _OutputRange&& __output, _ErrorHandler&& __error_handler, state& __s) {
+				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, state& __s) {
 				using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 
 				// just go straight from UTF32
@@ -160,8 +160,8 @@ namespace ztd { namespace text {
 				__wide_execution_windows __self {};
 				__txt_detail::__forwarding_handler<const __wide_execution_windows, _CVErrorHandler>
 					__intermediate_handler(__self, __error_handler);
-				return __base_encoding.encode_one(::std::forward<_InputRange>(__input),
-					::std::forward<_OutputRange>(__output), __intermediate_handler, __s);
+				return __base_encoding.encode_one(::std::forward<_Input>(__input),
+					::std::forward<_Output>(__output), __intermediate_handler, __s);
 			}
 		};
 
@@ -175,4 +175,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_WIDE_EXECUTION_WINDOWS_HPP
+#endif

@@ -105,19 +105,19 @@ namespace ztd { namespace text {
 			constexpr auto operator()(const _Encoding&, _Result __result, const _InputProgress& __input_progress,
 				const _OutputProgress& __output_progress) noexcept {
 				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					this->_M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					this->_M_code_units_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						this->_M_code_units_size, this->_M_code_units.data());
-					this->_M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					this->_M_code_points_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						this->_M_code_points_size, this->_M_code_points.data());
 				}
 				else {
-					this->_M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					this->_M_code_points_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						this->_M_code_points_size, this->_M_code_points.data());
-					this->_M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					this->_M_code_units_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						this->_M_code_units_size, this->_M_code_units.data());
 				}
 				return __result;
@@ -187,19 +187,19 @@ namespace ztd { namespace text {
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
 				__forwarding_progress_handler& __non_const_self = *this;
 				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					__non_const_self._M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
-					__non_const_self._M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
 				}
 				else {
-					__non_const_self._M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-					__non_const_self._M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
 				}
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
@@ -215,19 +215,19 @@ namespace ztd { namespace text {
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
 				__forwarding_progress_handler& __non_const_self = const_cast<__forwarding_progress_handler&>(*this);
 				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					__non_const_self._M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
-					__non_const_self._M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
 				}
 				else {
-					__non_const_self._M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-					__non_const_self._M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
 				}
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
@@ -243,19 +243,19 @@ namespace ztd { namespace text {
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
 				__forwarding_progress_handler& __non_const_self = *this;
 				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					__non_const_self._M_code_units_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
-					__non_const_self._M_code_points_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
 				}
 				else {
-					__non_const_self._M_code_points_size = ranges::ranges_adl::adl_size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__input_progress),
+					__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
 						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-					__non_const_self._M_code_units_size = ranges::ranges_adl::adl_size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(ranges::ranges_adl::adl_cbegin(__output_progress),
+					__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
+					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
 						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
 				}
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
@@ -282,4 +282,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_PROGRESS_HANDLER_HPP
+#endif

@@ -28,7 +28,7 @@
 ..
 .. =============================================================================>
 
-``ztd.text``
+ztd.text
 ============
 
 The premiere library for handling text in different encoding forms and reducing transcoding bugs in your C++ software.
@@ -47,13 +47,12 @@ If:
 - you want to work with higher-level primitives (code points, graphames) when iterating text that do not break your text apart;
 - you want safe defaults for working with text;
 
-then ``ztd.text`` is for you!
+then ztd.text is for you!
 
 .. toctree::
 	:maxdepth: 1
 	:caption: Contents:
 
-	start
 	quick
 	in the wild
 	definitions

@@ -166,7 +166,7 @@ namespace ztd { namespace text {
 		/// @brief Retrieves the next code point in the normalized view of the underlying range.
 		constexpr normalized_iterator& operator++() noexcept {
 			++this->_M_cursor;
-			if (this->_M_cursor == ::ztd::ranges::ranges_adl::adl_size(this->_M_normalized)) {
+			if (this->_M_cursor == ::ztd::ranges::size(this->_M_normalized)) {
 				this->_M_get_more();
 				this->_M_cursor = 0;
 			}
@@ -184,8 +184,7 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __it The iterator to check against the sentinel.
 		friend constexpr bool operator==(const normalized_iterator& __it, const normalized_sentinel_t&) noexcept {
-			return __it._M_base_is_empty()
-				&& __it._M_cursor == ::ztd::ranges::ranges_adl::adl_size(__it._M_normalized);
+			return __it._M_base_is_empty() && __it._M_cursor == ::ztd::ranges::size(__it._M_normalized);
 		}
 
 		//////
@@ -203,8 +202,7 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __it The iterator to check against the sentinel.
 		friend constexpr bool operator!=(const normalized_iterator& __it, const normalized_sentinel_t&) noexcept {
-			return !__it._M_base_is_empty()
-				|| __it._M_cursor != ::ztd::ranges::ranges_adl::adl_size(__it._M_normalized);
+			return !__it._M_base_is_empty() || __it._M_cursor != ::ztd::ranges::size(__it._M_normalized);
 		}
 
 		//////
@@ -221,10 +219,10 @@ namespace ztd { namespace text {
 		constexpr bool _M_base_is_empty() const noexcept {
 			const _URange& __range = this->__base_range_t::get_value();
 			if constexpr (is_detected_v<ranges::detect_adl_empty, _Range>) {
-				return ranges::ranges_adl::adl_empty(__range);
+				return ::ztd::ranges::empty(__range);
 			}
 			else {
-				return ranges::ranges_adl::adl_begin(__range) == ranges::ranges_adl::adl_end(__range);
+				return ::ztd::ranges::begin(__range) == ::ztd::ranges::end(__range);
 			}
 		}
 
@@ -251,4 +249,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_NORMALIZED_ITERATOR_HPP
+#endif

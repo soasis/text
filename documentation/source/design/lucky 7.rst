@@ -154,10 +154,10 @@ These result structures are returned from the lowest level ``encode`` and ``deco
 - An ``output`` member;
 - A  ``state`` member, which is a reference to the ``state`` that was passed in to the ``decode_one`` or ``encode_one`` functions;
 - An ``error_code`` member, which is an enumeration value from :doc:`ztd::text::encoding_error </api/encoding_error>`; and
-- An ``handled_errors`` member, which is an unsigned integral (``std::size_t``) value that says whether or not the given ``error_handler`` was invoked and how many times
-- An ``errors_were_handled()`` member function, which returns a boolean value indicating whether ``handled_errors`` is greater than 0.
+- An ``error_count`` member, which is an unsigned integral (``std::size_t``) value that says whether or not the given ``error_handler`` was invoked and how many times
+- An ``errors_were_handled()`` member function, which returns a boolean value indicating whether ``error_count`` is greater than 0.
 
-These variables can be used to query what exactly happened during the operation (``error_code`` and ``handled_errors``), inspect any state passed into encodings (not used for an encoding such as ``utf_ebcdic``), and how much input and output has been read/what is left (by checking the ``input`` and ``output`` ranges whose ``.begin()`` value has been incremented compared to the input values). Understanding the result types now, we move to the error handler:
+These variables can be used to query what exactly happened during the operation (``error_code`` and ``error_count``), inspect any state passed into encodings (not used for an encoding such as ``utf_ebcdic``), and how much input and output has been read/what is left (by checking the ``input`` and ``output`` ranges whose ``.begin()`` value has been incremented compared to the input values). Understanding the result types now, we move to the error handler:
 
 
 Error Handlers
@@ -193,6 +193,7 @@ The error handlers use a result-in, result-out design. The parameters given are:
 2. A contiguous range (``ztd::span``) of ``code_unit``\ s or ``code_point``\ s that were already read by the algorithm. This is useful for when the ``input`` range uses input iterators, which sometimes cannot be "rolled back" after something is read (e.g., consider `std::istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_).
 
 It returns the same type as the result object. Within this function, anyone can perform any modifications they like to the type, before returning it. This is an incredibly useful behavior that comes in handy for defining custom error handling behaviors, as shown in :doc:`the Error Handling Design section </design/error handling>`. For example, this allows us to do things like insert **REPLACEMENT_CHARACTER \\uFFFD** (�) into a encoding through the :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` or enable speedy encoding for pre-validated text using :doc:`ztd::text::assume_valid_handler </api/error handlers/assume_valid_handler>`. When writing your ``encode_one`` or ``decode_one`` function, it is your responsibility to invoke the error handler (or not, depending on the value of :doc:`ztd::text::is_ignorable_error_handler </api/is_ignorable_error_handler>`).
+
 
 
 `Liberation Achieved <https://www.youtube.com/watch?v=cZGEscLKlEQ>`_

@@ -36,7 +36,7 @@ Occasionally, you will end up in a situation where you want to convert some text
 .. literalinclude:: /../../examples/documentation/compile_fails/source/error_handler.replacement.ascii.cpp
 	:language: cpp
 	:linenos:
-	:emphasize-lines: 6-7
+	:emphasize-lines: 6-13
 	:start-after: // ============================================================================ //
 
 This will produce a compile time error (with this error number for MSVC as an example):
@@ -52,7 +52,7 @@ Since this library is trying to prevent :term:`Mojibake <mojibake>` and other en
 .. literalinclude:: /../../examples/documentation/snippets/source/error_handler.replacement.ascii.cpp
 	:language: cpp
 	:linenos:
-	:emphasize-lines: 15-16
+	:emphasize-lines: 13-16
 	:start-after: // ============================================================================ //
 
 Any encoding which does not meet the requirements of either :doc:`ztd::text::is_encode_injective_v </api/is_encode_injective>` or :doc:`ztd::text::is_decode_injective_v </api/is_decode_injective>` (or both, for transcoding which uses both an encode and a decode operation) will throw an error if you specify no error handlers in the text. This is done through the :doc:`Injectivity Lucky 7 Extensions </design/lucky 7 extensions/injective>` that go beyond the :doc:`traditional Lucky 7 </design/lucky 7>` with 2 ``std::true_type``/``std::false_type`` definitions.

@@ -58,7 +58,7 @@ inline namespace ztd_text_tests_transcode_containers {
 			};
 			auto result = invoker();
 			REQUIRE(result.error_code == ztd::text::encoding_error::ok);
-			REQUIRE(result.handled_errors == 0);
+			REQUIRE(result.error_count == 0);
 			REQUIRE_FALSE(result.errors_were_handled());
 			REQUIRE(std::equal(std::begin(in_container), std::end(in_container), std::begin(out_container),
 			     std::end(out_container)));
@@ -77,7 +77,7 @@ inline namespace ztd_text_tests_transcode_containers {
 			};
 			auto result = invoker();
 			REQUIRE(result.error_code == ztd::text::encoding_error::ok);
-			REQUIRE(result.handled_errors == 0);
+			REQUIRE(result.error_count == 0);
 			REQUIRE_FALSE(result.errors_were_handled());
 			REQUIRE(std::equal(std::begin(in_container), std::end(in_container), std::begin(result.output),
 			     std::end(result.output)));

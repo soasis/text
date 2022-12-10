@@ -139,4 +139,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_ENCODING_NAME_HPP
+#endif

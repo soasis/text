@@ -40,7 +40,7 @@
 
 int main(int, char*[]) {
 
-	ztd::text::any_encoding encoding(ztd::text::basic_utf8<char> {});
+	ztd::text::any_encoding encoding(ztd::text::compat_utf8);
 
 	const char32_t source_data[] = U"\U0001F408\U0001F431\U0001F408\n\x3A\x33";
 	std::string storage;
@@ -49,7 +49,7 @@ int main(int, char*[]) {
 	ztd::span<char> normal_output(storage);
 	ztd::span<std::byte> output = ztd::as_writable_bytes(normal_output);
 	ztd::text::encode_state_t<ztd::text::any_encoding> state(encoding);
-	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler_t {}, state);
+	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler, state);
 	std::size_t result_written = output.size() - result.output.size();
 	storage.resize(result_written);
 

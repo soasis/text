@@ -28,13 +28,30 @@
 ..
 .. =============================================================================>
 
-🔨 Benchmarks (In Progress)
-===========================
+Benchmarks
+==========
 
-.. warning::
+Below is a all of the benchmarks currently conducted and built-in to the code of this repository for the purposes of testing and improving the implementation. For further detail, read the article `here <https://thephd.dev/cuneicode-and-the-future-of-text-in-c>`_.
 
-	|unfinished_warning|
+The specification for these benchmarks is as follows:
 
-It's probably fine for now.
+- The latest of each library was used as of 21 October, 2022.
+- Windows 10 Pro machine, general user processes running in the background (but machine not being used).
+- AMD Ryzen 5 3600 6-Core @ 3600 MHz (12 Logcal Processors), 32.0 GB Physical Memory
+- Clang 15.0.2, latest available Clang at the time of generation with MSVC ABI.
+- Entire software stack for every dependency build under default CMake flags (including ICU and libiconv from vcpkg).
+- Anywhere from 150 to 10million samples per iteration, with mean (average) of 100 iterations forming transparent dots on graph.
+- Each bar graph is mean of the 100 iterations, with provided standard deviation-based error bars.
+- In general, unless explicitly noted, the fastest possible API under the constraints was used to produce the data.
+	- "Unbounded" means that, where shown, the available space left for writing was not considered.
+	- "Unchecked" means that, where shown, the input was not validated before being converted.
+	- "Well-Formed", in the title, means that the input was well-formed.
+	- (We do not do error benchmarks (yet).)
 
-Probably!
+The categories of benchmarks are as follows:
+
+.. toctree::
+	:maxdepth: 1
+	:glob:
+	
+	benchmarks/*

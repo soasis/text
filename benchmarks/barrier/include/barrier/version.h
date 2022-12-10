@@ -34,4 +34,4 @@
 
 #include <barrier/api.h>
 
-#endif // ZTD_TEXT_BENCHAMRKS_BARRIER_VERSION_H
+#endif

@@ -89,4 +89,4 @@
 
 // clang-format on
 
-#endif // ZTD_TEXT_BENCHMARKS_BARRIER_API_H
+#endif

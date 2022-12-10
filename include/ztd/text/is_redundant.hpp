@@ -92,4 +92,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_IS_REDUNDANT_HPP
+#endif

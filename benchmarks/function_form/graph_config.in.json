@@ -1,5 +1,6 @@
 {
 	"name": "@ZTD_TEXT_BENCHMARKS_FUNCTION_FORM_TITLE@",
+	"file_name": "transform_two_spans",
 	"scale": {
 		"type": "relative",
 		"to": "base"
@@ -9,7 +10,8 @@
 			"name": "Transform 2 Spans, Return Error Information",
 			"pattern": ".*",
 			"ascending": false,
-			"description": "Attempting to measure how the form of a function (pointers vs. sizes) changes affects repetitive use."
+			"description": "Attempting to measure how the form of a function (pointers vs. sizes) changes affects repetitive use.",
+			"file_name": ""
 		}
 	],
 	"data_groups": [

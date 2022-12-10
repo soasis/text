@@ -47,6 +47,8 @@ For all extension points, arguments are given based on what was input to one of 
 - ``output`` - The output range. Can be of any output range type, such as a ``unbounded_view<>`` with a ``back_inserter`` or a ``std::span`` for direct memory writes. The types only requirement is that you can write to it by getting an iterator from ``begin(...)``, and calling ``*it = value;``.
 - ``handler`` - The error handler used to perform the operation. Can be prefixed with ``from_`` or ``to_`` in the argument list to show it is one of two error handlers used to perform e.g. a transcode operation.
 - ``state`` - The state objects used to perform the operation. States are always passed by non-\ ``const``, l-value reference. Can be prefixed with ``from_`` or ``to_`` in the argument list to show it is one of two states associated with an encoding with the same prefix.
+- ``pivot`` - The :doc:`pivot range </api/pivot>` that can be used for any intermediary storage; should be used in place of allocating data within a routine so an end-user can avoid allocation if he/she desires for any intermediate productions.
+
 
 
 Extension Points: Forms & Return Types
@@ -56,29 +58,29 @@ Overriding any one of these extension points allows you to hook that behavior. I
 
 
 ``text_decode``
-++++++++++++++++++++
++++++++++++++++
 
 Form: ``text_decode(tag, input, encoding, output, handler, state)``.
 
-An extension point to speed up decoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/dependent states>`.
+An extension point to speed up decoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/state>`.
 
 Must return a :doc:`ztd::text::decode_result </api/decode_result>`.
 
 
 ``text_encode``
-++++++++++++++++++++
++++++++++++++++
 
 Form: ``text_encode(input, encoding, output, handler, state)``.
 
-An extension point to speed up encoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/dependent states>`.
+An extension point to speed up encoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/state>`.
 
 Must return a :doc:`ztd::text::encode_result </api/encode_result>`.
 
 
 ``text_transcode``
-+++++++++++++++++++++++
+++++++++++++++++++
 
-Form: ``text_transcode(input, from_encoding, output, to_encoding, from_handler, to_handler,`` ``from_state, to_state)``
+Form: ``text_transcode(input, from_encoding, output, to_encoding, from_handler, to_handler,`` ``from_state, to_state, pivot)``
 
 An extension point to speed up transcoding in bulk, for a given encoding pair, its input and output ranges, and its error handlers and states. Useful for known encoding pairs that have faster conversion paths between them.
 
@@ -86,7 +88,7 @@ Must return a :doc:`ztd::text::transcode_result </api/transcode_result>`.
 
 
 ``text_transcode_one``
-+++++++++++++++++++++++
+++++++++++++++++++++++
 
 Form: ``text_transcode_one(input, from_encoding, output, to_encoding, from_handler, to_handler,`` ``from_state, to_state)``
 
@@ -118,7 +120,7 @@ Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 ``text_validate_transcodable_as_one``
 +++++++++++++++++++++++++++++++++++++
 
-Form: ``text_validate_decodable_as_one(input, from_encoding, to_encoding, decode_state, encode_state)``
+Form: ``text_validate_transcodable_as_one(input, from_encoding, to_encoding, decode_state, encode_state, pivot)``
 
 An extension point to provide faster one-by-one validation. Provides a shortcut to not needing to perform both a ``encode_one`` and an ``decode_one`` step during the basic validation loop.
 
@@ -146,9 +148,9 @@ Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
 
 ``text_count_as_encoded_one``
-++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++
 
-Form: ``text_count_as_encoded_one(input, encoding, handler, state)``
+Form: ``text_count_as_encoded_one(input, encoding, handler, state, pivot)``
 
 An extension point to provide faster one-by-one counting. Computation cycles can be saved by only needing to check a subset of things. For example, specific code point ranges can be used to get a count for UTF-16 faster than by encoding into an empty buffer.
 

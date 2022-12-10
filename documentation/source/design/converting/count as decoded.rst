@@ -35,7 +35,8 @@ Counting code units is the action of finding out how many code points will resul
 
 Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``code_unit``\ s with an ``encoding``, an initial ``count`` set at 0, and any necessary additional ``state``, we can generically predict how many code units will result from a decoding operation by running the following loop:
 
-* ⏩ Is the ``input`` value empty? Return the current results with the the empty ``input``, curent ``count``, and ``state``, everything is okay ✅! Otherwise,
+* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results with the the empty ``input``, curent ``count``, and ``state``, everything is okay ✅!
+* ⏩ Otherwise,
 
    0. Set up an ``intermediate`` storage location of ``code_point``\ s, using the ``max_code_points`` of the input encoding, for the next operations.
    1. Do the ``decode_one`` step from ``input`` (using its ``begin()`` and ``end()``) into the ``intermediate`` ``code_point`` storage location, saving the returned ``intermediate_output`` from the ``decode_one`` call.

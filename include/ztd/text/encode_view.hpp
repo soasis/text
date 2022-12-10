@@ -173,7 +173,7 @@ namespace ztd { namespace text {
 		constexpr encode_view& operator=(encode_view&&) = default;
 
 		//////
-		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
+		/// @brief The beginning of the range.
 		constexpr iterator begin() & noexcept {
 			if constexpr (::std::is_copy_constructible_v<iterator>) {
 				return this->_M_it;
@@ -184,13 +184,13 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
+		/// @brief The beginning of the range.
 		constexpr iterator begin() const& noexcept {
 			return this->_M_it;
 		}
 
 		//////
-		/// @brief The beginning of the range. Uses a sentinel type and not a special iterator.
+		/// @brief The beginning of the range.
 		constexpr iterator begin() && noexcept {
 			return ::std::move(this->_M_it);
 		}
@@ -250,4 +250,4 @@ namespace ztd { namespace ranges {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ENCODE_VIEW_HPP
+#endif

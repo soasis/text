@@ -56,4 +56,4 @@
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ASSERT_HPP
+#endif

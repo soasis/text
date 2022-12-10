@@ -176,4 +176,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_IS_UNICODE_ENCODING_HPP
+#endif

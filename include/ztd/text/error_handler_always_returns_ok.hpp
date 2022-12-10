@@ -71,9 +71,9 @@ namespace ztd { namespace text {
 		struct __decode_error_handler_always_returns_ok<_Encoding, throw_handler_t> : public ::std::true_type { };
 
 		template <typename _Encoding, typename _ErrorHandler>
-		struct __decode_error_handler_always_returns_ok<_Encoding, incomplete_handler<_Encoding, _ErrorHandler>>
+		struct __decode_error_handler_always_returns_ok<_Encoding, basic_incomplete_handler<_Encoding, _ErrorHandler>>
 		: public __decode_error_handler_always_returns_ok<_Encoding,
-			  typename incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
+			  typename basic_incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
 
 		template <typename _Encoding>
 		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler_t>
@@ -102,9 +102,9 @@ namespace ztd { namespace text {
 		struct __encode_error_handler_always_returns_ok<_Encoding, throw_handler_t> : public ::std::true_type { };
 
 		template <typename _Encoding, typename _ErrorHandler>
-		struct __encode_error_handler_always_returns_ok<_Encoding, incomplete_handler<_Encoding, _ErrorHandler>>
+		struct __encode_error_handler_always_returns_ok<_Encoding, basic_incomplete_handler<_Encoding, _ErrorHandler>>
 		: public __encode_error_handler_always_returns_ok<_Encoding,
-			  typename incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
+			  typename basic_incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
 
 		template <typename _Encoding>
 		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler_t>
@@ -172,4 +172,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_ERROR_HANDLER_ALWAYS_RETURNS_OK_HPP
+#endif

@@ -41,4 +41,4 @@ namespace detail {
 	std::optional<std::size_t> shift_jis_code_point_to_index(char32_t code) noexcept;
 } // namespace detail
 
-#endif // ZTD_TEXT_EXAMPLES_SHIFT_JIS_SHIFT_JIS_INDEX_HPP
+#endif

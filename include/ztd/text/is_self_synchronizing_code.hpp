@@ -48,7 +48,9 @@ namespace ztd { namespace text {
 
 		template <typename _Encoding, typename = void>
 		struct __is_self_synchronizing_code_sfinae
-		: ::std::integral_constant<bool, ::std::is_empty_v<decode_state_t<_Encoding>>> { };
+		: ::std::integral_constant<bool,
+			  ::std::is_empty_v<decode_state_t<_Encoding>> // cf
+			       && (max_code_points_v<_Encoding> == 1) && (max_code_units_v<_Encoding> == 1)> { };
 
 		template <typename _Type>
 		struct __is_self_synchronizing_code_sfinae<_Type,
@@ -56,10 +58,20 @@ namespace ztd { namespace text {
 		: ::std::integral_constant<bool, _Type::self_synchronizing_code::value> { };
 	} // namespace __txt_detail
 
+	//////
+	/// @brief Checks whether not an encoding has distinct sequences that can be identified unambiguously from anywhere
+	/// within a larger sequence. This implies that the start of any given sequence -- including sequences that are a
+	/// single input unit -- can be reliably identified even in a stream full of errors.
+	///
+	/// @tparam _Type
 	template <typename _Type>
 	class is_self_synchronizing_code
 	: public __txt_detail::__is_self_synchronizing_code_sfinae<::ztd::remove_cvref_t<_Type>> { };
 
+	//////
+	/// @brief An alias for ztd::is_self_synchronizing_code's inner `value`.
+	///
+	/// @tparam _Type The encoding type to check.
 	template <typename _Type>
 	inline constexpr bool is_self_synchronizing_code_v
 		= is_self_synchronizing_code<::ztd::remove_cvref_t<_Type>>::value;
@@ -70,4 +82,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_IS_SELF_SYNCHRONIZING_HPP
+#endif

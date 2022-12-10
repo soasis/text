@@ -411,11 +411,11 @@ namespace ztd { namespace text {
 		private:
 			constexpr bool _M_base_is_empty() const noexcept {
 				if constexpr (is_detected_v<ranges::detect_adl_empty, _Range>) {
-					return ranges::ranges_adl::adl_empty(this->__base_storage_t::_M_get_range());
+					return ::ztd::ranges::empty(this->__base_storage_t::_M_get_range());
 				}
 				else {
-					return ranges::ranges_adl::adl_begin(this->__base_storage_t::_M_get_range())
-						== ranges::ranges_adl::adl_end(this->__base_storage_t::_M_get_range());
+					return ::ztd::ranges::begin(this->__base_storage_t::_M_get_range())
+						== ::ztd::ranges::end(this->__base_storage_t::_M_get_range());
 				}
 			}
 
@@ -441,7 +441,7 @@ namespace ztd { namespace text {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
 						::std::move(__this_input_range), this->encoding(), __cache_view, this->error_handler(),
 						this->state());
-					__this_cache_end = ::ztd::to_address(ranges::ranges_adl::adl_begin(__result.output));
+					__this_cache_end = ::ztd::to_address(::ztd::ranges::begin(__result.output));
 					if constexpr (!_IsErrorless) {
 						this->__base_error_cache_t::_M_set_errors(encoding_error::ok, __result.error_code);
 					}
@@ -451,7 +451,7 @@ namespace ztd { namespace text {
 					auto __result = __basic_encode_or_decode_one<__consume::__no, _EncodeOrDecode>(
 						::std::move(__this_input_range), this->encoding(), __cache_view, this->error_handler(),
 						this->state());
-					__this_cache_end = ::ztd::to_address(ranges::ranges_adl::adl_begin(__result.output));
+					__this_cache_end = ::ztd::to_address(::ztd::ranges::begin(__result.output));
 					if constexpr (!_IsErrorless) {
 						this->__base_error_cache_t::_M_set_errors(encoding_error::ok, __result.error_code);
 					}
@@ -492,4 +492,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_DETAIL_ENCODING_ITERATOR_HPP
+#endif

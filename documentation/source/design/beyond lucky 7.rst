@@ -37,9 +37,9 @@ While the given :doc:`Lucky 7 </design/lucky 7>` represents the simplest possibl
 .. toctree::
 	:maxdepth: 1
 
-	lucky 7 extensions/seperate states
+	lucky 7 extensions/state
+	lucky 7 extensions/skip on error
 	lucky 7 extensions/injective
 	lucky 7 extensions/replacement characters
 	lucky 7 extensions/unicode encoding
-	lucky 7 extensions/dependent states
 	lucky 7 extensions/speed

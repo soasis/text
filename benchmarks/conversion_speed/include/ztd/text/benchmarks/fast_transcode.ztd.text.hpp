@@ -126,6 +126,8 @@ TEXT_TRANSCODE_EXTENSION_POINTS(16, 32, be, le, , );
 TEXT_TRANSCODE_EXTENSION_POINTS(32, 8, , , , );
 /// This one is expanded below, as an example, with commentary!
 // TEXT_TRANSCODE_EXTENSION_POINTS(8, 32, , , , );
+// Macro hygiene!
+#undef TEXT_TRANSCODE_EXTENSION_POINTS
 
 template <typename FromErrorHandler, typename ToErrorHandler, typename FromState, typename ToState, typename PivotRange>
 auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span<const ztd_char8_t> input,
@@ -213,8 +215,5 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 	     ::std::forward<FromErrorHandler>(from_error_handler), ::std::forward<ToErrorHandler>(to_error_handler),
 	     from_state, to_state, __pivot);
 }
-
-// Macro hygiene!
-#undef TEXT_TRANSCODE_EXTENSION_POINTS
 
 #endif

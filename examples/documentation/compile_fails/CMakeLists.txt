@@ -50,17 +50,25 @@ foreach (example_name ${ztd.text.examples.documentation.compile_fails.sources})
 	set_target_properties(${example_target}
 		PROPERTIES
 		EXCLUDE_FROM_ALL TRUE
-		EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+		EXCLUDE_FROM_DEFAULT_BUILD TRUE
+	)
 	target_link_libraries(${example_target}
 		PRIVATE
 		ztd::text
 		${CMAKE_DL_LIBS}
 	)
-	add_test(NAME ${example_target}
-		COMMAND cmake --build . --target ${example_target}
-		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+	target_compile_definitions(${example_target}
+		PRIVATE
+		ZTD_ASSERT_CHECKS=1
 	)
-	set_tests_properties(${example_target}
-		PROPERTIES 
-		WILL_FAIL true)
+	if (ZTD_TEXT_TESTS)
+		add_test(NAME ${example_target}
+			COMMAND cmake --build . --target ${example_target}
+			WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+		)
+		set_tests_properties(${example_target}
+			PROPERTIES 
+			WILL_FAIL true
+		)
+	endif()
 endforeach()

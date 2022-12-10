@@ -47,23 +47,24 @@ They can change the conversion and other operations happen works. Consider, for 
 
 Clearly, the Korean characters present in the UTF-8 string just cannot fit in a strict, 7-bit ASCII encoding. What, then, becomes the printed output from ``std::cout`` at ``// (2)``? The answer is two ASCII question marks, ``??``. The :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` object passed in at ``// (1)`` substitutes replacement characters (zero or more) into the output for any failed operation. There are multiple kinds of error handlers with varying behaviors:
 
-- :doc:`replacement_handler_t </api/error handlers/default_handler>`, which inserts a substitution character specified by either the encoding object or some form using the default replacement character ``"U+FFFD"``;
+- :doc:`replacement_handler_t </api/error handlers/default_handler>`, which inserts a substitution character specified by either the encoding object or some form using the default replacement character ``"U+FFFD"`` as well as skip over invalid input (either 1 input unit or as dictated by :doc:`ztd::text::skip_input_error </api/skip_input_error>`);
+- :doc:`skip_handler_t </api/error handlers/skip_handler>`, which skips over invalid input (and does not reflect it in the output) by either 1 input unit or as dictated by :doc:`ztd::text::skip_input_error </api/skip_input_error>`;
 - :doc:`pass_handler </api/error handlers/pass_handler>`, which simply returns the error result as it and, if there is an error, halts higher-level operations from proceeding forward;
 - :doc:`default_handler </api/error handlers/default_handler>`, which is just a name for the ``replacement_handler_t`` or ``throw_handler`` or some other type based on compile time configuration of the library;
 - :doc:`throw_handler </api/error handlers/throw_handler>`, for throwing an exception on any failed operation;
-- :doc:`incomplete_handler </api/error handlers/incomplete_handler>`, for throwing an exception on any failed encode/decode operation; and,
+- :doc:`incomplete_handler </api/error handlers/incomplete_handler>`, which will accumulate 1 ``encode_one``/``decode_one``'s worth of failure and let the end-user do something with it;
 - :doc:`assume_valid_handler </api/error handlers/throw_handler>`, which triggers no checking for many error conditions and can leads to |ub| if used on malformed input.
 
 
 .. warning::
 
-	⚠️ For the love of what little remains holy, PLEASE don't use ``ztd::text::assume_valid_handler`` unless you REALLY know you need it. It is a surefire way to open up vulnerabilities in your text processing algorithm. Not a single line of code using this type should pass code review if there is even the slightest thought that this will be used on any input that is not PERFECTLY under the DIRECT, PERSONAL control of the authors, auditors, and maintainers of the code.
+	⚠️ For the love of what little remains holy, PLEASE don't use :cpp:var:`ztd::text::assume_valid_handler` unless you REALLY know you need it. It is a surefire way to open up vulnerabilities in your text processing algorithm. Not a single line of code using this type should pass code review if there is even the slightest thought that this will be used on any input that is not PERFECTLY under the DIRECT, PERSONAL control of the authors, auditors, and maintainers of the code.
 
 These are all the error handlers that you have at your disposal, but they are just pre-provided types you can instantiate yourself. Nothing stops you from making your own error handling type! In order to do that, however, you need to understand what an error handler is composed of, and what it's got inside of itself.
 
 .. toctree::
 	:maxdepth: 1
 
-	error handling/error handler anatomy
+	error handling/anatomy
 	error handling/writing a handler
 	error handling/lossy protection

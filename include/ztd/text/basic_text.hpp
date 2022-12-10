@@ -377,10 +377,10 @@ namespace ztd { namespace text {
 
 		constexpr auto begin() const noexcept {
 			using _OuterRangeType = typename const_iterator::range_type;
-			return const_iterator(_OuterRangeType(::ztd::ranges::reconstruct(::std::in_place_type<_URange>,
-				                                      ::ztd::ranges::ranges_adl::adl_begin(this->_M_range),
-				                                      ::ztd::ranges::ranges_adl::adl_end(this->_M_range)),
-				                      this->_M_encoding),
+			return const_iterator(
+				_OuterRangeType(::ztd::ranges::reconstruct(::std::in_place_type<_URange>,
+				                     ::ztd::ranges::begin(this->_M_range), ::ztd::ranges::end(this->_M_range)),
+				     this->_M_encoding),
 				this->_M_normalization);
 		}
 
@@ -447,4 +447,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_BASIC_TEXT_HPP
+#endif

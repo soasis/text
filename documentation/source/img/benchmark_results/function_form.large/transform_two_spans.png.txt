@@ -1,0 +1,20 @@
+Title: "All Unicode Scalar Values - Transform 2 Spans, Return Error Information". Description: "Attempting to measure how the form of a function (pointers vs. sizes) changes affects repetitive use."
+
+There are 8 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- err_ptrptr_ptrsize_ptrptr_ptrsize is 8th. Described as: "An indivisible unit conversion using output pointers for the data and its size.".
+  Measures to a mean of "0.6560360874916243" milliseconds, from 100 multi-iteration samples.
+- err_ptrptr_ptr_ptrptr_ptr is 7th. Described as: "An indivisible unit conversion using output pointers for the data and its size and returning an error code.".
+  Measures to a mean of "0.6293516526719551" milliseconds, from 100 multi-iteration samples.
+- structsize_ptr_size_ptr_size is 6th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/size pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans.".
+  Measures to a mean of "0.5077191639997182" milliseconds, from 100 multi-iteration samples.
+- structsize_ptr_ptr_ptr_ptr is 5th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/size pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans.".
+  Measures to a mean of "0.507530718993512" milliseconds, from 100 multi-iteration samples.
+- structptr_ptr_size_ptr_size is 4th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans.".
+  Measures to a mean of "0.47109854911104776" milliseconds, from 100 multi-iteration samples.
+- structptr_ptr_ptr_ptr_ptr is 3rd. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans.".
+  Measures to a mean of "0.4365271361525793" milliseconds, from 100 multi-iteration samples.
+- memcpy is 2nd. It has no description.
+  Measures to a mean of "0.017955058326340024" milliseconds, from 100 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.3999931979924443e-14" milliseconds, from 100 multi-iteration samples.

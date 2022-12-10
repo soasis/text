@@ -64,7 +64,11 @@ namespace ztd { namespace text {
 		};
 
 		template <typename _State>
-		using __is_state_complete_test = decltype(::std::declval<_State>().is_complete());
+		using __detect_state_is_complete = decltype(::std::declval<_State>().is_complete());
+
+		template <typename _Encoding, typename _State>
+		using __detect_encoding_is_state_complete
+			= decltype(::std::declval<_Encoding>().is_state_complete(::std::declval<_State>()));
 
 	} // namespace __txt_detail
 
@@ -138,9 +142,16 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Whether or not a state is capable of outputting data even after an input is fully processed.
-	template <typename _Type>
+	///
+	/// @tparam _Encoding The encoding type to test.
+	/// @tparam _State The state type to test.
+	///
+	/// @remarks This means that there is either an `encoding.is_state_complete(state)` call that is well-formed, or a
+	/// `state.is_complete()` call that is well-formed.
+	template <typename _Encoding, typename _State>
 	inline constexpr bool is_state_output_capable_v
-		= ::ztd::is_detected_v<__txt_detail::__is_state_complete_test, _Type>;
+		= ::ztd::is_detected_v<__txt_detail::__detect_state_is_complete, _State&>
+		|| ::ztd::is_detected_v<__txt_detail::__detect_encoding_is_state_complete, _Encoding&, _State&>;
 
 	//////
 	/// @brief Constructs the `decode_state` of the given encoding, based on whether or not the encoding and state
@@ -320,13 +331,17 @@ namespace ztd { namespace text {
 	/// @brief Returns whether or not a state has completed any associated operations and has no more manipulations on
 	/// the output to perform, even if the input source is empty.
 	///
+	/// @param[in] __encoding The encoding for the state.
 	/// @param[in] __state The state to check for completion.
 	///
 	/// @remarks If the state does not have a member function `is_complete`, then this will simply return `true`.
 	/// Otherwise, it invokes `__state.is_complete()`.
-	template <typename _State>
-	constexpr bool is_state_complete(_State& __state) noexcept {
-		if constexpr (is_state_output_capable_v<_State>) {
+	template <typename _Encoding, typename _State>
+	constexpr bool is_state_complete(_Encoding& __encoding, _State& __state) noexcept {
+		if constexpr (::ztd::is_detected_v<__txt_detail::__detect_encoding_is_state_complete, _Encoding&, _State&>) {
+			return __encoding.is_state_complete(__state);
+		}
+		else if constexpr (::ztd::is_detected_v<__txt_detail::__detect_state_is_complete, _State&>) {
 			return __state.is_complete();
 		}
 		else {
@@ -343,4 +358,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_STATE_HPP
+#endif

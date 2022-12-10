@@ -37,6 +37,10 @@ Unicode Transformation Format 8 (UTF-8) is an encoding for text that traffics co
 
 .. doxygentypedef:: ztd::text::utf8_t
 
+.. doxygenvariable:: ztd::text::compat_utf8
+
+.. doxygentypedef:: ztd::text::compat_utf8_t
+
 
 
 Base Template

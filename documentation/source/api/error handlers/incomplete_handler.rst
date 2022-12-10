@@ -28,12 +28,12 @@
 ..
 .. =============================================================================>
 
-incomplete_handler
-==================
+basic_incomplete_handler
+========================
 
 This error handler takes the ``ztd::text::encoding_error::incomplete_sequence`` error and uses it to read from the provided "progress" contiguous range provided as the third parameter to any error handler. This can be helpful in situations here incomplete input is not to be interpreted as an error, such as in situations with networking stacks, I/O reads (particularly, non-recoverable streams like ``std::istream_iterator``\ s or ``std::ostream_iterator``\ s), and other such storage cases.
 
-The data read but not used from an incomplete error during encode and decode operations is stored in the ``incomplete_handler`` object and can be accessed VIA the ``code_points`` and ``code_units`` functions.
+The data read but not used from an incomplete error during encode and decode operations is stored in the ``basic_incomplete_handler`` object and can be accessed VIA the ``code_points`` and ``code_units`` functions.
 
-.. doxygenclass:: ztd::text::incomplete_handler
+.. doxygenclass:: ztd::text::basic_incomplete_handler
 	:members:

@@ -41,6 +41,7 @@ set_property(DIRECTORY "${catch2_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 # # Test Subdirectories
 add_subdirectory(inclusion)
 add_subdirectory(basic_run_time)
+add_subdirectory(additional_encodings)
 add_subdirectory(iconv)
 add_subdirectory(basic_compile_time)
 add_subdirectory(tiny_buffer)

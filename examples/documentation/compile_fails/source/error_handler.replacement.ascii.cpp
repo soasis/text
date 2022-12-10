@@ -38,9 +38,9 @@ int main(int, char*[]) {
 	     // input
 	     u8"안녕",
 	     // from this encoding
-	     ztd::text::utf8 {},
+	     ztd::text::utf8,
 	     // to this encoding
-	     ztd::text::ascii {});
+	     ztd::text::ascii);
 
 	std::cout << my_ascii_string << std::endl;
 

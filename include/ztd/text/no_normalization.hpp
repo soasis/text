@@ -75,10 +75,10 @@ namespace ztd { namespace text {
 			using _Result
 				= normalization_result<ztd::ranges::reconstruct_t<_UInput>, ztd::ranges::reconstruct_t<_UOutput>>;
 
-			auto __in_it   = ::ztd::ranges::ranges_adl::adl_begin(__input);
-			auto __in_last = ::ztd::ranges::ranges_adl::adl_end(__input);
-			auto __out_it  = ::ztd::ranges::ranges_adl::adl_begin(__output);
-			auto __outlast = ::ztd::ranges::ranges_adl::adl_end(__output);
+			auto __in_it   = ::ztd::ranges::begin(__input);
+			auto __in_last = ::ztd::ranges::end(__input);
+			auto __out_it  = ::ztd::ranges::begin(__output);
+			auto __outlast = ::ztd::ranges::end(__output);
 			if (__in_it == __in_last) {
 				return _Result(::ztd::ranges::reconstruct(
 					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
@@ -113,4 +113,4 @@ namespace ztd { namespace text {
 
 #include <ztd/epilogue.hpp>
 
-#endif // ZTD_TEXT_NO_NORMALIZATION_HPP
+#endif
