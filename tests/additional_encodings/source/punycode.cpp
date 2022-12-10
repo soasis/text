@@ -32,14 +32,24 @@
 
 #include <catch2/catch_all.hpp>
 
-TEST_CASE("text/punycode", "test a quick roundtrip using punycode and UTF-8 through UTF-32") {
-	const char original[] = u8"😩 OᴘᴇɴSSL ᴅɪᴅ ɴᴏᴛ ᴛᴇsᴛ ᴇᴠᴇɴ ʙᴀsɪᴄ ᴘᴜɴʏᴄᴏᴅᴇ RFC sᴛʀɪɴɢs ꜰᴏʀ ᴛʜᴇɪʀ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ⁉";
-	const char expected_punycode[]
+TEST_CASE("text/additional_encodings/punycode",
+     "test a quick roundtrip using example punycode text to UTF-32 (and with UTF-8 as well)") {
+	const char32_t original[] = U"😩 OᴘᴇɴSSL ᴅɪᴅ ɴᴏᴛ ᴛᴇsᴛ ᴇᴠᴇɴ ʙᴀsɪᴄ ᴘᴜɴʏᴄᴏᴅᴇ RFC sᴛʀɪɴɢs ꜰᴏʀ ᴛʜᴇɪʀ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ⁉";
+	const char original_utf8[] = u8"😩 OᴘᴇɴSSL ᴅɪᴅ ɴᴏᴛ ᴛᴇsᴛ ᴇᴠᴇɴ ʙᴀsɪᴄ ᴘᴜɴʏᴄᴏᴅᴇ RFC sᴛʀɪɴɢs ꜰᴏʀ ᴛʜᴇɪʀ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ⁉";
+	const char expected[]
 	     = " OSSL   s  s  RFC ss   "
 	       "-cqj0qgheba6zgdehhb85bfc31d5m2evf4423k0a7nd6abq3flcampfa17ac5froq64c0a2a7nbcyjnb1b7yp96t0e31nkf95i";
-	std::string punycode_encoded = ztd::text::transcode(original, ztd::text::compat_utf8, ztd::text::punycode);
-	std::string roundtrip_original
-	     = ztd::text::transcode(punycode_encoded, ztd::text::punycode, ztd::text::compat_utf8);
-	REQUIRE(original == roundtrip_original);
-	REQUIRE(punycode_encoded == expected_punycode);
+	{
+		std::string encoded = ztd::text::encode(original, ztd::text::punycode);
+		REQUIRE(encoded == expected);
+		std::u32string decoded = ztd::text::decode(encoded, ztd::text::punycode);
+		REQUIRE(decoded == original);
+	}
+	{
+		// quick UTF-8 check
+		std::string encoded = ztd::text::transcode(original_utf8, ztd::text::compat_utf8, ztd::text::punycode);
+		REQUIRE(encoded == expected);
+		std::string decoded_utf8 = ztd::text::transcode(encoded, ztd::text::punycode, ztd::text::compat_utf8);
+		REQUIRE(decoded_utf8 == original_utf8);
+	}
 }
