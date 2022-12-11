@@ -32,5 +32,7 @@
 
 int main(int, char*[]) {
 
-	return 0;
+	const
+
+	     return 0;
 }
