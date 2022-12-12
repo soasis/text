@@ -82,44 +82,47 @@ namespace ztd { namespace text {
 			/// @brief Whether or not this encoding that can encode all of Unicode.
 			using is_unicode_encoding = ::std::true_type;
 			//////
-			/// @brief The start of a sequence can be found unambiguously when dropped into the middle of a sequence
-			/// or after an error in reading as occurred for encoded text.
+			/// @brief The start of a sequence can be found unambiguously when dropped into the middle of a
+			/// sequence or after an error in reading as occurred for encoded text.
 			///
-			/// @remarks Unicode has definitive bit patterns which resemble start and end sequences. The bit pattern
-			/// 0xxxxxxx indicates a lone bit, and 1xxxxxx indicates a potential start bit for UTF-8. In particular,
-			/// if 0 is not the first bit, it must be a sequence of 1s followed immediately by a 0 (e.g., 10xxxxxx,
-			/// 110xxxxx, 1110xxxx, or 11110xxx).
+			/// @remarks Unicode has definitive bit patterns which resemble start and end sequences. The bit
+			/// pattern 0xxxxxxx indicates a lone bit, and 1xxxxxx indicates a potential start bit for UTF-8. In
+			/// particular, if 0 is not the first bit, it must be a sequence of 1s followed immediately by a 0
+			/// (e.g., 10xxxxxx, 110xxxxx, 1110xxxx, or 11110xxx).
 			using self_synchronizing_code = ::std::true_type;
 			//////
-			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an empty
-			/// struct because there is no shift state to preserve between complete units of encoded information.
+			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an
+			/// empty struct because there is no shift state to preserve between complete units of encoded
+			/// information.
 			using decode_state = _DecodeState;
 			//////
-			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an empty
-			/// struct because there is no shift state to preserve between complete units of encoded information.
+			/// @brief The state that can be used between calls to the encoder and decoder. It is normally an
+			/// empty struct because there is no shift state to preserve between complete units of encoded
+			/// information.
 			using encode_state = _EncodeState;
 			//////
-			/// @brief The individual units that result from an encode operation or are used as input to a decode
-			/// operation. For UTF-8 formats, this is usually char8_t, but this can change (see
+			/// @brief The individual units that result from an encode operation or are used as input to a
+			/// decode operation. For UTF-8 formats, this is usually char8_t, but this can change (see
 			/// ztd::text::basic_utf8).
 			using code_unit = _CodeUnit;
 			//////
 			/// @brief The individual units that result from a decode operation or as used as input to an encode
-			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
+			/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar
+			/// Value.
 			using code_point = _CodePoint;
 			//////
-			/// @brief Whether or not the decode operation can process all forms of input into code point values.
-			/// Thsi is true for all Unicode Transformation Formats (UTFs), which can encode and decode without a
-			/// loss of information from a valid collection of code units.
+			/// @brief Whether or not the decode operation can process all forms of input into code point
+			/// values. Thsi is true for all Unicode Transformation Formats (UTFs), which can encode and decode
+			/// without a loss of information from a valid collection of code units.
 			using is_decode_injective = ::std::true_type;
 			//////
 			/// @brief Whether or not the encode operation can process all forms of input into code unit values.
-			/// This is true for all Unicode Transformation Formats (UTFs), which can encode and decode without loss
-			/// of information from a valid input code point.
+			/// This is true for all Unicode Transformation Formats (UTFs), which can encode and decode without
+			/// loss of information from a valid input code point.
 			using is_encode_injective = ::std::true_type;
 			//////
-			/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
-			/// 1 for all Unicode Transformation Format (UTF) encodings.
+			/// @brief The maximum number of code points a single complete operation of decoding can produce.
+			/// This is 1 for all Unicode Transformation Format (UTF) encodings.
 			inline static constexpr ::std::size_t max_code_points = 1;
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce. If overlong
@@ -127,8 +130,8 @@ namespace ztd { namespace text {
 			inline static constexpr ::std::size_t max_code_units = __overlong_allowed ? 6 : 4;
 
 			///////
-			/// @brief Allows an encoding to discard input characters if an error occurs, taking in both the state
-			/// and the input sequence (by reference) to modify.
+			/// @brief Allows an encoding to discard input characters if an error occurs, taking in both the
+			/// state and the input sequence (by reference) to modify.
 			///
 			/// @remarks This will skip every input value until a proper starting byte is found.
 			template <typename _Input, typename _Output, typename _State>
@@ -154,22 +157,23 @@ namespace ztd { namespace text {
 			}
 
 			//////
-			/// @brief Encodes a single complete unit of information as code units and produces a result with the
-			/// input and output ranges moved past what was successfully read and written; or, produces an error and
-			/// returns the input and output ranges untouched.
+			/// @brief Encodes a single complete unit of information as code units and produces a result with
+			/// the input and output ranges moved past what was successfully read and written; or, produces an
+			/// error and returns the input and output ranges untouched.
 			///
 			/// @param[in] __input The input view to read code points from.
 			/// @param[in] __output The output view to write code units into.
 			/// @param[in] __error_handler The error handler to invoke if encoding fails.
-			/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
-			/// very little.
+			/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and
+			/// means very little.
 			///
 			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
-			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
-			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
-			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
+			/// @remarks To the best ability of the implementation, the iterators will be returned untouched
+			/// (e.g., the input models at least a view and a forward_range). If it is not possible, returned
+			/// ranges may be incremented even if an error occurs due to the semantics of any view that models
+			/// an input_range.
 			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto encode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) {
@@ -331,22 +335,23 @@ namespace ztd { namespace text {
 			}
 
 			//////
-			/// @brief Decodes a single complete unit of information as code points and produces a result with the
-			/// input and output ranges moved past what was successfully read and written; or, produces an error and
-			/// returns the input and output ranges untouched.
+			/// @brief Decodes a single complete unit of information as code points and produces a result with
+			/// the input and output ranges moved past what was successfully read and written; or, produces an
+			/// error and returns the input and output ranges untouched.
 			///
 			/// @param[in] __input The input view to read code uunits from.
 			/// @param[in] __output The output view to write code points into.
 			/// @param[in] __error_handler The error handler to invoke if encoding fails.
-			/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
-			/// very little.
+			/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and
+			/// means very little.
 			///
 			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
-			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
-			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
-			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
+			/// @remarks To the best ability of the implementation, the iterators will be returned untouched
+			/// (e.g., the input models at least a view and a forward_range). If it is not possible, returned
+			/// ranges may be incremented even if an error occurs due to the semantics of any view that models
+			/// an input_range.
 			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) {
@@ -393,19 +398,17 @@ namespace ztd { namespace text {
 				::std::size_t __length   = static_cast<::std::size_t>(
                          __ztd_idk_detail_utf8_sequence_length(static_cast<uchar8_t>(__unit0)));
 
-				if constexpr (!__overlong_allowed) {
-					if constexpr (__call_error_handler) {
-						if (__length > 4) {
-							__self_t __self {};
-							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ::std::move(__in_it), ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-								          ::std::move(__out_it), ::std::move(__outlast)),
-								     __s, encoding_error::invalid_sequence),
-								::ztd::span<code_unit, 1>(__units.data(), __units.size()),
-								::ztd::span<code_point, 0>());
-						}
+				if constexpr (__call_error_handler) {
+					if (__length > max_code_units) {
+						__self_t __self {};
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
+							             ::std::move(__in_last)),
+							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
+							          ::std::move(__outlast)),
+							     __s, encoding_error::invalid_sequence),
+							::ztd::span<code_unit, 1>(__units.data(), __units.size()),
+							::ztd::span<code_point, 0>());
 					}
 				}
 
@@ -495,16 +498,53 @@ namespace ztd { namespace text {
 						static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]));
 					break;
 				case 4:
-				default:
 					__decoded = __ztd_idk_detail_utf8_decode(static_cast<uchar8_t>(__units[0]),
 						static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]),
 						static_cast<uchar8_t>(__units[3]));
 					break;
+				case 5:
+					if constexpr (__overlong_allowed) {
+						__decoded = __ztd_idk_detail_utf8_decode(static_cast<uchar8_t>(__units[0]),
+							static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]),
+							static_cast<uchar8_t>(__units[3]), static_cast<uchar8_t>(__units[4]));
+						break;
+					}
+					else {
+						ZTD_FALLTHROUGH_I_;
+					}
+				case 6:
+					if constexpr (__overlong_allowed) {
+						__decoded = __ztd_idk_detail_utf8_decode(static_cast<uchar8_t>(__units[0]),
+							static_cast<uchar8_t>(__units[1]), static_cast<uchar8_t>(__units[2]),
+							static_cast<uchar8_t>(__units[3]), static_cast<uchar8_t>(__units[4]),
+							static_cast<uchar8_t>(__units[5]));
+						break;
+					}
+					else {
+						ZTD_FALLTHROUGH_I_;
+					}
+				default:
+					if constexpr (__call_error_handler) {
+						__self_t __self {};
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
+							             ::std::move(__in_last)),
+							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
+							          ::std::move(__outlast)),
+							     __s, encoding_error::invalid_sequence),
+							::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
+					}
+					else {
+						break;
+					}
 				}
 
 				if constexpr (__call_error_handler) {
 					if constexpr (!__overlong_allowed) {
-						if (__ztd_idk_detail_utf8_is_overlong(__decoded, __length)) {
+						const bool __is_allowed_overlong_null
+							= __use_overlong_null_only ? __decoded == U'\0' && __length == 2 : false;
+						if (__is_allowed_overlong_null
+							|| __ztd_idk_detail_utf8_is_overlong(__decoded, __length)) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,

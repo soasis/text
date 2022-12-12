@@ -52,6 +52,7 @@ target_compile_options(ztd.text.tests.basic_compile_time
 	${--extra-constexpr-depth}
 	${--extra-constexpr-steps}
 	${--allow-alignas-extra-padding}
+	${--allow-stringop-overflow}
 )
 target_include_directories(ztd.text.tests.basic_compile_time
 	PRIVATE 

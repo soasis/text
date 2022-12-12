@@ -52,6 +52,7 @@ target_compile_options(ztd.text.tests.iconv
 	${--warn-extra}
 	${--warn-errors}
 	${--allow-alignas-extra-padding}
+	${--allow-stringop-overflow}
 )
 target_include_directories(ztd.text.tests.iconv
 	PRIVATE 

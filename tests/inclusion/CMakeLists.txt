@@ -45,6 +45,7 @@ target_compile_options(ztd.text.tests.inclusion
 	${--warn-extra}
 	${--warn-errors}
 	${--allow-alignas-extra-padding}
+	${--allow-stringop-overflow}
 )
 target_link_libraries(ztd.text.tests.inclusion
 	PRIVATE

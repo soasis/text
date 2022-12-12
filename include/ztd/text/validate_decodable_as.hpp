@@ -80,16 +80,15 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _DecodeState, typename _EncodeState>
 	constexpr auto basic_validate_decodable_as(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
-		using _UEncoding = remove_cvref_t<_Encoding>;
+		using _UEncoding    = remove_cvref_t<_Encoding>;
+		using _InitialInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
 
-		auto __working_input = __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
-
-		using _WorkingInput = decltype(__working_input);
-		using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
-
-		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _WorkingInput,
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _InitialInput,
 			              _Encoding, _DecodeState, _EncodeState>) {
-			using _Result = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+			auto __working_input
+				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+			using _WorkingInput = decltype(__working_input);
+			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
 					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
@@ -109,8 +108,13 @@ namespace ztd { namespace text {
 			}
 			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
-		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _WorkingInput,
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _InitialInput,
 			                   _Encoding, _DecodeState>) {
+			auto __working_input
+				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+			using _WorkingInput = decltype(__working_input);
+			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
 					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
@@ -131,7 +135,12 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as_one,
-			                   _WorkingInput, _Encoding, _DecodeState, _EncodeState>) {
+			                   _InitialInput, _Encoding, _DecodeState, _EncodeState>) {
+			auto __working_input
+				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+			using _WorkingInput = decltype(__working_input);
+			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+
 			for (;;) {
 				auto __result = __text_validate_decodable_as_one(
 					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
@@ -152,7 +161,12 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as_one,
-			                   _WorkingInput, _Encoding, _DecodeState>) {
+			                   _InitialInput, _Encoding, _DecodeState>) {
+			auto __working_input
+				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+			using _WorkingInput = decltype(__working_input);
+			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+
 			for (;;) {
 				auto __result = __text_validate_decodable_as_one(
 					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
@@ -173,15 +187,25 @@ namespace ztd { namespace text {
 			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
 		}
 		else {
-			using _CodeUnit  = code_unit_t<_UEncoding>;
-			using _CodePoint = code_point_t<_UEncoding>;
+			using _CodeUnit     = code_unit_t<_UEncoding>;
+			using _CodePoint    = code_point_t<_UEncoding>;
+			using _Pivot        = pivot<::ztd::span<_CodePoint, max_code_points_v<_UEncoding>>>;
+			using _Output       = ::ztd::span<_CodeUnit, max_code_units_v<_UEncoding>>;
+			using _InitialInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+			using _WorkingInput = decltype(__txt_detail::__basic_validate_decodable_as_one(
+				::std::declval<_InitialInput&>(), __encoding, ::std::declval<_Output&>(), __decode_state,
+				__encode_state, ::std::declval<_Pivot&>())
+				                               .input);
+			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
 			_CodePoint __intermediate_storage[max_code_points_v<_UEncoding>] {};
 			::ztd::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
 			_CodeUnit __output_storage[max_code_units_v<_UEncoding>] {};
-			::ztd::span<_CodeUnit, max_code_units_v<_UEncoding>> __output(__output_storage);
-			pivot<::ztd::span<_CodePoint, max_code_points_v<_UEncoding>>> __pivot { __intermediate,
-				encoding_error::ok };
+			_Output __output(__output_storage);
+			_Pivot __pivot { __intermediate, encoding_error::ok };
+			auto __working_input = ::ztd::ranges::reconstruct(std::in_place_type<_WorkingInput>,
+				__txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input)));
+
 			for (;;) {
 				auto __stateless_validate_result = __txt_detail::__basic_validate_decodable_as_one(
 					__working_input, __encoding, __output, __decode_state, __encode_state, __pivot);

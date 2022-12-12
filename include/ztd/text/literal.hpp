@@ -41,6 +41,7 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/is_unicode_encoding.hpp>
+#include <ztd/text/is_input_error_skippable.hpp>
 #include <ztd/text/detail/encoding_name.hpp>
 #include <ztd/text/detail/forwarding_handler.hpp>
 
@@ -195,6 +196,13 @@ namespace ztd { namespace text {
 				__underlying_handler(*this, __error_handler);
 			return this->__base_t::encode_one(
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
+		}
+
+		template <typename _Result,
+			::std::enable_if_t<::ztd::text::is_input_error_skippable_v<const __base_t&, _Result>>* = nullptr>
+		constexpr auto skip_input_error(_Result&& __result) const noexcept {
+			return ::ztd::text::skip_input_error(
+				static_cast<const __base_t&>(*this), ::std::forward<_Result>(__result));
 		}
 	};
 

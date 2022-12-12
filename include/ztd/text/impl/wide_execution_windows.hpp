@@ -163,6 +163,9 @@ namespace ztd { namespace text {
 				return __base_encoding.encode_one(::std::forward<_Input>(__input),
 					::std::forward<_Output>(__output), __intermediate_handler, __s);
 			}
+
+			// Inherit some funtions
+			using __base_t::skip_input_error;
 		};
 
 	} // namespace __txt_impl

@@ -66,7 +66,7 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Encoding, typename _Output, typename _DecodeState, typename _EncodeState,
 			typename _PivotRange>
 		constexpr auto __basic_validate_decodable_as_one(_Input&& __input, _Encoding&& __encoding, _Output& __output,
-			_DecodeState& __decode_state, _EncodeState& __encode_state, pivot<_PivotRange> __pivot) {
+			_DecodeState& __decode_state, _EncodeState& __encode_state, pivot<_PivotRange>& __pivot) {
 
 			using _UInput  = remove_cvref_t<_Input>;
 			using _UOutput = remove_cvref_t<_Output>;

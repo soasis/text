@@ -47,6 +47,7 @@ foreach (test_name ${ztd.text.tests.tests.compile_fails.sources})
 		${--warn-extra}
 		${--warn-errors}
 		${--allow-alignas-extra-padding}
+		${--allow-stringop-overflow}
 	)
 	target_link_libraries(${test_target}
 		PRIVATE

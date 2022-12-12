@@ -35,20 +35,7 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/state.hpp>
-#include <ztd/text/code_point.hpp>
-#include <ztd/text/code_unit.hpp>
-#include <ztd/text/decode_result.hpp>
-#include <ztd/text/encode_result.hpp>
-#include <ztd/text/is_ignorable_error_handler.hpp>
-
-#include <ztd/cuneicode.h>
-#include <ztd/idk/ebco.hpp>
-#include <ztd/idk/to_address.hpp>
-#include <ztd/idk/size.hpp>
-#include <ztd/ranges/adl.hpp>
-#include <ztd/ranges/range.hpp>
+#include <ztd/text/impl/fixed_cuneicode.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -77,282 +64,24 @@ namespace ztd { namespace text {
 	///
 	/// @remarks See https://datatracker.ietf.org/doc/html/rfc5890 and https://datatracker.ietf.org/doc/html/rfc3492.
 	template <idna _IsIdna, typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_any_punycode {
-	public:
-		//////
-		/// @brief The state for encoding Unicode code points into ASCII-compatible punycode text.
-		class encode_state : public cnc_pny_encode_state_t {
-		public:
-			//////
-			/// @brief Whether or not this state has completed its current encoding operation.
-			bool is_complete() const noexcept {
-				return cnc_pny_encode_state_is_complete(this);
-			}
-		};
-
-		//////
-		/// @brief The state for decoding ASCII-compatible punycode text into Unicode code points.
-		class decode_state : public cnc_pny_decode_state_t {
-		public:
-			//////
-			/// @brief Whether or not this state has completed its current decoding operation.
-			bool is_complete() const noexcept {
-				return cnc_pny_decode_state_is_complete(this);
-			}
-		};
-		//////
-		/// @brief The code unit type for encoded text.
-		using code_unit = _CodeUnit;
-
-		//////
-		/// @brief The code point type for decoded text.
-		using code_point = _CodePoint;
-
-		//////
-		/// @brief The maximum number of code points output by a decode operation. In this case, only 1 code point is
-		/// output at a time.
-		inline static constexpr ::std::size_t max_code_points = 1;
-		//////
-		/// @brief The maximum number of code units output by a encode operation. In this case, only 1 code unit is
-		/// output at a time.
-		inline static constexpr ::std::size_t max_code_units = 1;
-		//////
-		/// @brief Punycode is an injective encoding that is lossless, capable of encoding all input Unicode code
-		/// points.
-		using is_injective = std::true_type;
-
-		//////
-		/// @brief Decodes a provided range of punycode-encoded data and pulls out data.
-		///
-		/// @tparam _Input The input range type.
-		/// @tparam _Output The output range type.
-		/// @tparam _ErrorHandler The error handler type.
-		///
-		/// @param __input The input range.
-		/// @param __output The output range.
-		/// @param __error_handler The error handler; this will be called whenever an error occurs during decoding.
-		/// @param __state A reference to the decode state, which contains most of the running information about a
-		/// punycode decoding operation. Discarding this between calls is not advised for this encoding type.
-		///
-		/// @return A ztd::text::decode_result structure with the appropriate input and output types recosntructed,
-		/// possibly filtered through an error handler if necessary.
-		///
-		/// @remarks This function may need to be called with empty input data repeatedly to fully drain any stored
-		/// information in the provided `__state`. The entire input may be consumed before any information is output.
-		template <typename _Input, typename _Output, typename _ErrorHandler>
-		static auto decode_one(
-			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __state) noexcept {
-			using _UInput        = remove_cvref_t<_Input>;
-			using _UOutput       = remove_cvref_t<_Output>;
-			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result        = __txt_detail::__reconstruct_decode_result_t<_UInput, _UOutput, decode_state>;
-			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
-
-			auto __in_it                              = ::ztd::ranges::cbegin(__input);
-			auto __in_last                            = ::ztd::ranges::cend(__input);
-			auto __out_it                             = ::ztd::ranges::begin(__output);
-			auto __out_last                           = ::ztd::ranges::end(__output);
-			char __intermediate_input[max_code_units] = {};
-			::std::size_t __in_size                   = 0;
-			::std::size_t __incremented_in_size       = 0;
-			basic_any_punycode __self {};
-			if (__in_it != __in_last) {
-				__intermediate_input[0] = *__in_it;
-				__in_size               = 1;
-			}
-			else if (::ztd::text::is_state_complete(__self, __state)) {
-				return _Result(ranges::reconstruct(
-					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
-					__state, encoding_error::ok);
-			}
-			char32_t __intermediate_output[max_code_points] = {};
-			::std::size_t __out_size                        = ztd_c_array_size(__intermediate_output);
-			for (::std::size_t __index = 1;; ++__index) {
-				const char* __typed_in_ptr = static_cast<const char*>(__intermediate_input);
-				char32_t* __typed_out_ptr  = static_cast<char32_t*>(__intermediate_output);
-				constexpr auto __decode_func
-					= _IsIdna == idna::no ? &cnc_mcnrtoc32n_punycode : &cnc_mcnrtoc32n_punycode_idna;
-				cnc_mcerror __err
-					= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-				if (__err == CNC_MCERROR_INCOMPLETE_INPUT) {
-					if constexpr (__call_error_handler) {
-						if (__index == max_code_units) {
-							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-								             ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-								          ::std::move(__out_last)),
-								     __state, encoding_error::invalid_sequence),
-								::ztd::span<const code_unit>(__intermediate_input, __incremented_in_size),
-								::ztd::span<const code_point, 0>());
-						}
-					}
-					++__in_it;
-					if (__in_it != __in_last) {
-						__intermediate_input[__in_size] = *__in_it;
-						++__in_size;
-						++__incremented_in_size;
-					}
-					__out_size = ztd_c_array_size(__intermediate_output);
-					continue;
-				}
-				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OK) {
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-							          ::std::move(__out_last)),
-							     __state, static_cast<encoding_error>(__err)),
-							::ztd::span<const code_unit>(__intermediate_input, __incremented_in_size),
-							::ztd::span<const code_point, 0>());
-					}
-				}
-				break;
-			}
-			const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
-			for (::std::size_t __out_index = 0; __out_index < __written_output_size; ++__out_it, ++__out_index) {
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-							          ::std::move(__out_last)),
-							     __state, encoding_error::insufficient_output_space),
-							::ztd::span<const code_unit>(__intermediate_input, __incremented_in_size),
-							::ztd::span<const code_point, 0>());
-					}
-				}
-				*__out_it = static_cast<code_point>(__intermediate_output[__out_index]);
-			}
-			if (__in_it != __in_last) {
-				++__in_it;
-			}
-			return _Result(
-				ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-				ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
-				__state, encoding_error::ok);
-		}
-
-		//////
-		/// @brief Encodes a provided range of punycode-encoded data and pulls out data.
-		///
-		/// @tparam _Input The input range type.
-		/// @tparam _Output The output range type.
-		/// @tparam _ErrorHandler The error handler type.
-		///
-		/// @param __input The input range.
-		/// @param __output The output range.
-		/// @param __error_handler The error handler; this will be called whenever an error occurs during decoding.
-		/// @param __state A reference to the encode state, which contains most of the running information about a
-		/// punycode decoding operation. Discarding this between calls is not advised for this encoding type.
-		///
-		/// @return A ztd::text::encode_result structure with the appropriate input and output types recosntructed,
-		/// possibly filtered through an error handler if necessary.
-		///
-		/// @remarks This function may need to be called with empty input data repeatedly to fully drain any stored
-		/// information in the provided `__state`. The entire input may be consumed before any information is output.
-		template <typename _Input, typename _Output, typename _ErrorHandler>
-		static auto encode_one(
-			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) {
-			using _UInput        = remove_cvref_t<_Input>;
-			using _UOutput       = remove_cvref_t<_Output>;
-			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result        = __txt_detail::__reconstruct_encode_result_t<_UInput, _UOutput, encode_state>;
-			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
-
-			auto __in_it                                   = ::ztd::ranges::cbegin(__input);
-			auto __in_last                                 = ::ztd::ranges::cend(__input);
-			auto __out_it                                  = ::ztd::ranges::begin(__output);
-			auto __out_last                                = ::ztd::ranges::end(__output);
-			char32_t __intermediate_input[max_code_points] = {};
-			::std::size_t __in_size                        = 0;
-			::std::size_t __incremented_in_size            = 0;
-			basic_any_punycode __self {};
-			if (__in_it != __in_last) {
-				__intermediate_input[0] = *__in_it;
-				__in_size               = 1;
-			}
-			else if (::ztd::text::is_state_complete(__self, __state)) {
-				return _Result(ranges::reconstruct(
-					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
-					__state, encoding_error::ok);
-			}
-			char __intermediate_output[max_code_units] = {};
-			::std::size_t __out_size                   = ztd_c_array_size(__intermediate_output);
-			for (::std::size_t __index = 1;; ++__index) {
-				const char32_t* __typed_in_ptr = static_cast<const char32_t*>(__intermediate_input);
-				char* __typed_out_ptr          = static_cast<char*>(__intermediate_output);
-				constexpr auto __encode_func
-					= _IsIdna == idna::no ? &cnc_c32nrtomcn_punycode : &cnc_c32nrtomcn_punycode_idna;
-				cnc_mcerror __err
-					= __encode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-				if (__err == CNC_MCERROR_INCOMPLETE_INPUT) {
-					if constexpr (__call_error_handler) {
-						if (__index == max_code_points) {
-							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-								             ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-								          ::std::move(__out_last)),
-								     __state, encoding_error::invalid_sequence),
-								::ztd::span<const code_point>(__intermediate_input, __incremented_in_size),
-								::ztd::span<const code_unit, 0>());
-						}
-					}
-					++__in_it;
-					if (__in_it != __in_last) {
-						__intermediate_input[__in_size] = *__in_it;
-						++__in_size;
-						++__incremented_in_size;
-					}
-					__out_size = ztd_c_array_size(__intermediate_output);
-					continue;
-				}
-				if constexpr (__call_error_handler) {
-					if (__err != CNC_MCERROR_OK) {
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-							          ::std::move(__out_last)),
-							     __state, static_cast<encoding_error>(__err)),
-							::ztd::span<const code_point>(__intermediate_input, __incremented_in_size),
-							::ztd::span<const code_unit, 0>());
-					}
-				}
-				break;
-			}
-			const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
-			for (::std::size_t __out_index = 0; __out_index < __written_output_size; ++__out_it, ++__out_index) {
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it),
-							          ::std::move(__out_last)),
-							     __state, encoding_error::insufficient_output_space),
-							::ztd::span<const code_point>(__intermediate_input, __incremented_in_size),
-							::ztd::span<const code_unit, 0>());
-					}
-				}
-				*__out_it = __intermediate_output[__out_index];
-			}
-			if (__in_it != __in_last) {
-				++__in_it;
-			}
-			return _Result(
-				ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-				ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__out_last)),
-				__state, encoding_error::ok);
-		}
-	};
+	class basic_any_punycode
+	: public __txt_impl::__fixed_cuneicode<basic_any_punycode<_IsIdna, _CodeUnit, _CodePoint>,
+		  // code unit / code point type
+		  _CodeUnit, _CodePoint,
+		  // max code units / code points
+		  1, 1,
+		  // decode functions, type + (constexpr) value
+		  decltype(_IsIdna == idna::yes ? &::cnc_mcnrtoc32n_punycode_idna : &::cnc_mcnrtoc32n_punycode),
+		  (_IsIdna == idna::yes ? &::cnc_mcnrtoc32n_punycode_idna : &::cnc_mcnrtoc32n_punycode),
+		  // encode functions, type + (constexpr) value
+		  decltype(_IsIdna == idna::yes ? &::cnc_c32nrtomcn_punycode_idna : &::cnc_c32nrtomcn_punycode),
+		  (_IsIdna == idna::yes ? &::cnc_c32nrtomcn_punycode_idna : &::cnc_c32nrtomcn_punycode),
+		  // decode state/completion
+		  cnc_pny_decode_state_t, decltype(&::cnc_pny_decode_state_is_complete), &::cnc_pny_decode_state_is_complete,
+		  // encode state/completion
+		  cnc_pny_encode_state_t, decltype(&::cnc_pny_encode_state_is_complete), &::cnc_pny_encode_state_is_complete,
+		  // is_injective
+		  true, true> { };
 
 	//////
 	/// @brief A convenience typedef for ztd::text::basic_any_punycode with the ztd::text::idna::no provided.

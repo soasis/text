@@ -34,7 +34,7 @@
 
 #include <iostream>
 
-int main(int, char* argv[]) {
+int main(int, char*[]) {
 
 	std::string utf8_string = ztd::text::transcode(
 	     u"🌈\xD801\xD802\xD803🌈🌈", my_utf16 {}, ztd::text::compat_utf8);

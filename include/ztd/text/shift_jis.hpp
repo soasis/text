@@ -107,7 +107,7 @@ namespace ztd { namespace text {
 			using _UInputRange   = remove_cvref_t<_Input>;
 			using _UOutputRange  = remove_cvref_t<_Output>;
 			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-			using _Result        = __txt_detail::__reconstruct_encode_result_t<_Input, _Output, state>;
+			using _Result        = __txt_detail::__reconstruct_decode_result_t<_Input, _Output, state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 			auto __in_it   = ::ztd::ranges::cbegin(__input);
