@@ -46,6 +46,7 @@ foreach (example_source_name ${ztd.text.examples.documentation.snippets.sources}
 		${--warn-errors}
 		${--allow-alignas-extra-padding}
 		${--allow-stringop-overflow}
+		${--allow-array-bounds}
 	)
 	target_include_directories(${example_target}
 		PRIVATE

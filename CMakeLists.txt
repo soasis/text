@@ -117,6 +117,7 @@ if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		#   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95353
 		if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0)
 			check_compiler_diagnostic(stringop-overflow)
+			check_compiler_diagnostic(array-bounds)
 		endif()
 	endif()
 endif()

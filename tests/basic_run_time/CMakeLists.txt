@@ -49,6 +49,7 @@ target_compile_options(ztd.text.tests.basic_run_time
 	${--warn-errors}
 	${--allow-alignas-extra-padding}
 	${--allow-stringop-overflow}
+	${--allow-array-bounds}
 )
 target_include_directories(ztd.text.tests.basic_run_time
 	PRIVATE 

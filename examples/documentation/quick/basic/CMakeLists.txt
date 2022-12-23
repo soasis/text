@@ -50,6 +50,7 @@ foreach (example_source_name ${ztd.text.examples.documentation.quick.basic.sourc
 		${--warn-errors}
 		${--allow-alignas-extra-padding}
 		${--allow-stringop-overflow}
+		${--allow-array-bounds}
 	)
 	
 	target_link_libraries(${example_target}

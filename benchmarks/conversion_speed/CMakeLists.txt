@@ -66,7 +66,8 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			${--warn-errors}
 			${--allow-alignas-extra-padding}
 			${--allow-stringop-overflow}
-	)
+			${--allow-array-bounds}
+			)
 	target_compile_definitions(ztd.text.benchmarks.conversion_speed.${name}
 		PRIVATE
 			u8_data=u8_${data_name}_data

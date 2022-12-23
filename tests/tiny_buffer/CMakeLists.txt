@@ -52,6 +52,7 @@ target_compile_options(ztd.text.tests.tiny_buffer
 	${--warn-errors}
 	${--allow-alignas-extra-padding}
 	${--allow-stringop-overflow}
+	${--allow-array-bounds}
 )
 target_include_directories(ztd.text.tests.tiny_buffer
 	PRIVATE

@@ -45,6 +45,7 @@ target_compile_options(ztd.text.examples.boost_text
 		${--warn-errors}
 		${--allow-alignas-extra-padding}
 		${--allow-stringop-overflow}
+		${--allow-array-bounds}
 )
 
 target_include_directories(ztd.text.examples.boost_text

@@ -47,6 +47,7 @@ foreach (example_name ${ztd.text.examples.documentation.compile_fails.sources})
 		${--warn-errors}
 		${--allow-alignas-extra-padding}
 		${--allow-stringop-overflow}
+		${--allow-array-bounds}
 	)
 	set_target_properties(${example_target}
 		PROPERTIES

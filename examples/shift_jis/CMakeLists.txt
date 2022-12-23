@@ -64,6 +64,7 @@ target_compile_options(ztd.text.examples.shift_jis
 	${--warn-errors}
 	${--allow-alignas-extra-padding}
 	${--allow-stringop-overflow}
+	${--allow-array-bounds}
 )
 target_include_directories(ztd.text.examples.shift_jis
 	PRIVATE
