@@ -53,9 +53,10 @@ int main(int, char*[]) {
 	}
 
 	// Otherwise, everything was not verified (expected! ✅)
-	std::cout << "As expected, the input text was not valid ASCII. "
-	             "Unvalidated UTF-32 code points:"
-	          << std::endl;
+	std::cout << "As expected, the input text was not valid ASCII."
+	          << "\n"
+	          << "Here are the unicode hex values of the unvalidated UTF-32 code "
+	             "points:\n\t";
 	// use the structure to know where we left off.
 	std::u32string_view unused_input(
 	     validate_result.input.data(), validate_result.input.size());

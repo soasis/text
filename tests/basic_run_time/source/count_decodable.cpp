@@ -39,48 +39,56 @@ TEST_CASE("text/count_as_decoded/core", "basic usages of count_as_decoded functi
 	std::size_t expected1 = std::size(ztd::tests::u32_unicode_sequence_truth_native_endian);
 	SECTION("execution") {
 		ztd::text::execution_t encoding {};
-		auto result0 = ztd::text::count_as_decoded(ztd::tests::basic_source_character_set, encoding);
+		auto result0 = ztd::text::count_as_decoded(
+		     ztd::tests::basic_source_character_set, encoding, ztd::text::replacement_handler);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(
+			     ztd::tests::unicode_sequence_truth_native_endian, encoding, ztd::text::replacement_handler);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("wide_execution") {
 		ztd::text::wide_execution_t encoding {};
-		auto result0 = ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set, encoding);
+		auto result0 = ztd::text::count_as_decoded(
+		     ztd::tests::w_basic_source_character_set, encoding, ztd::text::replacement_handler);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(
+			     ztd::tests::w_unicode_sequence_truth_native_endian, encoding, ztd::text::replacement_handler);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("literal") {
 		ztd::text::literal_t encoding {};
-		auto result0 = ztd::text::count_as_decoded(ztd::tests::basic_source_character_set, encoding);
+		auto result0 = ztd::text::count_as_decoded(
+		     ztd::tests::basic_source_character_set, encoding, ztd::text::replacement_handler);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(
+			     ztd::tests::unicode_sequence_truth_native_endian, encoding, ztd::text::replacement_handler);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}
 	}
 	SECTION("wide_literal") {
 		ztd::text::wide_literal_t encoding {};
-		auto result0 = ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set, encoding);
+		auto result0 = ztd::text::count_as_decoded(
+		     ztd::tests::w_basic_source_character_set, encoding, ztd::text::replacement_handler);
 		REQUIRE_FALSE(result0.errors_were_handled());
 		REQUIRE(result0.count == expected0);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
-			auto result1 = ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian, encoding);
+			auto result1 = ztd::text::count_as_decoded(
+			     ztd::tests::w_unicode_sequence_truth_native_endian, encoding, ztd::text::replacement_handler);
 			REQUIRE_FALSE(result1.errors_were_handled());
 			REQUIRE(result1.count == expected1);
 		}

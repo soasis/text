@@ -40,10 +40,12 @@
 #include <ztd/text/count_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/code_point.hpp>
+#include <ztd/text/code_unit.hpp>
+#include <ztd/text/max_units.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
@@ -98,24 +100,23 @@ namespace ztd { namespace text {
 	constexpr auto basic_count_as_transcoded(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot) {
-		using _WorkingInput  = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _WorkingInput  = ::ztd::ranges::subrange_for_t<__txt_detail::__span_reconstruct_t<_Input, _Input>>;
 		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _UToEncoding   = remove_cvref_t<_ToEncoding>;
 		using _Result        = count_transcode_result<_WorkingInput, _FromState, _ToState>;
 
-		_WorkingInput __working_input
-			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+		_WorkingInput __working_input(__txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input)));
 
 		::std::size_t __code_unit_count = 0;
-		::std::size_t __errors_handled  = 0;
+		::std::size_t __error_count     = 0;
 
 #define ZTD_TEXT_BASIC_COUNT_AS_TRANSCODED_LOOP_BODY_CORE_I_()                                                   \
 	if (__result.error_code != encoding_error::ok) {                                                            \
 		return _Result(::std::move(__result.input), __code_unit_count, __result.from_state, __result.to_state, \
-		     __result.error_code, __errors_handled);                                                           \
+		     __result.error_code, __error_count);                                                              \
 	}                                                                                                           \
 	__code_unit_count += __result.count;                                                                        \
-	__errors_handled += __result.error_count;                                                                   \
+	__error_count += __result.error_count;                                                                      \
 	__working_input = ::std::move(__result.input);                                                              \
 	if (::ztd::ranges::empty(__working_input)) {                                                                \
 		if (!::ztd::text::is_state_complete(__from_encoding, __result.from_state)) {                           \
@@ -150,21 +151,22 @@ namespace ztd { namespace text {
 			}
 		}
 		else {
-			using _CodeUnit = code_unit_t<_UToEncoding>;
+			constexpr ::std::size_t __output_max = max_transcode_code_units_v<_UFromEncoding, _UToEncoding>;
+			using _CodeUnit                      = code_unit_t<_UToEncoding>;
 
-			_CodeUnit __output_storage[max_code_units_v<_UToEncoding>] {};
-			::ztd::span<_CodeUnit, max_code_units_v<_UToEncoding>> __output(__output_storage);
+			_CodeUnit __output_storage[__output_max] {};
+			::ztd::span<_CodeUnit, __output_max> __output(__output_storage);
 
 			for (;;) {
-				auto __result = transcode_one_into(::std::move(__working_input), __from_encoding, __output,
+				auto __result = transcode_one_into_raw(::std::move(__working_input), __from_encoding, __output,
 					__to_encoding, __from_error_handler, __to_error_handler, __from_state, __to_state, __pivot);
 				if (__result.error_code != encoding_error::ok) {
 					return _Result(::std::move(__result.input), __code_unit_count, __result.from_state,
-						__result.to_state, __result.error_code, __errors_handled);
+						__result.to_state, __result.error_code, __error_count);
 				}
 				::std::size_t __written = static_cast<::std::size_t>(__result.output.data() - __output.data());
 				__code_unit_count += __written;
-				__errors_handled += __result.error_count;
+				__error_count += __result.error_count;
 				__working_input = ::std::move(__result.input);
 				if (::ztd::ranges::empty(__working_input)) {
 					if (!::ztd::text::is_state_complete(__from_encoding, __from_state)) {
@@ -178,7 +180,7 @@ namespace ztd { namespace text {
 			}
 		}
 		return _Result(::std::move(__working_input), __code_unit_count, __from_state, __to_state, encoding_error::ok,
-			__errors_handled);
+			__error_count);
 	}
 
 	//////

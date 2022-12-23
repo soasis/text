@@ -42,12 +42,16 @@
 #include <ztd/text/literal.hpp>
 #include <ztd/text/wide_literal.hpp>
 #include <ztd/text/any_encoding.hpp>
+#include <ztd/text/cuneicode_encoding.hpp>
+#include <ztd/text/cuneicode_registry_encoding.hpp>
 
 // specific, named encodings
 #include <ztd/text/basic_iconv.hpp>
 #include <ztd/text/punycode.hpp>
 #include <ztd/text/ascii.hpp>
 #include <ztd/text/shift_jis.hpp>
+#include <ztd/text/euc_kr.hpp>
+#include <ztd/text/latin1.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/utf32.hpp>

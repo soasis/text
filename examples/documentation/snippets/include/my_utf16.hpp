@@ -31,11 +31,9 @@
 // start my_utf16-snippet
 #include <ztd/text.hpp>
 
-#include <ztd/ranges/reconstruct.hpp>
-
 #include <utility>
 
-class my_utf16 {
+class my_utf16 : private ztd::text::utf16_t {
 public:
 	// Lucky 7 Members
 	static inline constexpr std::size_t max_code_points = 1;
@@ -45,29 +43,16 @@ public:
 	using code_unit  = char16_t;
 	// Extension definitions
 	using is_unicode_encoding = std::true_type; // UTF-16 is Unicode
-	using is_injective        = std::true_type; // converison is never lossy
+	using is_injective        = std::true_type; // conversion is not lossy
 
-	template <typename Input, typename Output, typename ErrorHandler>
-	constexpr auto decode_one(Input&& input, Output&& output,
-	     ErrorHandler&& error_handler, state& current_state) noexcept {
-		/* UTF-16 decoding implementation here ! */
-		/* we will cheat by just calling ztd.text's implementation. */
-		return ztd::text::utf16.decode_one(std::forward<Input>(input),
-		     std::forward<Output>(output),
-		     std::forward<ErrorHandler>(error_handler), current_state);
-	}
+	// Import base implementation here,
+	// to save on the implementation work!
+	using ztd::text::utf16_t::decode_one;
+	using ztd::text::utf16_t::encode_one;
 
-	template <typename Input, typename Output, typename ErrorHandler>
-	constexpr auto encode_one(Input&& input, Output&& output,
-	     ErrorHandler&& error_handler, state& current_state) const noexcept {
-		/* UTF-16 encoding implementation here ! */
-		/* we will cheat by just calling ztd.text's implementation. */
-		return ztd::text::utf16.encode_one(std::forward<Input>(input),
-		     std::forward<Output>(output),
-		     std::forward<ErrorHandler>(error_handler), current_state);
-	}
-
-	// ❗ Special input skip member here
+	// ❗ Special input skip member!!
+	// If this function is present and callable, it will
+	// allow us to skip over bad input.
 	template <typename Input, typename Output, typename State>
 	constexpr auto skip_input_error(
 	     ztd::text::decode_result<Input, Output, State> result) const noexcept {
@@ -84,15 +69,11 @@ public:
 			} while (it != last && *it > last_utf16_lead_surrogate);
 		}
 		// put input range back together, return in constructed result object
-		using Result = ztd::text::decode_result< // template parameters:
-		     ztd::ranges::reconstruct_t<Input>,  // reconstructed range
-		     Output,                             // same output
-		     State                               // same state
-		     >;
+		using SubInput = ztd::ranges::subrange_for_t<Input>;
+		using Result   = ztd::text::decode_result<SubInput, Output, State>;
 		return Result(
-		     // reconstructed input
-		     ztd::ranges::reconstruct(
-		          std::in_place_type<Input>, std::move(it), std::move(last)),
+		     // subrange of input
+		     SubInput(std::move(it), std::move(last)),
 		     // move the output
 		     std::move(result.output),
 		     // pass state along

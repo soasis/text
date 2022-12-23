@@ -31,7 +31,7 @@
 transcode
 =========
 
-The ``transcode`` grouping of functions (``transcode``, ``transcode_to``, and ``transcode_into``) perform the task of doing bulk transcoding from an ``input`` of ``code_unit``\ s to a second encoding's ``code_unit`` type. It expects to traffic through the ``code_point`` type as the intermediary between the two functions. There is also a ``transcode_one`` API as well that does a single indivisible unit of work for both decoding (to a common representation) and then encoding, and has the same variants as the bulk function.
+The ``transcode`` grouping of functions (``transcode``, ``transcode_to``, and ``transcode_into_raw``) perform the task of doing bulk transcoding from an ``input`` of ``code_unit``\ s to a second encoding's ``code_unit`` type. It expects to traffic through the ``code_point`` type as the intermediary between the two functions. There is also a ``transcode_one`` API as well that does a single indivisible unit of work for both decoding (to a common representation) and then encoding, and has the same variants as the bulk function.
 
 
 
@@ -75,8 +75,8 @@ It will either call ``push_back``/``insert`` directly on the target container to
 If nothing goes wrong or the error handler lets the algorithm continue, ``.input`` on the result should be empty.
 
 
-``transcode_into(...)``
-+++++++++++++++++++++++
+``transcode_into_raw(...)``
++++++++++++++++++++++++++++
 
 This is the lowest level bulk function.
 
@@ -91,13 +91,13 @@ If nothing goes wrong or the error handler lets the algorithm continue, ``.input
 For Everything
 --------------
 
-All named functions have 6 overloads. Each of the "higher level" functions, at the end of their overload call chain, will call the lower-level ``transcode_into`` to perform the work. The final ``transcode_into`` call uses the following ordering of extension points into calling the base implementation:
+All named functions have 6 overloads. Each of the "higher level" functions, at the end of their overload call chain, will call the lower-level ``transcode_into_raw`` to perform the work. The final ``transcode_into_raw`` call uses the following ordering of extension points into calling the base implementation:
 
-- The ``text_transcode_into(input, from_encoding, output, to_encoding, ...)`` extension point.
+- The ``text_transcode_into_raw(input, from_encoding, output, to_encoding, ...)`` extension point.
 - An implementation-defined extension point if any internal optimizations are possible.
-- The ``basic_transcode_into(input, from_encoding, output, to_encoding, ...)`` function.
+- The ``basic_transcode_into_raw(input, from_encoding, output, to_encoding, ...)`` function.
 
-The final function call, ``basic_transcode_into``, simply performs the :doc:`core transcode loop </design/converting/transcode>` using the :doc:`Lucky 7 </design/lucky 7>` design. ``basic_transcode_into`` accommodates the lowest level transformation using just ``decode_one`` into a suitably sized intermediate buffer and then an ``encode_one`` into the output, calling the relevant error handlers along the way. This design also means minimal stack space is used, keeping the core algorithm suitable for resource-constrained devices.
+The final function call, ``basic_transcode_into_raw``, simply performs the :doc:`core transcode loop </design/converting/transcode>` using the :doc:`Lucky 7 </design/lucky 7>` design. ``basic_transcode_into_raw`` accommodates the lowest level transformation using just ``decode_one`` into a suitably sized intermediate buffer and then an ``encode_one`` into the output, calling the relevant error handlers along the way. This design also means minimal stack space is used, keeping the core algorithm suitable for resource-constrained devices.
 
 However, there is a caveat: if there exists a ``text_transcode_one(input, from_encoding, output, to_encoding, ...)`` that is callable then it will be called to perform one unit of complete transformation. Otherwise, ``decode_one``/``encode_one`` 
 
@@ -109,7 +109,7 @@ The ``transcode_one`` extension point is also used in the :doc:`ztd::text::trans
 
 .. note::
 
-	👉 If you need to call the "basic" form of this function that takes no secret implementation shortcuts or user-defined extension points, then call ``basic_transcode_into`` directly. This can be useful to stop infinity loops when your extension points cannot handle certain inputs and thereby needs to "delegate" to the basic case.
+	👉 If you need to call the "basic" form of this function that takes no secret implementation shortcuts or user-defined extension points, then call ``basic_transcode_into_raw`` directly. This can be useful to stop infinity loops when your extension points cannot handle certain inputs and thereby needs to "delegate" to the basic case.
 
 
 

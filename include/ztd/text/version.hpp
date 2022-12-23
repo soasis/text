@@ -100,6 +100,24 @@
 
 #define ZTD_TEXT_PIVOT_TRANSCODE_BUFFER_SIZE_I_(...) (ZTD_TEXT_PIVOT_TRANSCODE_BUFFER_BYTE_SIZE_I_ / sizeof(__VA_ARGS__))
 
+
+#if defined(ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE)
+	#define ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE_I_ ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE
+#else
+	#define ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE_I_ ZTD_INTERMEDIATE_BUFFER_SUGGESTED_BYTE_SIZE_I_
+#endif // Intermediate buffer sizing
+
+#define ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_SIZE_I_(...) (ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE_I_ / sizeof(__VA_ARGS__))
+
+#if defined(ZTD_TEXT_PIVOT_RECODE_BUFFER_BYTE_SIZE)
+	#define ZTD_TEXT_PIVOT_RECODE_BUFFER_BYTE_SIZE_I_ ZTD_TEXT_PIVOT_RECODE_BUFFER_BYTE_SIZE
+#else
+	#define ZTD_TEXT_PIVOT_RECODE_BUFFER_BYTE_SIZE_I_ ZTD_INTERMEDIATE_BUFFER_SUGGESTED_BYTE_SIZE_I_
+#endif // Pivot buffer sizing
+
+#define ZTD_TEXT_PIVOT_RECODE_BUFFER_SIZE_I_(...) (ZTD_TEXT_PIVOT_RECODE_BUFFER_BYTE_SIZE_I_ / sizeof(__VA_ARGS__))
+
+
 #if defined(ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT)
 	#if (ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT != 0)
 		#define ZTD_TEXT_YES_PLEASE_DESTROY_MY_LITERALS_UTTERLY_I_MEAN_IT_I_ ZTD_ON
@@ -172,24 +190,41 @@
 
 #define ZTD_TEXT_LOSSY_DECODE_MESSAGE_I_                                                                               \
 	"This decode is a lossy, non-injective operation. This means you may lose data that you did not intend to lose; " \
-	"specify a 'handler' error handler parameter to decode(in, encoding, handler, ...) or decode_into(in, encoding, " \
+	"specify a 'handler' error handler parameter to decode(in, encoding, handler, ...) or decode_into_raw(in, "       \
+	"encoding, "                                                                                                      \
 	"out, handler, ...) explicitly in order to bypass this."
 
 #define ZTD_TEXT_LOSSY_ENCODE_MESSAGE_I_                                                                               \
 	"This encode is a lossy, non-injective operation. This means you may lose data that you did not intend to lose; " \
-	"specify a 'handler' error handler parameter to encode(in, encoding, handler, ...) or encode_into(in, encoding, " \
+	"specify a 'handler' error handler parameter to encode(in, encoding, handler, ...) or encode_into_raw(in, "       \
+	"encoding, "                                                                                                      \
 	"out, handler, ...) explicitly in order to bypass this."
 
 #define ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_                                                                     \
 	"The decode (input) portion of this transcode is a lossy, non-injective operation. This means you may lose data " \
 	"that you did not intend to lose; specify an 'in_handler' error handler parameter to transcode[_to](in, "         \
-	"in_encoding, out_encoding, in_handler, ...) or transcode_into(in, in_encoding, out, out_encoding, in_handler, "  \
+	"in_encoding, out_encoding, in_handler, ...) or transcode_into_raw(in, in_encoding, out, out_encoding, "          \
+	"in_handler, "                                                                                                    \
 	"...) explicitly in order to bypass this."
 
-#define ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_                                                                     \
-	"The encode (output) portion of this transcode is a lossy, non-injective operation. This means you may lose "     \
-	"data that you did not intend to lose; specify an 'out_handler' error handler parameter to transcode[_to](in, "   \
-	"in_encoding, out_encoding, in_handler, out_handler, ...) or transcode_into(in, in_encoding, out, out_encoding, " \
+#define ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_                                                                   \
+	"The encode (output) portion of this transcode is a lossy, non-injective operation. This means you may lose "   \
+	"data that you did not intend to lose; specify an 'out_handler' error handler parameter to transcode[_to](in, " \
+	"in_encoding, out_encoding, in_handler, out_handler, ...) or transcode_into_raw(in, in_encoding, out, "         \
+	"out_encoding, "
+
+#define ZTD_TEXT_LOSSY_RECODE_DECODE_MESSAGE_I_                                                                     \
+	"The encode (input) portion of this recode is a lossy, non-injective operation. This means you may lose data " \
+	"that you did not intend to lose; specify an 'in_handler' error handler parameter to recode[_to](in, "         \
+	"in_encoding, out_encoding, in_handler, ...) or recode_into_raw(in, in_encoding, out, out_encoding, "          \
+	"in_handler, "                                                                                                 \
+	"...) explicitly in order to bypass this."
+
+#define ZTD_TEXT_LOSSY_RECODE_ENCODE_MESSAGE_I_                                                                   \
+	"The decode (output) portion of this recode is a lossy, non-injective operation. This means you may lose "   \
+	"data that you did not intend to lose; specify an 'out_handler' error handler parameter to recode[_to](in, " \
+	"in_encoding, out_encoding, in_handler, out_handler, ...) or recode_into_raw(in, in_encoding, out, "         \
+	"out_encoding, "                                                                                             \
 	"in_handler, out_handler, ...) explicitly in order to bypass this."
 
 #define ZTD_TEXT_UNKNOWN_LITERAL_ENCODING_MESSAGE_I_(_LITERAL_NAME, _LITERAL_TYPE_NAME, _LITERAL_PREFIX)            \
@@ -224,7 +259,8 @@
 	"that for you."
 
 #define ZTD_TEXT_RVALUE_NON_RANGE_INPUT_MESSAGE_I_                                                                     \
-	"Passing an r-value, non-view range into the lower-level *_into functions (e.g. decode_into, transcode_into, "    \
+	"Passing an r-value, non-view range into the lower-level *_into functions (e.g. decode_into_raw, "                \
+	"transcode_into_raw, "                                                                                            \
 	"and more) can result in wholly undesirable behavior and excessive copying that can result in extremely poor "    \
 	"performance. If you would like to pass in a container, please use the top-level non-suffixed or *_to functions " \
 	"so that an appropriate output container can be made and natural view-like, mostly-cheap ranges can be copied "   \

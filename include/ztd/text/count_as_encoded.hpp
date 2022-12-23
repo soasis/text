@@ -43,7 +43,6 @@
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/tag.hpp>
 #include <ztd/ranges/subrange.hpp>
@@ -83,23 +82,24 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto basic_count_as_encoded(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _WorkingInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _WorkingInput = ::ztd::ranges::subrange_for_t<_Input>;
 		using _UEncoding    = remove_cvref_t<_Encoding>;
 		using _Result       = count_result<_WorkingInput, _State>;
 
-		_WorkingInput __working_input
-			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+		_WorkingInput __working_input(::std::forward<_Input>(__input));
 
 		::std::size_t __code_unit_count = 0;
+		::std::size_t __error_count     = 0;
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_as_encoded_one, _Encoding, _WorkingInput,
 			              _ErrorHandler, _State>) {
 			for (;;) {
 				auto __result = text_count_as_encoded_one(
 					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+				__error_count += __result.error_count;
 				if (__result.error_code != encoding_error::ok) {
-					return _Result(
-						::std::move(__result.input), __code_unit_count, __state, __result.error_code, false);
+					return _Result(::std::move(__result.input), __code_unit_count, __state, __result.error_code,
+						__error_count);
 				}
 				__code_unit_count += __result.count;
 				__working_input = ::std::move(__result.input);
@@ -116,9 +116,10 @@ namespace ztd { namespace text {
 			for (;;) {
 				auto __result = __text_count_as_encoded_one(
 					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+				__error_count += __result.error_count;
 				if (__result.error_code != encoding_error::ok) {
-					return _Result(
-						::std::move(__result.input), __code_unit_count, __state, __result.error_code, false);
+					return _Result(::std::move(__result.input), __code_unit_count, __state, __result.error_code,
+						__error_count);
 				}
 				__code_unit_count += __result.count;
 				__working_input = ::std::move(__result.input);
@@ -135,15 +136,17 @@ namespace ztd { namespace text {
 
 			_CodeUnit __intermediate_storage[max_code_units_v<_UEncoding>] {};
 			::ztd::span<_CodeUnit, max_code_units_v<_UEncoding>> __intermediate(__intermediate_storage);
-
 			for (;;) {
-				auto __result = __txt_detail::__basic_count_as_encoded_one(
-					::std::move(__working_input), __encoding, __error_handler, __state, __intermediate);
+				auto __result = ::ztd::text::encode_one_into_raw(
+					::std::move(__working_input), __encoding, __intermediate, __error_handler, __state);
+				__error_count += __result.error_count;
 				if (__result.error_code != encoding_error::ok) {
-					return _Result(
-						::std::move(__result.input), __code_unit_count, __state, __result.error_code, false);
+					return _Result(::std::move(__result.input), __code_unit_count, __state, __result.error_code,
+						__error_count);
 				}
-				__code_unit_count += __result.count;
+				::std::size_t __used_size = static_cast<::std::size_t>(::ztd::ranges::distance(
+					::ztd::ranges::begin(__intermediate), ::ztd::ranges::begin(__result.output)));
+				__code_unit_count += __used_size;
 				__working_input = ::std::move(__result.input);
 				if (::ztd::ranges::empty(__working_input)) {
 					if (!::ztd::text::is_state_complete(__encoding, __state)) {
@@ -153,7 +156,7 @@ namespace ztd { namespace text {
 				}
 			}
 		}
-		return _Result(::std::move(__working_input), __code_unit_count, __state, encoding_error::ok, false);
+		return _Result(::std::move(__working_input), __code_unit_count, __state, encoding_error::ok, __error_count);
 	}
 
 	//////

@@ -41,6 +41,8 @@
 #include <ztd/text/detail/encoding_iterator.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
+#include <ztd/text/detail/span_reconstruct.hpp>
+#include <ztd/text/detail/update_input.hpp>
 
 #include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
@@ -99,7 +101,8 @@ namespace ztd { namespace text {
 		       unwrap_remove_cvref_t<_FromErrorHandler>> // cf
 		  && encode_error_handler_always_returns_ok_v<unwrap_remove_cvref_t<_ToEncoding>,
 		       unwrap_remove_cvref_t<_ToErrorHandler>>>,
-	  private ebco<ranges::range_reconstruct_t<unwrap_remove_cvref_t<_Range>>, 4> {
+	  private ebco<__txt_detail::__span_reconstruct_t<unwrap_remove_cvref_t<_Range>, unwrap_remove_cvref_t<_Range>>,
+		  5> {
 	private:
 		using _UNonRRange                                = unwrap_remove_cvref_t<_Range>;
 		using _URange                                    = ranges::range_reconstruct_t<_UNonRRange>;
@@ -116,8 +119,8 @@ namespace ztd { namespace text {
 		inline static constexpr bool _IsInputOrOutput    = ranges::is_range_input_or_output_range_v<_URange>;
 		inline static constexpr bool _IsCursorless       = _IsSingleValueType && !_IsInputOrOutput;
 		inline static constexpr bool _IsErrorless
-			= decode_error_handler_always_returns_ok_v<_UFromEncoding,
-			       _UFromErrorHandler> && encode_error_handler_always_returns_ok_v<_UToEncoding, _UToErrorHandler>;
+			= decode_error_handler_always_returns_ok_v<_UFromEncoding, _UFromErrorHandler>
+			&& encode_error_handler_always_returns_ok_v<_UToEncoding, _UToErrorHandler>;
 		using __base_cursor_cache_t       = __txt_detail::__cursor_cache<_MaxValues, _IsInputOrOutput>;
 		using __base_cursor_cache_size_t  = typename __base_cursor_cache_t::_SizeType;
 		using __base_error_cache_t        = __txt_detail::__error_cache<_IsErrorless>;
@@ -129,7 +132,7 @@ namespace ztd { namespace text {
 			= __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>;
 		using __base_to_state_t
 			= __txt_detail::__state_storage<remove_cvref_t<_ToEncoding>, remove_cvref_t<_ToState>, 1>;
-		using __base_range_t = ebco<_URange, 4>;
+		using __base_range_t = ebco<__txt_detail::__span_reconstruct_t<_URange, _URange>, 5>;
 
 		inline static constexpr bool _IsBackwards = is_detected_v<__txt_detail::__detect_object_encode_one_backwards,
 			_UFromEncoding, _URange, _UFromErrorHandler, _UFromState>;
@@ -389,7 +392,7 @@ namespace ztd { namespace text {
 		/// @brief The input range used to construct this object.
 		constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
 			     ? ::std::is_nothrow_copy_constructible_v<range_type>
-			     : ::std::is_nothrow_move_constructible_v<range_type>) {
+			     : (::std::is_nothrow_move_constructible_v<range_type>)) {
 			if constexpr (::std::is_copy_constructible_v<range_type>) {
 				return this->__base_range_t::get_value();
 			}
@@ -568,7 +571,7 @@ namespace ztd { namespace text {
 			_Intermediate __intermediate(__intermediate_storage);
 			pivot<_Intermediate> __pivot { __intermediate, encoding_error::ok };
 			if constexpr (_IsInputOrOutput) {
-				auto __result    = transcode_one_into(::std::move(__this_input_range), this->from_encoding(),
+				auto __result    = transcode_one_into_raw(::std::move(__this_input_range), this->from_encoding(),
 					   __cache_view, this->to_encoding(), this->from_handler(), this->to_handler(),
 					   this->from_state(), this->to_state(), __pivot);
 				__this_cache_end = ::ztd::to_address(::ztd::ranges::begin(__result.output));
@@ -578,14 +581,15 @@ namespace ztd { namespace text {
 				this->__base_range_t::get_value() = ::std::move(__result.input);
 			}
 			else {
-				auto __result    = transcode_one_into(__this_input_range, this->from_encoding(), __cache_view,
+				auto __result    = transcode_one_into_raw(__this_input_range, this->from_encoding(), __cache_view,
 					   this->to_encoding(), this->from_handler(), this->to_handler(), this->from_state(),
 					   this->to_state(), __pivot);
 				__this_cache_end = ::ztd::to_address(::ztd::ranges::begin(__result.output));
 				if constexpr (!_IsErrorless) {
 					this->__base_error_cache_t::_M_set_errors(__pivot.error_code, __result.error_code);
 				}
-				this->__base_range_t::get_value() = ::std::move(__result.input);
+				this->__base_range_t::get_value()
+					= __txt_detail::__update_input<_URange>(::std::move(__result.input));
 			}
 			if constexpr (!_IsSingleValueType) {
 				__base_cursor_cache_size_t __data_size

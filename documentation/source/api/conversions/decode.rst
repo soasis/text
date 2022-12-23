@@ -31,7 +31,7 @@
 decode
 ======
 
-The ``decode`` grouping of functions (``decode``, ``decode_to``, and ``decode_into``) perform the task of doing bulk decoding from an ``input`` of ``code_unit``\ s to the encoding's ``code_point`` type. They are also accompanied by ``decode_one`` variants (``decode_one``, ``decode_one_to``, ``decode_one_into``), which serve the same purpose as their bulk counterpoints but only do a single :term:`indivisible unit of work`'s worth of work.
+The ``decode`` grouping of functions (``decode``, ``decode_to``, and ``decode_into_raw``) perform the task of doing bulk decoding from an ``input`` of ``code_unit``\ s to the encoding's ``code_point`` type. They are also accompanied by ``decode_one`` variants (``decode_one``, ``decode_one_to``, ``decode_one_into``), which serve the same purpose as their bulk counterpoints but only do a single :term:`indivisible unit of work`'s worth of work.
 
 
 
@@ -75,8 +75,8 @@ It will either call ``push_back``/``insert`` directly on the target container to
 If nothing goes wrong or the error handler lets the algorithm continue, ``.input`` on the result should be empty.
 
 
-``decode_into(...)``
-++++++++++++++++++++
+``decode_into_raw(...)``
+++++++++++++++++++++++++
 
 This is the lowest level bulk function.
 
@@ -91,13 +91,13 @@ If nothing goes wrong or the error handler lets the algorithm continue, ``.input
 For Everything
 --------------
 
-All named functions have 4 overloads. Each of the "higher level" functions, at the end of their overload call chain, will call the lower-level ``decode_into`` to perform the work. The final ``decode_into`` call uses the following ordering of extension points into calling the base implementation:
+All named functions have 4 overloads. Each of the "higher level" functions, at the end of their overload call chain, will call the lower-level ``decode_into_raw`` to perform the work. The final ``decode_into_raw`` call uses the following ordering of extension points into calling the base implementation:
 
-- ``text_decode_into(input, encoding, output, handler, state)``
+- ``text_decode_into_raw(input, encoding, output, handler, state)``
 - An internal, implementation-defined customization point.
-- ``basic_decode_into``
+- ``basic_decode_into_raw``
 
-The base function call, ``basic_decode_into``, simply performs the :doc:`core decode loop </design/converting/decode>` using the :doc:`Lucky 7 </design/lucky 7>` design. This design also means minimal stack space is used, keeping the core algorithm suitable for resource-constrained devices.
+The base function call, ``basic_decode_into_raw``, simply performs the :doc:`core decode loop </design/converting/decode>` using the :doc:`Lucky 7 </design/lucky 7>` design. This design also means minimal stack space is used, keeping the core algorithm suitable for resource-constrained devices.
 
 .. note::
 
@@ -105,7 +105,7 @@ The base function call, ``basic_decode_into``, simply performs the :doc:`core de
 
 .. note::
 
-	👉 If you need to call the "basic" form of this function that takes no secret implementation shortcuts or user-defined extension points, then call ``basic_decode_into`` directly. This can be useful to stop infinity loops when your extension points cannot handle certain inputs and thereby needs to "delegate" to the basic case.
+	👉 If you need to call the "basic" form of this function that takes no secret implementation shortcuts or user-defined extension points, then call ``basic_decode_into_raw`` directly. This can be useful to stop infinity loops when your extension points cannot handle certain inputs and thereby needs to "delegate" to the basic case.
 
 
 

@@ -28,6 +28,28 @@
 #
 # ============================================================================>
 
+# # Data
+set(ztd-text-tests-additional-encodings-data-source ${CMAKE_CURRENT_SOURCE_DIR}/data)
+set(ztd-text-tests-additional-encodings-data-destination ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
+
+file(GLOB_RECURSE ztd-text-tests-additional-encodings-data-source-files LIST_DIRECTORIES false 
+	RELATIVE ${ztd-text-tests-additional-encodings-data-source} CONFIGURE_DEPENDS 
+	./data/*.*)
+
+list(SUBLIST ztd-text-tests-additional-encodings-data-source-files 0 -1 ztd-text-tests-additional-encodings-data-destination-files)
+list(TRANSFORM ztd-text-tests-additional-encodings-data-source-files PREPEND "${ztd-text-tests-additional-encodings-data-source}/")
+list(TRANSFORM ztd-text-tests-additional-encodings-data-destination-files PREPEND "${ztd-text-tests-additional-encodings-data-destination}/")
+
+add_custom_command(OUTPUT ${ztd-text-tests-additional-encodings-data-destination-files}
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${ztd-text-tests-additional-encodings-data-source} ${ztd-text-tests-additional-encodings-data-destination}
+	COMMENT "[ztd.text/examples] Copying data files from \"${ztd-text-tests-additional-encodings-data-source}\" used in examples/shift_jis over to \"${ztd-text-tests-additional-encodings-data-destination}\"..."
+	DEPENDS ${ztd-text-tests-additional-encodings-data-source-files}
+)
+
+add_custom_target(ztd.text.tests.additional_encodings.data
+	DEPENDS ${ztd-text-tests-additional-encodings-data-destination-files}
+)
+
 # # Tests
 file(GLOB_RECURSE ztd.text.tests.additional_encodings.sources
 	LIST_DIRECTORIES FALSE CONFIGURE_DEPENDS source/*.cpp
@@ -60,4 +82,7 @@ target_link_libraries(ztd.text.tests.additional_encodings
 	Catch2::Catch2
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME ztd.text.tests.additional_encodings COMMAND ztd.text.tests.additional_encodings)
+add_dependencies(ztd.text.tests.additional_encodings ztd.text.tests.additional_encodings.data)
+add_test(NAME ztd.text.tests.additional_encodings
+	COMMAND ztd.text.tests.additional_encodings
+	WORKING_DIRECTORY ${ztd-text-})

@@ -43,6 +43,7 @@
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
+#include <ztd/text/detail/update_input.hpp>
 
 #include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
@@ -113,52 +114,53 @@ namespace ztd { namespace text {
 		public:
 			//////
 			/// @brief The underlying range type.
-
 			using range_type = _Range;
+
 			//////
 			/// @brief The base iterator type.
-
 			using iterator = _BaseIterator;
+
 			//////
 			/// @brief The encoding type used for transformations.
-
 			using encoding_type = _Encoding;
+
 			//////
 			/// @brief The error handler when an encode operation fails.
-
 			using error_handler_type = _ErrorHandler;
+
 			//////
 			/// @brief The state type used for encode operations.
-
 			using state_type = remove_cvref_t<_State>;
+
 			//////
 			/// @brief The strength of the iterator category, as defined in relation to the base.
-
 			using iterator_category = ::std::conditional_t<
 				ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 				::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
 				ranges::iterator_category_t<_BaseIterator>>;
+
 			//////
 			/// @brief The strength of the iterator concept, as defined in relation to the base.
-
 			using iterator_concept = ::std::conditional_t<
 				ranges::is_iterator_concept_or_better_v<::std::bidirectional_iterator_tag, _BaseIterator>,
 				::std::conditional_t<_IsBackwards, ::std::bidirectional_iterator_tag, ::std::forward_iterator_tag>,
 				ranges::iterator_concept_t<_BaseIterator>>;
+
 			//////
 			/// @brief The object type that gets output on every dereference.
-
 			using value_type = ::std::conditional_t<_EncodeOrDecode == __transaction::__encode,
 				code_unit_t<_Encoding>, code_point_t<_Encoding>>;
+
 			//////
 			/// @brief A pointer type to the value_type.
-
 			using pointer = value_type*;
+
 			//////
 			/// @brief The value returned from derefencing the iterator.
 			///
 			/// @remarks This is a proxy iterator, so the `reference` is a non-reference `value_type.`
 			using reference = value_type;
+
 			//////
 			/// @brief The type returned when two of these pointers are subtracted from one another.
 			///
@@ -276,30 +278,9 @@ namespace ztd { namespace text {
 			/// @brief The input range used to construct this object.
 			///
 			/// @returns A const l-value reference to the input range used to construct this iterator.
-			constexpr range_type range() const& noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
-				return this->__base_storage_t::_M_get_range();
-			}
-
-			//////
-			/// @brief The input range used to construct this object.
-
-			constexpr range_type range() & noexcept(::std::is_copy_constructible_v<range_type>
-				     ? ::std::is_nothrow_copy_constructible_v<range_type>
-				     : ::std::is_nothrow_move_constructible_v<range_type>) {
-				if constexpr (::std::is_copy_constructible_v<range_type>) {
-					return this->__base_storage_t::_M_get_range();
-				}
-				else {
-					return ::std::move(this->__base_storage_t::_M_get_range());
-				}
-			}
-
-			//////
-			/// @brief The input range used to construct this object.
-			///
-			/// @returns An r-value reference to the input range used to construct this iterator.
-			constexpr range_type range() && noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
-				return ::std::move(this->__base_storage_t::_M_get_range());
+			constexpr range_type range() const noexcept(::std::is_nothrow_move_constructible_v<range_type>) {
+				return ::ztd::ranges::reconstruct(
+					::std::in_place_type<range_type>, this->__base_storage_t::_M_get_range());
 			}
 
 			//////
@@ -455,7 +436,8 @@ namespace ztd { namespace text {
 					if constexpr (!_IsErrorless) {
 						this->__base_error_cache_t::_M_set_errors(encoding_error::ok, __result.error_code);
 					}
-					this->__base_storage_t::_M_get_range() = ::std::move(__result.input);
+					this->__base_storage_t::_M_get_range()
+						= __txt_detail::__update_input<_Range>(::std::move(__result.input));
 				}
 				if constexpr (!_IsSingleValueType) {
 					__base_cursor_cache_size_t __data_size
@@ -475,11 +457,11 @@ namespace ztd { namespace text {
 				return static_cast<const _Derived&>(*this);
 			}
 
-			constexpr _URange& _M_range() noexcept {
+			constexpr auto& _M_range() noexcept {
 				return this->__base_storage_t::_M_get_range();
 			}
 
-			constexpr const _URange& _M_range() const noexcept {
+			constexpr const auto& _M_range() const noexcept {
 				return this->__base_storage_t::_M_get_range();
 			}
 

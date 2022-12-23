@@ -133,3 +133,12 @@ There are various configuration macros and CMake/build-time switches that will c
 	- Not turned on by default under any conditions.
 	- Specify a numeric value for ``ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_BYTE_SIZE`` to have it used instead.
 	- Will always be used as the input to a function determining the maximum between this type and a buffer size consistent with :doc:`ztd::text::max_code_points_v </api/max_code_points>` or :doc:`ztd::text::max_code_points_v </api/max_code_units>`.
+
+.. _config-ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE:
+
+- ``ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE``
+	- Changes the default intermediate buffer size placed on the stack for temporary operations.
+	- Default: a series of compile time platform checking heuristics to determine a generally useful buffer size that will not overflow the stack.
+	- Not turned on by default under any conditions.
+	- Specify a numeric value for ``ZTD_TEXT_INTERMEDIATE_RECODE_BUFFER_BYTE_SIZE`` to have it used instead.
+	- Will always be used as the input to a function determining the maximum between this type and a buffer size consistent with :doc:`ztd::text::max_code_points_v </api/max_code_points>` or :doc:`ztd::text::max_code_points_v </api/max_code_units>`.

@@ -81,7 +81,9 @@ namespace ztd { namespace text {
 		  // encode state/completion
 		  cnc_pny_encode_state_t, decltype(&::cnc_pny_encode_state_is_complete), &::cnc_pny_encode_state_is_complete,
 		  // is_injective
-		  true, true> { };
+		  true, true,
+		  // true code unit / code point types
+		  char, char32_t> { };
 
 	//////
 	/// @brief A convenience typedef for ztd::text::basic_any_punycode with the ztd::text::idna::no provided.

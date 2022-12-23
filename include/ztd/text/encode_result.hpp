@@ -40,6 +40,7 @@
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/detail/result_type_constraints.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/ranges/reconstruct.hpp>
@@ -81,6 +82,39 @@ namespace ztd { namespace text {
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
 		/// ztd::text::encoding_error::ok.
 		::std::size_t error_count;
+
+		//////
+		/// @brief Constructs a ztd::text::encode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput,
+			::std::enable_if_t<
+			     __txt_detail::__result_type_copy_constraint<_Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+		constexpr stateless_encode_result(const stateless_encode_result<_ArgInput, _ArgOutput>& __other) noexcept(
+			__txt_detail::__result_type_copy_noexcept<_Input, _ArgInput, _Output, _ArgOutput>())
+		: input(__other.input)
+		, output(__other.output)
+		, error_code(__other.error_code)
+		, error_count(__other.error_count) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::encode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::stateless_encode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+		constexpr stateless_encode_result(stateless_encode_result<_ArgInput, _ArgOutput>&& __other) noexcept(
+			__txt_detail::__result_type_move_noexcept<::ztd::text::stateless_encode_result, _Input, _ArgInput,
+			     _Output, _ArgOutput>())
+		: input(::std::move(__other.input))
+		, output(::std::move(__other.output))
+		, error_code(__other.error_code)
+		, error_count(__other.error_count) {
+		}
 
 		//////
 		/// @brief Constructs a ztd::text::encode_result, defaulting the error code to
@@ -139,7 +173,34 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The state of the associated Encoding used for decoding input code points to code units.
-		_State& state;
+		::ztd::reference_wrapper<_State> state;
+
+		//////
+		/// @brief Constructs a ztd::text::encode_result from a previous encode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgState,
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::encode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _State, _ArgState>()>* = nullptr>
+		constexpr encode_result(const encode_result<_ArgInput, _ArgOutput, _ArgState>& __other) noexcept(
+			__txt_detail::__result_type_copy_noexcept<::ztd::text::encode_result, _Input, _ArgInput, _Output,
+			     _ArgOutput, _State, _ArgState>())
+		: __base_t(__other.input, __other.output, __other.error_code, __other.error_count), state(__other.state) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::encode_result from a previous encode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgState,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::encode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _State, _ArgState>()>* = nullptr>
+		constexpr encode_result(encode_result<_ArgInput, _ArgOutput, _ArgState>&& __other) noexcept(
+			__txt_detail::__result_type_move_noexcept<::ztd::text::encode_result, _Input, _ArgInput, _Output,
+			     _ArgOutput, _State, _ArgState>())
+		: __base_t(::std::move(__other.input), ::std::move(__other.output), __other.error_code, __other.error_count)
+		, state(__other.state) {
+		}
 
 		//////
 		/// @brief Constructs a ztd::text::encode_result, defaulting the error code to
@@ -170,7 +231,7 @@ namespace ztd { namespace text {
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgState>
 		constexpr encode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgState&& __state,
-			encoding_error __error_code, ::std::size_t __error_count)
+			encoding_error __error_code, ::std::size_t __error_count) noexcept
 		: __base_t(
 			::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
 		, state(::std::forward<_ArgState>(__state)) {
@@ -201,14 +262,25 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _Input, typename _Output, typename _State>
 		constexpr stateless_encode_result<_Input, _Output>
-		__slice_to_stateless(encode_result<_Input, _Output, _State>&& __result) noexcept(
+		__slice_to_stateless_encode(encode_result<_Input, _Output, _State>&& __result) noexcept(
 			::std::is_nothrow_constructible_v<stateless_encode_result<_Input, _Output>,
 			     stateless_encode_result<_Input, _Output>>) {
 			return ::std::move(__result);
 		}
 
 		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
-		constexpr encode_result<_Input, remove_cvref_t<_DesiredOutput>, _State> __replace_result_output(
+		constexpr stateless_encode_result<_Input, remove_cvref_t<_DesiredOutput>>
+		__replace_encode_result_output_no_state(
+			encode_result<_Input, _Output, _State>&& __result, _DesiredOutput&& __desired_output) noexcept(::std::
+			     is_nothrow_constructible_v<stateless_encode_result<_Input, _Output>, _Input&&, _DesiredOutput,
+			          encoding_error, ::std::size_t>) {
+			using _Result = stateless_encode_result<_Input, remove_cvref_t<_DesiredOutput>>;
+			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
+				__result.error_code, __result.error_count);
+		}
+
+		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
+		constexpr encode_result<_Input, remove_cvref_t<_DesiredOutput>, _State> __replace_encode_result_output(
 			encode_result<_Input, _Output, _State>&& __result,
 			_DesiredOutput&&
 			     __desired_output) noexcept(::std::is_nothrow_constructible_v<encode_result<_Input, _Output, _State>,

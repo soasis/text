@@ -70,38 +70,29 @@ namespace ztd { namespace text {
 		/// @returns A ztd::text::normalization_result representing the normalized output.
 		template <typename _Input, typename _Output>
 		constexpr auto operator()(_Input&& __input, _Output&& __output) noexcept {
-			using _UInput  = remove_cvref_t<_Input>;
-			using _UOutput = remove_cvref_t<_Output>;
-			using _Result
-				= normalization_result<ztd::ranges::reconstruct_t<_UInput>, ztd::ranges::reconstruct_t<_UOutput>>;
+			using _SubInput  = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubOutput = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
+			using _Result    = normalization_result<_SubInput, _SubOutput>;
 
 			auto __in_it   = ::ztd::ranges::begin(__input);
 			auto __in_last = ::ztd::ranges::end(__input);
 			auto __out_it  = ::ztd::ranges::begin(__output);
-			auto __outlast = ::ztd::ranges::end(__output);
+			auto __out_last = ::ztd::ranges::end(__output);
 			if (__in_it == __in_last) {
-				return _Result(::ztd::ranges::reconstruct(
-					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-					::ztd::ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__outlast)),
-					normalization_error::ok);
+				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), normalization_error::ok);
 			}
-			if (__out_it == __outlast) {
-				return _Result(::ztd::ranges::reconstruct(
-					               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-					::ztd::ranges::reconstruct(
-					     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__outlast)),
+			if (__out_it == __out_last) {
+				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+					_SubOutput(::std::move(__out_it), ::std::move(__out_last)),
 					normalization_error::insufficient_output);
 			}
 
 			*__out_it = *__in_it;
 			++__in_it;
 			++__out_it;
-			return _Result(::ztd::ranges::reconstruct(
-				               ::std::in_place_type<_UInput>, ::std::move(__in_it), ::std::move(__in_last)),
-				::ztd::ranges::reconstruct(
-				     ::std::in_place_type<_UOutput>, ::std::move(__out_it), ::std::move(__outlast)),
-				normalization_error::ok);
+			return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+				_SubOutput(::std::move(__out_it), ::std::move(__out_last)), normalization_error::ok);
 		}
 	};
 

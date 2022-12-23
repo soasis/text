@@ -49,8 +49,7 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		ztd::span<code_point> output(output_buffer, output_max);
 		state s {};
 		auto result   = encoding.decode_one(input, output, ztd::text::replacement_handler, s);
-		bool is_equal = ztd::ranges::__rng_detail::__equal(
-		     output.data(), result.output.data(), expected.begin(), expected.end());
+		bool is_equal = ztd::ranges::equal(output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
 	}
 
@@ -66,8 +65,7 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		ztd::span<code_unit> output(output_buffer, output_max);
 		state s {};
 		auto result   = encoding.encode_one(input, output, ztd::text::replacement_handler, s);
-		bool is_equal = ztd::ranges::__rng_detail::__equal(
-		     output.data(), result.output.data(), expected.begin(), expected.end());
+		bool is_equal = ztd::ranges::equal(output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
 	}
 
@@ -87,8 +85,7 @@ inline namespace ztd_text_tests_basic_run_time_errors_replacement {
 		to_state ts {};
 		auto result   = ztd::text::transcode_one_into(input, from_encoding, output, to_encoding,
 		       ztd::text::replacement_handler, ztd::text::replacement_handler, fs, ts);
-		bool is_equal = ztd::ranges::__rng_detail::__equal(
-		     output.data(), result.output.data(), expected.begin(), expected.end());
+		bool is_equal = ztd::ranges::equal(output.data(), result.output.data(), expected.begin(), expected.end());
 		REQUIRE(is_equal);
 	}
 } // namespace ztd_text_tests_basic_run_time_errors_replacement

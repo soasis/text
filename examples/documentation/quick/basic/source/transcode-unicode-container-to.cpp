@@ -40,7 +40,7 @@ int main(int, char*[]) {
 	constexpr std::size_t input_last_exclamation_mark_index
 	     = ztd_c_string_array_size(input) - 1;
 	constexpr const std::u16string_view full_expected_output = u"bark🐶⛄🐶🔔bark!";
-	constexpr std::size_t truncated_input_size               = 15;
+	constexpr std::size_t truncated_input_size = 15;
 	// string_view containing: "bark🐶⛄🐶🔔bark" (no ending exclamation point)
 	constexpr const std::u16string_view truncated_expected_ouput
 	     = full_expected_output.substr(0, truncated_input_size);

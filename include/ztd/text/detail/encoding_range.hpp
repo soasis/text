@@ -272,6 +272,39 @@ namespace ztd { namespace text {
 			     ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(), ::std::declval<_ToHandler>(),
 			     ::std::declval<_FromState&>(), ::std::declval<_ToState&>(), ::std::declval<pivot<_PivotRange>&>()));
 
+		// recode
+		template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+			typename _FromHandler, typename _ToHandler, typename _FromState, typename _ToState, typename _PivotRange>
+		using __detect_adl_text_recode = decltype(text_recode(
+			::ztd::tag<::ztd::remove_cvref_t<_FromEncoding>, ::ztd::remove_cvref_t<_ToEncoding>>(),
+			::std::declval<_Input>(), ::std::declval<_FromEncoding>(), ::std::declval<_Output>(),
+			::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(), ::std::declval<_ToHandler>(),
+			::std::declval<_FromState&>(), ::std::declval<_ToState&>(), ::std::declval<pivot<_PivotRange>&>()));
+
+		template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+			typename _FromHandler, typename _ToHandler, typename _FromState, typename _ToState, typename _PivotRange>
+		using __detect_adl_internal_text_recode
+			= decltype(__text_recode(::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+			     ::std::declval<_Input>(), ::std::declval<_FromEncoding>(), ::std::declval<_Output>(),
+			     ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(), ::std::declval<_ToHandler>(),
+			     ::std::declval<_FromState&>(), ::std::declval<_ToState&>(), ::std::declval<pivot<_PivotRange>&>()));
+
+		template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+			typename _FromHandler, typename _ToHandler, typename _FromState, typename _ToState, typename _PivotRange>
+		using __detect_adl_internal_text_recode_one
+			= decltype(__text_recode_one(::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+			     ::std::declval<_Input>(), ::std::declval<_FromEncoding>(), ::std::declval<_Output>(),
+			     ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(), ::std::declval<_ToHandler>(),
+			     ::std::declval<_FromState&>(), ::std::declval<_ToState&>(), ::std::declval<pivot<_PivotRange>&>()));
+
+		template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
+			typename _FromHandler, typename _ToHandler, typename _FromState, typename _ToState, typename _PivotRange>
+		using __detect_adl_text_recode_one
+			= decltype(text_recode_one(::ztd::tag<remove_cvref_t<_FromEncoding>, remove_cvref_t<_ToEncoding>> {},
+			     ::std::declval<_Input>(), ::std::declval<_FromEncoding>(), ::std::declval<_Output>(),
+			     ::std::declval<_ToEncoding>(), ::std::declval<_FromHandler>(), ::std::declval<_ToHandler>(),
+			     ::std::declval<_FromState&>(), ::std::declval<_ToState&>(), ::std::declval<pivot<_PivotRange>&>()));
+
 		template <typename _Handler, typename _Encoding, typename _Result, typename _Progress>
 		using __detect_callable_handler = decltype(::std::declval<_Handler>()(
 			::std::declval<const _Encoding&>(), ::std::declval<_Result>(), ::std::declval<_Progress>()));

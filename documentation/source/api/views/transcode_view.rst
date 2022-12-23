@@ -28,12 +28,15 @@
 ..
 .. =============================================================================>
 
-transcode_view
-==============
+transcode_view & transcode_iterator
+===================================
 
 The ``transcode_view`` class provides a one-by-one view of the stored range's code units as another encoding's code units. Dereferencing the iterators returns a single ``code_unit`` value corresponding to the desired encoding's type.
 
-The range-based classes are excellent ways to walk over units of information in a low-memory environment, as they only store the minimum amount of data necessary to perform their operations on the fly. This reduces the speed but is fine for one-at-a-time encoding operations. To decode eagerly and in bulk, see :doc:`the transcode functions </api/conversions/transcode>`.
+The range-based classes are excellent ways to walk over units of information in a low-memory environment, as they only store the minimum amount of data necessary to perform their operations on the fly. This reduces the speed but is fine for one-at-a-time encoding operations. To decode eagerly and in bulk, see :doc:`the transcode functions </api/conversions/transcode>`. The paired ``transcode_iterator`` class does the bulk of the work and stores all of the information. It is paired with an empty, blank sentinel value so as to decrease the cost of iteration.
 
 .. doxygenclass:: ztd::text::transcode_view
+	:members:
+
+.. doxygenclass:: ztd::text::transcode_iterator
 	:members:

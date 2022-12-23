@@ -89,15 +89,16 @@ namespace ztd { namespace text {
 			if (__it != __last)
 				++__it;
 			using _Input  = decltype(__result.input);
+			using _UInput = ::ztd::remove_cvref_t<_Input>;
 			using _Output = decltype(__result.output);
 			using _State
 				= ::std::remove_reference_t<::ztd::unwrap_t<::ztd::remove_cvref_t<decltype(__result.state)>>>;
-			using _ReconstructedInput = ztd::ranges::reconstruct_t<_Input>;
+			using _ReconstructedInput = ::ztd::ranges::reconstruct_t<_UInput, decltype(__it)&&, decltype(__last)&&>;
 			using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
                     decode_result<_ReconstructedInput, _Output, _State>,
                     encode_result<_ReconstructedInput, _Output, _State>>;
 			return _ResultType(
-				::ztd::ranges::reconstruct(::std::in_place_type<_Input>, ::std::move(__it), ::std::move(__last)),
+				::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__it), ::std::move(__last)),
 				::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
 		}
 	}

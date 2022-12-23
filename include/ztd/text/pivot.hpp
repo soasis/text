@@ -44,7 +44,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief A type which stores a potential intermediate range for usage by higher-level algorithms (such as
-	/// ztd::text::transcode_into).
+	/// ztd::text::transcode_into_raw).
 	///
 	/// @tparam _Range The range type which is meant to serve as the potential intermediate space. Typically a
 	/// `std::span` or span-like view type, but any view type will do fine.

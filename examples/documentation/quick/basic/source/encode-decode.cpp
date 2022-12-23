@@ -30,7 +30,39 @@
 
 #include <ztd/text.hpp>
 
+#include <string>
+
 int main(int, char*[]) {
+	const char input[]
+	     = "\xbe\xc8\xb3\xe7\x2c\x20\xbf\xc0\xb4\xc3\xc0\xba\x20\xc1\xc1\xc0\xba"
+	       "\x20\xb3\xaf\xc0\xcc\xbf\xa1\xbf\xe4\x21";
+
+	// Decode, with result to check!
+	auto korean_decoded_output_result
+	     = ztd::text::decode_to(input, ztd::text::euc_kr);
+	ZTD_TEXT_ASSERT(korean_decoded_output_result.error_code
+	     == ztd::text::encoding_error::ok);
+	ZTD_TEXT_ASSERT(!korean_decoded_output_result.errors_were_handled());
+	ZTD_TEXT_ASSERT(ztd::ranges::empty(korean_decoded_output_result.input));
+	const std::u32string& korean_decoded_output
+	     = korean_decoded_output_result.output;
+
+	// Take decoded Unicode code points and encode it into UTF-8
+	auto korean_utf8_output_result
+	     = ztd::text::encode_to(korean_decoded_output, ztd::text::compat_utf8);
+	ZTD_TEXT_ASSERT(
+	     korean_utf8_output_result.error_code == ztd::text::encoding_error::ok);
+	ZTD_TEXT_ASSERT(!korean_utf8_output_result.errors_were_handled());
+	ZTD_TEXT_ASSERT(ztd::ranges::empty(korean_utf8_output_result.input));
+	const std::string& korean_utf8_output = korean_utf8_output_result.output;
+	// verify that what we got out in UTF-8 would be the same if we converted
+	// it back to EUC-KR.
+	ZTD_TEXT_ASSERT(ztd::ranges::equal(std::string_view(input),
+	     ztd::text::transcode(korean_utf8_output, ztd::text::compat_utf8,
+	          ztd::text::euc_kr, ztd::text::pass_handler)));
+	// A korean greeting!
+	std::cout.write(korean_utf8_output.data(), korean_utf8_output.size());
+	std::cout << std::endl;
 
 	return 0;
 }

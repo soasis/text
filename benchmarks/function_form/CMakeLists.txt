@@ -58,7 +58,7 @@ function (generate_function_form_benchmark_targets name data_name title)
 	)
 	target_link_libraries(ztd.text.benchmarks.function_form.${name}
 		PRIVATE
-		ztd::cuneicode::benchmarks::barrier
+		ztd::text::benchmarks::barrier
 		ztd::cuneicode
 		benchmark::benchmark
 		${CMAKE_DL_LIBS}

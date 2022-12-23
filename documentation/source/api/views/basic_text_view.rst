@@ -37,8 +37,18 @@
 
 The ``basic_text_view`` class provides a one-by-one view of the stored range's code points and other functionality in a more complete form that goes beyond just code point iteration or code unit iteration like :doc:`ztd::text::decode_view </api/views/decode_view>` or :doc:`ztd::text::encode_view </api/views/encode_view>`.
 
+
+
+Base Template
+-------------
+
 .. doxygenclass:: ztd::text::basic_text_view
 	:members:
+
+
+
+Aliases
+-------
 
 .. doxygentypedef:: ztd::text::text_view
 

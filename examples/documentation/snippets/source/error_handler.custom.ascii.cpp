@@ -35,7 +35,7 @@
 
 using ascii_encode_result = ztd::text::encode_result<
      // input range type
-     std::u32string_view,
+     ztd::span<const char32_t>,
      // output range type; figured out from function call
      ztd::span<char>,
      // the state type for encode operations

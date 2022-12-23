@@ -104,6 +104,8 @@ Properties and Classifications
 	api/encode_state
 	api/max_code_points
 	api/max_code_units
+	api/max_recode_code_points
+	api/max_transcode_code_units
 	api/is_state_independent
 	api/is_decode_state_independent
 	api/is_encode_state_independent
@@ -143,6 +145,8 @@ Result Types, Status Codes and Quality Aides
 	api/encode_result
 	api/stateless_transcode_result
 	api/transcode_result
+	api/stateless_recode_result
+	api/recode_result
 	api/stateless_count_result
 	api/count_result
 	api/stateless_validate_result

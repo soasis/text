@@ -41,9 +41,9 @@
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/transcode_one.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
@@ -87,18 +87,13 @@ namespace ztd { namespace text {
 	constexpr auto basic_validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state,
 		pivot<_PivotRange>& __pivot) {
-		using _UInput         = remove_cvref_t<_Input>;
-		using _InputValueType = ranges::range_value_type_t<_UInput>;
-		using _WorkingInput   = ranges::range_reconstruct_t<::std::conditional_t<::std::is_array_v<_UInput>,
-               ::std::conditional_t<is_character_v<_InputValueType>, ::std::basic_string_view<_InputValueType>,
-                    ::ztd::span<const _InputValueType>>,
-               _UInput>>;
-		using _UFromEncoding  = remove_cvref_t<_FromEncoding>;
-		using _UToEncoding    = remove_cvref_t<_ToEncoding>;
-		using _Result         = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+		using _InitialInput  = __txt_detail::__span_reconstruct_t<_Input, _Input>;
+		using _WorkingInput  = ::ztd::ranges::subrange_for_t<_InitialInput>;
+		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
+		using _UToEncoding   = remove_cvref_t<_ToEncoding>;
+		using _Result        = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
-		_WorkingInput __working_input
-			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+		_WorkingInput __working_input = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as_one, _WorkingInput,
 			              _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
@@ -155,8 +150,9 @@ namespace ztd { namespace text {
 			pass_handler_t __handler {};
 
 			for (;;) {
-				auto __transcode_result = transcode_one_into(::std::move(__working_input), __from_encoding,
-					__output, __to_encoding, __handler, __handler, __decode_state, __encode_state, __pivot);
+				auto __transcode_result
+					= ::ztd::text::transcode_one_into_raw(::std::move(__working_input), __from_encoding, __output,
+					     __to_encoding, __handler, __handler, __decode_state, __encode_state, __pivot);
 				if (__transcode_result.error_code != encoding_error::ok) {
 					return _Result(
 						ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),

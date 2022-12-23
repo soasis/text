@@ -49,16 +49,21 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 
 		template <typename _Val>
-		decltype(auto) __forward_if_move_only(_Val&& __val) noexcept {
-			constexpr bool _IsMoveOnly
-				= ::std::is_rvalue_reference_v<
-				       _Val> && ::std::is_move_constructible_v<_Val> && ::std::is_move_assignable_v<_Val> && !::std::is_copy_constructible_v<_Val> && !::std::is_copy_assignable_v<_Val>;
+		decltype(auto) __forward_if_move_only(::std::remove_reference_t<_Val>&& __val) noexcept {
+			constexpr bool _IsMoveOnly = ::std::is_rvalue_reference_v<_Val> && ::std::is_move_constructible_v<_Val>
+				&& ::std::is_move_assignable_v<_Val> && !::std::is_copy_constructible_v<_Val>
+				&& !::std::is_copy_assignable_v<_Val>;
 			if constexpr (_IsMoveOnly) {
 				return ::std::forward<_Val>(__val);
 			}
 			else {
 				return __val;
 			}
+		}
+
+		template <typename _Val>
+		decltype(auto) __forward_if_move_only(::std::remove_reference_t<_Val>& __val) noexcept {
+			return __val;
 		}
 
 	} // namespace __txt_detail

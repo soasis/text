@@ -37,14 +37,16 @@
 
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
+#include <ztd/text/max_units.hpp>
 #include <ztd/text/default_encoding.hpp>
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/pivot.hpp>
+#include <ztd/text/transcode_one.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/validate_count_routines.hpp>
+#include <ztd/text/detail/char_predicates.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
@@ -81,17 +83,17 @@ namespace ztd { namespace text {
 	constexpr auto basic_validate_decodable_as(
 		_Input&& __input, _Encoding&& __encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
 		using _UEncoding    = remove_cvref_t<_Encoding>;
-		using _InitialInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _InitialInput = __txt_detail::__span_reconstruct_t<_Input, _Input>;
+		using _WorkingInput = ::ztd::ranges::subrange_for_t<_InitialInput>;
+		using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
-		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _InitialInput,
+		_WorkingInput __working_input(__txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input)));
+
+		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _WorkingInput,
 			              _Encoding, _DecodeState, _EncodeState>) {
-			auto __working_input
-				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
-			using _WorkingInput = decltype(__working_input);
-			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 			for (;;) {
-				auto __result = text_validate_decodable_as_one(
-					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
+				auto __result = text_validate_decodable_as_one(::ztd::tag<_UEncoding> {}, __encoding,
+					::std::move(__working_input), __decode_state, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
@@ -110,23 +112,15 @@ namespace ztd { namespace text {
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_decodable_as_one, _InitialInput,
 			                   _Encoding, _DecodeState>) {
-			auto __working_input
-				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
-			using _WorkingInput = decltype(__working_input);
-			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
-
 			for (;;) {
 				auto __result = text_validate_decodable_as_one(
-					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
+					::ztd::tag<_UEncoding> {}, __encoding, ::std::move(__working_input), __decode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
 				if (::ztd::ranges::empty(__working_input)) {
 					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
-						continue;
-					}
-					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
 						continue;
 					}
 					break;
@@ -136,14 +130,9 @@ namespace ztd { namespace text {
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as_one,
 			                   _InitialInput, _Encoding, _DecodeState, _EncodeState>) {
-			auto __working_input
-				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
-			using _WorkingInput = decltype(__working_input);
-			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
-
 			for (;;) {
-				auto __result = __text_validate_decodable_as_one(
-					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state, __encode_state);
+				auto __result = __text_validate_decodable_as_one(::ztd::tag<_UEncoding> {}, __encoding,
+					::std::move(__working_input), __decode_state, __encode_state);
 				if (!__result.valid) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
@@ -162,15 +151,48 @@ namespace ztd { namespace text {
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_decodable_as_one,
 			                   _InitialInput, _Encoding, _DecodeState>) {
-			auto __working_input
-				= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
-			using _WorkingInput = decltype(__working_input);
-			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
 			for (;;) {
 				auto __result = __text_validate_decodable_as_one(
-					::ztd::tag<_UEncoding> {}, __encoding, __working_input, __decode_state);
+					::ztd::tag<_UEncoding> {}, __encoding, ::std::move(__working_input), __decode_state);
 				if (!__result.valid) {
+					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
+				}
+				__working_input = ::std::move(__result.input);
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
+						continue;
+					}
+					break;
+				}
+			}
+			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
+		}
+		else {
+			constexpr ::std::size_t __code_unit_max  = max_transcode_code_units_v<_UEncoding, _UEncoding>;
+			constexpr ::std::size_t __code_point_max = max_code_points_v<_UEncoding>;
+			using _CodeUnit                          = code_unit_t<_UEncoding>;
+			using _CodePoint                         = code_point_t<_UEncoding>;
+			using _Pivot                             = ::ztd::text::pivot<::ztd::span<_CodePoint, __code_point_max>>;
+
+			_CodePoint __code_point_buf[__code_point_max] {};
+			_CodeUnit __code_unit_buf[__code_unit_max] {};
+			::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
+			::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
+			_Pivot __pivot { ::std::move(__code_point_view), encoding_error::ok };
+
+			for (;;) {
+				auto __result = ::ztd::text::transcode_one_into_raw(::std::move(__working_input), __encoding,
+					__code_unit_view, __encoding, pass_handler, pass_handler, __decode_state, __encode_state,
+					__pivot);
+				if (__result.error_code != encoding_error::ok) {
+					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
+				}
+				const bool __is_transcode_roundtrip_okay
+					= ::ztd::ranges::equal(::ztd::ranges::cbegin(__working_input),
+					     ::ztd::ranges::cbegin(__result.input), ::ztd::ranges::cbegin(__code_unit_view),
+					     ::ztd::ranges::cbegin(__result.output), __txt_detail::__equal_char);
+				if (!__is_transcode_roundtrip_okay) {
 					return _Result(::std::move(__result.input), false, __decode_state, __encode_state);
 				}
 				__working_input = ::std::move(__result.input);
@@ -185,48 +207,6 @@ namespace ztd { namespace text {
 				}
 			}
 			return _Result(::std::move(__working_input), true, __decode_state, __encode_state);
-		}
-		else {
-			using _CodeUnit     = code_unit_t<_UEncoding>;
-			using _CodePoint    = code_point_t<_UEncoding>;
-			using _Pivot        = pivot<::ztd::span<_CodePoint, max_code_points_v<_UEncoding>>>;
-			using _Output       = ::ztd::span<_CodeUnit, max_code_units_v<_UEncoding>>;
-			using _InitialInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
-			using _WorkingInput = decltype(__txt_detail::__basic_validate_decodable_as_one(
-				::std::declval<_InitialInput&>(), __encoding, ::std::declval<_Output&>(), __decode_state,
-				__encode_state, ::std::declval<_Pivot&>())
-				                               .input);
-			using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
-
-			_CodePoint __intermediate_storage[max_code_points_v<_UEncoding>] {};
-			::ztd::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
-			_CodeUnit __output_storage[max_code_units_v<_UEncoding>] {};
-			_Output __output(__output_storage);
-			_Pivot __pivot { __intermediate, encoding_error::ok };
-			auto __working_input = ::ztd::ranges::reconstruct(std::in_place_type<_WorkingInput>,
-				__txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input)));
-
-			for (;;) {
-				auto __stateless_validate_result = __txt_detail::__basic_validate_decodable_as_one(
-					__working_input, __encoding, __output, __decode_state, __encode_state, __pivot);
-				if (!__stateless_validate_result.valid) {
-					return _Result(
-						ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-						false, __decode_state, __encode_state);
-				}
-				__working_input = ::std::move(__stateless_validate_result.input);
-				if (::ztd::ranges::empty(__working_input)) {
-					if (!::ztd::text::is_state_complete(__encoding, __decode_state)) {
-						continue;
-					}
-					if (!::ztd::text::is_state_complete(__encoding, __encode_state)) {
-						continue;
-					}
-					break;
-				}
-			}
-			return _Result(ranges::reconstruct(::std::in_place_type<_WorkingInput>, ::std::move(__working_input)),
-				true, __decode_state, __encode_state);
 		}
 	}
 

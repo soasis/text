@@ -37,7 +37,7 @@ add_library(ztd.text.benchmarks.barrier
 	SHARED
 	${ztd.text.benchmarks.barrier.sources}
 )
-add_library(ztd::cuneicode::benchmarks::barrier
+add_library(ztd::text::benchmarks::barrier
 	ALIAS
 	ztd.text.benchmarks.barrier
 )

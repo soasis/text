@@ -49,7 +49,7 @@ int main(int, char*[]) {
 		return 1;
 	}
 	output.resize(counting_result.count);
-	auto decoding_result = ztd::text::decode_into(
+	auto decoding_result = ztd::text::decode_into_raw(
 	     input, ztd::text::punycode, ztd::span<char32_t>(output));
 	std::size_t decoding_result_count
 	     = decoding_result.output.data() - output.data();

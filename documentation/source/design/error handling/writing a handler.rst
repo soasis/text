@@ -51,6 +51,6 @@ The result in ``my_ascii_string`` should be an empty string: nothing should have
 		# of unused characters: 1
 		Input units left: 0
 
-If you would like the higher-level called function to return more information to you, use the lower level :doc:`encode_to/encode_into </api/conversions/encode>`, :doc:`decode_to/decode_into </api/conversions/decode>`, :doc:`transcode_to/transcode_into </api/conversions/transcode>`.
+If you would like the higher-level called function to return more information to you, use the lower level :doc:`encode_to/encode_into_raw </api/conversions/encode>`, :doc:`decode_to/decode_into_raw </api/conversions/decode>`, :doc:`transcode_to/transcode_into_raw </api/conversions/transcode>`.
 
 If you need to do more, you can change from concrete types to templates, and work at increasingly higher levels of genericity in order to have the printing handler do more and more.

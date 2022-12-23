@@ -42,6 +42,7 @@
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/detail/default_char_view.hpp>
 
+#include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 
 #include <string_view>
@@ -72,7 +73,7 @@ namespace ztd { namespace text {
 	/// interfaces.
 	template <typename _Encoding, typename _Range = __txt_detail::__default_char_view_t<code_unit_t<_Encoding>>,
 		typename _ErrorHandler = default_handler_t, typename _State = decode_state_t<_Encoding>>
-	class decode_view {
+	class decode_view : public ::ztd::ranges::view_base {
 	private:
 		using _CVRange     = unwrap_remove_reference_t<_Range>;
 		using _StoredRange = ranges::range_reconstruct_t<const _CVRange>;
@@ -107,9 +108,8 @@ namespace ztd { namespace text {
 		///
 		/// @remarks The stored encoding, error handler, and state type are default-constructed.
 		template <typename _ArgRange,
-			::std::enable_if_t<
-			     !::std::is_same_v<remove_cvref_t<_ArgRange>,
-			          decode_view> && !::std::is_same_v<remove_cvref_t<_ArgRange>, iterator>>* = nullptr>
+			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_ArgRange>, decode_view>
+			     && !::std::is_same_v<remove_cvref_t<_ArgRange>, iterator>>* = nullptr>
 		constexpr decode_view(_ArgRange&& __range) noexcept(::std::is_nothrow_constructible_v<iterator, _ArgRange>)
 		: _M_it(::std::forward<_ArgRange>(__range)) {
 		}
@@ -233,8 +233,8 @@ namespace ztd { namespace text {
 namespace std { namespace ranges {
 
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
-	inline constexpr bool enable_borrowed_range<::ztd::text::decode_view<_Encoding, _Range, _ErrorHandler,
-		_State>> = ::std::ranges::enable_borrowed_range<_Range>;
+	inline constexpr bool enable_borrowed_range<::ztd::text::decode_view<_Encoding, _Range, _ErrorHandler, _State>>
+		= ::std::ranges::enable_borrowed_range<_Range>;
 
 }} // namespace std::ranges
 
@@ -245,8 +245,8 @@ namespace ztd { namespace ranges {
 	//////
 	/// @brief Mark subranges as appropriately borrowed ranges.
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
-	inline constexpr bool enable_borrowed_range<::ztd::text::decode_view<_Encoding, _Range, _ErrorHandler,
-		_State>> = ::ztd::ranges::enable_borrowed_range<_Range>;
+	inline constexpr bool enable_borrowed_range<::ztd::text::decode_view<_Encoding, _Range, _ErrorHandler, _State>>
+		= ::ztd::ranges::enable_borrowed_range<_Range>;
 
 }} // namespace ztd::ranges
 

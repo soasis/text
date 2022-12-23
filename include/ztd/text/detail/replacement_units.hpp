@@ -54,6 +54,10 @@ namespace ztd { namespace text {
 		inline constexpr ::std::array<_CharType, 1> __0xfffd_replacement_units { { static_cast<_CharType>(
 			__ztd_idk_detail_replacement) } };
 
+		template <typename _CharType>
+		inline constexpr ::std::array<_CharType, 3> __0xfffd_utf8_replacement_units { { static_cast<_CharType>(0xEF),
+			static_cast<_CharType>(0xBF), static_cast<_CharType>(0xBD) } };
+
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

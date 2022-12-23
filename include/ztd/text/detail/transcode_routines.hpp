@@ -48,7 +48,7 @@
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/span_or_reconstruct.hpp>
+#include <ztd/text/detail/span_reconstruct.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/tag.hpp>
@@ -112,8 +112,8 @@ namespace ztd { namespace text {
 						__state, __intermediate_result.error_code, __intermediate_result.error_count);
 				}
 				return _ReconstructedResult(::std::move(__intermediate_result.input),
-					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)),
-					__state, __intermediate_result.error_code, __intermediate_result.error_count);
+					::std::forward<_Output>(__output), __state, __intermediate_result.error_code,
+					__intermediate_result.error_count);
 			}
 			else {
 				return __encoding.decode_one(
@@ -163,8 +163,8 @@ namespace ztd { namespace text {
 						__state, __intermediate_result.error_code, __intermediate_result.error_count);
 				}
 				return _ReconstructedResult(::std::move(__intermediate_result.input),
-					ranges::reconstruct(::std::in_place_type<_UOutput>, ::std::forward<_Output>(__output)),
-					__state, __intermediate_result.error_code, __intermediate_result.error_count);
+					::std::forward<_Output>(__output), __state, __intermediate_result.error_code,
+					__intermediate_result.error_count);
 			}
 			else {
 				return __encoding.encode_one(

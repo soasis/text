@@ -46,6 +46,7 @@ This covers the full universe of potential operations you may want to perform on
 	converting/encode
 	converting/decode
 	converting/transcode
+	converting/recode
 	converting/validate encodable
 	converting/validate decodable
 	converting/validate transcodable

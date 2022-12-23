@@ -49,7 +49,7 @@ int main(int, char*[]) {
 	ztd::span<char> normal_output(storage);
 	ztd::span<std::byte> output = ztd::as_writable_bytes(normal_output);
 	ztd::text::encode_state_t<ztd::text::any_encoding> state(encoding);
-	auto result = ztd::text::encode_into(source_data, encoding, output, ztd::text::replacement_handler, state);
+	auto result = ztd::text::encode_into_raw(source_data, encoding, output, ztd::text::replacement_handler, state);
 	std::size_t result_written = output.size() - result.output.size();
 	storage.resize(result_written);
 

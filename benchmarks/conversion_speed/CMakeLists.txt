@@ -45,7 +45,7 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			ztd::platform
 			ztd::cuneicode
 			ztd::cuneicode::shared
-			ztd::cuneicode::benchmarks::barrier
+			ztd::text::benchmarks::barrier
 			ztd::cuneicode::shared::simdutf
 			ztd::text
 			ctre::ctre

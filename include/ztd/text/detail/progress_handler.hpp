@@ -138,10 +138,14 @@ namespace ztd { namespace text {
 		template <typename _AssumeValid, typename _ErrorHandler, typename _Encoding>
 		class __forwarding_progress_handler : private ebco<_Encoding&, 0>, private ebco<_ErrorHandler&, 1> {
 		private:
-			using _CodePoint             = code_point_t<remove_cvref_t<_Encoding>>;
-			using _CodeUnit              = code_unit_t<remove_cvref_t<_Encoding>>;
-			using __encoding_base_t      = ebco<_Encoding&, 0>;
-			using __error_handler_base_t = ebco<_ErrorHandler&, 1>;
+			using _CodePoint                                = code_point_t<remove_cvref_t<_Encoding>>;
+			using _CodeUnit                                 = code_unit_t<remove_cvref_t<_Encoding>>;
+			using __encoding_base_t                         = ebco<_Encoding&, 0>;
+			using __error_handler_base_t                    = ebco<_ErrorHandler&, 1>;
+			inline static constexpr bool _IsProgressHandler = // cf
+				is_specialization_of_v<::ztd::remove_cvref_t<_ErrorHandler>, __txt_detail::__progress_handler>
+				|| is_specialization_of_v<::ztd::remove_cvref_t<_ErrorHandler>,
+				     __txt_detail::__forwarding_progress_handler>;
 
 		public:
 			using assume_valid = ::std::integral_constant<bool, _AssumeValid::value>;
@@ -156,27 +160,57 @@ namespace ztd { namespace text {
 			}
 
 			constexpr ::ztd::span<const _CodePoint> _M_code_points_progress() const noexcept {
-				return ::ztd::span<const _CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
+				if constexpr (_IsProgressHandler) {
+					return this->__error_handler_base_t::get_value()._M_code_points_progress();
+				}
+				else {
+					return ::ztd::span<const _CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
+				}
 			}
 
 			constexpr ::ztd::span<const _CodeUnit> _M_code_units_progress() const noexcept {
-				return ::ztd::span<const _CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+				if constexpr (_IsProgressHandler) {
+					return this->__error_handler_base_t::get_value()._M_code_units_progress();
+				}
+				else {
+					return ::ztd::span<const _CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+				}
 			}
 
 			constexpr ::ztd::span<_CodePoint> _M_code_points_progress() noexcept {
-				return ::ztd::span<_CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
+				if constexpr (_IsProgressHandler) {
+					return this->__error_handler_base_t::get_value()._M_code_points_progress();
+				}
+				else {
+					return ::ztd::span<_CodePoint>(this->_M_code_points.data(), this->_M_code_points_size);
+				}
 			}
 
 			constexpr ::ztd::span<_CodeUnit> _M_code_units_progress() noexcept {
-				return ::ztd::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+				if constexpr (_IsProgressHandler) {
+					return this->__error_handler_base_t::get_value()._M_code_units_progress();
+				}
+				else {
+					return ::ztd::span<_CodeUnit>(this->_M_code_units.data(), this->_M_code_units_size);
+				}
 			}
 
 			constexpr ::std::size_t _M_code_points_progress_size() const noexcept {
-				return this->_M_code_points_size;
+				if constexpr (_IsProgressHandler) {
+					return this->__error_handler_base_t::get_value()._M_code_points_progress_size();
+				}
+				else {
+					return this->_M_code_points_size;
+				}
 			}
 
 			constexpr ::std::size_t _M_code_units_progress_size() const noexcept {
-				return this->_M_code_units_size;
+				if constexpr (_IsProgressHandler) {
+					return this->__error_handler_base_t::get_value()._M_code_units_progress_size();
+				}
+				else {
+					return this->_M_code_units_size;
+				}
 			}
 
 			template <typename _SomeEncoding, typename _Result, typename _InputProgress, typename _OutputProgress>
@@ -185,22 +219,24 @@ namespace ztd { namespace text {
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
-				__forwarding_progress_handler& __non_const_self = *this;
-				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
-						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
-					__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
-						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-				}
-				else {
-					__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
-						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-					__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
-						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+				if constexpr (_IsProgressHandler) {
+					__forwarding_progress_handler& __non_const_self = *this;
+					if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
+						__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
+							__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+						__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
+							__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
+					}
+					else {
+						__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
+							__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
+						__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
+							__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+					}
 				}
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 					::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
@@ -213,22 +249,25 @@ namespace ztd { namespace text {
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
-				__forwarding_progress_handler& __non_const_self = const_cast<__forwarding_progress_handler&>(*this);
-				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
-						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
-					__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
-						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-				}
-				else {
-					__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
-						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-					__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
-						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+				if constexpr (_IsProgressHandler) {
+					__forwarding_progress_handler& __non_const_self
+						= const_cast<__forwarding_progress_handler&>(*this);
+					if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
+						__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
+							__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+						__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
+							__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
+					}
+					else {
+						__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
+							__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
+						__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
+							__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+					}
 				}
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 					::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
@@ -241,22 +280,24 @@ namespace ztd { namespace text {
 				noexcept(noexcept(this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 				     ::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),
 				     ::std::forward<_OutputProgress>(__output_progress)))) {
-				__forwarding_progress_handler& __non_const_self = *this;
-				if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
-					__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
-						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
-					__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
-						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-				}
-				else {
-					__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
-						__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
-					__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
-					ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
-						__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+				if constexpr (_IsProgressHandler) {
+					__forwarding_progress_handler& __non_const_self = *this;
+					if constexpr (is_specialization_of_v<remove_cvref_t<_Result>, decode_result>) {
+						__non_const_self._M_code_units_size = ::ztd::ranges::size(__input_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
+							__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+						__non_const_self._M_code_points_size = ::ztd::ranges::size(__output_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
+							__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
+					}
+					else {
+						__non_const_self._M_code_points_size = ::ztd::ranges::size(__input_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__input_progress),
+							__non_const_self._M_code_points_size, __non_const_self._M_code_points.data());
+						__non_const_self._M_code_units_size = ::ztd::ranges::size(__output_progress);
+						ranges::__rng_detail::__copy_n_unsafe(::ztd::ranges::cbegin(__output_progress),
+							__non_const_self._M_code_units_size, __non_const_self._M_code_units.data());
+					}
 				}
 				return this->__error_handler_base_t::get_value()(this->__encoding_base_t::get_value(),
 					::std::forward<_Result>(__result), ::std::forward<_InputProgress>(__input_progress),

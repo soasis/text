@@ -37,6 +37,7 @@
 
 #include <ztd/text/state.hpp>
 #include <ztd/text/encoding_error.hpp>
+#include <ztd/text/detail/span_reconstruct.hpp>
 
 #include <ztd/idk/unwrap.hpp>
 #include <ztd/idk/ebco.hpp>
@@ -63,18 +64,16 @@ namespace ztd { namespace text {
 			using __state_base_t  = ebco<unwrap_remove_cvref_t<_EncodingState>, _Id>;
 
 		public:
-			template <typename _ArgEncoding = _UEncoding,
-				::std::enable_if_t<
-				     !is_state_independent_v<remove_cvref_t<_ArgEncoding>,
-				          _UEncodingState> && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
+			template <typename _ArgEncoding                                                 = _UEncoding,
+				::std::enable_if_t<!is_state_independent_v<remove_cvref_t<_ArgEncoding>, _UEncodingState>
+				     && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding& __encoding) noexcept(
 				::std::is_nothrow_constructible_v<__state_base_t, _Encoding&>)
 			: __state_base_t(::std::forward<_ArgEncoding>(__encoding)) {
 			}
-			template <typename _ArgEncoding = _UEncoding,
-				::std::enable_if_t<
-				     is_state_independent_v<remove_cvref_t<_ArgEncoding>,
-				          _UEncodingState> && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
+			template <typename _ArgEncoding                                                 = _UEncoding,
+				::std::enable_if_t<is_state_independent_v<remove_cvref_t<_ArgEncoding>, _UEncodingState>
+				     && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
 			constexpr __state_storage(_ArgEncoding&) noexcept(
 				::std::is_nothrow_default_constructible_v<__state_base_t>)
 			: __state_base_t() {
@@ -107,12 +106,12 @@ namespace ztd { namespace text {
 		: private ebco<remove_cvref_t<_Encoding>, 0>,
 		  private ebco<remove_cvref_t<_ErrorHandler>, 1>,
 		  private __state_storage<unwrap_remove_cvref_t<_Encoding>, remove_cvref_t<_State>, 2>,
-		  private ebco<remove_cvref_t<_Range>, 3> {
+		  private ebco<__txt_detail::__span_reconstruct_t<_Range, _Range>, 3> {
 		private:
 			using __base_encoding_t      = ebco<remove_cvref_t<_Encoding>, 0>;
 			using __base_error_handler_t = ebco<remove_cvref_t<_ErrorHandler>, 1>;
 			using __base_state_t = __state_storage<unwrap_remove_cvref_t<_Encoding>, remove_cvref_t<_State>, 2>;
-			using __base_range_t = ebco<_Range, 3>;
+			using __base_range_t = ebco<__txt_detail::__span_reconstruct_t<_Range, _Range>, 3>;
 			using _URange        = unwrap_remove_cvref_t<_Range>;
 			using _UEncoding     = unwrap_remove_cvref_t<_Encoding>;
 			using _UErrorHandler = unwrap_remove_cvref_t<_ErrorHandler>;
@@ -159,7 +158,7 @@ namespace ztd { namespace text {
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->_M_get_encoding())
-			, __base_range_t(::std::move(__range)) {
+			, __base_range_t(__txt_detail::__span_reconstruct<_URange>(::std::move(__range))) {
 			}
 
 			constexpr __iterator_storage(range_type __range, encoding_type __encoding,
@@ -172,7 +171,7 @@ namespace ztd { namespace text {
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->_M_get_encoding(), ::std::move(__state))
-			, __base_range_t(::std::move(__range)) {
+			, __base_range_t(__txt_detail::__span_reconstruct<_URange>(::std::move(__range))) {
 			}
 
 			using __base_state_t::_M_get_state;
@@ -201,15 +200,15 @@ namespace ztd { namespace text {
 				return ::std::move(this->__base_error_handler_t::get_value());
 			}
 
-			const _URange& _M_get_range() const& noexcept {
+			const auto& _M_get_range() const& noexcept {
 				return this->__base_range_t::get_value();
 			}
 
-			_URange& _M_get_range() & noexcept {
+			auto& _M_get_range() & noexcept {
 				return this->__base_range_t::get_value();
 			}
 
-			_URange&& _M_get_range() && noexcept {
+			auto&& _M_get_range() && noexcept {
 				return ::std::move(this->__base_range_t::get_value());
 			}
 		};

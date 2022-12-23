@@ -47,15 +47,27 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _FromEncoding, typename _ToEncoding>
 		inline constexpr bool __is_decode_same_as_encode_v
-			= decoded_id_v<_FromEncoding> == encoded_id_v<_ToEncoding>              // cf
-			     && decoded_id_v<_FromEncoding> == decoded_id_v<_ToEncoding>        // cf
-			     && decoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown // cf
-			     && encoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
+			= decoded_id_v<_FromEncoding> == encoded_id_v<_ToEncoding>         // cf
+			&& decoded_id_v<_FromEncoding> == decoded_id_v<_ToEncoding>        // cf
+			&& decoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown // cf
+			&& encoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
 
 		template <typename _FromEncoding, typename _ToEncoding>
 		inline constexpr bool __is_already_decoded_v = encoded_id_v<_FromEncoding> == decoded_id_v<_ToEncoding> // cf
-			     && decoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown                            // cf
-			     && encoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
+			&& decoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown                                 // cf
+			&& encoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
+
+		template <typename _FromEncoding, typename _ToEncoding>
+		inline constexpr bool __is_encode_same_as_decode_v
+			= encoded_id_v<_FromEncoding> == decoded_id_v<_ToEncoding>         // cf
+			&& encoded_id_v<_FromEncoding> == encoded_id_v<_ToEncoding>        // cf
+			&& encoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown // cf
+			&& decoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
+
+		template <typename _FromEncoding, typename _ToEncoding>
+		inline constexpr bool __is_already_encoded_v = decoded_id_v<_FromEncoding> == encoded_id_v<_ToEncoding> // cf
+			&& encoded_id_v<_FromEncoding> != ::ztd::text_encoding_id::unknown                                 // cf
+			&& decoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
 	} // namespace __txt_detail
 
 	//////

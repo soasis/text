@@ -39,16 +39,18 @@
 #include <vector>
 
 TEST_CASE("text/additional_encodings/shift_jis", "test a quick roundtrip using example SHIFT-JIS text to UTF-32") {
-	constexpr const char* original_filename = "data/shift_jis/shift_jis.txt";
-	std::ifstream original_ifstr(original_filename, std::ios_base::beg | std::ios_base::binary);
+	constexpr const char* original_filename = "data/tests/additional_encodings/shift_jis/shift_jis.txt";
+	std::ifstream original_ifstr(
+	     original_filename, static_cast<std::ios_base::openmode>(std::ios_base::in | std::ios_base::binary));
 	original_ifstr >> std::noskipws;
 	std::vector<unsigned char> original_data(
 	     std::istream_iterator<unsigned char>(original_ifstr), std::istream_iterator<unsigned char> {});
 
 	constexpr const char* expected_filename = ztd::endian::native == ztd::endian::little
-	     ? "data/shift_jis/utf-32-le.txt"
-	     : "data/shift_jis/utf-32-be.txt";
-	std::ifstream expected_ifstr(expected_filename, std::ios_base::beg | std::ios_base::binary);
+	     ? "data/tests/additional_encodings/shift_jis/utf-32-le.txt"
+	     : "data/tests/additional_encodings/shift_jis/utf-32-be.txt";
+	std::ifstream expected_ifstr(
+	     expected_filename, static_cast<std::ios_base::openmode>(std::ios_base::in | std::ios_base::binary));
 	expected_ifstr >> std::noskipws;
 	std::vector<unsigned char> expected_data(
 	     std::istream_iterator<unsigned char>(expected_ifstr), std::istream_iterator<unsigned char> {});
@@ -57,8 +59,16 @@ TEST_CASE("text/additional_encodings/shift_jis", "test a quick roundtrip using e
 	std::u32string_view expected(
 	     reinterpret_cast<const char32_t*>(expected_data.data()), expected_data.size() / sizeof(char32_t));
 
-	std::u32string decoded = ztd::text::decode(original, ztd::text::shift_jis);
+	auto decoded_result           = ztd::text::decode_to(original, ztd::text::shift_jis, ztd::text::pass_handler);
+	const std::u32string& decoded = decoded_result.output;
+	REQUIRE(decoded_result.error_code == ztd::text::encoding_error::ok);
+	REQUIRE_FALSE(decoded_result.errors_were_handled());
+	REQUIRE(ztd::ranges::empty(decoded_result.input));
 	REQUIRE(decoded == expected);
-	std::string encoded = ztd::text::encode(decoded, ztd::text::shift_jis, ztd::text::replacement_handler);
+	auto encoded_result        = ztd::text::encode_to(decoded, ztd::text::shift_jis, ztd::text::pass_handler);
+	const std::string& encoded = encoded_result.output;
+	REQUIRE(encoded_result.error_code == ztd::text::encoding_error::ok);
+	REQUIRE_FALSE(encoded_result.errors_were_handled());
+	REQUIRE(ztd::ranges::empty(encoded_result.input));
 	REQUIRE(encoded == original);
 }

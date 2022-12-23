@@ -42,6 +42,7 @@
 #include <ztd/text/is_transcoding_compatible.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/cast.hpp>
+#include <ztd/text/detail/replacement_units.hpp>
 
 #include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/type_traits.hpp>
@@ -129,6 +130,22 @@ namespace ztd { namespace text {
 			/// sequence allowed, this is 6: otherwise, this is 4.
 			inline static constexpr ::std::size_t max_code_units = __overlong_allowed ? 6 : 4;
 
+			//////
+			/// @brief Returns the replacement code units to use for the ztd::text::replacement_handler_t error
+			/// handler.
+			static constexpr ::ztd::span<const code_unit, 3> replacement_code_units() noexcept {
+				return ::ztd::span<const code_unit, 3>(
+					::ztd::text::__txt_detail::__0xfffd_utf8_replacement_units<code_unit>);
+			}
+
+			//////
+			/// @brief Returns the replacement code point to use for the ztd::text::replacement_handler_t error
+			/// handler.
+			static constexpr ::ztd::span<const code_point, 1> replacement_code_points() noexcept {
+				return ::ztd::span<const code_point, 1>(
+					::ztd::text::__txt_detail::__0xfffd_replacement_units<code_point>);
+			}
+
 			///////
 			/// @brief Allows an encoding to discard input characters if an error occurs, taking in both the
 			/// state and the input sequence (by reference) to modify.
@@ -149,10 +166,8 @@ namespace ztd { namespace text {
 						                         static_cast<ztd_char8_t>(*__it))
 						                    : !__ztd_idk_detail_is_lead_utf8(static_cast<ztd_char8_t>(*__it)))));
 				}
-				using _ReconstructedInput = ztd::ranges::reconstruct_t<_Input>;
-				return decode_result<_ReconstructedInput, _Output, _State>(
-					::ztd::ranges::reconstruct(
-					     ::std::in_place_type<_Input>, ::std::move(__it), ::std::move(__last)),
+				using _SubInput = ztd::ranges::subrange_for_t<_Input>;
+				return decode_result<_SubInput, _Output, _State>(_SubInput(::std::move(__it), ::std::move(__last)),
 					::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
 			}
 
@@ -177,10 +192,10 @@ namespace ztd { namespace text {
 			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto encode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) {
-				using _UInputRange   = remove_cvref_t<_Input>;
-				using _UOutputRange  = remove_cvref_t<_Output>;
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _Result        = __txt_detail::__reconstruct_encode_result_t<_Input, _Output, encode_state>;
+				using _SubInput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+				using _SubOutput     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
+				using _Result        = encode_result<_SubInput, _SubOutput, encode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				auto __in_it   = ::ztd::ranges::begin(__input);
@@ -188,15 +203,12 @@ namespace ztd { namespace text {
 
 				if (__in_it == __in_last) {
 					// an exhausted sequence is fine
-					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-						               ::std::move(__in_last)),
-						ranges::reconstruct(
-						     ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
-						__s, encoding_error::ok);
+					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
-				auto __outlast = ::ztd::ranges::end(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
+				auto __out_last = ::ztd::ranges::end(__output);
 
 				code_point __points[1] {};
 				__points[0]               = *__in_it;
@@ -207,11 +219,9 @@ namespace ztd { namespace text {
 					if (__point > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::invalid_sequence),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
 							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
 							::ztd::span<code_unit, 0>());
 					}
@@ -219,11 +229,9 @@ namespace ztd { namespace text {
 						if (__ztd_idk_detail_is_surrogate(__point)) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ::std::move(__in_it), ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-								          ::std::move(__out_it), ::std::move(__outlast)),
-								     __s, encoding_error::invalid_sequence),
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::invalid_sequence),
 								::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
 								::ztd::span<code_unit, 0>());
 						}
@@ -238,14 +246,12 @@ namespace ztd { namespace text {
 						constexpr ::std::size_t __payload_size = static_cast<::std::size_t>(2);
 						for (::std::size_t i = 0; i < __payload_size; ++i) {
 							if constexpr (__call_error_handler) {
-								if (__out_it == __outlast) {
+								if (__out_it == __out_last) {
 									__self_t __self {};
 									return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-										_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-										             ::std::move(__in_it), ::std::move(__in_last)),
-										     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-										          ::std::move(__out_it), ::std::move(__outlast)),
-										     __s, encoding_error::insufficient_output_space),
+										_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+										     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+										     encoding_error::insufficient_output_space),
 										::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
 										::ztd::span<const code_unit>(__payload + i, __payload_size - i));
 								}
@@ -253,23 +259,18 @@ namespace ztd { namespace text {
 							*__out_it = static_cast<code_unit>(__payload[i]);
 							::ztd::ranges::iter_advance(__out_it);
 						}
-						return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-							               ::std::move(__in_it), ::std::move(__in_last)),
-							ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							     ::std::move(__outlast)),
-							__s, encoding_error::ok);
+						return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 					}
 				}
 
 				if constexpr (__call_error_handler) {
-					if (__out_it == __outlast) {
+					if (__out_it == __out_last) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::insufficient_output_space),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::insufficient_output_space),
 							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
 							::ztd::span<code_unit, 0>());
 					}
@@ -307,16 +308,14 @@ namespace ztd { namespace text {
 					}
 					for (::std::size_t __index = 0; __index < __length_index; ++__index) {
 						if constexpr (__call_error_handler) {
-							if (__out_it == __outlast) {
+							if (__out_it == __out_last) {
 								__self_t __self {};
 								::ztd::span<code_unit> __code_unit_progress(
 									::std::addressof(__values[__index]), __length_index - __index);
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-									_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-									             ::std::move(__in_it), ::std::move(__in_last)),
-									     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-									          ::std::move(__out_it), ::std::move(__outlast)),
-									     __s, encoding_error::insufficient_output_space),
+									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+									     encoding_error::insufficient_output_space),
 									::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
 									__code_unit_progress);
 							}
@@ -327,11 +326,8 @@ namespace ztd { namespace text {
 					}
 				}
 
-				return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-					               ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutputRange>, ::std::move(__out_it), ::std::move(__outlast)),
-					__s, encoding_error::ok);
+				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 			}
 
 			//////
@@ -355,10 +351,10 @@ namespace ztd { namespace text {
 			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) {
-				using _UInputRange   = remove_cvref_t<_Input>;
-				using _UOutputRange  = remove_cvref_t<_Output>;
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _Result        = __txt_detail::__reconstruct_decode_result_t<_Input, _Output, decode_state>;
+				using _SubInput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+				using _SubOutput     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
+				using _Result        = decode_result<_SubInput, _SubOutput, decode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
 				auto __in_it   = ::ztd::ranges::begin(__input);
@@ -366,47 +362,39 @@ namespace ztd { namespace text {
 
 				if (__in_it == __in_last) {
 					// the empty sequence is an OK sequence
-					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-						               ::std::move(__in_last)),
-						ranges::reconstruct(
-						     ::std::in_place_type<_UOutputRange>, ::std::forward<_Output>(__output)),
-						__s, encoding_error::ok);
+					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
-				auto __outlast = ::ztd::ranges::end(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
+				auto __out_last = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
-					if (__out_it == __outlast) {
+					if (__out_it == __out_last) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::insufficient_output_space),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::insufficient_output_space),
 							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 				else {
-					(void)__outlast;
+					(void)__out_last;
 				}
 
 				::std::array<code_unit, max_code_units> __units {};
-				__units[0]               = __txt_detail::static_cast_if_lossless<code_unit>(*__in_it);
-				const code_unit& __unit0 = __units[0];
-				::std::size_t __length   = static_cast<::std::size_t>(
-                         __ztd_idk_detail_utf8_sequence_length(static_cast<uchar8_t>(__unit0)));
+				__units[0]             = __txt_detail::static_cast_if_lossless<code_unit>(*__in_it);
+				const uchar8_t __unit0 = static_cast<uchar8_t>(__units[0]);
+				::std::size_t __length = static_cast<::std::size_t>(__ztd_idk_detail_utf8_sequence_length(__unit0));
 
 				if constexpr (__call_error_handler) {
 					if (__length > max_code_units) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::invalid_sequence),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
 							::ztd::span<code_unit, 1>(__units.data(), __units.size()),
 							::ztd::span<code_point, 0>());
 					}
@@ -416,27 +404,22 @@ namespace ztd { namespace text {
 					::ztd::ranges::iter_advance(__in_it);
 					*__out_it = static_cast<code_point>(__unit0);
 					::ztd::ranges::iter_advance(__out_it);
-					return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-						               ::std::move(__in_last)),
-						ranges::reconstruct(
-						     ::std::in_place_type<_UOutputRange>, ::std::move(__out_it), ::std::move(__outlast)),
-						__s);
+					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s);
 				}
 
 				if constexpr (__call_error_handler) {
 					if constexpr (__use_overlong_null_only) {
-						if (__unit0 != static_cast<uchar8_t>(0xC0)) {
+						if (static_cast<uchar8_t>(__unit0) != static_cast<uchar8_t>(0xC0)) {
 							const bool __is_invalid_cu
 								= __ztd_idk_detail_mutf8_is_invalid(static_cast<uchar8_t>(__unit0));
 							if (__is_invalid_cu
 								|| !__ztd_idk_detail_is_lead_utf8(static_cast<uchar8_t>(__unit0))) {
 								__self_t __self {};
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-									_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-									             ::std::move(__in_it), ::std::move(__in_last)),
-									     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-									          ::std::move(__out_it), ::std::move(__outlast)),
-									     __s, encoding_error::invalid_sequence),
+									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+									     encoding_error::invalid_sequence),
 									::ztd::span<code_unit, 1>(__units.data(), 1),
 									::ztd::span<code_point, 0>());
 							}
@@ -448,11 +431,9 @@ namespace ztd { namespace text {
 						if (__is_invalid_cu || !__ztd_idk_detail_is_lead_utf8(static_cast<uchar8_t>(__unit0))) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ::std::move(__in_it), ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-								          ::std::move(__out_it), ::std::move(__outlast)),
-								     __s, encoding_error::invalid_sequence),
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::invalid_sequence),
 								::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
 						}
 					}
@@ -465,26 +446,22 @@ namespace ztd { namespace text {
 						if (__in_it == __in_last) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ::std::move(__in_it), ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-								          ::std::move(__out_it), ::std::move(__outlast)),
-								     __s, encoding_error::incomplete_sequence),
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::incomplete_sequence),
 								::ztd::span<code_unit>(__units.data(), i), ::ztd::span<code_point, 0>());
 						}
 					}
 					__units[i] = __txt_detail::static_cast_if_lossless<code_unit>(*__in_it);
-					::ztd::ranges::iter_advance(__in_it);
 					if (!__ztd_idk_detail_is_trailing_utf8(static_cast<uchar8_t>(__units[i]))) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::invalid_sequence),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
 							::ztd::span<code_unit>(__units.data(), i + 1), ::ztd::span<code_point, 0>());
 					}
+					::ztd::ranges::iter_advance(__in_it);
 				}
 
 				code_point __decoded {};
@@ -527,11 +504,9 @@ namespace ztd { namespace text {
 					if constexpr (__call_error_handler) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::invalid_sequence),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
 							::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 					}
 					else {
@@ -547,11 +522,9 @@ namespace ztd { namespace text {
 							|| __ztd_idk_detail_utf8_is_overlong(__decoded, __length)) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ::std::move(__in_it), ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-								          ::std::move(__out_it), ::std::move(__outlast)),
-								     __s, encoding_error::invalid_sequence),
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::invalid_sequence),
 								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 						}
 					}
@@ -559,22 +532,18 @@ namespace ztd { namespace text {
 						if (__ztd_idk_detail_is_surrogate(__decoded)) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-								_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>,
-								             ::std::move(__in_it), ::std::move(__in_last)),
-								     ranges::reconstruct(::std::in_place_type<_UOutputRange>,
-								          ::std::move(__out_it), ::std::move(__outlast)),
-								     __s, encoding_error::invalid_sequence),
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::invalid_sequence),
 								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 						}
 					}
 					if (static_cast<char32_t>(__decoded) > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-							             ::std::move(__in_last)),
-							     ranges::reconstruct(::std::in_place_type<_UOutputRange>, ::std::move(__out_it),
-							          ::std::move(__outlast)),
-							     __s, encoding_error::invalid_sequence),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
 							::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
 					}
 				}
@@ -583,11 +552,8 @@ namespace ztd { namespace text {
 				*__out_it = __decoded;
 				::ztd::ranges::iter_advance(__out_it);
 
-				return _Result(ranges::reconstruct(::std::in_place_type<_UInputRange>, ::std::move(__in_it),
-					               ::std::move(__in_last)),
-					ranges::reconstruct(
-					     ::std::in_place_type<_UOutputRange>, ::std::move(__out_it), ::std::move(__outlast)),
-					__s);
+				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s);
 			}
 		};
 	} // namespace __txt_impl

@@ -40,6 +40,8 @@
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/detail/span_reconstruct.hpp>
+#include <ztd/text/detail/result_type_constraints.hpp>
 
 #include <ztd/idk/reference_wrapper.hpp>
 #include <ztd/ranges/reconstruct.hpp>
@@ -83,6 +85,40 @@ namespace ztd { namespace text {
 		/// @brief Whether or not the error handler was invoked, regardless of if the error_code is set or not set to
 		/// ztd::text::encoding_error::ok.
 		::std::size_t error_count;
+
+		//////
+		/// @brief Constructs a ztd::text::transcode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput,
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::stateless_transcode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+		constexpr stateless_transcode_result(const stateless_transcode_result<_ArgInput, _ArgOutput>&
+			     __other) noexcept(__txt_detail::__result_type_copy_noexcept<::ztd::text::stateless_transcode_result,
+			_Input, _ArgInput, _Output, _ArgOutput>())
+		: input(__other.input)
+		, output(__other.output)
+		, error_code(__other.error_code)
+		, error_count(__other.error_count) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::transcode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::stateless_transcode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+		constexpr stateless_transcode_result(stateless_transcode_result<_ArgInput, _ArgOutput>&& __other) noexcept(
+			__txt_detail::__result_type_move_noexcept<::ztd::text::stateless_transcode_result, _Input, _ArgInput,
+			     _Output, _ArgOutput>)
+		: input(::std::move(__other.input))
+		, output(::std::move(__other.output))
+		, error_code(__other.error_code)
+		, error_count(__other.error_count) {
+		}
 
 
 		//////
@@ -150,6 +186,36 @@ namespace ztd { namespace text {
 		::ztd::reference_wrapper<_ToState> to_state;
 
 		//////
+		/// @brief Constructs a ztd::text::transcode_result from a previous transcode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::transcode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>()>* = nullptr>
+		constexpr transcode_result(const transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState>&
+			     __other) noexcept(__txt_detail::__result_type_copy_noexcept<::ztd::text::transcode_result, _Input,
+			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>())
+		: __base_t(__other.input, __other.output, __other.error_code, __other.error_count)
+		, from_state(__other.from_state)
+		, to_state(__other.to_state) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::transcode_result from a previous transcode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::transcode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>()>* = nullptr>
+		constexpr transcode_result(transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState>&&
+			     __other) noexcept(__txt_detail::__result_type_move_noexcept<::ztd::text::transcode_result, _Input,
+			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>())
+		: __base_t(::std::move(__other.input), ::std::move(__other.output), __other.error_code, __other.error_count)
+		, from_state(__other.from_state)
+		, to_state(__other.to_state) {
+		}
+
+		//////
 		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
@@ -159,8 +225,8 @@ namespace ztd { namespace text {
 		/// operation.
 		/// @param[in] __to_state The state related to the "To Encoding" that performed the encode half of the
 		/// operation.
-		/// @param[in] __error_code The error code for the encode operation, taken as the first of either the encode
-		/// or decode operation that failed.
+		/// @param[in] __error_code The error code for the transcoding operation, taken as the first of either the
+		/// encode or decode operation that failed.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>
 		constexpr transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
@@ -207,9 +273,20 @@ namespace ztd { namespace text {
 			return ::std::move(__result);
 		}
 
+		template <typename _Input, typename _Output, typename _DesiredOutput, typename _FromState, typename _ToState>
+		constexpr auto __replace_transcode_result_output_no_state(
+			transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
+			_DesiredOutput&& __desired_output) noexcept(::std::
+			     is_nothrow_constructible_v<stateless_transcode_result<_Input, _Output>, _Input&&, _DesiredOutput,
+			          encoding_error, ::std::size_t>) {
+			using _Result = stateless_transcode_result<_Input, remove_cvref_t<_DesiredOutput>>;
+			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
+				__result.error_code, __result.error_count);
+		}
+
 		template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _DesiredOutput>
-		constexpr transcode_result<_Input, remove_cvref_t<_DesiredOutput>, _FromState, _ToState>
-		__replace_result_output(transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
+		constexpr auto __replace_transcode_result_output(
+			transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
 			_DesiredOutput&& __desired_output) noexcept(::std::
 			     is_nothrow_constructible_v<transcode_result<_Input, _Output, _FromState, _ToState>, _Input&&,
 			          _DesiredOutput, _FromState&, _ToState&, encoding_error, ::std::size_t>) {

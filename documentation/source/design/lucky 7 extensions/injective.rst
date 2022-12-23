@@ -61,7 +61,6 @@ This signals that the ``encode_one`` and ``decode_one`` functions — if they ar
 .. literalinclude:: /../../include/ztd/text/ascii.hpp
 	:language: cpp
 	:linenos:
-	:dedent: 1
 	:lines: 74-76,95-107,273
 	:emphasize-lines: 4-16
 

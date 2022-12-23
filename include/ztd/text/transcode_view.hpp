@@ -82,7 +82,7 @@ namespace ztd { namespace text {
 		typename _Range            = __txt_detail::__default_char_view_t<code_unit_t<_FromEncoding>>,
 		typename _FromErrorHandler = default_handler_t, typename _ToErrorHandler = default_handler_t,
 		typename _FromState = decode_state_t<_FromEncoding>, typename _ToState = encode_state_t<_ToEncoding>>
-	class transcode_view {
+	class transcode_view : public ::ztd::ranges::view_base {
 	public:
 		//////
 		/// @brief The iterator type for this view.
@@ -222,7 +222,8 @@ namespace std { namespace ranges {
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
 	inline constexpr bool enable_borrowed_range<::ztd::text::transcode_view<_FromEncoding, _ToEncoding, _Range,
-		_FromErrorHandler, _ToErrorHandler, _FromState, _ToState>> = ::std::ranges::enable_borrowed_range<_Range>;
+		_FromErrorHandler, _ToErrorHandler, _FromState, _ToState>>
+		= ::std::ranges::enable_borrowed_range<_Range>;
 
 }} // namespace std::ranges
 
@@ -235,7 +236,8 @@ namespace ztd { namespace ranges {
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
 	inline constexpr bool enable_borrowed_range<::ztd::text::transcode_view<_FromEncoding, _ToEncoding, _Range,
-		_FromErrorHandler, _ToErrorHandler, _FromState, _ToState>> = ::ztd::ranges::enable_borrowed_range<_Range>;
+		_FromErrorHandler, _ToErrorHandler, _FromState, _ToState>>
+		= ::ztd::ranges::enable_borrowed_range<_Range>;
 
 }} // namespace ztd::ranges
 

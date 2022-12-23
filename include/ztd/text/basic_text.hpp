@@ -268,7 +268,7 @@ namespace ztd { namespace text {
 					= decltype(::std::back_inserter(ztd::unwrap(::std::declval<range_type&>())));
 				using _Unbounded = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(ztd::unwrap(this->_M_range)));
-				::ztd::text::encode_into(
+				::ztd::text::encode_into_raw(
 					::std::forward<_Input>(__input), this->_M_encoding, ::std::move(__insert_view));
 			}
 			else {
@@ -277,7 +277,7 @@ namespace ztd { namespace text {
 					= decltype(::std::back_inserter(ztd::unwrap(::std::declval<range_type&>())));
 				using _Unbounded = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(ztd::unwrap(this->_M_range)));
-				::ztd::text::transcode_into(
+				::ztd::text::transcode_into_raw(
 					::std::forward<_Input>(__input), this->_M_encoding, ::std::move(__insert_view));
 			}
 		}
@@ -295,7 +295,7 @@ namespace ztd { namespace text {
 					= decltype(::std::back_inserter(ztd::unwrap(::std::declval<range_type&>())));
 				using _Unbounded = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(ztd::unwrap(this->_M_range)));
-				::ztd::text::encode_into(::std::forward<_Input>(__input), this->_M_encoding,
+				::ztd::text::encode_into_raw(::std::forward<_Input>(__input), this->_M_encoding,
 					::std::move(__insert_view), ::std::forward<_FromEncoding>(__from_encoding));
 			}
 			else {
@@ -304,7 +304,7 @@ namespace ztd { namespace text {
 					= decltype(::std::back_inserter(ztd::unwrap(::std::declval<range_type&>())));
 				using _Unbounded = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(ztd::unwrap(this->_M_range)));
-				::ztd::text::transcode_into(::std::forward<_Input>(__input), this->_M_encoding,
+				::ztd::text::transcode_into_raw(::std::forward<_Input>(__input), this->_M_encoding,
 					::std::move(__insert_view), ::std::forward<_FromEncoding>(__from_encoding));
 			}
 		}
@@ -323,7 +323,7 @@ namespace ztd { namespace text {
 					= decltype(::std::back_inserter(ztd::unwrap(::std::declval<range_type&>())));
 				using _Unbounded = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(ztd::unwrap(this->_M_range)));
-				::ztd::text::encode_into(::std::forward<_Input>(__input), this->_M_encoding,
+				::ztd::text::encode_into_raw(::std::forward<_Input>(__input), this->_M_encoding,
 					::std::move(__insert_view), ::std::forward<_FromEncoding>(__from_encoding),
 					::std::forward<_ErrorHandler>(__error_handler));
 			}
@@ -333,7 +333,7 @@ namespace ztd { namespace text {
 					= decltype(::std::back_inserter(ztd::unwrap(::std::declval<range_type&>())));
 				using _Unbounded = ranges::unbounded_view<_BackInserterIterator>;
 				_Unbounded __insert_view(::std::back_inserter(ztd::unwrap(this->_M_range)));
-				::ztd::text::transcode_into(::std::forward<_Input>(__input), this->_M_encoding,
+				::ztd::text::transcode_into_raw(::std::forward<_Input>(__input), this->_M_encoding,
 					::std::move(__insert_view), ::std::forward<_FromEncoding>(__from_encoding),
 					::std::forward<_ErrorHandler>(__error_handler));
 			}

@@ -40,9 +40,9 @@
 #include <ztd/text/count_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/decode_one.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/validate_count_routines.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/type_traits.hpp>
@@ -80,67 +80,24 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _ErrorHandler, typename _State>
 	constexpr auto basic_count_as_decoded(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _WorkingInput = __txt_detail::__string_view_or_span_or_reconstruct_t<_Input>;
+		using _WorkingInput = ::ztd::ranges::subrange_for_t<_Input>;
 		using _UEncoding    = remove_cvref_t<_Encoding>;
 		using _Result       = count_result<_WorkingInput, _State>;
 
-		_WorkingInput __working_input
-			= __txt_detail::__string_view_or_span_or_reconstruct(::std::forward<_Input>(__input));
+		_WorkingInput __working_input(::std::forward<_Input>(__input));
 
 		::std::size_t __code_point_count = 0;
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_count_as_decoded_one, _WorkingInput, _Encoding,
 			              _ErrorHandler, _State>) {
+			::std::size_t __error_count = 0;
 			for (;;) {
 				auto __result = text_count_as_decoded_one(
 					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+				__error_count += __result.error_count;
 				if (__result.error_code != encoding_error::ok) {
-					return _Result(
-						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
-				}
-				__code_point_count += __result.count;
-				__working_input = ::std::move(__result.input);
-				if (!::ztd::text::is_state_complete(__encoding, __state)) {
-					continue;
-				}
-				if (::ztd::ranges::empty(__working_input)) {
-					break;
-				}
-			}
-			return _Result(::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
-		}
-		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_decoded_one, _WorkingInput,
-			                   _Encoding, _ErrorHandler, _State>) {
-			for (;;) {
-				auto __result = __text_count_as_decoded_one(
-					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
-				if (__result.error_code != encoding_error::ok) {
-					return _Result(
-						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
-				}
-				__code_point_count += __result.count;
-				__working_input = ::std::move(__result.input);
-				if (!::ztd::text::is_state_complete(__encoding, __state)) {
-					continue;
-				}
-				if (::ztd::ranges::empty(__working_input)) {
-					break;
-				}
-			}
-			return _Result(::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
-		}
-		else {
-			using _CodePoint = code_point_t<_UEncoding>;
-
-			_CodePoint __intermediate_storage[max_code_points_v<_UEncoding>] {};
-			::ztd::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
-
-			for (;;) {
-				auto __result = __txt_detail::__basic_count_as_decoded_one(
-					__working_input, __encoding, __error_handler, __state, __intermediate);
-				if (__result.error_code != encoding_error::ok) {
-					return _Result(
-						::std::move(__result.input), __code_point_count, __state, __result.error_code, false);
+					return _Result(::std::move(__result.input), __code_point_count, __state, __result.error_code,
+						__result.error_count);
 				}
 				__code_point_count += __result.count;
 				__working_input = ::std::move(__result.input);
@@ -151,7 +108,59 @@ namespace ztd { namespace text {
 					break;
 				}
 			}
-			return _Result(::std::move(__working_input), __code_point_count, __state, encoding_error::ok, false);
+			return _Result(
+				::std::move(__working_input), __code_point_count, __state, encoding_error::ok, __error_count);
+		}
+		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_decoded_one, _WorkingInput,
+			                   _Encoding, _ErrorHandler, _State>) {
+			::std::size_t __error_count = 0;
+			for (;;) {
+				auto __result = __text_count_as_decoded_one(
+					::ztd::tag<_UEncoding> {}, ::std::move(__working_input), __encoding, __error_handler, __state);
+				__error_count += __result.error_count;
+				if (__result.error_code != encoding_error::ok) {
+					return _Result(::std::move(__result.input), __code_point_count, __state, __result.error_code,
+						__error_count);
+				}
+				__code_point_count += __result.count;
+				__working_input = ::std::move(__result.input);
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __state)) {
+						continue;
+					}
+					break;
+				}
+			}
+			return _Result(
+				::std::move(__working_input), __code_point_count, __state, encoding_error::ok, __error_count);
+		}
+		else {
+			using _CodePoint = code_point_t<_UEncoding>;
+
+			_CodePoint __intermediate_storage[max_code_points_v<_UEncoding>] {};
+			::ztd::span<_CodePoint, max_code_points_v<_UEncoding>> __intermediate(__intermediate_storage);
+			::std::size_t __error_count = 0;
+			for (;;) {
+				auto __result = ::ztd::text::decode_one_into_raw(
+					::std::move(__working_input), __encoding, __intermediate, __error_handler, __state);
+				__error_count += __result.error_count;
+				if (__result.error_code != encoding_error::ok) {
+					return _Result(::std::move(__result.input), __code_point_count, __state, __result.error_code,
+						__error_count);
+				}
+				::std::size_t __used_size = static_cast<::std::size_t>(::ztd::ranges::distance(
+					::ztd::ranges::begin(__intermediate), ::ztd::ranges::begin(__result.output)));
+				__code_point_count += __used_size;
+				__working_input = ::std::move(__result.input);
+				if (::ztd::ranges::empty(__working_input)) {
+					if (!::ztd::text::is_state_complete(__encoding, __state)) {
+						continue;
+					}
+					break;
+				}
+			}
+			return _Result(
+				::std::move(__working_input), __code_point_count, __state, encoding_error::ok, __error_count);
 		}
 	}
 

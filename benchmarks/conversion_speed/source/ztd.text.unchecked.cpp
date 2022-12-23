@@ -53,7 +53,7 @@
 			const from_char_t* input = input_data.data();                                                      \
 			size_t output_size       = output_data.size();                                                     \
 			to_char_t* output        = output_data.data();                                                     \
-			auto err = ztd::text::transcode_into(ztd::span(input, input_size), ztd::text::utf##FROM_N,         \
+			auto err = ztd::text::transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N,         \
 			     ztd::span(output, output_size), ztd::text::utf##TO_N, ztd::text::assume_valid_handler,        \
 			     ztd::text::assume_valid_handler);                                                             \
 			if (err.error_code != ztd::text::encoding_error::ok) {                                             \
@@ -118,7 +118,7 @@
 			size_t input_size        = input_data.size();                                                      \
 			const from_char_t* input = input_data.data();                                                      \
 			to_char_t* output        = output_data.data();                                                     \
-			auto err = ztd::text::transcode_into(ztd::span(input, input_size), ztd::text::utf##FROM_N,         \
+			auto err = ztd::text::transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N,         \
 			     ztd::ranges::unbounded_view(output), ztd::text::utf##TO_N, ztd::text::assume_valid_handler,   \
 			     ztd::text::assume_valid_handler);                                                             \
 			if (err.error_code != ztd::text::encoding_error::ok) {                                             \

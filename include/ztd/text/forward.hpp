@@ -143,32 +143,32 @@ namespace ztd { namespace text {
 	class basic_text;
 
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
-	constexpr auto decode_one_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+	constexpr auto decode_one_into_raw(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state);
 
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
-	constexpr auto encode_one_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+	constexpr auto encode_one_into_raw(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state);
 
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
-	constexpr auto basic_decode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+	constexpr auto basic_decode_into_raw(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state);
 
 	template <typename _Input, typename _Encoding, typename _Output, typename _ErrorHandler, typename _State>
-	constexpr auto basic_encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
+	constexpr auto basic_encode_into_raw(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state);
 
 	template <typename _Input, typename _Output, typename _FromEncoding, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
 		typename _PivotRange>
-	constexpr auto basic_transcode_one_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
+	constexpr auto basic_transcode_one_into_raw(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot);
 
 	template <typename _Input, typename _FromEncoding, typename _Output, typename _ToEncoding,
 		typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
 		typename _PivotRange>
-	constexpr auto basic_transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
+	constexpr auto basic_transcode_into_raw(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot);
 

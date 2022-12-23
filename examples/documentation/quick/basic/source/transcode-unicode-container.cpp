@@ -52,7 +52,7 @@ int main(int, char*[]) {
 	std::deque<char16_t> utf16_emoji_deque {};
 	auto deque_result = ztd::text::transcode_into(input, ztd::text::utf16,
 	     ztd::ranges::unbounded_view(std::back_inserter(utf16_emoji_deque)));
-	// transcode_into returns a ztd::text::transcode_result<…>
+	// transcode_into_raw returns a ztd::text::transcode_result<…>
 	// which we can inspect for error codes and more!
 	// the error_code should be "ok"
 	ZTD_TEXT_ASSERT(deque_result.error_code == ztd::text::encoding_error::ok);

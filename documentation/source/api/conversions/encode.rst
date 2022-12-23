@@ -31,7 +31,7 @@
 encode
 ======
 
-The ``encode`` grouping of functions (``encode``, ``encode_to``, and ``encode_into``) perform the task of doing bulk decoding from an ``input`` of ``code_point``\ s to the encoding's ``code_unit`` type. They are also accompanied by ``encode_one`` variants (``encode_one``, ``encode_one_to``, ``encode_one_into``), which serve the same purpose as their bulk counterpoints but only do a single :term:`indivisible unit of work`'s worth of work.
+The ``encode`` grouping of functions (``encode``, ``encode_to``, and ``encode_into_raw``) perform the task of doing bulk decoding from an ``input`` of ``code_point``\ s to the encoding's ``code_unit`` type. They are also accompanied by ``encode_one`` variants (``encode_one``, ``encode_one_to``, ``encode_one_into``), which serve the same purpose as their bulk counterpoints but only do a single :term:`indivisible unit of work`'s worth of work.
 
 
 
@@ -75,8 +75,8 @@ It will either call ``push_back``/``insert`` directly on the target container to
 If nothing goes wrong or the error handler lets the algorithm continue, ``.input`` on the result should be empty.
 
 
-``encode_into(...)``
-++++++++++++++++++++
+``encode_into_raw(...)``
++++++++++++++++++++++++++
 
 This is the lowest level bulk function.
 
@@ -91,13 +91,13 @@ If nothing goes wrong or the error handler lets the algorithm continue, ``.input
 For Everything
 --------------
 
-All named functions have 4 overloads. Each of the "higher level" functions, at the end of their overload call chain, will call the lower-level ``encode_into`` to perform the work. The final ``encode_into`` call uses the following ordering of extension points into calling the base implementation:
+All named functions have 4 overloads. Each of the "higher level" functions, at the end of their overload call chain, will call the lower-level ``encode_into_raw`` to perform the work. The final ``encode_into_raw`` call uses the following ordering of extension points into calling the base implementation:
 
-- ``text_encode_into(input, encoding, output, handler, state)``
+- ``text_encode_into_raw(input, encoding, output, handler, state)``
 - An internal, implementation-defined customization point.
-- ``basic_encode_into(input, encoding, output, handler, state)``
+- ``basic_encode_into_raw(input, encoding, output, handler, state)``
 
-The final function call, ``basic_encode_into``, simply performs the :doc:`core encode loop </design/converting/encode>` using the :doc:`Lucky 7 </design/lucky 7>` design. This design also means minimal stack space is used, keeping the core algorithm suitable for resource-constrained devices.
+The final function call, ``basic_encode_into_raw``, simply performs the :doc:`core encode loop </design/converting/encode>` using the :doc:`Lucky 7 </design/lucky 7>` design. This design also means minimal stack space is used, keeping the core algorithm suitable for resource-constrained devices.
 
 .. note::
 
@@ -105,7 +105,7 @@ The final function call, ``basic_encode_into``, simply performs the :doc:`core e
 
 .. note::
 
-	👉 If you need to call the "basic" form of this function that takes no secret implementation shortcuts or user-defined extension points, then call ``basic_encode_into`` directly. This can be useful to stop infinity loops when your extension points cannot handle certain inputs and thereby needs to "delegate" to the basic case.
+	👉 If you need to call the "basic" form of this function that takes no secret implementation shortcuts or user-defined extension points, then call ``basic_encode_into_raw`` directly. This can be useful to stop infinity loops when your extension points cannot handle certain inputs and thereby needs to "delegate" to the basic case.
 
 
 

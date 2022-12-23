@@ -37,3 +37,6 @@ The range-based classes are excellent ways to walk over units of information in 
 
 .. doxygenclass:: ztd::text::decode_view
 	:members:
+
+.. doxygenclass:: ztd::text::decode_iterator
+	:members:

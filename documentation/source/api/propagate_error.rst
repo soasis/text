@@ -28,12 +28,12 @@
 ..
 .. =============================================================================>
 
-propagate_error
-===============
+propagate\_(transcode|transcode)_error
+======================================
 
 This helper function processes an error for a transcoding operation and shuffles a result through its decode step and encode step :doc:`error handlers</design/error handling>`. Nominally used after a solely decode portion of a transcode operation fails.
 
 If the user is doing a direct conversion and can simply call the encode portion of the error handler directly, calling this function can be skipped entirely by the user.
 
-.. doxygengroup:: ztd_text_transcode_helpers
+.. doxygengroup:: ztd_text_propagate_errors
 	:content-only:

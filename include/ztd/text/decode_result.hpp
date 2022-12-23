@@ -40,6 +40,7 @@
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/state.hpp>
+#include <ztd/text/detail/result_type_constraints.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/reference_wrapper.hpp>
@@ -82,6 +83,40 @@ namespace ztd { namespace text {
 		//////
 		/// @brief The number of times an error occurred in the processed input text.
 		::std::size_t error_count;
+
+		//////
+		/// @brief Constructs a ztd::text::decode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput,
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::stateless_decode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+		constexpr stateless_decode_result(const stateless_decode_result<_ArgInput, _ArgOutput>& __other) noexcept(
+			__txt_detail::__result_type_copy_noexcept<::ztd::text::stateless_decode_result, _Input, _ArgInput,
+			     _Output, _ArgOutput>)
+		: input(__other.input)
+		, output(__other.output)
+		, error_code(__other.error_code)
+		, error_count(__other.error_count) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::decode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::stateless_decode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+		constexpr stateless_decode_result(stateless_decode_result<_ArgInput, _ArgOutput>&& __other) noexcept(
+			__txt_detail::__result_type_move_noexcept<::ztd::text::stateless_decode_result, _Input, _ArgInput,
+			     _Output, _ArgOutput>)
+		: input(::std::move(__other.input))
+		, output(::std::move(__other.output))
+		, error_code(__other.error_code)
+		, error_count(__other.error_count) {
+		}
 
 		//////
 		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
@@ -141,7 +176,32 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The state of the associated Encoding used for decoding input code units to code points.
-		::ztd::reference_wrapper<_State> state;
+		::ztd::reference_wrapper<_State> state; //////
+		/// @brief Constructs a ztd::text::decode_result from a previous decode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgState,
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::decode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _State, _ArgState>()>* = nullptr>
+		constexpr decode_result(const decode_result<_ArgInput, _ArgOutput, _ArgState>& __other) noexcept(
+			__txt_detail::__result_type_copy_noexcept<::ztd::text::decode_result, _Input, _ArgInput, _Output,
+			     _ArgOutput, _State, _ArgState>)
+		: __base_t(__other.input, __other.output, __other.error_code, __other.error_count), state(__other.state) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::decode_result from a previous decode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgState,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::decode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _State, _ArgState>()>* = nullptr>
+		constexpr decode_result(decode_result<_ArgInput, _ArgOutput, _ArgState>&& __other) noexcept(
+			__txt_detail::__result_type_move_noexcept<::ztd::text::decode_result, _Input, _ArgInput, _Output,
+			     _ArgOutput, _State, _ArgState>)
+		: __base_t(::std::move(__other.input), ::std::move(__other.output), __other.error_code, __other.error_count)
+		, state(__other.state) {
+		}
 
 		//////
 		/// @brief Constructs a ztd::text::decode_result, defaulting the error code to
@@ -205,14 +265,25 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _Input, typename _Output, typename _State>
 		constexpr stateless_decode_result<_Input, _Output>
-		__slice_to_stateless(decode_result<_Input, _Output, _State>&& __result) noexcept(
+		__slice_to_stateless_decode(decode_result<_Input, _Output, _State>&& __result) noexcept(
 			::std::is_nothrow_constructible_v<stateless_decode_result<_Input, _Output>,
 			     stateless_decode_result<_Input, _Output>>) {
 			return ::std::move(__result);
 		}
 
+		template <typename _Input, typename _Output, typename _DesiredOutput>
+		constexpr stateless_decode_result<_Input, remove_cvref_t<_DesiredOutput>>
+		__replace_decode_result_output_no_state(
+			stateless_decode_result<_Input, _Output>&& __result, _DesiredOutput&& __desired_output) noexcept(::std::
+			     is_nothrow_constructible_v<stateless_decode_result<_Input, _Output>, _Input&&, _DesiredOutput,
+			          encoding_error, ::std::size_t>) {
+			using _Result = stateless_decode_result<_Input, remove_cvref_t<_DesiredOutput>>;
+			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
+				__result.error_code, __result.error_count);
+		}
+
 		template <typename _Input, typename _Output, typename _State, typename _DesiredOutput>
-		constexpr decode_result<_Input, remove_cvref_t<_DesiredOutput>, _State> __replace_result_output(
+		constexpr decode_result<_Input, remove_cvref_t<_DesiredOutput>, _State> __replace_decode_result_output(
 			decode_result<_Input, _Output, _State>&& __result,
 			_DesiredOutput&&
 			     __desired_output) noexcept(::std::is_nothrow_constructible_v<decode_result<_Input, _Output, _State>,

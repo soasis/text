@@ -108,6 +108,7 @@ if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
 		check_compiler_flag(warn-extra GCC -Wextra Clang -Wextra)
 		check_compiler_diagnostic(alignas-extra-padding MSVC 4324 LANGUAGES CXX)
+		check_compiler_diagnostic(bit-int-extension)
 		# (Wstringop-overflow) - [meta-bug] bogus/missing -Wstringop-overflow warnings
 		#   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88443
 		# Bogus -Wstringop-overflow warning
@@ -266,7 +267,11 @@ mark_as_advanced(ZTD_TEXT_SCRATCH)
 
 if(ZTD_TEXT_SCRATCH)
 	add_executable(scratch main.cpp)
-	target_link_libraries(scratch PRIVATE ztd::text)
+	target_link_libraries(scratch
+		PRIVATE
+		ztd::text
+		ztd::text::benchmarks::barrier
+	)
 	target_include_directories(scratch PRIVATE tests/shared/include)
 	target_compile_options(scratch
 		PRIVATE

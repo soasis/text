@@ -135,16 +135,56 @@ The returned :doc:`ztd::text::transcode_result </api/transcode_result>` from the
 Transcoding with Errors
 +++++++++++++++++++++++
 
-Very often, text contains errors. Whether it's being interpreted as the wrong encoding or it contains file names or data mangled during a system crash, or it's just plain incorrect, bad data is a firm staple and constant reality for text processing. ztd.text offers many kinds of :doc:`error handlers </design/error handling>`. They have many different behaviors, from doing nothing and stopping the desired encoding operation, to skipping over bad text and not doing anything, to adding replacement characters, and more:
+Very often, text contains errors. Whether it's being interpreted as the wrong encoding or it contains file names or data mangled during a system crash, or it's just plain incorrect, bad data is a firm staple and constant reality for text processing. ztd.text offers many kinds of :doc:`error handlers </design/error handling>`. They have many different behaviors, from doing nothing and stopping the desired encoding operation, to skipping over bad text and not doing anything, to adding replacement characters, and more.
 
-.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-with-errors.cpp
+The :cpp:var:`ztd::text::default_handler`, unless configured differently, is to use replacement characters:
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-errors.default.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+The :cpp:var:`ztd::text::replacement_handler` explicitly inserts replacement characters where the failure occurs:
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-errors.replacement.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+To simply skip over bad input without outputting any replacement characters, use :cpp:var:`ztd::text::skip_handler`:
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-errors.skip.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+To stop in the middle of the operation and return immediately, employ the :cpp:var:`ztd::text::pass_handler`. This will leave text unprocessed, but offer a chance to inspect what is left and any corrective action that might need to be taken afterwards:
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-errors.pass.cpp
 	:language: cpp
 	:linenos:
 	:start-after: // ============================================================================ //
 
 Error handlers like the :cpp:var:`ztd::text::skip_handler` and :cpp:var:`ztd::text::replacement_handler` (and potentially the :cpp:var:`ztd::text::default_handler`) are smart enough to not output multiple replacement characters for every single 8, 16, or 32-bit unit that contains an error, folding them down into one replacement character per distinct failure location:
 
-.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-with-multi-errors.cpp
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-multi-errors.skip.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-multi-errors.default.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-multi-errors.replacement.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+Comapred to the :cpp:var:`ztd::text::pass_handler`, which will stop at the first potential error:
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-multi-errors.pass.cpp
 	:language: cpp
 	:linenos:
 	:start-after: // ============================================================================ //
@@ -162,7 +202,7 @@ Occasionally, you need to perform a transcoding operation that has no extension 
 	:linenos:
 	:start-after: // ============================================================================ //
 
-Here, we use an **exceptionally** small buffer to keep memory usage down. Note that the buffer should be at least as large as :cpp:var:`ztd::text::max_code_points_v\<FromEncoding> <ztd::text::max_code_points_v>`.(``FromEncoding`` in this case being the :cpp:var:`ztd::text::compat_utf8` encoding) so that no errors occur during translation. If the pivot buffer is too small this can produce unpredictable failures and unexpected behavior from unanticipated errors, so make sure to always provide a suitably-sized pivot buffer! Or, alternatively, just let the implementation use its defaults, which are (generally) tuned to work out well enough for most conversion routines and platforms.
+Here, we use an **exceptionally** small buffer to keep memory usage down. Note that the buffer should be at least as large as :cpp:var:`ztd::text::max_code_points_v\<FromEncoding> <ztd::text::max_code_points_v>` (``FromEncoding`` in this case being the :cpp:var:`ztd::text::compat_utf8` encoding) so that no :cpp:enumerator:`"insufficient output size" errors <ztd::text::encoding_error::insufficient_output_space>` occur during translation. (For :doc:`ztd::text::encode </api/conversions/encode>` operations, the buffer should be at least as large as :cpp:var:`ztd::text::max_code_units_v\<FromEncoding> <ztd::text::max_code_units_v>`) If the pivot buffer is too small this can produce unpredictable failures and unexpected behavior from unanticipated errors, so make sure to always provide a suitably-sized pivot buffer! Or, alternatively, just let the implementation use its defaults, which are (generally) tuned to work out well enough for most conversion routines and platforms.
 
 
 
