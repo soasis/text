@@ -33,8 +33,8 @@
 #include <iostream>
 
 int main(int, char*[]) {
-#if ZTD_IS_ON(ZTD_COMPILER_CLANG)
-	// Only Clang compilers have _BitInt(N) right now.
+#if ZTD_IS_ON(ZTD_BITINT)
+	// Only Clang compilers (above 15) have _BitInt(N) right now.
 	using weird_9bit_utf8_t                           = ztd::text::basic_utf8<_BitInt(9), unsigned _BitInt(21)>;
 	constexpr const weird_9bit_utf8_t weird_9bit_utf8 = {};
 

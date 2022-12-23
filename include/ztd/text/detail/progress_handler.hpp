@@ -310,10 +310,10 @@ namespace ztd { namespace text {
 			}
 
 		private:
-			mutable ::std::array<_CodePoint, max_code_points_v<remove_cvref_t<_Encoding>>> _M_code_points;
-			mutable ::std::size_t _M_code_points_size;
-			mutable ::std::array<_CodeUnit, max_code_units_v<remove_cvref_t<_Encoding>>> _M_code_units;
-			mutable ::std::size_t _M_code_units_size;
+			::std::array<_CodePoint, max_code_points_v<remove_cvref_t<_Encoding>>> _M_code_points;
+			::std::size_t _M_code_points_size;
+			::std::array<_CodeUnit, max_code_units_v<remove_cvref_t<_Encoding>>> _M_code_units;
+			::std::size_t _M_code_units_size;
 		};
 	} // namespace __txt_detail
 

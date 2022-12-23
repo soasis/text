@@ -89,10 +89,11 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __other A different but related result type.
 		template <typename _ArgInput, typename _ArgOutput,
-			::std::enable_if_t<
-			     __txt_detail::__result_type_copy_constraint<_Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::stateless_encode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput>()>* = nullptr>
 		constexpr stateless_encode_result(const stateless_encode_result<_ArgInput, _ArgOutput>& __other) noexcept(
-			__txt_detail::__result_type_copy_noexcept<_Input, _ArgInput, _Output, _ArgOutput>())
+			__txt_detail::__result_type_copy_noexcept<::ztd::text::stateless_encode_result, _Input, _ArgInput,
+			     _Output, _ArgOutput>())
 		: input(__other.input)
 		, output(__other.output)
 		, error_code(__other.error_code)

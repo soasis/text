@@ -3,22 +3,22 @@ Title: "C Character Set - UTF-16 to UTF-8 (Well-Formed, with Init)". Description
 There are 10 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
 
 - cuneicode_registry_unchecked is 10th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
-  Measures to a mean of "34.35779365558072" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "35.21287827314076" microseconds, from 100 multi-iteration samples.
 - cuneicode_registry is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
-  Measures to a mean of "33.8370904537506" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "34.54180342770033" microseconds, from 100 multi-iteration samples.
 - cuneicode_registry_unchecked_unbounded is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
-  Measures to a mean of "31.51015066970493" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "32.29311361641781" microseconds, from 100 multi-iteration samples.
 - cuneicode_registry_unbounded is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
-  Measures to a mean of "31.096818124972614" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "31.84699040211854" microseconds, from 100 multi-iteration samples.
 - standard_cpp is 6th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
-  Measures to a mean of "23.309309873818034" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "25.519621257874103" microseconds, from 100 multi-iteration samples.
 - iconv is 5th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
-  Measures to a mean of "0.621754341965113" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.6182776571461416" microseconds, from 100 multi-iteration samples.
 - icu_ucnv_convertEx is 4th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
-  Measures to a mean of "0.5089748990000226" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.509251920998795" microseconds, from 100 multi-iteration samples.
 - encoding_c is 3rd. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
-  Measures to a mean of "0.11659509964275848" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.13318532907550948" microseconds, from 100 multi-iteration samples.
 - memcpy is 2nd. It has no description.
-  Measures to a mean of "0.0034306319965464816" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.0034501550223921358" microseconds, from 100 multi-iteration samples.
 - noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
-  Measures to a mean of "1.6199919627979398e-10" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "1.6899895854294302e-10" microseconds, from 100 multi-iteration samples.
