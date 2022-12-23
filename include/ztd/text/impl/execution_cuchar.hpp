@@ -336,7 +336,7 @@ namespace ztd { namespace text {
 
 				code_point __codepoint = *__in_it;
 				::ztd::ranges::iter_advance(__in_it);
-				code_unit __intermediary_output[(MB_LEN_MAX * 2)] {};
+				code_unit __intermediary_output[(MB_LEN_MAX)] {};
 				::std::size_t __res = ZTD_UCHAR_ACCESSOR_I_ c32rtomb(
 					__intermediary_output, __codepoint, ::std::addressof(__s.__narrow_state));
 				if constexpr (__call_error_handler) {
@@ -435,7 +435,7 @@ namespace ztd { namespace text {
 					}
 				}
 
-				code_unit __intermediary_input[max_code_units * 2] {};
+				code_unit __intermediary_input[max_code_units] {};
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS) && ZTD_IS_OFF(ZTD_COMPILER_MINGW)
 				__intermediary_input[0] = *__in_it;
 				::ztd::ranges::iter_advance(__in_it);

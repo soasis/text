@@ -166,6 +166,12 @@ namespace ztd { namespace text {
 
 			// Inherit some funtions
 			using __base_t::skip_input_error;
+
+			// Inherit some funtions
+			using __base_t::replacement_code_points;
+
+			// Inherit some funtions
+			using __base_t::replacement_code_units;
 		};
 
 	} // namespace __txt_impl

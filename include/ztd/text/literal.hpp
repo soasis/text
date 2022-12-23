@@ -59,7 +59,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The encoding of string literal_ts ( e.g. @c "👍" ) at compile time.
-	class literal_t : private __txt_detail::__literal {
+	class literal_t : public __txt_detail::__literal {
 	private:
 		using __base_t = __txt_detail::__literal;
 

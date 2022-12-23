@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief The encoding of wide string literal_ts ( e.g. @c "👍" ) at compile time.
-	class wide_literal_t : private __txt_detail::__wide_literal {
+	class wide_literal_t : public __txt_detail::__wide_literal {
 	private:
 		using __base_t = __txt_detail::__wide_literal;
 

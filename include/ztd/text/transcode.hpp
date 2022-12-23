@@ -58,6 +58,7 @@
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
 
+#include <utility>
 #include <string>
 #include <vector>
 
@@ -325,9 +326,9 @@ namespace ztd { namespace text {
 
 		_CodePoint __intermediate[__intermediate_buffer_max] {};
 		pivot<_IntermediateSpan> __pivot { _IntermediateSpan(__intermediate), encoding_error::ok };
-		return transcode_into_raw(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-			::std::forward<_FromErrorHandler>(__from_error_handler),
+		return ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 	}
 
@@ -363,9 +364,9 @@ namespace ztd { namespace text {
 		using _UToEncoding = remove_cvref_t<_ToEncoding>;
 		using _ToState     = encode_state_t<_UToEncoding>;
 
-		_ToState __to_state = make_encode_state(__to_encoding);
+		_ToState __to_state = ::ztd::text::make_encode_state(__to_encoding);
 
-		auto __stateful_result = transcode_into_raw(::std::forward<_Input>(__input),
+		auto __stateful_result = ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
 			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
@@ -400,11 +401,11 @@ namespace ztd { namespace text {
 		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _FromState     = decode_state_t<_UFromEncoding>;
 
-		_FromState __from_state = make_decode_state(__from_encoding);
+		_FromState __from_state = ::ztd::text::make_decode_state(__from_encoding);
 
-		return transcode_into_raw(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-			::std::forward<_FromErrorHandler>(__from_error_handler),
+		return ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state);
 	}
 
@@ -434,9 +435,10 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler) {
 		auto __handler = __txt_detail::__duplicate_or_be_careless(__from_error_handler);
 
-		return transcode_into_raw(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-			::std::forward<_FromErrorHandler>(__from_error_handler), __handler);
+		return ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+			__handler);
 	}
 
 	//////
@@ -463,8 +465,9 @@ namespace ztd { namespace text {
 		_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
 
-		return transcode_into_raw(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), __handler);
+		return ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), __handler);
 	}
 
 	//////
@@ -493,8 +496,8 @@ namespace ztd { namespace text {
 		_UFromEncoding __from_encoding {};
 		default_handler_t __handler {};
 
-		return transcode_into_raw(::std::forward<_Input>(__input), __from_encoding, ::std::forward<_Output>(__output),
-			::std::forward<_ToEncoding>(__to_encoding), __handler);
+		return ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input), __from_encoding,
+			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), __handler);
 	}
 
 	namespace __txt_detail {
@@ -519,9 +522,9 @@ namespace ztd { namespace text {
 			using _InitialInput              = __span_reconstruct_t<_Input, _Input>;
 			using _IntermediateOutputInitial = ::ztd::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
 			using _IntermediateOutput        = ::ztd::span<_IntermediateOutputValueType>;
-			using _TranscodeResult = decltype(transcode_into_raw(::std::declval<_InitialInput>(), __from_encoding,
-				::std::declval<_IntermediateOutput&>(), __to_encoding, __from_error_handler, __to_error_handler,
-				__from_state, __to_state, __pivot));
+			using _TranscodeResult = decltype(::ztd::text::transcode_into_raw(::std::declval<_InitialInput>(),
+				__from_encoding, ::std::declval<_IntermediateOutput&>(), __to_encoding, __from_error_handler,
+				__to_error_handler, __from_state, __to_state, __pivot));
 			using _WorkingInput    = decltype(::std::declval<_TranscodeResult>().input);
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
@@ -536,7 +539,7 @@ namespace ztd { namespace text {
 			_IntermediateOutputValueType __intermediate_output_storage[_IntermediateOutputMax] {};
 			_IntermediateOutputInitial __intermediate_initial(__intermediate_output_storage);
 			for (;;) {
-				auto __result = transcode_into_raw(::std::move(__working_input), __from_encoding,
+				auto __result = ::ztd::text::transcode_into_raw(::std::move(__working_input), __from_encoding,
 					__intermediate_initial, __to_encoding, __from_error_handler, __to_error_handler, __from_state,
 					__to_state, __pivot);
 				_IntermediateOutput __intermediate_output(
@@ -638,7 +641,7 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, pivot<_PivotRange>& __pivot) {
 		auto __reconstructed_input       = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
-		auto __result                    = transcode_into_raw(::std::move(__reconstructed_input),
+		auto __result                    = ::ztd::text::transcode_into_raw(::std::move(__reconstructed_input),
 			                   ::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
 			                   ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			                   ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
@@ -693,9 +696,9 @@ namespace ztd { namespace text {
 
 		_CodePoint __intermediate[__intermediate_buffer_max] {};
 		pivot<_IntermediateSpan> __pivot { _IntermediateSpan(__intermediate), encoding_error::ok };
-		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-			::std::forward<_FromErrorHandler>(__from_error_handler),
+		return ::ztd::text::transcode_into(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
 	}
 
@@ -731,9 +734,9 @@ namespace ztd { namespace text {
 		using _UToEncoding = remove_cvref_t<_ToEncoding>;
 		using _ToState     = encode_state_t<_UToEncoding>;
 
-		_ToState __to_state = make_encode_state(__to_encoding);
+		_ToState __to_state = ::ztd::text::make_encode_state(__to_encoding);
 
-		auto __stateful_result = transcode_into(::std::forward<_Input>(__input),
+		auto __stateful_result = ::ztd::text::transcode_into(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
 			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
@@ -768,11 +771,11 @@ namespace ztd { namespace text {
 		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _FromState     = decode_state_t<_UFromEncoding>;
 
-		_FromState __from_state = make_decode_state(__from_encoding);
+		_FromState __from_state = ::ztd::text::make_decode_state(__from_encoding);
 
-		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-			::std::forward<_FromErrorHandler>(__from_error_handler),
+		return ::ztd::text::transcode_into(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state);
 	}
 
@@ -802,9 +805,10 @@ namespace ztd { namespace text {
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler) {
 		auto __handler = __txt_detail::__duplicate_or_be_careless(__from_error_handler);
 
-		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding),
-			::std::forward<_FromErrorHandler>(__from_error_handler), __handler);
+		return ::ztd::text::transcode_into(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+			__handler);
 	}
 
 	//////
@@ -831,8 +835,9 @@ namespace ztd { namespace text {
 		_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
 
-		return transcode_into(::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), __handler);
+		return ::ztd::text::transcode_into(::std::forward<_Input>(__input),
+			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			::std::forward<_ToEncoding>(__to_encoding), __handler);
 	}
 
 	//////
@@ -861,8 +866,8 @@ namespace ztd { namespace text {
 		_UFromEncoding __from_encoding {};
 		default_handler_t __handler {};
 
-		return transcode_into(::std::forward<_Input>(__input), __from_encoding, ::std::forward<_Output>(__output),
-			::std::forward<_ToEncoding>(__to_encoding), __handler);
+		return ::ztd::text::transcode_into(::std::forward<_Input>(__input), __from_encoding,
+			::std::forward<_Output>(__output), ::std::forward<_ToEncoding>(__to_encoding), __handler);
 	}
 
 	//////
@@ -963,7 +968,7 @@ namespace ztd { namespace text {
 
 		_CodePoint __intermediate[__intermediate_buffer_max] {};
 		pivot<_IntermediateSpan> __pivot { _IntermediateSpan(__intermediate), encoding_error::ok };
-		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
@@ -1000,9 +1005,9 @@ namespace ztd { namespace text {
 		using _UToEncoding = remove_cvref_t<_ToEncoding>;
 		using _ToState     = encode_state_t<_UToEncoding>;
 
-		_ToState __to_state = make_encode_state(__to_encoding);
+		_ToState __to_state = ::ztd::text::make_encode_state(__to_encoding);
 
-		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
@@ -1038,9 +1043,9 @@ namespace ztd { namespace text {
 		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _FromState     = decode_state_t<_UFromEncoding>;
 
-		_FromState __from_state = make_decode_state(__from_encoding);
+		_FromState __from_state = ::ztd::text::make_decode_state(__from_encoding);
 
-		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state);
@@ -1075,7 +1080,7 @@ namespace ztd { namespace text {
 		_FromErrorHandler&& __from_error_handler) {
 		auto __handler = __txt_detail::__duplicate_or_be_careless(__from_error_handler);
 
-		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler), __handler);
 	}
@@ -1106,7 +1111,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
 
-		return transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding), __handler);
 	}
 
@@ -1139,7 +1144,7 @@ namespace ztd { namespace text {
 			using _UFromEncoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			default_handler_t __handler {};
 			_UFromEncoding __from_encoding {};
-			return transcode_to<_OutputContainer>(::std::forward<_Input>(__input), __from_encoding,
+			return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input), __from_encoding,
 				::std::forward<_ToEncoding>(__to_encoding), __handler);
 		}
 		else
@@ -1148,7 +1153,7 @@ namespace ztd { namespace text {
 			using _UFromEncoding = default_code_unit_encoding_t<_CodeUnit>;
 			default_handler_t __handler {};
 			_UFromEncoding __from_encoding {};
-			return transcode_to<_OutputContainer>(::std::forward<_Input>(__input), __from_encoding,
+			return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input), __from_encoding,
 				::std::forward<_ToEncoding>(__to_encoding), __handler);
 		}
 	}
@@ -1249,7 +1254,7 @@ namespace ztd { namespace text {
 
 		_CodePoint __intermediate[__intermediate_buffer_max] {};
 		pivot<_IntermediateSpan> __pivot { _IntermediateSpan(__intermediate), encoding_error::ok };
-		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
@@ -1286,9 +1291,9 @@ namespace ztd { namespace text {
 		using _UToEncoding = remove_cvref_t<_ToEncoding>;
 		using _ToState     = encode_state_t<_UToEncoding>;
 
-		_ToState __to_state = make_encode_state(__to_encoding);
+		_ToState __to_state = ::ztd::text::make_encode_state(__to_encoding);
 
-		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state);
@@ -1324,9 +1329,9 @@ namespace ztd { namespace text {
 		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _FromState     = decode_state_t<_UFromEncoding>;
 
-		_FromState __from_state = make_decode_state(__from_encoding);
+		_FromState __from_state = ::ztd::text::make_decode_state(__from_encoding);
 
-		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
 			::std::forward<_ToErrorHandler>(__to_error_handler), __from_state);
@@ -1361,7 +1366,7 @@ namespace ztd { namespace text {
 		_FromErrorHandler&& __from_error_handler) {
 		auto __handler = __txt_detail::__duplicate_or_be_careless(__from_error_handler);
 
-		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler), __handler);
 	}
@@ -1392,7 +1397,7 @@ namespace ztd { namespace text {
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding) {
 		default_handler_t __handler {};
 
-		return transcode<_OutputContainer>(::std::forward<_Input>(__input),
+		return ::ztd::text::transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding), __handler);
 	}
 
@@ -1424,7 +1429,7 @@ namespace ztd { namespace text {
 		if (::std::is_constant_evaluated()) {
 			using _UFromEncoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_UFromEncoding __from_encoding {};
-			return transcode<_OutputContainer>(
+			return ::ztd::text::transcode<_OutputContainer>(
 				::std::forward<_Input>(__input), __from_encoding, ::std::forward<_ToEncoding>(__to_encoding));
 		}
 		else
@@ -1433,7 +1438,7 @@ namespace ztd { namespace text {
 			using _UFromEncoding = default_code_unit_encoding_t<_CodeUnit>;
 
 			_UFromEncoding __from_encoding {};
-			return transcode<_OutputContainer>(
+			return ::ztd::text::transcode<_OutputContainer>(
 				::std::forward<_Input>(__input), __from_encoding, ::std::forward<_ToEncoding>(__to_encoding));
 		}
 	}

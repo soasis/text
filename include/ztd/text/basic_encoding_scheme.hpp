@@ -38,6 +38,7 @@
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
+#include <ztd/text/skip_input_error.hpp>
 #include <ztd/text/detail/constant_encoding_traits.hpp>
 #include <ztd/text/detail/basic_encoding_scheme_includes.hpp>
 
@@ -291,6 +292,17 @@ namespace ztd { namespace text {
 		/// @brief Whether or not this encoding is some form of Unicode encoding.
 		constexpr bool contains_unicode_encoding() const noexcept {
 			return ::ztd::text::contains_unicode_encoding(this->base());
+		}
+
+		//////
+		/// @brief Skips any consecutive input errors in the encoded input, where possible.
+		///
+		/// @remarks This Is only callable if the function call exists on the wrapped encoding.
+		template <typename _Result,
+			::std::enable_if_t<is_input_error_skippable_v<const encoding_type&, _Result>>* = nullptr>
+		constexpr decltype(auto) skip_input_error(_Result&& __result) const noexcept(noexcept(
+			::ztd::text::skip_input_error(::std::declval<const encoding_type&>(), ::std::declval<_Result>()))) {
+			return ::ztd::text::skip_input_error(this->base(), ::std::forward<_Result>(__result));
 		}
 
 		//////

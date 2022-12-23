@@ -34,6 +34,9 @@
 #include <utility>
 
 class my_utf16 : private ztd::text::utf16_t {
+private:
+	using base_t = ztd::text::utf16_t;
+
 public:
 	// Lucky 7 Members
 	static inline constexpr std::size_t max_code_points = 1;
@@ -47,8 +50,12 @@ public:
 
 	// Import base implementation here,
 	// to save on the implementation work!
-	using ztd::text::utf16_t::decode_one;
-	using ztd::text::utf16_t::encode_one;
+	using base_t::decode_one;
+	using base_t::encode_one;
+
+	// Import additional methods
+	using base_t::replacement_code_points;
+	using base_t::replacement_code_units;
 
 	// ❗ Special input skip member!!
 	// If this function is present and callable, it will
