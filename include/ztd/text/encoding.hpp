@@ -51,7 +51,7 @@
 #include <ztd/text/ascii.hpp>
 #include <ztd/text/shift_jis.hpp>
 #include <ztd/text/euc_kr.hpp>
-#include <ztd/text/latin1.hpp>
+#include <ztd/text/windows_1252.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/utf32.hpp>

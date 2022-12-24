@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 
 	// overlong encoded null
 	// (https://ztdtext.rtfd.io/en/latest/api/encodings/mutf8.html)
-	const char mutf8_text[] = u8"meow\xc0\x80meow!";
+	const char mutf8_text[] = { 'm','e','o','w','\xc0','\x80','m','e','o','w','!' };
 	const auto is_valid_mutf8_text
 	     = ztd::text::validate_decodable_as(mutf8_text, ztd::text::compat_mutf8);
 

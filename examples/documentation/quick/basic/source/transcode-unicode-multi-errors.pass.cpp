@@ -39,9 +39,11 @@
 int main(int, char*[]) {
 	// Scuffed UTF-8 input: 'C0' is not a legal sequence starter
 	// for regular, pure UTF-8
-	constexpr const char input[]                    = u8"Me\xC0\x9F\x90\xB1ow!";
+	constexpr const char input[]
+	     = { 'M', 'e', '\xC0', '\x9F', '\x90', '\xB1', 'o', 'w', '!', '\0' };
 	constexpr const char32_t expected_pass_output[] = U"Me";
-	constexpr const char expected_pass_leftover_input[] = u8"\xC0\x9F\x90\xB1ow!";
+	constexpr const char expected_pass_leftover_input[]
+	     = { '\xC0', '\x9F', '\x90', '\xB1', 'o', 'w', '!', '\0' };
 
 	std::u32string utf32_string_with_pass = ztd::text::transcode(input,
 	     ztd::text::compat_utf8, ztd::text::utf32, ztd::text::pass_handler);

@@ -39,7 +39,8 @@
 int main(int, char*[]) {
 	// Scuffed UTF-8 input: 'C0' is not a legal sequence starter
 	// for regular, pure UTF-8
-	constexpr const char input[] = u8"Me\xC0\x9F\x90\xB1ow!";
+	constexpr const char input[]
+	     = { 'M', 'e', '\xC0', '\x9F', '\x90', '\xB1', 'o', 'w', '!', '\0' };
 	constexpr const char32_t expected_default_output[] = U"Me�ow!";
 
 	std::u32string utf32_string_with_default

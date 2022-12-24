@@ -30,14 +30,14 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_LATIN1_HPP
-#define ZTD_TEXT_LATIN1_HPP
+#ifndef ZTD_TEXT_WINDOWS_1252_HPP
+#define ZTD_TEXT_WINDOWS_1252_HPP
 
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/impl/single_byte_lookup_encoding.hpp>
 
-#include <ztd/idk/latin1.tables.hpp>
+#include <ztd/idk/windows_1252.tables.hpp>
 #include <ztd/ranges/adl.hpp>
 
 #include <ztd/prologue.hpp>
@@ -46,13 +46,14 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_latin1
-	: public __txt_impl::__single_byte_lookup_encoding<basic_latin1<_CodeUnit, _CodePoint>,
-		  &::ztd::latin1_index_to_code_point, &::ztd::latin1_code_point_to_index, _CodeUnit, _CodePoint> { };
+	struct basic_windows_1252
+	: public __txt_impl::__single_byte_lookup_encoding<basic_windows_1252<_CodeUnit, _CodePoint>,
+		  &::ztd::windows_1252_index_to_code_point, &::ztd::windows_1252_code_point_to_index, _CodeUnit, _CodePoint> {
+	};
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_latin1<char> latin1 = {};
+	inline constexpr basic_windows_1252<char> windows_1252 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

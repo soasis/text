@@ -45,6 +45,8 @@
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/transcode_one.hpp>
 #include <ztd/text/pivot.hpp>
+#include <ztd/text/encode.hpp>
+#include <ztd/text/decode.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_extension_points.hpp>
@@ -238,7 +240,7 @@ namespace ztd { namespace text {
 				(void)__to_encoding;
 				(void)__to_error_handler;
 				(void)__pivot;
-				auto __result = decode_into_raw(::std::forward<_Input>(__input),
+				auto __result = ::ztd::text::decode_into_raw(::std::forward<_Input>(__input),
 					::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
 					::std::forward<_FromErrorHandler>(__from_error_handler), __from_state);
 				using _Result
@@ -255,7 +257,7 @@ namespace ztd { namespace text {
 				(void)__from_encoding;
 				(void)__from_error_handler;
 				(void)__pivot;
-				auto __result = encode_into_raw(::std::forward<_Input>(__input),
+				auto __result = ::ztd::text::encode_into_raw(::std::forward<_Input>(__input),
 					::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_Output>(__output),
 					::std::forward<_FromErrorHandler>(__to_error_handler), __to_state);
 				using _Result

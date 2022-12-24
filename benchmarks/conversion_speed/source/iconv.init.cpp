@@ -49,7 +49,7 @@ inline namespace ztd_text_benchmarks_conversion_speed_iconv_init {
 		struct pointer {
 			ztd::plat::icnv::descriptor handle;
 
-			pointer(nullptr_t = nullptr) noexcept : handle(ztd::plat::icnv::failure_descriptor) {
+			pointer(::std::nullptr_t = nullptr) noexcept : handle(ztd::plat::icnv::failure_descriptor) {
 			}
 
 			pointer(ztd::plat::icnv::descriptor desc) noexcept : handle(desc) {
@@ -69,19 +69,19 @@ inline namespace ztd_text_benchmarks_conversion_speed_iconv_init {
 				return this->handle;
 			}
 
-			friend bool operator==(pointer p, nullptr_t) noexcept {
+			friend bool operator==(pointer p, ::std::nullptr_t) noexcept {
 				return !ztd::plat::icnv::descriptor_is_valid(p.handle);
 			}
 
-			friend bool operator==(nullptr_t, pointer p) noexcept {
+			friend bool operator==(::std::nullptr_t, pointer p) noexcept {
 				return !ztd::plat::icnv::descriptor_is_valid(p.handle);
 			}
 
-			friend bool operator!=(pointer p, nullptr_t) noexcept {
+			friend bool operator!=(pointer p, ::std::nullptr_t) noexcept {
 				return ztd::plat::icnv::descriptor_is_valid(p.handle);
 			}
 
-			friend bool operator!=(nullptr_t, pointer p) noexcept {
+			friend bool operator!=(::std::nullptr_t, pointer p) noexcept {
 				return ztd::plat::icnv::descriptor_is_valid(p.handle);
 			}
 		};
