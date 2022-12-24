@@ -58,7 +58,7 @@ target_compile_options(ztd.text.benchmarks.barrier
 	${--warn-extra}
 	${--warn-errors}
 	${--allow-alignas-extra-padding}
-	${--allow-stringop-overflow}
+	${--allow-stringop-overflow} ${--allow-stringop-overread}
 	${--allow-array-bounds}
 )
 target_link_libraries(ztd.text.benchmarks.barrier

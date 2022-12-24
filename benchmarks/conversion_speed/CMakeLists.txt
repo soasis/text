@@ -65,7 +65,7 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			${--warn-extra}
 			${--warn-errors}
 			${--allow-alignas-extra-padding}
-			${--allow-stringop-overflow}
+			${--allow-stringop-overflow} ${--allow-stringop-overread}
 			${--allow-array-bounds}
 			)
 	target_compile_definitions(ztd.text.benchmarks.conversion_speed.${name}

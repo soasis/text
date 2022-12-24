@@ -45,7 +45,7 @@ function (generate_function_form_benchmark_targets name data_name title)
 		${--warn-all}
 		${--warn-extra}
 		${--allow-alignas-extra-padding}
-		${--allow-stringop-overflow}
+		${--allow-stringop-overflow} ${--allow-stringop-overread}
 		${--allow-array-bounds}
 		# MSVC is BROKEN
 		# ${--warn-errors}

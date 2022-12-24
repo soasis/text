@@ -44,7 +44,7 @@ target_compile_options(ztd.text.examples.boost_text
 		${--warn-extra}
 		${--warn-errors}
 		${--allow-alignas-extra-padding}
-		${--allow-stringop-overflow}
+		${--allow-stringop-overflow} ${--allow-stringop-overread}
 		${--allow-array-bounds}
 )
 

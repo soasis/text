@@ -93,6 +93,8 @@ if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		set(CMAKE_C_STANDARD 11)
 	endif()
 
+	set(CMAKE_OBJECT_PATH_MAX 1024)
+
 	if(ZTD_TEXT_BENCHMARKS OR ZTD_TEXT_EXAMPLES OR ZTD_TEXT_TESTS OR ZTD_TEXT_SCRATCH)
 		# normal flags
 		check_compiler_flag(disable-permissive MSVC /permissive- GCC -pedantic)
@@ -117,6 +119,7 @@ if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		#   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95353
 		if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0)
 			check_compiler_diagnostic(stringop-overflow)
+			check_compiler_diagnostic(stringop-overread)
 			check_compiler_diagnostic(array-bounds)
 		endif()
 	endif()
