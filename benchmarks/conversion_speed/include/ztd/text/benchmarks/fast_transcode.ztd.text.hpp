@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -17,7 +17,7 @@
 // Version 2.0 (the "License"); you may not use this file except in compliance
 // with the License. You may obtain a copy of the License at
 //
-// 		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -190,8 +190,9 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 	using UFromErrorHandler = ztd::remove_cvref_t<FromErrorHandler>;
 	using UToErrorHandler   = ztd::remove_cvref_t<ToErrorHandler>;
 	using TranscodeResult   = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState>;
-	if constexpr (!ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> // cf
-	     || !ztd::text::is_ignorable_error_handler_v<UToErrorHandler>) {
+	constexpr bool no_error_handling = ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> // cf
+	     && ztd::text::is_ignorable_error_handler_v<UToErrorHandler>;
+	if constexpr (!no_error_handling) {
 		const simdutf::result validate_res
 		     = simdutf::validate_utf8_with_errors(reinterpret_cast<const char*>(input.data()), input.size());
 		if (validate_res.error != simdutf::error_code::SUCCESS) {
@@ -204,7 +205,7 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 		}
 	}
 	// Now, we check to make sure the size is appropriate so we do not overflow the output buffer.
-	// Not we don't have to do this if we have an unbounded_view type.
+	// Note we don't have to do this if we have an unbounded_view type.
 	const size_t output_count
 	     = simdutf::utf32_length_from_utf8(reinterpret_cast<const char*>(input.data()), input.size());
 	if (output_count <= output.size()) {

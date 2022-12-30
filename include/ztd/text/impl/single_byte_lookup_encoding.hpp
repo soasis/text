@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,6 @@
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/replacement_units.hpp>
 
-#include <ztd/idk/detail/encoding_tables.utilities.hpp>
 #include <ztd/ranges/adl.hpp>
 
 #include <optional>
@@ -55,8 +54,8 @@ namespace ztd { namespace text {
 
 	namespace __txt_impl {
 
-		template <typename _Derived, __idk_detail::__lookup_index_to_code_point_function* _LookupCodePoint,
-			__idk_detail::__lookup_code_point_to_index_function* _LookupIndex, typename _CodeUnit = char,
+		template <typename _Derived, ::ztd::et::basic_lookup_index_to_code_point_function* _LookupCodePoint,
+			::ztd::et::basic_lookup_code_point_to_index_function* _LookupIndex, typename _CodeUnit = char,
 			typename _CodePoint = unicode_code_point>
 		struct __single_byte_lookup_encoding {
 			//////
@@ -153,8 +152,8 @@ namespace ztd { namespace text {
 						ztd::text::encoding_error::ok);
 				}
 				else {
-					::std::size_t __lookup_index                     = static_cast<::std::size_t>(__unit0) - 0x80u;
-					const ::std::optional<ztd_char32_t> __maybe_code = _LookupCodePoint(__lookup_index);
+					::std::size_t __lookup_index = static_cast<::std::size_t>(__unit0) - 0x80u;
+					const ::std::optional<::std::uint_least32_t> __maybe_code = _LookupCodePoint(__lookup_index);
 					if (__maybe_code) {
 						if constexpr (__call_error_handler) {
 							if (__out_it == __out_last) {
@@ -167,8 +166,8 @@ namespace ztd { namespace text {
 									::ztd::span<const code_point, 0>());
 							}
 						}
-						const ztd_char32_t& __code_point = static_cast<code_point>(*__maybe_code);
-						*__out_it                        = __code_point;
+						const code_point __code_point = static_cast<code_point>(*__maybe_code);
+						*__out_it                     = __code_point;
 						++__in_it;
 						++__out_it;
 						return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),

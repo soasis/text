@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,7 +45,7 @@
 #include <ztd/text/recode_one.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/char_predicates.hpp>
+#include <ztd/text/char_predicates.hpp>
 
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/algorithm.hpp>
@@ -215,8 +215,8 @@ namespace ztd { namespace text {
 					return _Result(::std::move(__result.input), false, __encode_state, __decode_state);
 				}
 				const bool __is_recode_roundtrip_okay = ::ztd::ranges::equal(::ztd::ranges::cbegin(__working_input),
-					::ztd::ranges::cbegin(__result.input), ::ztd::ranges::cbegin(__code_point_view),
-					::ztd::ranges::cbegin(__result.output), __txt_detail::__equal_char);
+					::ztd::ranges::cbegin(__result.input), __code_point_view.data(),
+					::ztd::to_address(::ztd::ranges::cbegin(__result.output)), ::ztd::text::equal_to_char);
 				if (!__is_recode_roundtrip_okay) {
 					return _Result(::std::move(__result.input), false, __encode_state, __decode_state);
 				}

@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,8 @@
 TEST_CASE("text/additional_encodings/punycode",
      "test a quick roundtrip using example punycode text to UTF-32 (and with UTF-8 as well)") {
 	const char32_t original[] = U"😩 OᴘᴇɴSSL ᴅɪᴅ ɴᴏᴛ ᴛᴇsᴛ ᴇᴠᴇɴ ʙᴀsɪᴄ ᴘᴜɴʏᴄᴏᴅᴇ RFC sᴛʀɪɴɢs ꜰᴏʀ ᴛʜᴇɪʀ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ⁉";
-	const char original_utf8[] = u8"😩 OᴘᴇɴSSL ᴅɪᴅ ɴᴏᴛ ᴛᴇsᴛ ᴇᴠᴇɴ ʙᴀsɪᴄ ᴘᴜɴʏᴄᴏᴅᴇ RFC sᴛʀɪɴɢs ꜰᴏʀ ᴛʜᴇɪʀ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ⁉";
+	const ztd_char8_t original_utf8[]
+	     = u8"😩 OᴘᴇɴSSL ᴅɪᴅ ɴᴏᴛ ᴛᴇsᴛ ᴇᴠᴇɴ ʙᴀsɪᴄ ᴘᴜɴʏᴄᴏᴅᴇ RFC sᴛʀɪɴɢs ꜰᴏʀ ᴛʜᴇɪʀ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ⁉";
 	const char expected[]
 	     = " OSSL   s  s  RFC ss   "
 	       "-cqj0qgheba6zgdehhb85bfc31d5m2evf4423k0a7nd6abq3flcampfa17ac5froq64c0a2a7nbcyjnb1b7yp96t0e31nkf95i";
@@ -50,6 +51,7 @@ TEST_CASE("text/additional_encodings/punycode",
 		std::string encoded = ztd::text::transcode(original_utf8, ztd::text::compat_utf8, ztd::text::punycode);
 		REQUIRE(encoded == expected);
 		std::string decoded_utf8 = ztd::text::transcode(encoded, ztd::text::punycode, ztd::text::compat_utf8);
-		REQUIRE(decoded_utf8 == original_utf8);
+		REQUIRE(ztd::ranges::equal(
+		     decoded_utf8, std::string_view(reinterpret_cast<const char*>(original_utf8)), ztd::text::equal_to_char));
 	}
 }

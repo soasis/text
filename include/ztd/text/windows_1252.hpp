@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,10 +35,10 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/impl/single_byte_lookup_encoding.hpp>
 
-#include <ztd/idk/windows_1252.tables.hpp>
-#include <ztd/ranges/adl.hpp>
+#include <ztd/encoding_tables/windows_1252.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -46,10 +46,10 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_windows_1252
+	class basic_windows_1252
 	: public __txt_impl::__single_byte_lookup_encoding<basic_windows_1252<_CodeUnit, _CodePoint>,
-		  &::ztd::windows_1252_index_to_code_point, &::ztd::windows_1252_code_point_to_index, _CodeUnit, _CodePoint> {
-	};
+		  &::ztd::et::windows_1252_index_to_code_point, &::ztd::et::windows_1252_code_point_to_index, _CodeUnit,
+		  _CodePoint> { };
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.

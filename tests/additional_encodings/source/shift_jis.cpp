@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,8 +38,8 @@
 #include <iostream>
 #include <vector>
 
-TEST_CASE("text/additional_encodings/shift_jis", "test a quick roundtrip using example SHIFT-JIS text to UTF-32") {
-	constexpr const char* original_filename = "data/tests/additional_encodings/shift_jis/shift_jis.txt";
+TEST_CASE("text/additional_encodings/shift_jis_x0208", "test a quick roundtrip using example SHIFT-JIS text to UTF-32") {
+	constexpr const char* original_filename = "data/tests/additional_encodings/shift_jis_x0208/shift_jis_x0208.txt";
 	std::ifstream original_ifstr(
 	     original_filename, static_cast<std::ios_base::openmode>(std::ios_base::in | std::ios_base::binary));
 	original_ifstr >> std::noskipws;
@@ -47,8 +47,8 @@ TEST_CASE("text/additional_encodings/shift_jis", "test a quick roundtrip using e
 	     std::istream_iterator<unsigned char>(original_ifstr), std::istream_iterator<unsigned char> {});
 
 	constexpr const char* expected_filename = ztd::endian::native == ztd::endian::little
-	     ? "data/tests/additional_encodings/shift_jis/utf-32-le.txt"
-	     : "data/tests/additional_encodings/shift_jis/utf-32-be.txt";
+	     ? "data/tests/additional_encodings/shift_jis_x0208/utf-32-le.txt"
+	     : "data/tests/additional_encodings/shift_jis_x0208/utf-32-be.txt";
 	std::ifstream expected_ifstr(
 	     expected_filename, static_cast<std::ios_base::openmode>(std::ios_base::in | std::ios_base::binary));
 	expected_ifstr >> std::noskipws;
@@ -59,13 +59,13 @@ TEST_CASE("text/additional_encodings/shift_jis", "test a quick roundtrip using e
 	std::u32string_view expected(
 	     reinterpret_cast<const char32_t*>(expected_data.data()), expected_data.size() / sizeof(char32_t));
 
-	auto decoded_result           = ztd::text::decode_to(original, ztd::text::shift_jis, ztd::text::pass_handler);
+	auto decoded_result           = ztd::text::decode_to(original, ztd::text::shift_jis_x0208, ztd::text::pass_handler);
 	const std::u32string& decoded = decoded_result.output;
 	REQUIRE(decoded_result.error_code == ztd::text::encoding_error::ok);
 	REQUIRE_FALSE(decoded_result.errors_were_handled());
 	REQUIRE(ztd::ranges::empty(decoded_result.input));
 	REQUIRE(decoded == expected);
-	auto encoded_result        = ztd::text::encode_to(decoded, ztd::text::shift_jis, ztd::text::pass_handler);
+	auto encoded_result        = ztd::text::encode_to(decoded, ztd::text::shift_jis_x0208, ztd::text::pass_handler);
 	const std::string& encoded = encoded_result.output;
 	REQUIRE(encoded_result.error_code == ztd::text::encoding_error::ok);
 	REQUIRE_FALSE(encoded_result.errors_were_handled());

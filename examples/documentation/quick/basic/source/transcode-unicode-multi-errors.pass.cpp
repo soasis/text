@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,11 +39,9 @@
 int main(int, char*[]) {
 	// Scuffed UTF-8 input: 'C0' is not a legal sequence starter
 	// for regular, pure UTF-8
-	constexpr const char input[]
-	     = { 'M', 'e', '\xC0', '\x9F', '\x90', '\xB1', 'o', 'w', '!', '\0' };
-	constexpr const char32_t expected_pass_output[] = U"Me";
-	constexpr const char expected_pass_leftover_input[]
-	     = { '\xC0', '\x9F', '\x90', '\xB1', 'o', 'w', '!', '\0' };
+	constexpr const char input[]                        = "Me\xC0\x9F\x90\xB1ow!";
+	constexpr const char32_t expected_pass_output[]     = U"Me";
+	constexpr const char expected_pass_leftover_input[] = "\xC0\x9F\x90\xB1ow!";
 
 	std::u32string utf32_string_with_pass = ztd::text::transcode(input,
 	     ztd::text::compat_utf8, ztd::text::utf32, ztd::text::pass_handler);

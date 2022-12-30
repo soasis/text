@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -64,12 +64,8 @@ int main(int, char*[]) {
 
 	// The results should all be the same, despite the container!
 	ZTD_TEXT_ASSERT(
-	     std::equal(utf16_emoji_vector.cbegin(), utf16_emoji_vector.cend(),
-	          utf16_expected_output.cbegin(), utf16_expected_output.cend()));
-	ZTD_TEXT_ASSERT(std::equal(utf16_emoji_list.cbegin(), utf16_emoji_list.cend(),
-	     utf16_expected_output.cbegin(), utf16_expected_output.cend()));
-	ZTD_TEXT_ASSERT(
-	     std::equal(utf16_emoji_deque.cbegin(), utf16_emoji_deque.cend(),
-	          utf16_expected_output.cbegin(), utf16_expected_output.cend()));
+	     ztd::ranges::equal(utf16_emoji_vector, utf16_expected_output));
+	ZTD_TEXT_ASSERT(ztd::ranges::equal(utf16_emoji_list, utf16_expected_output));
+	ZTD_TEXT_ASSERT(ztd::ranges::equal(utf16_emoji_deque, utf16_expected_output));
 	return 0;
 }

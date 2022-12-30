@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -17,7 +17,7 @@
 // Version 2.0 (the "License"); you may not use this file except in compliance
 // with the License. You may obtain a copy of the License at
 //
-// 		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,47 +53,11 @@
 			const from_char_t* input = input_data.data();                                                      \
 			size_t output_size       = output_data.size();                                                     \
 			to_char_t* output        = output_data.data();                                                     \
-			auto err = ztd::text::transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N,         \
+			auto err = ztd::text::transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N,     \
 			     ztd::span(output, output_size), ztd::text::utf##TO_N, ztd::text::assume_valid_handler,        \
 			     ztd::text::assume_valid_handler);                                                             \
 			if (err.error_code != ztd::text::encoding_error::ok) {                                             \
 				result = false;                                                                               \
-			}                                                                                                  \
-		}                                                                                                       \
-		const bool is_equal                                                                                     \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result) {                                                                                          \
-			state.SkipWithError("conversion failed with an error");                                            \
-		}                                                                                                       \
-		else if (!is_equal) {                                                                                   \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
-		}                                                                                                       \
-	}                                                                                                            \
-                                                                                                                  \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_single_unchecked(benchmark::State& state) {    \
-		using from_char_t = ztd_char##FROM_N##_t;                                                               \
-		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
-		const std::vector<from_char_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),               \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));  \
-		std::vector<to_char_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                         \
-		bool result = true;                                                                                     \
-		for (auto _ : state) {                                                                                  \
-			size_t input_size            = input_data.size();                                                  \
-			const from_char_t* input_ptr = input_data.data();                                                  \
-			size_t output_size           = output_data.size();                                                 \
-			to_char_t* output_ptr        = output_data.data();                                                 \
-			auto input                   = ztd::span(input_ptr, input_size);                                   \
-			auto output                  = ztd::span(output_ptr, output_size);                                 \
-			for (; !input.empty();) {                                                                          \
-				auto err = ztd::text::transcode_one_into(input, ztd::text::utf##FROM_N, output,               \
-				     ztd::text::utf##TO_N, ztd::text::assume_valid_handler, ztd::text::assume_valid_handler); \
-				if (err.error_code != ztd::text::encoding_error::ok) {                                        \
-					result = false;                                                                          \
-					break;                                                                                   \
-				}                                                                                             \
-				input  = ::std::move(err.input);                                                              \
-				output = ::std::move(err.output);                                                             \
 			}                                                                                                  \
 		}                                                                                                       \
 		const bool is_equal                                                                                     \
@@ -118,47 +82,11 @@
 			size_t input_size        = input_data.size();                                                      \
 			const from_char_t* input = input_data.data();                                                      \
 			to_char_t* output        = output_data.data();                                                     \
-			auto err = ztd::text::transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N,         \
+			auto err = ztd::text::transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N,     \
 			     ztd::ranges::unbounded_view(output), ztd::text::utf##TO_N, ztd::text::assume_valid_handler,   \
 			     ztd::text::assume_valid_handler);                                                             \
 			if (err.error_code != ztd::text::encoding_error::ok) {                                             \
 				result = false;                                                                               \
-			}                                                                                                  \
-		}                                                                                                       \
-		const bool is_equal                                                                                     \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result) {                                                                                          \
-			state.SkipWithError("conversion failed with an error");                                            \
-		}                                                                                                       \
-		else if (!is_equal) {                                                                                   \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
-		}                                                                                                       \
-	}                                                                                                            \
-                                                                                                                  \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_ztd_text_single_unbounded_unchecked(                    \
-	     benchmark::State& state) {                                                                              \
-		using from_char_t = ztd_char##FROM_N##_t;                                                               \
-		using to_char_t   = ztd_char##TO_N##_t;                                                                 \
-		const std::vector<from_char_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),               \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));  \
-		std::vector<to_char_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                         \
-		bool result = true;                                                                                     \
-		for (auto _ : state) {                                                                                  \
-			size_t input_size            = input_data.size();                                                  \
-			const from_char_t* input_ptr = input_data.data();                                                  \
-			to_char_t* output_ptr        = output_data.data();                                                 \
-			auto input                   = ztd::span(input_ptr, input_size);                                   \
-			auto output                  = ztd::ranges::unbounded_view(output_ptr);                            \
-			for (; !input.empty();) {                                                                          \
-				auto err = ztd::text::transcode_one_into(input, ztd::text::utf##FROM_N, output,               \
-				     ztd::text::utf##TO_N, ztd::text::assume_valid_handler, ztd::text::assume_valid_handler); \
-				if (err.error_code != ztd::text::encoding_error::ok) {                                        \
-					result = false;                                                                          \
-					break;                                                                                   \
-				}                                                                                             \
-				input  = ::std::move(err.input);                                                              \
-				output = ::std::move(err.output);                                                             \
 			}                                                                                                  \
 		}                                                                                                       \
 		const bool is_equal                                                                                     \
@@ -217,37 +145,25 @@ UTF_CONVERSION_BENCHMARK(32, 16);
 
 #undef UTF_CONVERSION_BENCHMARK
 
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unchecked);
 BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unbounded_unchecked);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unchecked);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
-BENCHMARK(utf8_to_utf16_well_formed_ztd_text_view_unchecked);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unchecked);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unbounded_unchecked);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unchecked);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
-BENCHMARK(utf16_to_utf8_well_formed_ztd_text_view_unchecked);
-
-BENCHMARK(utf8_to_utf32_well_formed_ztd_text_unchecked);
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text_unbounded_unchecked);
-BENCHMARK(utf8_to_utf32_well_formed_ztd_text_single_unchecked);
-BENCHMARK(utf8_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
-BENCHMARK(utf8_to_utf32_well_formed_ztd_text_view_unchecked);
-BENCHMARK(utf32_to_utf8_well_formed_ztd_text_unchecked);
-BENCHMARK(utf32_to_utf8_well_formed_ztd_text_unbounded_unchecked);
-BENCHMARK(utf32_to_utf8_well_formed_ztd_text_single_unchecked);
-BENCHMARK(utf32_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
-BENCHMARK(utf32_to_utf8_well_formed_ztd_text_view_unchecked);
-
-BENCHMARK(utf16_to_utf32_well_formed_ztd_text_unchecked);
-BENCHMARK(utf16_to_utf32_well_formed_ztd_text_single_unchecked);
 BENCHMARK(utf16_to_utf32_well_formed_ztd_text_unbounded_unchecked);
-BENCHMARK(utf16_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
-BENCHMARK(utf16_to_utf32_well_formed_ztd_text_view_unchecked);
-BENCHMARK(utf32_to_utf16_well_formed_ztd_text_unchecked);
-BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unbounded_unchecked);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_unbounded_unchecked);
-BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_unbounded_unchecked);
+
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_unchecked);
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_unchecked);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_unchecked);
+BENCHMARK(utf32_to_utf16_well_formed_ztd_text_unchecked);
+
+BENCHMARK(utf8_to_utf32_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf8_to_utf16_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf16_to_utf32_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf16_to_utf8_well_formed_ztd_text_view_unchecked);
+BENCHMARK(utf32_to_utf8_well_formed_ztd_text_view_unchecked);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_view_unchecked);
 
 #endif

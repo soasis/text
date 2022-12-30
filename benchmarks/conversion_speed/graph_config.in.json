@@ -227,6 +227,16 @@
 			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off."
 		},
 		{
+			"name": "ztd.text (basic)",
+			"pattern": "ztd_text_basic$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::basic_transcode_into_raw function."
+		},
+		{
+			"name": "ztd.text (basic, unbounded)",
+			"pattern": "ztd_text_basic_unbounded$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::basic_transcode_into_raw function, with output bounds checking turned off."
+		},
+		{
 			"name": "ztd.text (single loop)",
 			"pattern": "ztd_text_single$",
 			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function."
@@ -249,6 +259,16 @@
 		{
 			"name": "ztd.text (unbounded, assume valid)",
 			"pattern": "ztd_text_unbounded_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off."
+		},
+		{
+			"name": "ztd.text (basic, assume valid)",
+			"pattern": "ztd_text_basic_unchecked$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
+		},
+		{
+			"name": "ztd.text (basic, unbounded, assume valid)",
+			"pattern": "ztd_text_basic_unbounded_unchecked$",
 			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off."
 		},
 		{

@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,14 +38,6 @@ inline namespace ztd_text_tests_basic_compile_time_count_as_decoded {
 
 	template <typename T>
 	static void delayed() {
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
-		// Basic Source Character Set, using defaults
-		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
-		static_assert(ztd::text::count_as_decoded(ztd::tests::basic_source_character_set).count
-		     == ztd::tests::u32_basic_source_character_set.size());
-		static_assert(ztd::text::count_as_decoded(ztd::tests::w_basic_source_character_set).count
-		     == ztd::tests::u32_basic_source_character_set.size());
-#endif
 		static_assert(ztd::text::count_as_decoded(ztd::tests::u8_basic_source_character_set).count
 		     == ztd::tests::u32_basic_source_character_set.size());
 		static_assert(ztd::text::count_as_decoded(ztd::tests::u16_basic_source_character_set).count
@@ -66,19 +58,6 @@ inline namespace ztd_text_tests_basic_compile_time_count_as_decoded {
 		static_assert(ztd::text::count_as_decoded(ztd::tests::u32_basic_source_character_set, ztd::text::utf32).count
 		     == ztd::tests::u32_basic_source_character_set.size());
 
-		// Larger unicode sequences, using defaults
-#if ZTD_IS_ON(ZTD_STD_LIBRARY_IS_CONSTANT_EVALUATED)
-		// Basic Source Character Set, using defaults
-		// Can only be done if we have constant evaluation inside to swap to the literal_t encoding
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
-			static_assert(ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian).count
-			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
-		}
-		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
-			static_assert(ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian).count
-			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
-		}
-#endif
 		static_assert(ztd::text::count_as_decoded(ztd::tests::u8_unicode_sequence_truth_native_endian).count
 		     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		static_assert(ztd::text::count_as_decoded(ztd::tests::u16_unicode_sequence_truth_native_endian).count
@@ -88,14 +67,14 @@ inline namespace ztd_text_tests_basic_compile_time_count_as_decoded {
 
 		// Larger unicode sequences, explicit encoding
 		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::literal_t>) {
-			static_assert(
-			     ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian, ztd::text::literal)
-			          .count
+			static_assert(ztd::text::count_as_decoded(ztd::tests::unicode_sequence_truth_native_endian,
+			                   ztd::text::literal, ztd::text::replacement_handler)
+			                   .count
 			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		}
 		if constexpr (ztd::always_true_v<T> && ztd::text::is_unicode_encoding_v<ztd::text::wide_literal_t>) {
-			static_assert(ztd::text::count_as_decoded(
-			                   ztd::tests::w_unicode_sequence_truth_native_endian, ztd::text::wide_literal)
+			static_assert(ztd::text::count_as_decoded(ztd::tests::w_unicode_sequence_truth_native_endian,
+			                   ztd::text::wide_literal, ztd::text::replacement_handler)
 			                   .count
 			     == ztd::tests::u32_unicode_sequence_truth_native_endian.size());
 		}

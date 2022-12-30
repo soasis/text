@@ -1,7 +1,7 @@
 # =============================================================================
 #
 # ztd.text
-# Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+# Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 # Contact: opensource@soasis.org
 #
 # Commercial License Usage
@@ -18,7 +18,7 @@
 # file except in compliance with the License. You may obtain a copy of the
 # License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+# https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -133,6 +133,7 @@ option(ZTD_TEXT_DOCUMENTATION "Enable build of documentation" OFF)
 option(ZTD_TEXT_DOCUMENTATION_NO_SPHINX "Turn off Sphinx usage (useful for ReadTheDocs builds)" OFF)
 option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
 option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
+option(ZTD_TEXT_BENCHMARKS_INTERNALS "Enable benchmarking for basic and internal-specific functionality" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
 option(ZTD_TEXT_BOOST.TEXT "Enable usage of Boost.Text benchmarks and examples" OFF)
 
@@ -150,6 +151,13 @@ FetchContent_Declare(ztd.static_containers
 	GIT_SHALLOW    ON
 	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.static_containers)
+
+# ztd.encoding_tables
+FetchContent_Declare(ztd.encoding_tables
+	GIT_REPOSITORY https://github.com/soasis/encoding_tables.git
+	GIT_SHALLOW    ON
+	GIT_TAG        main)
+FetchContent_MakeAvailable(ztd.encoding_tables)
 
 # ztd.cuneicode
 set(ZTD_CUNEICODE_SIMDUTF_SHARED ${ZTD_TEXT_BENCHMARKS})

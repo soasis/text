@@ -1,7 +1,7 @@
 # =============================================================================
 #
 # ztd.text
-# Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+# Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 # Contact: opensource@soasis.org
 #
 # Commercial License Usage
@@ -18,7 +18,7 @@
 # file except in compliance with the License. You may obtain a copy of the
 # License at
 #
-#		http://www.apache.org/licenses/LICENSE-2.0
+# https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ list(TRANSFORM ztd-text-tests-additional-encodings-data-destination-files PREPEN
 
 add_custom_command(OUTPUT ${ztd-text-tests-additional-encodings-data-destination-files}
 	COMMAND ${CMAKE_COMMAND} -E copy_directory ${ztd-text-tests-additional-encodings-data-source} ${ztd-text-tests-additional-encodings-data-destination}
-	COMMENT "[ztd.text/examples] Copying data files from \"${ztd-text-tests-additional-encodings-data-source}\" used in examples/shift_jis over to \"${ztd-text-tests-additional-encodings-data-destination}\"..."
+	COMMENT "[ztd.text/examples] Copying data files from \"${ztd-text-tests-additional-encodings-data-source}\" used in examples/shift_jis_x0208 over to \"${ztd-text-tests-additional-encodings-data-destination}\"..."
 	DEPENDS ${ztd-text-tests-additional-encodings-data-source-files}
 )
 

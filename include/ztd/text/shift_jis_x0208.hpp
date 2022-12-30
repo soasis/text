@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_SHIFT_JIS_HPP
-#define ZTD_TEXT_SHIFT_JIS_HPP
+#ifndef ZTD_TEXT_SHIFT_JIS_X0208_HPP
+#define ZTD_TEXT_SHIFT_JIS_X0208_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -42,8 +42,7 @@
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/replacement_units.hpp>
 
-#include <ztd/idk/shift_jis.tables.hpp>
-#include <ztd/ranges/reconstruct.hpp>
+#include <ztd/encoding_tables/shift_jis_x0208.tables.hpp>
 #include <ztd/ranges/adl.hpp>
 
 #include <ztd/prologue.hpp>
@@ -52,7 +51,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_shift_jis {
+	struct basic_shift_jis_x0208 {
 		//////
 		/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
 		using code_unit = _CodeUnit;
@@ -95,8 +94,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
-		/// reconstructed output range, error handler, and a reference to the passed-in state.
+		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -129,7 +128,7 @@ namespace ztd { namespace text {
 				const code_point __code_point = static_cast<code_point>(__unit0);
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -150,7 +149,7 @@ namespace ztd { namespace text {
 				const code_point __code_point = static_cast<code_point>((0xFF61 - 0xA1) + __unit0);
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -170,7 +169,7 @@ namespace ztd { namespace text {
 				// Top-Level case 2: this is a double-byte sequence!
 				if constexpr (__call_error_handler) {
 					if (__in_it == __in_last) {
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__input), ::std::move(__output), __state,
 							     ztd::text::encoding_error::incomplete_sequence),
@@ -190,7 +189,7 @@ namespace ztd { namespace text {
 					if (__lookup_index <= 10715 && __lookup_index >= 8836) {
 						if constexpr (__call_error_handler) {
 							if (__out_it == __out_last) {
-								basic_shift_jis __self {};
+								basic_shift_jis_x0208 __self {};
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -208,12 +207,12 @@ namespace ztd { namespace text {
 							ztd::text::encoding_error::ok);
 					}
 					else {
-						::std::optional<ztd_char32_t> __maybe_code
-							= ztd::shift_jis_index_to_code_point(__lookup_index);
+						::std::optional<::std::uint_least32_t> __maybe_code
+							= ztd::et::shift_jis_x0208_index_to_code_point(__lookup_index);
 						if (__maybe_code) {
 							if constexpr (__call_error_handler) {
 								if (__out_it == __out_last) {
-									basic_shift_jis __self {};
+									basic_shift_jis_x0208 __self {};
 									return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 										_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 										     _SubOutput(::std::move(__out_it), ::std::move(__out_last)),
@@ -235,7 +234,7 @@ namespace ztd { namespace text {
 			}
 
 			// Top-Level case 3 (default): unrecognized byte sequence!!
-			basic_shift_jis __self {};
+			basic_shift_jis_x0208 __self {};
 			return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 				_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 				     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -254,8 +253,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
-		/// reconstructed output range, error handler, and a reference to the passed-in state.
+		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -286,7 +285,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__input), ::std::move(__output), __state,
 							     ztd::text::encoding_error::insufficient_output_space),
@@ -304,7 +303,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -323,7 +322,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -342,7 +341,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -363,7 +362,8 @@ namespace ztd { namespace text {
 				__code_point = 0xFF0D;
 			}
 
-			::std::optional<::std::size_t> __maybe_index = ::ztd::shift_jis_code_point_to_index(__code_point);
+			::std::optional<::std::size_t> __maybe_index
+				= ::ztd::et::shift_jis_x0208_code_point_to_index(__code_point);
 			if (__maybe_index) {
 				::std::size_t __index         = *__maybe_index;
 				::std::size_t __first         = __index / 188;
@@ -374,7 +374,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -389,7 +389,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis __self {};
+						basic_shift_jis_x0208 __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -406,7 +406,7 @@ namespace ztd { namespace text {
 					ztd::text::encoding_error::ok);
 			}
 
-			basic_shift_jis __self {};
+			basic_shift_jis_x0208 __self {};
 			return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 				_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 				     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -417,7 +417,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_shift_jis<char> shift_jis = {};
+	inline constexpr basic_shift_jis_x0208<char> shift_jis_x0208 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

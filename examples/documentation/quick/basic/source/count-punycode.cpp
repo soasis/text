@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,8 @@ int main(int, char*[]) {
 	// Show decoded punycode (translate to UTF-8 to print to console)
 	std::cout << "Decoded punycode code points:\n\t";
 	for (const auto& code_point : output) {
-		std::cout << std::hex << std::showbase << code_point << " ";
+		std::cout << std::hex << std::showbase
+		          << static_cast<uint_least32_t>(code_point) << " ";
 	}
 	std::cout << "\n" << std::endl;
 

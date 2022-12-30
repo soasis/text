@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,8 @@
 #include <optional>
 
 namespace {
-
+	// Conversion data from: WHATWG Encoding Specification for Shift-JIS, JIS X 0208 standard.
+	// https://encoding.spec.whatwg.org/#index-jis0208
 	std::array<std::pair<std::uint_least32_t, std::uint_least32_t>, 7724> index_codepoint_map { { { 0, 0x3000 },
 		{ 1, 0x3001 }, { 2, 0x3002 }, { 3, 0xFF0C }, { 4, 0xFF0E }, { 5, 0x30FB }, { 6, 0xFF1A }, { 7, 0xFF1B },
 		{ 8, 0xFF1F }, { 9, 0xFF01 }, { 10, 0x309B }, { 11, 0x309C }, { 12, 0x00B4 }, { 13, 0xFF40 }, { 14, 0x00A8 },
@@ -1349,7 +1350,7 @@ namespace detail {
 	std::optional<char32_t> shift_jis_index_to_code_point(std::size_t lookup_index_pointer) noexcept {
 		std::uint_least32_t lookup_index = static_cast<std::uint_least32_t>(lookup_index_pointer);
 		auto it                          = std::lower_bound(
-		                              index_codepoint_map.cbegin(), index_codepoint_map.cend(), lookup_index, &less_than_index_target);
+               index_codepoint_map.cbegin(), index_codepoint_map.cend(), lookup_index, &less_than_index_target);
 		if (it == index_codepoint_map.cend()) {
 			return std::nullopt;
 		}

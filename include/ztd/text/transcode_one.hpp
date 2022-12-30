@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -144,22 +144,6 @@ namespace ztd { namespace text {
 			              remove_cvref_t<_ToErrorHandler>>,
 			ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
 
-#define ZTD_TEXT_SUPER_BASIC_TRANSCODE_COPY_PASTA_I_()                                                      \
-	_WorkingIntermediate __working_input(                                                                  \
-	     ::ztd::ranges::begin(__working_pivot), ::ztd::ranges::begin(__intermediate_result.output));       \
-	for (;;) {                                                                                             \
-		auto __end_result = ::std::forward<_ToEncoding>(__to_encoding)                                    \
-		                         .encode_one(::std::move(__working_input), ::std::move(__working_output), \
-		                              __to_error_handler, __to_state);                                    \
-		if (__end_result.error_code != encoding_error::ok || ::ztd::ranges::empty(__end_result.input)) {  \
-			return _Result(::std::move(__intermediate_result.input), ::std::move(__end_result.output),   \
-			     __intermediate_result.state, __end_result.state, __end_result.error_code,               \
-			     __intermediate_result.error_count + __end_result.error_count);                          \
-		}                                                                                                 \
-		__working_input  = ::std::move(__end_result.input);                                               \
-		__working_output = ::std::move(__end_result.output);                                              \
-	}                                                                                                      \
-	static_assert(true, "")
 
 		auto& __working_pivot = __pivot.intermediate;
 		_WorkingOutput __working_output(::std::forward<_Output>(__output));
@@ -174,8 +158,21 @@ namespace ztd { namespace text {
 				::std::move(__intermediate_result), __to_error_handler, __to_state,
 				__intermediate_handler._M_code_points_progress(), __code_unit_progress);
 		}
-		ZTD_TEXT_SUPER_BASIC_TRANSCODE_COPY_PASTA_I_();
-#undef ZTD_TEXT_SUPER_BASIC_TRANSCODE_COPY_PASTA_I_
+		using _SpanTy        = ::ztd::span<const ::ztd::ranges::range_value_type_t<_WorkingIntermediate>>;
+		auto __working_input = ::ztd::ranges::cascading_reconstruct<_SpanTy, _WorkingIntermediate>(
+			::ztd::ranges::begin(__working_pivot), ::ztd::ranges::begin(__intermediate_result.output));
+		for (;;) {
+			auto __end_result = ::std::forward<_ToEncoding>(__to_encoding)
+				                    .encode_one(::std::move(__working_input), ::std::move(__working_output),
+				                         __to_error_handler, __to_state);
+			if (__end_result.error_code != encoding_error::ok || ::ztd::ranges::empty(__end_result.input)) {
+				return _Result(::std::move(__intermediate_result.input), ::std::move(__end_result.output),
+					__intermediate_result.state, __end_result.state, __end_result.error_code,
+					__intermediate_result.error_count + __end_result.error_count);
+			}
+			__working_input  = ::std::move(__end_result.input);
+			__working_output = ::std::move(__end_result.output);
+		}
 	}
 
 	//////

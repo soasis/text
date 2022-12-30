@@ -27,7 +27,7 @@
 #include <ztd/text/count_as_encoded.hpp>
 #include <ztd/text/count_as_decoded.hpp>
 #include <ztd/text/detail/transcode_routines.hpp>
-#include <ztd/text/detail/char_predicates.hpp>
+#include <ztd/text/char_predicates.hpp>
 
 #include <ztd/idk/ebco.hpp>
 #include <ztd/idk/span.hpp>

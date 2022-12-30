@@ -3,7 +3,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -20,7 +20,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -284,8 +284,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
-		/// reconstructed output range, error handler, and a reference to the passed-in state.
+		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -307,8 +307,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
-		/// reconstructed output range, error handler, and a reference to the passed-in state.
+		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -535,7 +535,7 @@ namespace ztd { namespace text {
 					}
 					const bool __is_transcode_roundtrip_okay = ::ztd::ranges::equal(::ztd::ranges::cbegin(__input),
 						::ztd::ranges::cbegin(__raw_result.input), ::ztd::ranges::cbegin(__code_unit_view),
-						::ztd::ranges::cbegin(__raw_result.output), __txt_detail::__equal_char);
+						::ztd::ranges::cbegin(__raw_result.output), ::ztd::text::equal_to_char);
 					if (!__is_transcode_roundtrip_okay) {
 						return __validate_decodable_as_result(::std::move(__raw_result.input), false, __state);
 					}
@@ -585,7 +585,7 @@ namespace ztd { namespace text {
 					}
 					const bool __is_transcode_roundtrip_okay = ::ztd::ranges::equal(::ztd::ranges::cbegin(__input),
 						::ztd::ranges::cbegin(__raw_result.input), ::ztd::ranges::cbegin(__code_point_view),
-						::ztd::ranges::cbegin(__raw_result.output), __txt_detail::__equal_char);
+						::ztd::ranges::cbegin(__raw_result.output), ::ztd::text::equal_to_char);
 					if (!__is_transcode_roundtrip_okay) {
 						return __validate_encodable_as_result(::std::move(__raw_result.input), false, __state);
 					}

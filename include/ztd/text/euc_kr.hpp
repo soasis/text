@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -18,7 +18,7 @@
 // file except in compliance with the License. You may obtain a copy of the
 // License at
 //
-//		http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/replacement_units.hpp>
 
-#include <ztd/idk/euc_kr.tables.hpp>
+#include <ztd/encoding_tables/euc_kr_uhc.tables.hpp>
 #include <ztd/ranges/adl.hpp>
 
 #include <ztd/prologue.hpp>
@@ -94,8 +94,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
-		/// reconstructed output range, error handler, and a reference to the passed-in state.
+		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -161,8 +161,8 @@ namespace ztd { namespace text {
 				unsigned char __second_byte = static_cast<unsigned char>(__units[1]);
 				if (__second_byte <= 0xFE && __second_byte >= 0x41) {
 					const ::std::size_t __lookup_index = ((__unit0 - 0x81) * 190) + (__second_byte - 0x41);
-					const ::std::optional<ztd_char32_t> __maybe_code
-						= ::ztd::euc_kr_index_to_code_point(__lookup_index);
+					const ::std::optional<::std::uint_least32_t> __maybe_code
+						= ::ztd::et::euc_kr_uhc_index_to_code_point(__lookup_index);
 					if (__maybe_code) {
 						if constexpr (__call_error_handler) {
 							if (__out_it == __out_last) {
@@ -207,8 +207,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
-		/// reconstructed output range, error handler, and a reference to the passed-in state.
+		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -254,7 +254,7 @@ namespace ztd { namespace text {
 					ztd::text::encoding_error::ok);
 			}
 
-			::std::optional<::std::size_t> __maybe_index = ::ztd::euc_kr_code_point_to_index(__code_point32);
+			::std::optional<::std::size_t> __maybe_index = ::ztd::et::euc_kr_uhc_code_point_to_index(__code_point32);
 			if (__maybe_index) {
 				const ::std::size_t __index = *__maybe_index;
 				::std::size_t __first       = (__index / 190) + 0x81;
