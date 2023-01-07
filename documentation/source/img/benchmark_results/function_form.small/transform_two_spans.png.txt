@@ -2,19 +2,19 @@ Title: "C Character Set - Transform 2 Spans, Return Error Information". Descript
 
 There are 8 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
 
-- structptr_ptr_ptr_ptr_ptr is 8th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans.".
-  Measures to a mean of "414.3146618257775" nanoseconds, from 100 multi-iteration samples.
-- err_ptrptr_ptrsize_ptrptr_ptrsize is 7th. Described as: "An indivisible unit conversion using output pointers for the data and its size.".
-  Measures to a mean of "411.85090515913225" nanoseconds, from 100 multi-iteration samples.
+- err_ptrptr_ptrsize_ptrptr_ptrsize is 8th. Described as: "An indivisible unit conversion using output pointers for the data and its size.".
+  Measures to a mean of "429.327272939554" nanoseconds, from 100 multi-iteration samples.
+- structptr_ptr_ptr_ptr_ptr is 7th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans.".
+  Measures to a mean of "425.1630706767173" nanoseconds, from 100 multi-iteration samples.
 - err_ptrptr_ptr_ptrptr_ptr is 6th. Described as: "An indivisible unit conversion using output pointers for the data and its size and returning an error code.".
-  Measures to a mean of "409.71479377591606" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "420.9842195326928" nanoseconds, from 100 multi-iteration samples.
 - structptr_ptr_size_ptr_size is 5th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/pointer pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans.".
-  Measures to a mean of "398.99150556944306" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "411.2914338686435" nanoseconds, from 100 multi-iteration samples.
 - structsize_ptr_ptr_ptr_ptr is 4th. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/size pair representing input and output, and the function input takes a list of pointers representing the beginning and end of the input and output spans.".
-  Measures to a mean of "381.94065138636677" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "399.1999609147117" nanoseconds, from 100 multi-iteration samples.
 - structsize_ptr_size_ptr_size is 3rd. Described as: "An indivisible unit conversion returning a structure which contains the error code with a pointer/size pair representing input and output, and the function input takes a two pointer/size pairs representing the input and output spans.".
-  Measures to a mean of "374.73290300886936" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "393.077979957265" nanoseconds, from 100 multi-iteration samples.
 - memcpy is 2nd. It has no description.
-  Measures to a mean of "160.44389132102356" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "164.62659482405292" nanoseconds, from 100 multi-iteration samples.
 - noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
-  Measures to a mean of "1.5099998563528063e-07" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "1.6000354662537576e-07" nanoseconds, from 100 multi-iteration samples.

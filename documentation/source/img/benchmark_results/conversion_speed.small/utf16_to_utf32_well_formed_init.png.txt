@@ -2,21 +2,21 @@ Title: "C Character Set - UTF-16 to UTF-32 (Well-Formed, with Init)". Descriptio
 
 There are 9 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
 
-- cuneicode_registry is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
-  Measures to a mean of "35.47279444108625" microseconds, from 100 multi-iteration samples.
-- cuneicode_registry_unchecked is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
-  Measures to a mean of "35.08300702231414" microseconds, from 100 multi-iteration samples.
+- cuneicode_registry_unchecked is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "35.705694629497" microseconds, from 100 multi-iteration samples.
+- cuneicode_registry is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "35.4221572536292" microseconds, from 100 multi-iteration samples.
 - cuneicode_registry_unchecked_unbounded is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
-  Measures to a mean of "32.33085834809962" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "32.86753513329494" microseconds, from 100 multi-iteration samples.
 - cuneicode_registry_unbounded is 6th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
-  Measures to a mean of "32.111820074374" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "32.609914732374094" microseconds, from 100 multi-iteration samples.
 - standard_cpp is 5th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
-  Measures to a mean of "25.450570000019592" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "23.34991354939885" microseconds, from 100 multi-iteration samples.
 - icu_ucnv_convertEx is 4th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
-  Measures to a mean of "0.7334843024571975" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.7116838169687462" microseconds, from 100 multi-iteration samples.
 - iconv is 3rd. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
-  Measures to a mean of "0.6024356330339549" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.5912819120055064" microseconds, from 100 multi-iteration samples.
 - memcpy is 2nd. It has no description.
-  Measures to a mean of "0.0044104663937469014" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.004345463568795822" microseconds, from 100 multi-iteration samples.
 - noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
-  Measures to a mean of "1.6899895854294302e-10" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "1.559988595545292e-10" microseconds, from 100 multi-iteration samples.

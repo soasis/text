@@ -205,7 +205,7 @@ namespace ztd { namespace text {
 			_CodeUnit __code_unit_buf[__code_unit_max] {};
 			::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
 			::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
-			_Pivot __pivot { ::std::move(__code_unit_view), encoding_error::ok };
+			_Pivot __pivot { ::std::move(__code_unit_view), encoding_error::ok, 0 };
 
 			for (;;) {
 				auto __result

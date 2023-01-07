@@ -28,22 +28,36 @@
 #
 # ============================================================================>
 
-# # Fetch dependencies
-# Catch2
-FetchContent_Declare(
-	catch2
-	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-	GIT_SHALLOW    ON
-	GIT_TAG        devel)
-FetchContent_MakeAvailable(catch2)
-set_property(DIRECTORY "${catch2_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
+# # Tests
+file(GLOB_RECURSE ztd.text.tests.mockup.sources
+	LIST_DIRECTORIES FALSE
+	CONFIGURE_DEPENDS
+	source/*.cpp)
 
-# # Test Subdirectories
-add_subdirectory(inclusion)
-add_subdirectory(basic_run_time)
-add_subdirectory(additional_encodings)
-add_subdirectory(iconv)
-add_subdirectory(basic_compile_time)
-add_subdirectory(mockup)
-add_subdirectory(tiny_buffer)
-add_subdirectory(compile_fails)
+add_executable(ztd.text.tests.mockup ${ztd.text.tests.mockup.sources})
+target_compile_definitions(ztd.text.tests.mockup
+	PRIVATE
+	ZTD_CXX_COMPILE_TIME_ENCODING_NAME="UTF-8")
+target_compile_options(ztd.text.tests.mockup
+	PRIVATE
+	${--utf8-literal-encoding}
+	${--utf8-source-encoding}
+	${--disable-permissive}
+	${--warn-pedantic}
+	${--warn-all}
+	${--warn-extra}
+	${--warn-errors}
+	${--allow-alignas-extra-padding}
+	${--allow-stringop-overflow} ${--allow-stringop-overread}
+	${--allow-array-bounds}
+)
+target_include_directories(ztd.text.tests.mockup
+	PRIVATE
+	include/
+	"${CMAKE_CURRENT_SOURCE_DIR}/../shared/include")
+target_link_libraries(ztd.text.tests.mockup
+	PRIVATE
+	ztd::text
+	Catch2::Catch2
+	${CMAKE_DL_LIBS})
+add_test(NAME ztd.text.tests.mockup COMMAND ztd.text.tests.mockup)

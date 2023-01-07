@@ -137,7 +137,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and a reference to the passed-in state\.
+		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -172,7 +173,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and a reference to the passed-in state\.
+		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -196,11 +198,15 @@ namespace ztd { namespace text {
 				::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __underlying_handler, __state);
 		}
 
-		template <typename _Result,
-			::std::enable_if_t<::ztd::text::is_input_error_skippable_v<const __base_t&, _Result>>* = nullptr>
-		constexpr auto skip_input_error(_Result&& __result) const noexcept {
-			return ::ztd::text::skip_input_error(
-				static_cast<const __base_t&>(*this), ::std::forward<_Result>(__result));
+		template <typename _Result, typename _InputProgress, typename _OutputProgress,
+			::std::enable_if_t<::ztd::text::is_input_error_skippable_v<const __base_t&, _Result,
+			     const _InputProgress&, const _OutputProgress&>>* = nullptr>
+		constexpr auto skip_input_error(_Result&& __result, const _InputProgress& __input_progress,
+			const _OutputProgress& __output_progress) const
+			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const __base_t&, _Result, const _InputProgress&,
+			     const _OutputProgress&>) {
+			return ::ztd::text::skip_input_error(static_cast<const __base_t&>(*this),
+				::std::forward<_Result>(__result), __input_progress, __output_progress);
 		}
 	};
 

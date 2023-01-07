@@ -141,13 +141,13 @@ namespace ztd { namespace text {
 			auto __transcode_result = transcode_one_into_raw(::std::move(__working_input), __from_encoding,
 				::std::move(__working_output), __to_encoding, __from_error_handler, __to_error_handler,
 				__from_state, __to_state, __pivot);
+			__error_count += __transcode_result.error_count;
+			__working_input  = ::std::move(__transcode_result.input);
+			__working_output = ::std::move(__transcode_result.output);
 			if (__transcode_result.error_code != encoding_error::ok) {
 				return _Result(::std::move(__working_input), ::std::move(__working_output), __from_state,
 					__to_state, __transcode_result.error_code, __transcode_result.error_count);
 			}
-			__error_count += __transcode_result.error_count;
-			__working_input  = ::std::move(__transcode_result.input);
-			__working_output = ::std::move(__transcode_result.output);
 			if (::ztd::ranges::empty(__working_input)) {
 				if (!::ztd::text::is_state_complete(__from_encoding, __from_state)) {
 					continue;

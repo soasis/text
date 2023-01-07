@@ -65,31 +65,6 @@ namespace ztd { namespace text {
 		struct __is_unicode_encoding_sfinae<_Type,
 			::std::enable_if_t<is_detected_v<__detect_is_unicode_encoding, _Type>>>
 		: ::std::integral_constant<bool, _Type::is_unicode_encoding::value> { };
-
-		template <typename _Type>
-		using __detect_decoded_id = decltype(_Type::decoded_id);
-
-		template <typename _Type, typename = void>
-		struct __decoded_id_sfinae
-		: ::std::integral_constant<text_encoding_id,
-			  is_unicode_code_point_v<code_point_t<_Type>> ? text_encoding_id::utf32 : text_encoding_id::unknown> {
-		};
-
-		template <typename _Type>
-		struct __decoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_decoded_id, _Type>>>
-		: ::std::integral_constant<text_encoding_id, _Type::decoded_id> { };
-
-		template <typename _Type>
-		using __detect_encoded_id = decltype(_Type::encoded_id);
-
-		template <typename _Type, typename = void>
-		struct __encoded_id_sfinae
-		: ::std::integral_constant<text_encoding_id,
-			  is_unicode_code_point_v<code_unit_t<_Type>> ? text_encoding_id::utf32 : text_encoding_id::unknown> { };
-
-		template <typename _Type>
-		struct __encoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_encoded_id, _Type>>>
-		: ::std::integral_constant<text_encoding_id, _Type::encoded_id> { };
 	} // namespace __txt_detail
 
 	//////
@@ -134,6 +109,34 @@ namespace ztd { namespace text {
 			return false;
 		}
 	}
+
+	namespace __txt_detail {
+		template <typename _Type>
+		using __detect_decoded_id = decltype(_Type::decoded_id);
+
+		template <typename _Type, typename = void>
+		struct __decoded_id_sfinae : ::std::integral_constant<text_encoding_id,
+			                             is_unicode_code_point_v<code_point_t<_Type>> && is_unicode_encoding_v<_Type>
+			                                  ? text_encoding_id::utf32
+			                                  : text_encoding_id::unknown> { };
+
+		template <typename _Type>
+		struct __decoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_decoded_id, _Type>>>
+		: ::std::integral_constant<text_encoding_id, _Type::decoded_id> { };
+
+		template <typename _Type>
+		using __detect_encoded_id = decltype(_Type::encoded_id);
+
+		template <typename _Type, typename = void>
+		struct __encoded_id_sfinae : ::std::integral_constant<text_encoding_id,
+			                             is_unicode_code_point_v<code_unit_t<_Type>> && is_unicode_encoding_v<_Type>
+			                                  ? text_encoding_id::utf32
+			                                  : text_encoding_id::unknown> { };
+
+		template <typename _Type>
+		struct __encoded_id_sfinae<_Type, ::std::enable_if_t<is_detected_v<__detect_encoded_id, _Type>>>
+		: ::std::integral_constant<text_encoding_id, _Type::encoded_id> { };
+	} // namespace __txt_detail
 
 	//////
 	/// @brief Returns the ID of what an encoding decodes into.

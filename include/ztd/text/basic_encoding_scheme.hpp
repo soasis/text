@@ -298,10 +298,12 @@ namespace ztd { namespace text {
 		/// @brief Skips any consecutive input errors in the encoded input, where possible.
 		///
 		/// @remarks This Is only callable if the function call exists on the wrapped encoding.
-		template <typename _Result,
-			::std::enable_if_t<is_input_error_skippable_v<const encoding_type&, _Result>>* = nullptr>
-		constexpr decltype(auto) skip_input_error(_Result&& __result) const noexcept(noexcept(
-			::ztd::text::skip_input_error(::std::declval<const encoding_type&>(), ::std::declval<_Result>()))) {
+		template <typename _Result, typename _InputProgress, typename _OutputProgress,
+			::std::enable_if_t<is_input_error_skippable_v<const encoding_type&, _Result, const _InputProgress&,
+			     const _OutputProgress&>>* = nullptr>
+		constexpr decltype(auto) skip_input_error(_Result&& __result) const
+			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const encoding_type&, _Result, const _InputProgress&,
+			     const _OutputProgress&>) {
 			return ::ztd::text::skip_input_error(this->base(), ::std::forward<_Result>(__result));
 		}
 
@@ -316,7 +318,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and a reference to the passed-in state\.
+		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -354,7 +357,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and a reference to the passed-in state\.
+		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be

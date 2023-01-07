@@ -164,14 +164,10 @@ namespace ztd { namespace text {
 					::std::forward<_Output>(__output), __intermediate_handler, __s);
 			}
 
-			// Inherit some funtions
-			using __base_t::skip_input_error;
-
-			// Inherit some funtions
+			// Inherit some functions
 			using __base_t::replacement_code_points;
-
-			// Inherit some funtions
 			using __base_t::replacement_code_units;
+			using __base_t::skip_input_error;
 		};
 
 	} // namespace __txt_impl

@@ -151,20 +151,31 @@ namespace ztd { namespace text {
 			/// state and the input sequence (by reference) to modify.
 			///
 			/// @remarks This will skip every input value until a proper starting byte is found.
-			template <typename _Input, typename _Output, typename _State>
-			static constexpr auto skip_input_error(decode_result<_Input, _Output, _State> __result) noexcept {
+			template <typename _Input, typename _Output, typename _State, typename _InputProgress,
+				typename _OutputProgress>
+			static constexpr auto skip_input_error(decode_result<_Input, _Output, _State> __result,
+				const _InputProgress& __input_progress, const _OutputProgress&) noexcept {
 				auto __it   = ztd::ranges::cbegin(__result.input);
 				auto __last = ztd::ranges::cend(__result.input);
+				// there may be more values to skip beyond what was read.
 				if (__it != __last) {
-					do {
+					// if there is already some items in the input progress (things irreversibly read), then
+					// we are not obligated to do "at least" one skip; barrier it behind an empty check for
+					// progress.
+					if (::ztd::ranges::empty(__input_progress)) {
 						++__it;
-					} while (__it != __last
-						&& (__use_overlong_null_only
-						          ? !__ztd_idk_detail_is_lead_mutf8(static_cast<ztd_char8_t>(*__it))
-						          : (__overlong_allowed
-						                    ? !__ztd_idk_detail_is_lead_overlong_utf8(
-						                         static_cast<ztd_char8_t>(*__it))
-						                    : !__ztd_idk_detail_is_lead_utf8(static_cast<ztd_char8_t>(*__it)))));
+					}
+					for (; __it != __last; ++__it) {
+						const bool __found_good_utf8_stop = (__use_overlong_null_only
+							     ? __ztd_idk_detail_is_lead_mutf8(static_cast<ztd_char8_t>(*__it))
+							     : (__overlong_allowed
+							               ? __ztd_idk_detail_is_lead_overlong_utf8(
+							                    static_cast<ztd_char8_t>(*__it))
+							               : __ztd_idk_detail_is_lead_utf8(static_cast<ztd_char8_t>(*__it))));
+						if (__found_good_utf8_stop) {
+							break;
+						}
+					}
 				}
 				using _SubInput = ztd::ranges::subrange_for_t<_Input>;
 				return decode_result<_SubInput, _Output, _State>(_SubInput(::std::move(__it), ::std::move(__last)),

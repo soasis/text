@@ -61,14 +61,20 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range before
+		/// undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output range
+		/// before undergoing the attempted encode operation.
 		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
-		constexpr auto operator()(
-			const _Encoding& __encoding, _Result&& __result, const _InputProgress&, const _OutputProgress&) const
-			noexcept(__txt_detail::__skip_handler_noexcept<const _Encoding&, _Result>()) {
+		constexpr auto operator()(const _Encoding& __encoding, _Result&& __result,
+			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			noexcept(::ztd::text::is_input_error_skippable_v<const _Encoding&, _Result, const _InputProgress&,
+			     const _OutputProgress&>) {
 			if (__result.error_code != ztd::text::encoding_error::insufficient_output_space) {
 				__result.error_code = ztd::text::encoding_error::ok;
 			}
-			return ::ztd::text::skip_input_error(__encoding, ::std::forward<_Result>(__result));
+			return ::ztd::text::skip_input_error(
+				__encoding, ::std::forward<_Result>(__result), __input_progress, __output_progress);
 		}
 	};
 

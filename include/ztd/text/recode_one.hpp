@@ -167,6 +167,7 @@ namespace ztd { namespace text {
 		auto __intermediate_result = ::std::forward<_FromEncoding>(__from_encoding)
 			                             .encode_one(::std::forward<_Input>(__input), __working_pivot,
 			                                  __intermediate_handler, __from_state);
+		__pivot.error_count += __intermediate_result.error_count;
 		if (__intermediate_result.error_code != encoding_error::ok) {
 			__pivot.error_code = __intermediate_result.error_code;
 			return propagate_recode_error<_Result>(::std::move(__working_output), __to_encoding,

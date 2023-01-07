@@ -45,7 +45,7 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __impl {
+	namespace __txt_impl {
 
 		class __execution_iconv : public basic_iconv<char, unicode_code_point> {
 		private:
@@ -56,7 +56,7 @@ namespace ztd { namespace text {
 			}
 		};
 
-	} // namespace __impl
+	} // namespace __txt_impl
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

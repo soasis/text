@@ -45,9 +45,9 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		template <typename _Encoding, typename _Result>
-		using __detect_skip_input_error
-			= decltype(::std::declval<_Encoding>().skip_input_error(::std::declval<_Result>()));
+		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+		using __detect_skip_input_error = decltype(::std::declval<_Encoding>().skip_input_error(
+			::std::declval<_Result>(), ::std::declval<_InputProgress>(), ::std::declval<_OutputProgress>()));
 	} // namespace __txt_detail
 
 	//////
@@ -57,22 +57,27 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief Whether or not the given `_Encoding` has a function called `skip_input_error` that takes the given
-	/// `_Result` type.
+	/// `_Result` type with the given `_InputProgress` and `_OutputProgress` types.
 	///
 	/// @tparam _Encoding The encoding that may contain the skip_input_error function.
 	/// @tparam _Result The result type to check if the input is callable.
+	/// @tparam _InputProgress The input progress type passed in to the error handler to be forwarded to the skip input
+	/// error.
+	/// @tparam _OutputProgress The output progress type passed in to the error handler to be forwarded to the skip
+	/// input error.
 	///
 	/// @remarks This is used by ztd::text::replacement_handler and ztd::text::skip_handler to pass over malformed
 	/// input when it happens.
-	template <typename _Encoding, typename _Result>
+	template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
 	class is_input_error_skippable : public ::std::integral_constant<bool,
-		                                 is_detected_v<__txt_detail::__detect_skip_input_error, _Encoding, _Result>> {
-	};
+		                                 is_detected_v<__txt_detail::__detect_skip_input_error, _Encoding, _Result,
+		                                      _InputProgress, _OutputProgress>> { };
 
 	//////
 	/// @brief An alias of the inner `value` for ztd::text::is_input_error_skippable.
-	template <typename _Encoding, typename _Result>
-	inline constexpr bool is_input_error_skippable_v = is_input_error_skippable<_Encoding, _Result>::value;
+	template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+	inline constexpr bool is_input_error_skippable_v
+		= is_input_error_skippable<_Encoding, _Result, _InputProgress, _OutputProgress>::value;
 
 	//////
 	/// @}

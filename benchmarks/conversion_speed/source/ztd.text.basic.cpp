@@ -57,7 +57,7 @@
 			auto from_state          = ztd::text::make_decode_state(ztd::text::utf##FROM_N);                     \
 			auto to_state            = ztd::text::make_encode_state(ztd::text::utf##TO_N);                       \
 			ztd::text::pivot<ztd::span<ztd_char32_t>> pivot { ztd::span<ztd_char32_t>(__intermediate),           \
-				ztd::text::encoding_error::ok };                                                                \
+				ztd::text::encoding_error::ok, 0 };                                                             \
 			auto err = ztd::text::basic_transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N, \
 			     ztd::span(output, output_size), ztd::text::utf##TO_N, ztd::text::default_handler,               \
 			     ztd::text::default_handler, from_state, to_state, pivot);                                       \
@@ -91,7 +91,7 @@
 			auto from_state          = ztd::text::make_decode_state(ztd::text::utf##FROM_N);                     \
 			auto to_state            = ztd::text::make_encode_state(ztd::text::utf##TO_N);                       \
 			ztd::text::pivot<ztd::span<ztd_char32_t>> pivot { ztd::span<ztd_char32_t>(__intermediate),           \
-				ztd::text::encoding_error::ok };                                                                \
+				ztd::text::encoding_error::ok, 0 };                                                             \
 			auto err = ztd::text::basic_transcode_into_raw(ztd::span(input, input_size), ztd::text::utf##FROM_N, \
 			     ztd::ranges::unbounded_view(output), ztd::text::utf##TO_N, ztd::text::default_handler,          \
 			     ztd::text::default_handler, from_state, to_state, pivot);                                       \

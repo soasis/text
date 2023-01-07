@@ -47,10 +47,11 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		template <typename _Encoding, typename _Result>
-		constexpr bool __skip_handler_noexcept() noexcept {
-			if constexpr (is_input_error_skippable_v<_Encoding, _Result>) {
-				return noexcept(::std::declval<_Encoding>().skip_input_error(::std::declval<_Result>()));
+		template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+		constexpr bool __skip_input_error_noexcept() noexcept {
+			if constexpr (is_input_error_skippable_v<_Encoding, _Result, _InputProgress, _OutputProgress>) {
+				return noexcept(::std::declval<_Encoding>().skip_input_error(::std::declval<_Result>(),
+					::std::declval<_InputProgress>(), ::std::declval<_OutputProgress>()));
 			}
 			else {
 				return true;
@@ -59,16 +60,35 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
+	/// @addtogroup ztd_text_properties Property and Trait Helpers
+	///
+	/// @{
+
+	//////
+	/// @brief Checks whether calling ztd::text::skip_input_error is an exceptionless operation.
+	///
+	/// @tparam _Encoding The encoding type.
+	/// @tparam _Result  The result type; either a ztd::text::decode_result or an ztd::text::encode_result-typed
+	/// object.
+	/// @tparam _InputProgress A type representing the input progress type.
+	/// @tparam _OutputProgress  A type representing the output progress type.
+	template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+	inline constexpr bool is_nothrow_skip_input_error_v = __txt_detail::__skip_input_error_noexcept<const _Encoding&,
+		_Result, const _InputProgress&, const _OutputProgress&>();
+
+
+	//////
 	/// @brief Attempts to skip over an input error in the text.
 	///
 	/// @param[in] __encoding The Encoding that experienced the error.
 	/// @param[in] __result The current state of the encode operation.
 	///
-	/// @remarks If there exists a well-formed function call of the form `__encoding.skip_input_error(__result)`, it
-	/// will call that function. Otherwise, it will attempt to grab the input iterator and pre-increment it exactly
-	/// once. The goal for this is to provide functionality which can smartly skip over a collection of ill-formed code
-	/// units or bytes in an input sequence, rather than generated e.g. 3 different replacement characters for a
-	/// mal-formed UTF-8 sequence. For example, given this malformed wineglass code point as an input UTF-8 sequence:
+	/// @remarks If there exists a well-formed function call of the form `__encoding.skip_input_error(__result)`,
+	/// it will call that function. Otherwise, it will attempt to grab the input iterator and pre-increment it
+	/// exactly once. The goal for this is to provide functionality which can smartly skip over a collection of
+	/// ill-formed code units or bytes in an input sequence, rather than generated e.g. 3 different replacement
+	/// characters for a mal-formed UTF-8 sequence. For example, given this malformed wineglass code point as an
+	/// input UTF-8 sequence:
 	///
 	/// `"\xC0\x9F\x8D\xB7meow"`
 	///
@@ -76,18 +96,21 @@ namespace ztd { namespace text {
 	/// `'\\xC0'` before this function skips until the `'m'` input code unit, resulting in a leftover sequence of
 	///
 	/// "meow".
-	template <typename _Encoding, typename _Result>
-	constexpr auto skip_input_error(const _Encoding& __encoding, _Result&& __result) noexcept(
-		__txt_detail::__skip_handler_noexcept<const _Encoding&, _Result>()) {
-		if constexpr (is_input_error_skippable_v<const _Encoding&, _Result>) {
-			return __encoding.skip_input_error(::std::forward<_Result>(__result));
+	template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
+	constexpr auto skip_input_error(const _Encoding& __encoding, _Result&& __result,
+		const _InputProgress& __input_progress,
+		const _OutputProgress&
+		     __output_progress) noexcept(::ztd::text::is_nothrow_skip_input_error_v<const _Encoding&, _Result,
+		const _InputProgress&, const _OutputProgress&>) {
+		if constexpr (::ztd::text::is_input_error_skippable_v<const _Encoding&, _Result, const _InputProgress&,
+			              const _OutputProgress&>) {
+			return __encoding.skip_input_error(
+				::std::forward<_Result>(__result), __input_progress, __output_progress);
 		}
 		else {
 			// we can only advance one character at a time.
-			auto __it   = ztd::ranges::begin(::std::forward<_Result>(__result).input);
-			auto __last = ztd::ranges::end(__result.input);
-			if (__it != __last)
-				++__it;
+			auto __it     = ztd::ranges::begin(::std::forward<_Result>(__result).input);
+			auto __last   = ztd::ranges::end(__result.input);
 			using _Input  = decltype(__result.input);
 			using _UInput = ::ztd::remove_cvref_t<_Input>;
 			using _Output = decltype(__result.output);
@@ -97,11 +120,18 @@ namespace ztd { namespace text {
 			using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
                     decode_result<_ReconstructedInput, _Output, _State>,
                     encode_result<_ReconstructedInput, _Output, _State>>;
+			if (::ztd::ranges::empty(__input_progress)) {
+				if (__it != __last)
+					++__it;
+			}
 			return _ResultType(
 				::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__it), ::std::move(__last)),
 				::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
 		}
 	}
+
+	//////
+	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -68,7 +68,7 @@ namespace ztd { namespace text {
 		constexpr _Result&& __write_direct(const _Encoding&, _Input&& __input, _Result&& __result) noexcept {
 			using _SubOutput = decltype(__result.output);
 
-			auto __out_it  = ::ztd::ranges::begin(__result.output);
+			auto __out_it   = ::ztd::ranges::begin(__result.output);
 			auto __out_last = ::ztd::ranges::end(__result.output);
 			if (__out_it == __out_last) {
 				// BAIL
@@ -483,17 +483,23 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range before
+		/// undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output range
+		/// before undergoing the attempted encode operation.
 		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
 			typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, encode_result<_Input, _Output, _State> __result,
-			const _InputProgress&, const _OutputProgress&) const noexcept {
+			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const _Encoding&,
+			     encode_result<_Input, _Output, _State>, const _InputProgress&, const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::insufficient_output_space) {
 				// BAIL
 				return __result;
 			}
 
-			return ::ztd::text::skip_input_error(
-				__encoding, this->_S_encode_replace(__encoding, ::std::move(__result)));
+			return ::ztd::text::skip_input_error(__encoding,
+				this->_S_encode_replace(__encoding, ::std::move(__result)), __input_progress, __output_progress);
 		}
 
 		//////
@@ -502,17 +508,23 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range before
+		/// undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output range
+		/// before undergoing the attempted encode operation.
 		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
 			typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, decode_result<_Input, _Output, _State> __result,
-			const _InputProgress&, const _OutputProgress&) const noexcept {
+			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const _Encoding&,
+			     decode_result<_Input, _Output, _State>, const _InputProgress&, const _OutputProgress&>) {
 			if (__result.error_code == encoding_error::insufficient_output_space) {
 				// BAIL
 				return __result;
 			}
 
-			return ::ztd::text::skip_input_error(
-				__encoding, this->_S_decode_replace(__encoding, ::std::move(__result)));
+			return ::ztd::text::skip_input_error(__encoding,
+				this->_S_decode_replace(__encoding, ::std::move(__result)), __input_progress, __output_progress);
 		}
 	};
 

@@ -60,9 +60,12 @@ public:
 	// ❗ Special input skip member!!
 	// If this function is present and callable, it will
 	// allow us to skip over bad input.
-	template <typename Input, typename Output, typename State>
+	template <typename Input, typename Output, typename State, typename InputRead,
+	     typename OutputWritten>
 	constexpr auto skip_input_error(
-	     ztd::text::decode_result<Input, Output, State> result) const noexcept {
+	     ztd::text::decode_result<Input, Output, State> result,
+	     const InputRead& input_already_read,
+	     const OutputWritten& output_already_read) const noexcept {
 		// If we are decoding a UTF-16 sequence,
 		// we can have 1 or 2 UTF-16 code units.
 		// they are identifiable as leading and trailing surrogates
@@ -70,10 +73,26 @@ public:
 		auto it   = ztd::ranges::begin(result.input);
 		auto last = ztd::ranges::end(result.input);
 		if (it != last) {
-			// We can skip all trailing surrogates, until we find a leading one.
-			do {
+			if (ztd::ranges::empty(input_already_read)) {
+				// if no input was already read (e.g. partial read from a
+				// `std::istreambuf_iterator<…>`), then we should
+				// increment the iterator at **least** once! this will prevent us
+				// from constantly erroring over the same stuff.
 				++it;
-			} while (it != last && *it > last_utf16_lead_surrogate);
+			}
+
+			for (; it != last; ++it) {
+				// We can skip all trailing surrogates, until we find a leading
+				// one.
+				const bool is_good_utf16_stop_point
+				     = *it > last_utf16_lead_surrogate;
+				if (is_good_utf16_stop_point) {
+					// we found a good place to stop: get out of here!
+					break;
+				}
+				// if we do not break, we go around the
+				// for loop again, increment the iterator
+			}
 		}
 		// put input range back together, return in constructed result object
 		using SubInput = ztd::ranges::subrange_for_t<Input>;

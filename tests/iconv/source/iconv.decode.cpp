@@ -37,7 +37,7 @@
 
 TEST_CASE("text/decode/iconv", "iconv encodings are semi-okay") {
 	SECTION("execution") {
-		ztd::text::__impl::__execution_iconv encoding {};
+		ztd::text::__txt_impl::__execution_iconv encoding {};
 		std::u32string result0
 		     = ztd::text::decode(ztd::tests::basic_source_character_set, encoding, ztd::text::replacement_handler);
 		REQUIRE(result0 == ztd::tests::u32_basic_source_character_set);
@@ -49,7 +49,7 @@ TEST_CASE("text/decode/iconv", "iconv encodings are semi-okay") {
 		}
 	}
 	SECTION("wide_execution") {
-		ztd::text::__impl::__wide_execution_iconv encoding {};
+		ztd::text::__txt_impl::__wide_execution_iconv encoding {};
 		std::u32string result0
 		     = ztd::text::decode(ztd::tests::w_basic_source_character_set, encoding, ztd::text::replacement_handler);
 		REQUIRE(result0 == ztd::tests::u32_basic_source_character_set);

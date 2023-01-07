@@ -31,6 +31,21 @@
 #include <ztd/text.hpp>
 
 int main(int, char*[]) {
-
+	// properly-typed input picks the right encoding automatically
+	std::u16string utf16_emoji_string
+	     = ztd::text::transcode(input, ztd::text::utf16);
+	// explicitly pick the input encoding
+	std::u16string utf16_emoji_string_explicit
+	     = ztd::text::transcode(input, ztd::text::utf32, ztd::text::utf16);
+	// must use explicit handler because "wide execution" may be
+	// a lossy encoding! See:
+	// https://ztdtext.rtfd.io/en/latest/design/error%20handling/lossy%20protection.html
+	std::u16string utf16_korean_string_explicit
+	     = ztd::text::transcode(wide_input, ztd::text::wide_execution,
+	          ztd::text::utf16, ztd::text::replacement_handler);
+	// result in the same strings, but different encodings!
+	ZTD_TEXT_ASSERT(utf16_emoji_string == utf16_emoji_string_explicit);
+	ZTD_TEXT_ASSERT(utf16_emoji_string == u"🐶🐶");
+	ZTD_TEXT_ASSERT(utf16_korean_string_explicit == u"안녕하세요");
 	return 0;
 }

@@ -45,6 +45,7 @@
 #include <ztd/text/detail/empty_state.hpp>
 
 #include <ztd/ranges/range.hpp>
+#include <ztd/idk/text_encoding_id.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -65,7 +66,7 @@ namespace ztd { namespace text {
 		///
 		/// @remarks Relies on CRTP.
 		template <typename _Derived = void, typename _CodeUnit = char32_t, typename _CodePoint = unicode_code_point,
-			bool __validate_decodable_as = true>
+			bool __validate_decodable_as = true, bool __surrogates_allowed = false>
 		class __utf32_with : public __utf32_tag {
 		private:
 			using __self_t = ::std::conditional_t<::std::is_void_v<_Derived>, __utf32_with, _Derived>;
@@ -111,6 +112,14 @@ namespace ztd { namespace text {
 			//////
 			/// @brief The maximum code units a single complete operation of encoding can produce.
 			inline static constexpr ::std::size_t max_code_units = 1;
+			//////
+			///@brief The encoding ID for this type. Used for optimization purposes.
+			inline static constexpr ::ztd::text_encoding_id encoded_id
+				= __surrogates_allowed ? ::ztd::text_encoding_id::ucs4 : ::ztd::text_encoding_id::utf32;
+			//////
+			///@brief The encoding ID for this type. Used for optimization purposes.
+			inline static constexpr ::ztd::text_encoding_id decoded_id
+				= __surrogates_allowed ? ::ztd::text_encoding_id::ucs4 : ::ztd::text_encoding_id::utf32;
 
 			//////
 			/// @brief Decodes a single complete unit of information as code points and produces a result with the
@@ -146,7 +155,7 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
 				auto __out_last = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
@@ -163,24 +172,24 @@ namespace ztd { namespace text {
 					(void)__out_last;
 				}
 
-				code_unit __unit = static_cast<code_unit>(*__in_it);
+				code_unit __unit  = static_cast<code_unit>(*__in_it);
+				char32_t __unit32 = static_cast<char32_t>(__unit);
 				if constexpr (__validate_decodable_as && __call_error_handler) {
-					if (static_cast<char32_t>(__unit) > __ztd_idk_detail_last_unicode_code_point
-						|| __ztd_idk_detail_is_surrogate(static_cast<char32_t>(__unit))) {
+					if (__unit32 > __ztd_idk_detail_last_unicode_code_point
+						|| (!__surrogates_allowed
+						     && __ztd_idk_detail_is_surrogate(static_cast<char32_t>(__unit)))) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_unit, 1>(::std::addressof(__unit), 1),
-							::ztd::span<code_point, 0>());
+							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
 					}
 				}
 
-				::ztd::ranges::iter_advance(__in_it);
-
 				*__out_it = __unit;
 				::ztd::ranges::iter_advance(__out_it);
+				::ztd::ranges::iter_advance(__in_it);
 
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
@@ -220,10 +229,22 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
-				auto __out_last = ::ztd::ranges::end(__output);
+				auto __out_it                    = ::ztd::ranges::begin(__output);
+				[[maybe_unused]] auto __out_last = ::ztd::ranges::end(__output);
+
+				char32_t __point32 = static_cast<char32_t>(*__in_it);
 
 				if constexpr (__call_error_handler) {
+					if (__point32 > __ztd_idk_detail_last_unicode_code_point
+						|| (!__surrogates_allowed && __ztd_idk_detail_is_surrogate(__point32))) {
+						__self_t __self {};
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
+							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
+					}
+
 					if (__out_it == __out_last) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
@@ -233,31 +254,11 @@ namespace ztd { namespace text {
 							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 					}
 				}
-				else {
-					(void)__out_last;
-				}
 
-				code_point __points[1] {};
-				__points[0]               = static_cast<code_point>(*__in_it);
-				const code_point& __point = __points[0];
 
-				if constexpr (__validate_decodable_as && __call_error_handler) {
-					if (__point > __ztd_idk_detail_last_unicode_code_point
-						|| __ztd_idk_detail_is_surrogate(__point)) {
-						__self_t __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
-							     encoding_error::invalid_sequence),
-							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::span<code_unit, 0>());
-					}
-				}
-
-				::ztd::ranges::iter_advance(__in_it);
-
-				*__out_it = __point;
+				*__out_it = static_cast<code_point>(__point32);
 				::ztd::ranges::iter_advance(__out_it);
+				::ztd::ranges::iter_advance(__in_it);
 
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);

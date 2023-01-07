@@ -246,7 +246,7 @@ namespace ztd { namespace text {
 		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
 		using _CodePoint     = code_point_t<_UFromEncoding>;
 		_CodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
-		pivot<ztd::span<_CodePoint>> __pivot { __intermediate, encoding_error::ok };
+		pivot<ztd::span<_CodePoint>> __pivot { __intermediate, encoding_error::ok, 0 };
 		return validate_transcodable_as(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			__decode_state, __encode_state, __pivot);

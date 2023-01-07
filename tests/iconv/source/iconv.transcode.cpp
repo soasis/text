@@ -40,14 +40,14 @@ inline namespace ztd_text_tests_iconv_transcode {
 	void check_roundtrip(Encoding& encoding, Input& input) {
 		const auto& expected = input;
 		auto result0         = ztd::text::transcode(
-		             input, encoding, encoding, ztd::text::replacement_handler, ztd::text::replacement_handler);
+               input, encoding, encoding, ztd::text::replacement_handler, ztd::text::replacement_handler);
 		REQUIRE(result0 == expected);
 	}
 } // namespace ztd_text_tests_iconv_transcode
 
 TEST_CASE("text/transcode/iconv", "iconv transcode can roundtrip") {
 	SECTION("execution") {
-		ztd::text::__impl::__execution_iconv encoding {};
+		ztd::text::__txt_impl::__execution_iconv encoding {};
 		check_roundtrip(encoding, ztd::tests::basic_source_character_set);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {
@@ -55,7 +55,7 @@ TEST_CASE("text/transcode/iconv", "iconv transcode can roundtrip") {
 		}
 	}
 	SECTION("wide_execution") {
-		ztd::text::__impl::__wide_execution_iconv encoding {};
+		ztd::text::__txt_impl::__wide_execution_iconv encoding {};
 		check_roundtrip(encoding, ztd::tests::w_basic_source_character_set);
 
 		if (ztd::text::contains_unicode_encoding(encoding)) {

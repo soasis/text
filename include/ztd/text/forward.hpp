@@ -63,7 +63,7 @@ namespace ztd { namespace text {
 		class __utf8_with;
 		template <typename, typename, typename, bool>
 		class __utf16_with;
-		template <typename, typename, typename, bool>
+		template <typename, typename, typename, bool, bool>
 		class __utf32_with;
 
 		class __execution_cuchar;

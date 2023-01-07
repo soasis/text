@@ -566,7 +566,7 @@ namespace ztd { namespace text {
 			_IntermediateCodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
 			using _Intermediate = ::ztd::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>>;
 			_Intermediate __intermediate(__intermediate_storage);
-			pivot<_Intermediate> __pivot { __intermediate, encoding_error::ok };
+			pivot<_Intermediate> __pivot { __intermediate, encoding_error::ok, 0 };
 			if constexpr (_IsInputOrOutput) {
 				auto __result    = recode_one_into_raw(::std::move(__this_input_range), this->from_encoding(),
 					   __cache_view, this->to_encoding(), this->from_handler(), this->to_handler(),
