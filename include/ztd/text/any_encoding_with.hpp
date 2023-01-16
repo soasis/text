@@ -452,8 +452,7 @@ namespace ztd { namespace text {
 			virtual __decode_result __decode_one(const any_encoding_with& __self, _DecodeCodeUnits __input,
 				_DecodeCodePoints __output, __decode_error_handler __error_handler,
 				decode_state& __state) const override {
-				using _AssumeValid
-					= ::std::integral_constant<bool, is_ignorable_error_handler_v<__decode_error_handler>>;
+				constexpr bool _AssumeValid = is_ignorable_error_handler_v<__decode_error_handler>;
 				__txt_detail::__progress_handler<_AssumeValid, any_encoding_with> __pass_handler {};
 				__real_decode_state& __actual_decode_state = this->_M_get_state(__state);
 				auto& __encoding                           = this->_M_get_encoding();
@@ -474,8 +473,7 @@ namespace ztd { namespace text {
 			virtual __encode_result __encode_one(const any_encoding_with& __self, _EncodeCodePoints __input,
 				_EncodeCodeUnits __output, __encode_error_handler __error_handler,
 				encode_state& __state) const override {
-				using _AssumeValid
-					= ::std::integral_constant<bool, is_ignorable_error_handler_v<__encode_error_handler>>;
+				constexpr bool _AssumeValid = is_ignorable_error_handler_v<__encode_error_handler>;
 
 				__txt_detail::__progress_handler<_AssumeValid, any_encoding_with> __pass_handler {};
 				__real_encode_state& __actual_encode_state = this->_M_get_state(__state);
@@ -517,14 +515,13 @@ namespace ztd { namespace text {
 					constexpr ::std::size_t __code_point_max = max_code_points_v<_Encoding>;
 					using _CodeUnit                          = code_unit_t<_Encoding>;
 					using _CodePoint                         = code_point_t<_Encoding>;
-					using _Pivot       = ::ztd::text::pivot<::ztd::span<_CodePoint, __code_point_max>>;
-					using _AssumeValid = ::std::false_type;
+					using _Pivot                             = ::ztd::span<_CodePoint, __code_point_max>;
+					constexpr bool _AssumeValid              = false;
 
 					_CodePoint __code_point_buf[__code_point_max] {};
 					_CodeUnit __code_unit_buf[__code_unit_max] {};
-					::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
 					::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
-					_Pivot __pivot { ::std::move(__code_point_view), encoding_error::ok, 0 };
+					_Pivot __pivot(__code_point_buf);
 					__txt_detail::__progress_handler<_AssumeValid, _Encoding> __pass_handler {};
 					__real_encode_state __encode_state = make_encode_state(__encoding);
 
@@ -566,15 +563,14 @@ namespace ztd { namespace text {
 					constexpr ::std::size_t __code_point_max = max_recode_code_points_v<_Encoding, _Encoding>;
 					using _CodeUnit                          = code_unit_t<_Encoding>;
 					using _CodePoint                         = code_point_t<_Encoding>;
-					using _Pivot = ::ztd::text::pivot<::ztd::span<_CodeUnit, __code_unit_max>>;
+					using _Pivot                             = ::ztd::span<_CodeUnit, __code_unit_max>;
+					constexpr bool _AssumeValid              = false;
 
 					_CodePoint __code_point_buf[__code_point_max] {};
 					_CodeUnit __code_unit_buf[__code_unit_max] {};
 					::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
-					::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
-					_Pivot __pivot { ::std::move(__code_unit_view), encoding_error::ok, 0 };
+					_Pivot __pivot(__code_unit_buf);
 
-					using _AssumeValid = ::std::false_type;
 					__txt_detail::__progress_handler<_AssumeValid, _Encoding> __pass_handler {};
 					__real_decode_state __decode_state = make_decode_state(__encoding);
 
@@ -615,7 +611,7 @@ namespace ztd { namespace text {
 				else {
 					constexpr ::std::size_t __code_point_max = max_code_points_v<_Encoding>;
 					using _CodePoint                         = code_point_t<_Encoding>;
-					using _AssumeValid                       = ::std::false_type;
+					constexpr bool _AssumeValid = is_ignorable_error_handler_v<__decode_error_handler>;
 
 					_CodePoint __code_point_buf[__code_point_max] {};
 					::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
@@ -662,7 +658,7 @@ namespace ztd { namespace text {
 				else {
 					constexpr ::std::size_t __code_unit_max = max_code_units_v<_Encoding>;
 					using _CodeUnit                         = code_unit_t<_Encoding>;
-					using _AssumeValid                      = ::std::false_type;
+					constexpr bool _AssumeValid             = is_ignorable_error_handler_v<__encode_error_handler>;
 
 					_CodeUnit __code_unit_buf[__code_unit_max] {};
 					::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
@@ -691,8 +687,8 @@ namespace ztd { namespace text {
 			virtual __decode_result __decode(const any_encoding_with& __self, _DecodeCodeUnits __input,
 				_DecodeCodePoints __output, __decode_error_handler __error_handler,
 				decode_state& __state) const override {
-				using _AssumeValid
-					= ::std::integral_constant<bool, is_ignorable_error_handler_v<__decode_error_handler>>;
+				constexpr bool _AssumeValid = is_ignorable_error_handler_v<__decode_error_handler>;
+
 				__txt_detail::__progress_handler<_AssumeValid, any_encoding_with> __pass_handler {};
 				__real_decode_state& __actual_decode_state = this->_M_get_state(__state);
 				auto& __encoding                           = this->_M_get_encoding();
@@ -713,8 +709,8 @@ namespace ztd { namespace text {
 			virtual __encode_result __encode(const any_encoding_with& __self, _EncodeCodePoints __input,
 				_EncodeCodeUnits __output, __encode_error_handler __error_handler,
 				encode_state& __state) const override {
-				using _AssumeValid
-					= ::std::integral_constant<bool, is_ignorable_error_handler_v<__decode_error_handler>>;
+				constexpr bool _AssumeValid = is_ignorable_error_handler_v<__encode_error_handler>;
+
 				__txt_detail::__progress_handler<_AssumeValid, any_encoding_with> __pass_handler {};
 				__real_encode_state& __actual_encode_state = this->_M_get_state(__state);
 				auto& __encoding                           = this->_M_get_encoding();
@@ -753,8 +749,8 @@ namespace ztd { namespace text {
 			virtual __count_as_decoded_result __count_as_decoded(const any_encoding_with& __self,
 				_DecodeCodeUnits __input, __decode_error_handler __error_handler,
 				decode_state& __state) const override {
-				using _AssumeValid
-					= ::std::integral_constant<bool, is_ignorable_error_handler_v<__decode_error_handler>>;
+				constexpr bool _AssumeValid = is_ignorable_error_handler_v<__decode_error_handler>;
+
 				__txt_detail::__progress_handler<_AssumeValid, any_encoding_with> __pass_handler {};
 				__real_decode_state& __actual_decode_state = this->_M_get_state(__state);
 				auto& __encoding                           = this->_M_get_encoding();
@@ -780,8 +776,8 @@ namespace ztd { namespace text {
 			virtual __count_as_encoded_result __count_as_encoded(const any_encoding_with& __self,
 				_EncodeCodePoints __input, __encode_error_handler __error_handler,
 				encode_state& __state) const override {
-				using _AssumeValid
-					= ::std::integral_constant<bool, is_ignorable_error_handler_v<__decode_error_handler>>;
+				constexpr bool _AssumeValid = is_ignorable_error_handler_v<__encode_error_handler>;
+
 				__txt_detail::__progress_handler<_AssumeValid, any_encoding_with> __pass_handler {};
 				__real_encode_state& __actual_encode_state = this->_M_get_state(__state);
 				auto& __encoding                           = this->_M_get_encoding();

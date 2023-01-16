@@ -47,7 +47,7 @@ namespace ztd { namespace text {
 
 		template <template <typename...> class _ResultType, typename _Input, typename _ArgInput, typename _Output,
 			typename _ArgOutput, typename _State = void, typename _ArgState = void, typename _State2 = void,
-			typename _ArgState2 = void>
+			typename _ArgState2 = void, typename _Pivot = void, typename _ArgPivot = void>
 		constexpr bool __result_type_copy_noexcept() noexcept {
 			if constexpr (::std::is_void_v<_State>) {
 				return !::std::is_nothrow_constructible_v<_Input, const _ArgInput&>
@@ -60,17 +60,26 @@ namespace ztd { namespace text {
 						&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>;
 				}
 				else {
-					return ::std::is_nothrow_constructible_v<_Input, const _ArgInput&>
-						&& ::std::is_nothrow_constructible_v<_Output, const _ArgOutput&>
-						&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
-						&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					if constexpr (::std::is_void_v<_Pivot>) {
+						return ::std::is_nothrow_constructible_v<_Input, const _ArgInput&>
+							&& ::std::is_nothrow_constructible_v<_Output, const _ArgOutput&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					}
+					else {
+						return ::std::is_nothrow_constructible_v<_Input, const _ArgInput&>
+							&& ::std::is_nothrow_constructible_v<_Output, const _ArgOutput&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>
+							&& ::std::is_nothrow_constructible_v<_Pivot, const _ArgPivot&>;
+					}
 				}
 			}
 		}
 
 		template <template <typename...> class _ResultType, typename _Input, typename _ArgInput, typename _Output,
 			typename _ArgOutput, typename _State = void, typename _ArgState = void, typename _State2 = void,
-			typename _ArgState2 = void>
+			typename _ArgState2 = void, typename _Pivot = void, typename _ArgPivot = void>
 		constexpr bool __result_type_move_noexcept() noexcept {
 			if constexpr (::std::is_void_v<_State>) {
 				return ::std::is_nothrow_constructible_v<_Input, _ArgInput&&>
@@ -83,17 +92,26 @@ namespace ztd { namespace text {
 						&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>;
 				}
 				else {
-					return ::std::is_nothrow_constructible_v<_Input, _ArgInput&&>
-						&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput&&>
-						&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
-						&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					if constexpr (::std::is_void_v<_Pivot>) {
+						return ::std::is_nothrow_constructible_v<_Input, _ArgInput&&>
+							&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput&&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					}
+					else {
+						return ::std::is_nothrow_constructible_v<_Input, _ArgInput&&>
+							&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput&&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_nothrow_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>
+							&& ::std::is_nothrow_constructible_v<_Pivot, _ArgPivot&&>;
+					}
 				}
 			}
 		}
 
 		template <template <typename...> class _ResultType, typename _Input, typename _ArgInput, typename _Output,
 			typename _ArgOutput, typename _State = void, typename _ArgState = void, typename _State2 = void,
-			typename _ArgState2 = void>
+			typename _ArgState2 = void, typename _Pivot = void, typename _ArgPivot = void>
 		constexpr bool __result_type_copy_constraint() noexcept {
 			if constexpr (::std::is_void_v<_State>) {
 				return !::std::is_same_v<_ResultType<_Input, _Output>, _ResultType<_ArgInput, _ArgOutput>>
@@ -109,19 +127,30 @@ namespace ztd { namespace text {
 						&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>;
 				}
 				else {
-					return !::std::is_same_v<_ResultType<_Input, _Output, _State, _State2>,
-						       _ResultType<_ArgInput, _ArgOutput, _ArgState, _ArgState2>>
-						&& ::std::is_constructible_v<_Input, const _ArgInput&>
-						&& ::std::is_constructible_v<_Output, const _ArgOutput&>
-						&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
-						&& ::std::is_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					if constexpr (::std::is_void_v<_Pivot>) {
+						return !::std::is_same_v<_ResultType<_Input, _Output, _State, _State2>,
+							       _ResultType<_ArgInput, _ArgOutput, _ArgState, _ArgState2>>
+							&& ::std::is_constructible_v<_Input, const _ArgInput&>
+							&& ::std::is_constructible_v<_Output, const _ArgOutput&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					}
+					else {
+						return !::std::is_same_v<_ResultType<_Input, _Output, _State, _State2, _Pivot>,
+							       _ResultType<_ArgInput, _ArgOutput, _ArgState, _ArgState2, _ArgPivot>>
+							&& ::std::is_constructible_v<_Input, const _ArgInput&>
+							&& ::std::is_constructible_v<_Output, const _ArgOutput&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>
+							&& ::std::is_constructible_v<_Pivot, const _ArgPivot&>;
+					}
 				}
 			}
 		}
 
 		template <template <typename...> class _ResultType, typename _Input, typename _ArgInput, typename _Output,
 			typename _ArgOutput, typename _State = void, typename _ArgState = void, typename _State2 = void,
-			typename _ArgState2 = void>
+			typename _ArgState2 = void, typename _Pivot = void, typename _ArgPivot = void>
 		constexpr bool __result_type_move_constraint() noexcept {
 			if constexpr (::std::is_void_v<_State>) {
 				return !::std::is_same_v<_ResultType<_Input, _Output>, _ResultType<_ArgInput, _ArgOutput>>
@@ -137,12 +166,23 @@ namespace ztd { namespace text {
 						&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>;
 				}
 				else {
-					return !::std::is_same_v<_ResultType<_Input, _Output, _State, _State2>,
-						       _ResultType<_ArgInput, _ArgOutput, _ArgState, _ArgState2>>
-						&& ::std::is_constructible_v<_Input, _ArgInput&&>
-						&& ::std::is_constructible_v<_Output, _ArgOutput&&>
-						&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
-						&& ::std::is_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					if constexpr (::std::is_void_v<_Pivot>) {
+						return !::std::is_same_v<_ResultType<_Input, _Output, _State, _State2>,
+							       _ResultType<_ArgInput, _ArgOutput, _ArgState, _ArgState2>>
+							&& ::std::is_constructible_v<_Input, _ArgInput&&>
+							&& ::std::is_constructible_v<_Output, _ArgOutput&&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>;
+					}
+					else {
+						return !::std::is_same_v<_ResultType<_Input, _Output, _State, _State2, _Pivot>,
+							       _ResultType<_ArgInput, _ArgOutput, _ArgState, _ArgState2, _ArgPivot>>
+							&& ::std::is_constructible_v<_Input, _ArgInput&&>
+							&& ::std::is_constructible_v<_Output, _ArgOutput&&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State>, _ArgState&>
+							&& ::std::is_constructible_v<::ztd::reference_wrapper<_State2>, _ArgState2&>
+							&& ::std::is_constructible_v<_Pivot, _ArgPivot&&>;
+					}
 				}
 			}
 		}

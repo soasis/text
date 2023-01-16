@@ -43,6 +43,10 @@
 #include <ztd/text/decode_one.hpp>
 #include <ztd/text/transcode.hpp>
 #include <ztd/text/transcode_one.hpp>
+#include <ztd/text/recode.hpp>
+#include <ztd/text/recode_one.hpp>
+#include <ztd/text/ciscode.hpp>
+#include <ztd/text/ciscode_one.hpp>
 #include <ztd/text/count_as_encoded.hpp>
 #include <ztd/text/count_as_decoded.hpp>
 #include <ztd/text/count_as_transcoded.hpp>
@@ -53,6 +57,8 @@
 #include <ztd/text/encode_view.hpp>
 #include <ztd/text/decode_view.hpp>
 #include <ztd/text/transcode_view.hpp>
+#include <ztd/text/recode_view.hpp>
+#include <ztd/text/ciscode_view.hpp>
 
 #include <ztd/text/normalization.hpp>
 #include <ztd/text/normalized_view.hpp>

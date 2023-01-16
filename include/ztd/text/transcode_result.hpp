@@ -49,7 +49,6 @@
 #include <cstddef>
 #include <array>
 #include <utility>
-#include <system_error>
 
 #include <ztd/prologue.hpp>
 
@@ -65,7 +64,7 @@ namespace ztd { namespace text {
 	/// @{
 
 	//////
-	/// @brief The result of transcoding operations (such as ztd_text_transcode) that specifically do not include
+	/// @brief The result of transcoding operations (such as ztd::text::transcode) that specifically do not include
 	/// a reference to the state.
 	template <typename _Input, typename _Output>
 	class stateless_transcode_result {
@@ -87,7 +86,7 @@ namespace ztd { namespace text {
 		::std::size_t error_count;
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::stateless_transcode_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __other A different but related result type.
@@ -104,7 +103,7 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::stateless_transcode_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __other A different but related result type.
@@ -169,9 +168,9 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief The result of transcoding operations (such as ztd_text_transcode).
+	/// @brief The result of transcoding operations (such as ztd::text::transcode with the state argument provided).
 	template <typename _Input, typename _Output, typename _FromState, typename _ToState>
-	class transcode_result : public stateless_transcode_result<_Input, _Output> {
+	class pivotless_transcode_result : public stateless_transcode_result<_Input, _Output> {
 	private:
 		using __base_t = stateless_transcode_result<_Input, _Output>;
 
@@ -186,37 +185,41 @@ namespace ztd { namespace text {
 		::ztd::reference_wrapper<_ToState> to_state;
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result from a previous transcode_result.
+		/// @brief Constructs a ztd::text::pivotless_transcode_result from a previous pivotless_transcode_result.
 		///
 		/// @param[in] __other A different but related result type.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
-			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::transcode_result, _Input,
-			     _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>()>* = nullptr>
-		constexpr transcode_result(const transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState>&
-			     __other) noexcept(__txt_detail::__result_type_copy_noexcept<::ztd::text::transcode_result, _Input,
-			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>())
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::pivotless_transcode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState,
+			     _ArgToState>()>* = nullptr>
+		constexpr pivotless_transcode_result(
+			const pivotless_transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState>&
+			     __other) noexcept(__txt_detail::__result_type_copy_noexcept<::ztd::text::pivotless_transcode_result,
+			_Input, _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>())
 		: __base_t(__other.input, __other.output, __other.error_code, __other.error_count)
 		, from_state(__other.from_state)
 		, to_state(__other.to_state) {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result from a previous transcode_result.
+		/// @brief Constructs a ztd::text::pivotless_transcode_result from a previous pivotless_transcode_result.
 		///
 		/// @param[in] __other A different but related result type.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
-			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::transcode_result, _Input,
-			     _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>()>* = nullptr>
-		constexpr transcode_result(transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState>&&
-			     __other) noexcept(__txt_detail::__result_type_move_noexcept<::ztd::text::transcode_result, _Input,
-			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>())
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::pivotless_transcode_result,
+			     _Input, _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState,
+			     _ArgToState>()>* = nullptr>
+		constexpr pivotless_transcode_result(
+			pivotless_transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState>&&
+			     __other) noexcept(__txt_detail::__result_type_move_noexcept<::ztd::text::pivotless_transcode_result,
+			_Input, _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState>())
 		: __base_t(::std::move(__other.input), ::std::move(__other.output), __other.error_code, __other.error_count)
 		, from_state(__other.from_state)
 		, to_state(__other.to_state) {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result, defaulting the error code to
+		/// @brief Constructs a ztd::text::pivotless_transcode_result, defaulting the error code to
 		/// ztd::text::encoding_error::ok if not provided.
 		///
 		/// @param[in] __input The input range to store.
@@ -228,15 +231,15 @@ namespace ztd { namespace text {
 		/// @param[in] __error_code The error code for the transcoding operation, taken as the first of either the
 		/// encode or decode operation that failed.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>
-		constexpr transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
+		constexpr pivotless_transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
-		: transcode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
+		: pivotless_transcode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
 			::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code,
 			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
 		//////
-		/// @brief Constructs a ztd::text::transcode_result with the provided parameters and information,
+		/// @brief Constructs a ztd::text::pivotless_transcode_result with the provided parameters and information,
 		/// including whether or not an error was handled.
 		///
 		/// @param[in] __input The input range to store.
@@ -251,12 +254,104 @@ namespace ztd { namespace text {
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState>
-		constexpr transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
+		constexpr pivotless_transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __error_count)
 		: __base_t(
 			::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
 		, from_state(::std::forward<_ArgFromState>(__from_state))
 		, to_state(::std::forward<_ArgToState>(__to_state)) {
+		}
+	};
+
+	//////
+	/// @brief The result of low-level transcoding operations (such as ztd::text::transcode_into with the pivot
+	/// provided as an argument).
+	template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _Pivot>
+	class transcode_result : public pivotless_transcode_result<_Input, _Output, _FromState, _ToState> {
+	private:
+		using __base_t = pivotless_transcode_result<_Input, _Output, _FromState, _ToState>;
+
+	public:
+		//////
+		/// @brief The range used to hold the intermediate pivot transcoding units.
+		_Pivot pivot;
+		//////
+		/// @brief The kind of error that occured, if any, for the intermediate pivot.
+		encoding_error pivot_error_code;
+		//////
+		/// @brief Whether or not the error handler for the pivot point was invoked, regardless of if the
+		/// `pivot_error_code` is set or not set to ztd::text::encoding_error::ok.
+		::std::size_t pivot_error_count;
+
+		//////
+		/// @brief Constructs a ztd::text::pivotless_transcode_result from a previous pivotless_transcode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
+			typename _ArgPivot,
+			::std::enable_if_t<__txt_detail::__result_type_copy_constraint<::ztd::text::transcode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState, _Pivot,
+			     _ArgPivot>()>* = nullptr>
+		constexpr transcode_result(
+			const transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState, _ArgPivot>&
+			     __other) noexcept(__txt_detail::__result_type_copy_noexcept<::ztd::text::transcode_result, _Input,
+			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState, _Pivot, _ArgPivot>())
+		: __base_t(__other.input, __other.output, __other.error_code, __other.error_count, __other.from_state,
+			__other.to_state)
+		, pivot(__other.pivot)
+		, pivot_error_code(__other.pivot_error_code)
+		, pivot_error_count(__other.pivot_error_count) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::pivotless_transcode_result from a previous pivotless_transcode_result.
+		///
+		/// @param[in] __other A different but related result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
+			typename _ArgPivot,
+			::std::enable_if_t<__txt_detail::__result_type_move_constraint<::ztd::text::transcode_result, _Input,
+			     _ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState, _Pivot,
+			     _ArgPivot>()>* = nullptr>
+		constexpr transcode_result(transcode_result<_ArgInput, _ArgOutput, _ArgFromState, _ArgToState, _ArgPivot>&&
+			     __other) noexcept(__txt_detail::__result_type_move_noexcept<::ztd::text::transcode_result, _Input,
+			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState, _Pivot, _ArgPivot>())
+		: __base_t(::std::move(__other.input), ::std::move(__other.output), __other.error_code, __other.error_count,
+			__other.from_state, __other.to_state)
+		, pivot(::std::move(__other.pivot))
+		, pivot_error_code(::std::move(__other.pivot_error_code))
+		, pivot_error_count(::std::move(__other.pivot_error_count)) {
+		}
+
+		//////
+		/// @brief Constructs a ztd::text::pivotless_transcode_result with the provided parameters and information,
+		/// including whether or not an error was handled.
+		///
+		/// @param[in] __input The input range to store.
+		/// @param[in] __output The output range to store.
+		/// @param[in] __from_state The state related to the "From Encoding" that performed the decode half of the
+		/// operation.
+		/// @param[in] __to_state The state related to the "To Encoding" that performed the encode half of the
+		/// operation.
+		/// @param[in] __error_code The error code for the transcode operation, taken as the first of either the
+		/// encode or decode operation that failed.
+		/// @param[in] __error_count Whether or not an error was handled. Some error handlers are corrective (see
+		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
+		/// invoked. This allows the value to be provided directly when constructing this result type.
+		/// @param[in] __pivot_error_code The error code for the decode step of the transcode oepration, if it failed.
+		/// @param[in] __pivot_error_count Whether or not an error was handled during the decode step of the transcode
+		/// operation. Some error handlers are corrective (see ztd::text::replacement_handler_t), and so the error
+		/// code is not enough to determine if the handler was invoked. This allows the value to be provided directly
+		/// when constructing this result type.
+		template <typename _ArgInput, typename _ArgOutput, typename _ArgFromState, typename _ArgToState,
+			typename _ArgPivot>
+		constexpr transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
+			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __error_count, _ArgPivot&& __pivot,
+			encoding_error __pivot_error_code, ::std::size_t __pivot_error_count)
+		: __base_t(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __from_state, __to_state,
+			__error_code, __error_count)
+		, pivot(::std::forward<_ArgPivot>(__pivot))
+		, pivot_error_code(::std::move(__pivot_error_code))
+		, pivot_error_count(::std::move(__pivot_error_count)) {
 		}
 	};
 
@@ -267,15 +362,31 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _Input, typename _Output, typename _FromState, typename _ToState>
 		constexpr stateless_transcode_result<_Input, _Output>
-		__slice_to_stateless(transcode_result<_Input, _Output, _FromState, _ToState>&& __result) noexcept(
+		__slice_to_stateless(pivotless_transcode_result<_Input, _Output, _FromState, _ToState>&& __result) noexcept(
 			::std::is_nothrow_constructible_v<stateless_transcode_result<_Input, _Output>,
 			     stateless_transcode_result<_Input, _Output>>) {
 			return ::std::move(__result);
 		}
 
+		template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _Pivot>
+		constexpr pivotless_transcode_result<_Input, _Output, _FromState, _ToState>
+		__slice_to_pivotless(transcode_result<_Input, _Output, _FromState, _ToState, _Pivot>&& __result) noexcept(
+			::std::is_nothrow_constructible_v<pivotless_transcode_result<_Input, _Output, _FromState, _ToState>,
+			     pivotless_transcode_result<_Input, _Output, _FromState, _ToState>>) {
+			return ::std::move(__result);
+		}
+
+		template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _Pivot>
+		constexpr stateless_transcode_result<_Input, _Output> __slice_to_stateless_pivotless(
+			transcode_result<_Input, _Output, _FromState, _ToState, _Pivot>&&
+			     __result) noexcept(::std::is_nothrow_constructible_v<stateless_transcode_result<_Input, _Output>,
+			stateless_transcode_result<_Input, _Output>>) {
+			return ::std::move(__result);
+		}
+
 		template <typename _Input, typename _Output, typename _DesiredOutput, typename _FromState, typename _ToState>
 		constexpr auto __replace_transcode_result_output_no_state(
-			transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
+			pivotless_transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
 			_DesiredOutput&& __desired_output) noexcept(::std::
 			     is_nothrow_constructible_v<stateless_transcode_result<_Input, _Output>, _Input&&, _DesiredOutput,
 			          encoding_error, ::std::size_t>) {
@@ -286,46 +397,23 @@ namespace ztd { namespace text {
 
 		template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _DesiredOutput>
 		constexpr auto __replace_transcode_result_output(
-			transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
+			pivotless_transcode_result<_Input, _Output, _FromState, _ToState>&& __result,
 			_DesiredOutput&& __desired_output) noexcept(::std::
-			     is_nothrow_constructible_v<transcode_result<_Input, _Output, _FromState, _ToState>, _Input&&,
-			          _DesiredOutput, _FromState&, _ToState&, encoding_error, ::std::size_t>) {
-			using _Result = transcode_result<_Input, remove_cvref_t<_DesiredOutput>, _FromState, _ToState>;
+			     is_nothrow_constructible_v<pivotless_transcode_result<_Input, _Output, _FromState, _ToState>,
+			          _Input&&, _DesiredOutput, _FromState&, _ToState&, encoding_error, ::std::size_t>) {
+			using _Result = pivotless_transcode_result<_Input, remove_cvref_t<_DesiredOutput>, _FromState, _ToState>;
 			return _Result(::std::move(__result.input), ::std::forward<_DesiredOutput>(__desired_output),
 				__result.from_state, __result.to_state, __result.error_code, __result.error_count);
 		}
 
 		template <typename _InputRange, typename _OutputRange, typename _FromState, typename _ToState>
-		using __reconstruct_transcode_result_t = transcode_result<ranges::range_reconstruct_t<_InputRange>,
+		using __reconstruct_transcode_result_t = pivotless_transcode_result<ranges::range_reconstruct_t<_InputRange>,
 			ranges::range_reconstruct_t<_OutputRange>, _FromState, _ToState>;
 
-		template <typename _InputRange, typename _OutputRange, typename _ToState, typename _FromState,
-			typename _InFirst, typename _InLast, typename _OutFirst, typename _OutLast, typename _ArgToState,
-			typename _ArgFromState>
-		constexpr decltype(auto) __reconstruct_stateless_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
-			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgFromState&& __to_state, _ArgToState&& __from_state,
-			encoding_error __error_code, ::std::size_t __error_count) {
-			decltype(auto) __in_range  = ranges::reconstruct(::std::in_place_type<_InputRange>,
-				 ::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last));
-			decltype(auto) __out_range = ranges::reconstruct(::std::in_place_type<_OutputRange>,
-				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last));
-			return transcode_result<_InputRange, _OutputRange, _FromState, _ToState>(
-				::std::forward<decltype(__in_range)>(__in_range),
-				::std::forward<decltype(__out_range)>(__out_range), ::std::forward<_ArgFromState>(__from_state),
-				::std::forward<_ArgToState>(__to_state), __error_code, __error_count);
-		}
-
 		template <typename _InputRange, typename _OutputRange, typename _FromState, typename _ToState,
-			typename _InFirst, typename _InLast, typename _OutFirst, typename _OutLast, typename _ArgToState,
-			typename _ArgFromState>
-		constexpr decltype(auto) __reconstruct_stateless_transcode_result(_InFirst&& __in_first, _InLast&& __in_last,
-			_OutFirst&& __out_first, _OutLast&& __out_last, _ArgFromState&& __from_state, _ArgToState&& __to_state,
-			encoding_error __error_code = encoding_error::ok) {
-			return __reconstruct_transcode_result_t<_InputRange, _OutputRange, _FromState, _ToState>(
-				::std::forward<_InFirst>(__in_first), ::std::forward<_InLast>(__in_last),
-				::std::forward<_OutFirst>(__out_first), ::std::forward<_OutLast>(__out_last),
-				::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code);
-		}
+			typename _Pivot>
+		using __reconstruct_pivot_transcode_result_t = transcode_result<ranges::range_reconstruct_t<_InputRange>,
+			ranges::range_reconstruct_t<_OutputRange>, _FromState, _ToState, ranges::range_reconstruct_t<_Pivot>>;
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

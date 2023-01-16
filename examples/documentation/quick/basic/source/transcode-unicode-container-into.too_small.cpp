@@ -50,7 +50,8 @@ int main(int, char*[]) {
 	// Span indicating available space to write into
 	ztd::span<char16_t> truncated_utf16_string_output(truncated_utf16_string);
 	auto truncated_utf16_string_result = ztd::text::transcode_into(input,
-	     ztd::text::compat_utf8, truncated_utf16_string_output, ztd::text::utf16);
+	     ztd::text::compat_utf8, truncated_utf16_string_output, ztd::text::utf16,
+	     ztd::text::pass_handler, ztd::text::pass_handler);
 
 	// We only had space for sixteen UTF-16 code units; expect as much from output
 	ZTD_TEXT_ASSERT(truncated_expected_ouput == truncated_utf16_string);

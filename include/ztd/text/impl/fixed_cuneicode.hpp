@@ -168,9 +168,9 @@ namespace ztd { namespace text {
 					const _FunctionCodeUnit* __typed_in_ptr
 						= static_cast<const _FunctionCodeUnit*>(__intermediate_input);
 					_FunctionCodePoint* __typed_out_ptr = static_cast<_FunctionCodePoint*>(__intermediate_output);
-					cnc_mcerror __err
+					cnc_mcerr __err
 						= __decode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-					if (__err == CNC_MCERROR_INCOMPLETE_INPUT) {
+					if (__err == cnc_mcerr_incomplete_input) {
 						if constexpr (__call_error_handler) {
 							if (__index == max_code_units) {
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
@@ -191,7 +191,7 @@ namespace ztd { namespace text {
 						continue;
 					}
 					if constexpr (__call_error_handler) {
-						if (__err != CNC_MCERROR_OK) {
+						if (__err != cnc_mcerr_ok) {
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -275,9 +275,9 @@ namespace ztd { namespace text {
 					const _FunctionCodePoint* __typed_in_ptr
 						= static_cast<const _FunctionCodePoint*>(__intermediate_input);
 					_FunctionCodeUnit* __typed_out_ptr = static_cast<_FunctionCodeUnit*>(__intermediate_output);
-					cnc_mcerror __err
+					cnc_mcerr __err
 						= __encode_func(&__out_size, &__typed_out_ptr, &__in_size, &__typed_in_ptr, &__state);
-					if (__err == CNC_MCERROR_INCOMPLETE_INPUT) {
+					if (__err == cnc_mcerr_incomplete_input) {
 						if constexpr (__call_error_handler) {
 							if (__index == max_code_points) {
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
@@ -298,7 +298,7 @@ namespace ztd { namespace text {
 						continue;
 					}
 					if constexpr (__call_error_handler) {
-						if (__err != CNC_MCERROR_OK) {
+						if (__err != cnc_mcerr_ok) {
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,

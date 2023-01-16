@@ -102,14 +102,29 @@
 			"description": "Measures the boost.text library from Zach laine and its encoding routines, partocularly the one-at-a-time views that can be fed into C and C++ algorithms using the view's iterator abstraction."
 		},
 		{
+			"name": "cuneicode registry",
+			"pattern": "cuneicode_registry$",
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone."
+		},
+		{
 			"name": "cuneicode registry (unbounded)",
 			"pattern": "cuneicode_registry_unbounded$",
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size)."
 		},
 		{
-			"name": "cuneicode registry",
-			"pattern": "cuneicode_registry$",
+			"name": "cuneicode registry (single loop)",
+			"pattern": "cuneicode_registry_single$",
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone."
+		},
+		{
+			"name": "cuneicode registry (single loop, unbounded)",
+			"pattern": "cuneicode_registry_single_unbounded$",
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size)."
+		},
+		{
+			"name": "cuneicode registry (assume valid)",
+			"pattern": "cuneicode_registry_unchecked$",
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input)."
 		},
 		{
 			"name": "cuneicode registry (unbounded, assume valid)",
@@ -117,9 +132,14 @@
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity)."
 		},
 		{
-			"name": "cuneicode registry (assume valid)",
-			"pattern": "cuneicode_registry_unchecked$",
+			"name": "cuneicode registry (single loop, assume valid)",
+			"pattern": "cuneicode_registry_single_unchecked$",
 			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input)."
+		},
+		{
+			"name": "cuneicode registry (single loop, unbounded, assume valid)",
+			"pattern": "cuneicode_registry_single_unchecked_unbounded$",
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity)."
 		},
 		{
 			"name": "cuneicode",

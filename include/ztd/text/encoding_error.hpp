@@ -40,7 +40,7 @@
 #include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/to_underlying.hpp>
 
-#include <ztd/cuneicode/mcerror.h>
+#include <ztd/cuneicode/mcerr.h>
 
 #include <cstddef>
 #include <system_error>
@@ -97,14 +97,14 @@ namespace ztd { namespace text {
 	};
 
 	// We must make sure the C and C++ error definitions line up here, if only for the benefit of this library.
-	static_assert(CNC_MCERROR_OK == ztd::to_underlying(encoding_error::ok),
-		"the encoding_error::ok value does not make the CNC_MCERROR_OK value");
-	static_assert(CNC_MCERROR_INVALID_SEQUENCE == ztd::to_underlying(encoding_error::invalid_sequence),
-		"the encoding_error::invalid_sequence value does not make the CNC_MCERROR_INVALID_SEQUENCE value");
-	static_assert(CNC_MCERROR_INCOMPLETE_INPUT == ztd::to_underlying(encoding_error::incomplete_sequence),
-		"the encoding_error::incomplete_sequence value does not make the CNC_MCERROR_INCOMPLETE_INPUT value");
-	static_assert(CNC_MCERROR_INSUFFICIENT_OUTPUT == ztd::to_underlying(encoding_error::insufficient_output_space),
-		"the encoding_error::insufficient_output_space value does not make the CNC_MCERROR_INSUFFICIENT_OUTPUT "
+	static_assert(cnc_mcerr_ok == ztd::to_underlying(encoding_error::ok),
+		"the encoding_error::ok value does not make the cnc_mcerr_ok value");
+	static_assert(cnc_mcerr_invalid_sequence == ztd::to_underlying(encoding_error::invalid_sequence),
+		"the encoding_error::invalid_sequence value does not make the cnc_mcerr_invalid_sequence value");
+	static_assert(cnc_mcerr_incomplete_input == ztd::to_underlying(encoding_error::incomplete_sequence),
+		"the encoding_error::incomplete_sequence value does not make the cnc_mcerr_incomplete_input value");
+	static_assert(cnc_mcerr_insufficient_output == ztd::to_underlying(encoding_error::insufficient_output_space),
+		"the encoding_error::insufficient_output_space value does not make the cnc_mcerr_insufficient_output "
 		"value");
 
 	//////

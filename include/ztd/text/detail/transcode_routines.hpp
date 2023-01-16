@@ -37,18 +37,12 @@
 
 #include <ztd/text/encode_result.hpp>
 #include <ztd/text/decode_result.hpp>
-#include <ztd/text/transcode_result.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/code_unit.hpp>
-#include <ztd/text/propagate_error.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
-#include <ztd/text/detail/pass_through_handler.hpp>
-#include <ztd/text/detail/progress_handler.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
-#include <ztd/text/detail/encoding_iterator_storage.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/span_reconstruct.hpp>
 
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/tag.hpp>
@@ -87,7 +81,7 @@ namespace ztd { namespace text {
 					::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 			}
 			else if constexpr ((!ranges::is_range_contiguous_range_v<_UOutput>
-				                   || ranges::is_range_input_or_output_range_v<
+				                   || ranges::is_range_input_or_output_range_exactly_v<
 				                        _UOutput>)&&__is_decode_range_category_contiguous_v<_UEncoding>) {
 				code_point_t<_UEncoding> __intermediate_output_storage[max_code_points_v<_UEncoding>];
 				::ztd::span<code_point_t<_UEncoding>, max_code_points_v<_UEncoding>> __intermediate_output(
@@ -137,7 +131,7 @@ namespace ztd { namespace text {
 					::std::forward<_Input>(__input), __output_range, __error_handler, __state);
 			}
 			else if constexpr ((!ranges::is_range_contiguous_range_v<_UOutput>
-				                   || ranges::is_range_input_or_output_range_v<
+				                   || ranges::is_range_input_or_output_range_exactly_v<
 				                        _UOutput>)&&__is_encode_range_category_contiguous_v<_UEncoding>) {
 				constexpr ::std::size_t _IntermediateMax = max_code_units_v<_UEncoding>;
 				code_unit_t<_UEncoding> __intermediate_output_storage[_IntermediateMax];

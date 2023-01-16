@@ -42,6 +42,7 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/forward.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
+#include <ztd/text/skip_input_error.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 
 #include <ztd/ranges/range.hpp>
@@ -120,6 +121,25 @@ namespace ztd { namespace text {
 			///@brief The encoding ID for this type. Used for optimization purposes.
 			inline static constexpr ::ztd::text_encoding_id decoded_id
 				= __surrogates_allowed ? ::ztd::text_encoding_id::ucs4 : ::ztd::text_encoding_id::utf32;
+
+			///////
+			/// @brief Allows an encoding to discard input characters if an error occurs, taking in both the
+			/// state and the input sequence (by reference) to modify.
+			///
+			/// @remarks This will skip every input value until a proper UTF-32 unicode scalar value (or code point)
+			/// is found.
+			template <typename _Result, typename _InputProgress, typename _OutputProgress>
+			static constexpr auto skip_input_error(_Result&& __result, const _InputProgress& __input_progress,
+				const _OutputProgress& __output_progress) noexcept {
+				if constexpr (__surrogates_allowed) {
+					return ::ztd::text::skip_utf32_with_surrogates_input_error(
+						::std::forward<_Result>(__result), __input_progress, __output_progress);
+				}
+				else {
+					return ::ztd::text::skip_utf32_input_error(
+						::std::forward<_Result>(__result), __input_progress, __output_progress);
+				}
+			}
 
 			//////
 			/// @brief Decodes a single complete unit of information as code points and produces a result with the

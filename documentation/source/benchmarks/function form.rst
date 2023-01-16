@@ -57,5 +57,3 @@ C Basic Source Character Set
 ----------------------------
 
 .. image:: /img/benchmark_results/function_form.large/transform_two_spans.png
-
-The

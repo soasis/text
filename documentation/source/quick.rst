@@ -129,7 +129,29 @@ This is where the functions that are suffixed ``_to`` come into play, and where 
 	:linenos:
 	:start-after: // ============================================================================ //
 
-The returned :doc:`ztd::text::transcode_result </api/transcode_result>` from the ``_to``-suffixed function gives more information about what went wrong, including the error count and the 
+The returned :doc:`ztd::text::transcode_result </api/transcode_result>` from the ``_to``-suffixed function gives more information about what went wrong, including the error count and any other pertinent information.
+
+
+Transcoding into any Output View/Range
+++++++++++++++++++++++++++++++++++++++
+
+Sometimes, just picking the container to serialize into isn't enough. After all, in the above examples, space will be automatically allocated as the container is added to. This may not be desirable for memory-constrained environments, for places with strict performance requirements that cannot risk touching an allocator, and within tight loops even under normal desktop and server environments.
+
+Therefore, the ``_into`` suffixed functions allow explicitly passing in a range to be written into that will keep writing into the available space between the range's begin and end (e.g., from a ``std::vector``'s ``.data()`` to it's ``.data() + .size()``).
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-container-into.deque.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
+
+The returned :doc:`ztd::text::transcode_result </api/transcode_result>` from the ``_into``-suffixed function gives more information about what went wrong, including the error count and any other pertinent information. If a pivot is not used (described in a below section), it will return a :doc:`ztd::text::pivotless_transcode_result </api/pivotless_transcode_result>` or a :doc:`ztd::text::stateless_transcode_result </api/stateless_transcode_result>`, which just has a few less data members to describe what happened.
+
+If there is not enough space, then extra writing will not be done and it will stop and return an error of :cpp:enumerator:`ztd::text::encoding_error::insufficient_output_space`:
+
+.. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-container-into.too_small.cpp
+	:language: cpp
+	:linenos:
+	:start-after: // ============================================================================ //
 
 
 Transcoding with Errors

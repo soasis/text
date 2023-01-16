@@ -40,10 +40,10 @@
 #include <ztd/idk/charN_t.h>
 
 ZTD_C_LANGUAGE_LINKAGE_I_
-ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ cnc_mcerror err_pptr_psize(
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ cnc_mcerr err_pptr_psize(
      ztd_char8_t** p_output_ptr, size_t* p_output_size, const ztd_char32_t** p_input_ptr, size_t* p_input_size);
 ZTD_C_LANGUAGE_LINKAGE_I_
-ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ cnc_mcerror err_pptr_ptr(ztd_char8_t** p_output_ptr,
+ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ cnc_mcerr err_pptr_ptr(ztd_char8_t** p_output_ptr,
      ztd_char8_t* output_ptr_last, const ztd_char32_t** p_input_ptr, const ztd_char32_t* input_ptr_last);
 ZTD_C_LANGUAGE_LINKAGE_I_
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ error_size_size size_struct_ptr_size(

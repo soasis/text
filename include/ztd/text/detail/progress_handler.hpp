@@ -56,16 +56,50 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 
-		template <typename _AssumeValid, typename _DesiredEncoding>
+		template <bool, typename>
+		class __progress_handler;
+
+		template <bool, typename, typename>
+		class __forwarding_progress_handler;
+
+		template <typename _Handler>
+		class __is_progress_handler_specialization : public ::std::false_type { };
+
+		template <bool _AssumeValid, typename _Encoding>
+		class __is_progress_handler_specialization<__progress_handler<_AssumeValid, _Encoding>>
+		: public ::std::true_type { };
+
+		template <typename _Handler>
+		inline constexpr bool __is_progress_handler_v = __is_progress_handler_specialization<_Handler>::value;
+
+		template <typename _Handler>
+		class __is_forwarding_progress_handler_specialization : public ::std::false_type { };
+
+		template <bool _AssumeValid, typename _ErrorHandler, typename _Encoding>
+		class __is_forwarding_progress_handler_specialization<
+			__forwarding_progress_handler<_AssumeValid, _ErrorHandler, _Encoding>> : public ::std::true_type { };
+
+		template <typename _Handler>
+		inline constexpr bool __is_forwarding_progress_handler_v
+			= __is_forwarding_progress_handler_specialization<_Handler>::value;
+
+		template <bool _AssumeValid, typename _DesiredEncoding>
 		class __progress_handler {
 		private:
 			using _CodePoint = code_point_t<_DesiredEncoding>;
 			using _CodeUnit  = code_unit_t<_DesiredEncoding>;
 
 		public:
-			using assume_valid = ::std::integral_constant<bool, _AssumeValid::value>;
+			using assume_valid = ::std::integral_constant<bool, _AssumeValid>;
 
 			constexpr __progress_handler() noexcept
+			: _M_code_points(), _M_code_points_size(), _M_code_units(), _M_code_units_size() {
+			}
+
+			template <typename _Ignored,
+				::std::enable_if_t<
+				     !::std::is_same_v<__progress_handler, ::ztd::remove_cvref_t<_Ignored>>>* = nullptr>
+			constexpr __progress_handler([[maybe_unused]] _Ignored&&) noexcept
 			: _M_code_points(), _M_code_points_size(), _M_code_units(), _M_code_units_size() {
 			}
 
@@ -135,7 +169,7 @@ namespace ztd { namespace text {
 			::std::size_t _M_code_units_size;
 		};
 
-		template <typename _AssumeValid, typename _ErrorHandler, typename _Encoding>
+		template <bool _AssumeValid, typename _ErrorHandler, typename _Encoding>
 		class __forwarding_progress_handler : private ebco<_Encoding&, 0>, private ebco<_ErrorHandler&, 1> {
 		private:
 			using _CodePoint                                = code_point_t<remove_cvref_t<_Encoding>>;
@@ -143,12 +177,11 @@ namespace ztd { namespace text {
 			using __encoding_base_t                         = ebco<_Encoding&, 0>;
 			using __error_handler_base_t                    = ebco<_ErrorHandler&, 1>;
 			inline static constexpr bool _IsProgressHandler = // cf
-				is_specialization_of_v<::ztd::remove_cvref_t<_ErrorHandler>, __txt_detail::__progress_handler>
-				|| is_specialization_of_v<::ztd::remove_cvref_t<_ErrorHandler>,
-				     __txt_detail::__forwarding_progress_handler>;
+				__is_progress_handler_v<::ztd::remove_cvref_t<_ErrorHandler>>
+				|| __is_forwarding_progress_handler_v<::ztd::remove_cvref_t<_ErrorHandler>>;
 
 		public:
-			using assume_valid = ::std::integral_constant<bool, _AssumeValid::value>;
+			using assume_valid = ::std::integral_constant<bool, _AssumeValid>;
 
 			constexpr __forwarding_progress_handler(_Encoding& __encoding, _ErrorHandler& __error_handler) noexcept
 			: __encoding_base_t(__encoding)
@@ -315,6 +348,7 @@ namespace ztd { namespace text {
 			::std::array<_CodeUnit, max_code_units_v<remove_cvref_t<_Encoding>>> _M_code_units;
 			::std::size_t _M_code_units_size;
 		};
+
 	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

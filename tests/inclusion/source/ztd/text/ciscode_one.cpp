@@ -28,44 +28,4 @@
 //
 // ============================================================================ //
 
-#pragma once
-
-#ifndef ZTD_TEXT_PIVOT_HPP
-#define ZTD_TEXT_PIVOT_HPP
-
-#include <ztd/text/version.hpp>
-
-#include <ztd/text/encoding_error.hpp>
-
-#include <ztd/prologue.hpp>
-
-namespace ztd { namespace text {
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
-
-	//////
-	/// @brief A type which stores a potential intermediate range for usage by higher-level algorithms (such as
-	/// ztd::text::transcode_into_raw).
-	///
-	/// @tparam _Range The range type which is meant to serve as the potential intermediate space. Typically a
-	/// `std::span` or span-like view type, but any view type will do fine.
-	template <typename _Range>
-	class pivot {
-	public:
-		//////
-		/// @brief The range that will be written into for the data.
-		_Range intermediate;
-		//////
-		/// @brief The error code that occurs if the operation which converts data into the pivot does not finish
-		/// successfully.
-		encoding_error error_code;
-		//////
-		/// @brief The number of errors that occurred during intermediate work using the pivot buffer.
-		size_t error_count;
-	};
-
-	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
-}} // namespace ztd::text
-
-#include <ztd/epilogue.hpp>
-
-#endif
+#include <ztd/text/ciscode_one.hpp>

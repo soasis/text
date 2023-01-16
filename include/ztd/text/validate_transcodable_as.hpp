@@ -83,20 +83,19 @@ namespace ztd { namespace text {
 	/// the code points to verify it can be decoded into code points, and then encoded back into code units, with no
 	/// errors and with the exact same value sequence as the original.
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
-		typename _EncodeState, typename _PivotRange>
+		typename _EncodeState, typename _Pivot>
 	constexpr auto basic_validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
-		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state,
-		pivot<_PivotRange>& __pivot) {
+		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state, _Pivot&& __pivot) {
 		using _InitialInput  = __txt_detail::__span_reconstruct_t<_Input, _Input>;
 		using _WorkingInput  = ::ztd::ranges::subrange_for_t<_InitialInput>;
 		using _UFromEncoding = remove_cvref_t<_FromEncoding>;
 		using _UToEncoding   = remove_cvref_t<_ToEncoding>;
-		using _Result        = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+		using _Result        = validate_pivotless_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
 		_WorkingInput __working_input = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
 
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as_one, _WorkingInput,
-			              _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			              _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _Pivot>) {
 			(void)__encode_state;
 			for (;;) {
 				auto __result = text_validate_transcodable_as_one(::ztd::tag<_UFromEncoding, _UToEncoding> {},
@@ -119,7 +118,7 @@ namespace ztd { namespace text {
 				true, __decode_state, __encode_state);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_transcodable_as_one,
-			                   _WorkingInput, _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			                   _WorkingInput, _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _Pivot>) {
 			(void)__encode_state;
 			for (;;) {
 				auto __result = __text_validate_transcodable_as_one(::ztd::tag<_UFromEncoding, _UToEncoding> {},
@@ -193,27 +192,26 @@ namespace ztd { namespace text {
 	/// taking the available 4 parameters. If so, it calls this. Otherwise, it defers to
 	/// ztd::text::validate_transcodable_as.
 	template <typename _Input, typename _FromEncoding, typename _ToEncoding, typename _DecodeState,
-		typename _EncodeState, typename _PivotRange>
+		typename _EncodeState, typename _Pivot>
 	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
-		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state,
-		pivot<_PivotRange>& __pivot) {
+		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state, _Pivot&& __pivot) {
 		using _UFromEncoding = remove_cvref_t<_ToEncoding>;
 		using _UToEncoding   = remove_cvref_t<_FromEncoding>;
 		if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as, _Input, _FromEncoding,
-			              _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			              _ToEncoding, _DecodeState, _EncodeState, _Pivot>) {
 			(void)__encode_state;
 			return text_validate_transcodable_as(::ztd::tag<_UFromEncoding, _UToEncoding> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state, __pivot);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_text_validate_transcodable_as, _Input,
-			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _Pivot>) {
 			return text_validate_transcodable_as(::ztd::tag<_UFromEncoding, _UToEncoding> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), __decode_state, __encode_state, __pivot);
 		}
 		else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_validate_transcodable_as, _Input,
-			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _PivotRange>) {
+			                   _FromEncoding, _ToEncoding, _DecodeState, _EncodeState, _Pivot>) {
 			(void)__encode_state;
 			return __text_validate_transcodable_as(::ztd::tag<_UFromEncoding, _UToEncoding> {},
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
@@ -243,10 +241,11 @@ namespace ztd { namespace text {
 		typename _EncodeState>
 	constexpr auto validate_transcodable_as(_Input&& __input, _FromEncoding&& __from_encoding,
 		_ToEncoding&& __to_encoding, _DecodeState& __decode_state, _EncodeState& __encode_state) {
-		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
-		using _CodePoint     = code_point_t<_UFromEncoding>;
-		_CodePoint __intermediate[max_code_points_v<_UFromEncoding>] {};
-		pivot<ztd::span<_CodePoint>> __pivot { __intermediate, encoding_error::ok, 0 };
+		using _UFromEncoding                 = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint                     = code_point_t<_UFromEncoding>;
+		constexpr ::std::size_t __max_points = max_code_points_v<_UFromEncoding>;
+		_CodePoint __intermediate[__max_points] {};
+		ztd::span<_CodePoint, __max_points> __pivot(__intermediate);
 		return validate_transcodable_as(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			__decode_state, __encode_state, __pivot);

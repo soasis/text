@@ -86,20 +86,20 @@ inline namespace ztd_text_tests_mockup_environment {
 			return ztd::text::transcode(this->native(), wide_ucs2, ztd::text::utf32, ztd::text::replacement_handler);
 		}
 	};
+
+	inline constexpr static ztd::uchar8_t u8_expected_env_value_storage[]
+	     = { u8'a', (unsigned char)'\xEF', (unsigned char)'\xBF', (unsigned char)'\xBD', (unsigned char)'\xEF',
+		       (unsigned char)'\xBF', (unsigned char)'\xBD', u8'z', u8'\0' };
 } // namespace ztd_text_tests_mockup_environment
 
 TEST_CASE("text/mockup/environment",
      "A fake environment which can meet the specifications Tom Honermann stated on January 5th, 2023") {
 
-	const constexpr std::string_view expected_env_value    = "a??z";
-	const constexpr std::wstring_view w_expected_env_value = L"a\xDC00\xD800z";
-	const constexpr ztd::uchar8_t u8_expected_env_value_storage[]
-	     = { u8'a', (unsigned char)'\xEF', (unsigned char)'\xBF', (unsigned char)'\xBD', (unsigned char)'\xEF',
-		       (unsigned char)'\xBF', (unsigned char)'\xBD', u8'z', u8'\0' };
-	const constexpr std::u8string_view u8_expected_env_value
-	     = { u8_expected_env_value_storage, ztd_c_string_array_size(u8_expected_env_value_storage) };
-	const constexpr std::u16string_view u16_expected_env_value = u"a\uFFFD\uFFFDz";
-	const constexpr std::u32string_view u32_expected_env_value = U"a\uFFFD\uFFFDz";
+	constexpr const std::string_view expected_env_value        = "a??z";
+	constexpr const std::wstring_view w_expected_env_value     = L"a\xDC00\xD800z";
+	constexpr const std::u8string_view u8_expected_env_value   = u8_expected_env_value_storage;
+	constexpr const std::u16string_view u16_expected_env_value = u"a\uFFFD\uFFFDz";
+	constexpr const std::u32string_view u32_expected_env_value = U"a\uFFFD\uFFFDz";
 
 	environment_variable env_var {};
 	const std::string env_value        = env_var.string();

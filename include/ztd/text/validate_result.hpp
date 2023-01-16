@@ -120,7 +120,7 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The result of a transcoding validation operations (e.g. from ztd_text_validate_transcodable_as).
 	template <typename _Input, typename _DecodeState, typename _EncodeState>
-	class validate_transcode_result : public stateless_validate_result<_Input> {
+	class validate_pivotless_transcode_result : public stateless_validate_result<_Input> {
 	private:
 		using __base_t = stateless_validate_result<_Input>;
 
@@ -141,11 +141,40 @@ namespace ztd { namespace text {
 		/// @param[in] __from_state The state related to the encoding that was used to do validation.
 		/// @param[in] __to_state The state related to the encoding that was used to do validation.
 		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState>
-		constexpr validate_transcode_result(
+		constexpr validate_pivotless_transcode_result(
 			_ArgInput&& __input, bool __is_valid, _ArgFromState&& __from_state, _ArgToState&& __to_state)
 		: __base_t(::std::forward<_ArgInput>(__input), __is_valid)
 		, from_state(::std::forward<_ArgFromState>(__from_state))
 		, to_state(::std::forward<_ArgToState>(__to_state)) {
+		}
+	};
+
+	//////
+	/// @brief The result of a transcoding validation operations (e.g. from ztd_text_validate_transcodable_as).
+	template <typename _Input, typename _DecodeState, typename _EncodeState, typename _Pivot>
+	class validate_transcode_result : public validate_pivotless_transcode_result<_Input, _DecodeState, _EncodeState> {
+	private:
+		using __base_t = validate_pivotless_transcode_result<_Input, _DecodeState, _EncodeState>;
+
+	public:
+		//////
+		/// @brief The range used to hold the intermediate pivot transcoding units.
+		_Pivot pivot;
+
+		//////
+		/// @brief Constructs a ztd::text::pivot_validate_result.
+		///
+		/// @param[in] __input The input range to store.
+		/// @param[in] __is_valid Whether or not the validation succeeded.
+		/// @param[in] __from_state The state related to the encoding that was used to do validation.
+		/// @param[in] __to_state The state related to the encoding that was used to do validation.
+		/// @param[in] __pivot The pivot range to store.
+		template <typename _ArgInput, typename _ArgFromState, typename _ArgToState, typename _ArgPivot>
+		constexpr validate_transcode_result(_ArgInput&& __input, bool __is_valid, _ArgFromState&& __from_state,
+			_ArgToState&& __to_state, _ArgPivot&& __pivot)
+		: __base_t(::std::forward<_ArgInput>(__input), __is_valid, ::std::forward<_ArgFromState>(__from_state),
+			::std::forward<_ArgToState>(__to_state))
+		, pivot(::std::forward<_Pivot>(__pivot)) {
 		}
 	};
 
@@ -162,18 +191,18 @@ namespace ztd { namespace text {
 		}
 
 		template <typename _Input, typename _DecodeState, typename _EncodeState>
-		constexpr stateless_validate_result<_Input>
-		__slice_to_stateless(validate_transcode_result<_Input, _DecodeState, _EncodeState>&& __result) noexcept(
-			::std::is_nothrow_constructible_v<stateless_validate_result<_Input>,
-			     validate_transcode_result<_Input, _DecodeState, _EncodeState>>) {
+		constexpr stateless_validate_result<_Input> __slice_to_stateless(
+			validate_pivotless_transcode_result<_Input, _DecodeState, _EncodeState>&&
+			     __result) noexcept(::std::is_nothrow_constructible_v<stateless_validate_result<_Input>,
+			validate_pivotless_transcode_result<_Input, _DecodeState, _EncodeState>>) {
 			return __result;
 		}
 
 		template <typename _Input, typename _DecodeState, typename _EncodeState>
-		constexpr validate_result<_Input, _DecodeState>
-		__drop_single_state(validate_transcode_result<_Input, _DecodeState, _EncodeState>&& __result) noexcept(
-			::std::is_nothrow_constructible_v<validate_result<_Input, _DecodeState>, _Input&&, bool&,
-			     _DecodeState&>) {
+		constexpr validate_result<_Input, _DecodeState> __drop_single_state(
+			validate_pivotless_transcode_result<_Input, _DecodeState, _EncodeState>&&
+			     __result) noexcept(::std::is_nothrow_constructible_v<validate_result<_Input, _DecodeState>,
+			_Input&&, bool&, _DecodeState&>) {
 			return validate_result<_Input, _DecodeState>(
 				::std::move(__result.input), ::std::move(__result.valid), __result.from_state);
 		}

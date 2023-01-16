@@ -57,6 +57,7 @@ namespace ztd { namespace text {
 				return true;
 			}
 		}
+
 	} // namespace __txt_detail
 
 	//////
@@ -76,12 +77,103 @@ namespace ztd { namespace text {
 	inline constexpr bool is_nothrow_skip_input_error_v = __txt_detail::__skip_input_error_noexcept<const _Encoding&,
 		_Result, const _InputProgress&, const _OutputProgress&>();
 
+	//////
+	/// @brief Attempts to skip over an input error in the text.
+	///
+	/// @param[in] __result The current result state of the encode or decode operation.
+	/// @param[in] __input_progress A contiguous range containing all of the (potentially) irreversibly read input from
+	/// an encoding operation.
+	/// @param[in] __output_progress A contiguous range containing all of the (potentially) irreversibly written output
+	/// from an encoding operation.
+	///
+	/// @remarks This function is specifically for UTF-32 input, where e.g. multiple surrogates may be part of the
+	/// incoming text and the target encoding does not support that. Therefore, it will skip over every too-large
+	/// codepoint, and every surrogate pair codepoint, before stopping.
+	template <typename _Result, typename _InputProgress, typename _OutputProgress>
+	constexpr auto skip_utf32_input_error(_Result&& __result, const _InputProgress& __input_progress,
+		const _OutputProgress& __output_progress) noexcept {
+		// we can only advance one character at a time.
+		auto __it     = ztd::ranges::begin(::std::forward<_Result>(__result).input);
+		auto __last   = ztd::ranges::end(__result.input);
+		using _Input  = decltype(__result.input);
+		using _UInput = ::ztd::remove_cvref_t<_Input>;
+		using _Output = decltype(__result.output);
+		using _State  = ::std::remove_reference_t<::ztd::unwrap_t<::ztd::remove_cvref_t<decltype(__result.state)>>>;
+		using _ReconstructedInput = ::ztd::ranges::reconstruct_t<_UInput, decltype(__it)&&, decltype(__last)&&>;
+		using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
+               decode_result<_ReconstructedInput, _Output, _State>,
+               encode_result<_ReconstructedInput, _Output, _State>>;
+		if (__it != __last) {
+			// if there is already some items in the input progress (things irreversibly read), then
+			// we are not obligated to do "at least" one skip; barrier it behind an empty check for
+			// progress.
+			if (::ztd::ranges::empty(__input_progress) && ::ztd::ranges::empty(__output_progress)) {
+				++__it;
+			}
+			for (; __it != __last; ++__it) {
+				ztd_char32_t __c32 = static_cast<ztd_char32_t>(*__it);
+				if (__c32 < __ztd_idk_detail_last_unicode_code_point && !__ztd_idk_detail_is_surrogate(__c32)) {
+					break;
+				}
+			}
+		}
+		return _ResultType(
+			::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__it), ::std::move(__last)),
+			::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
+	}
+
+	//////
+	/// @brief Attempts to skip over an input error in the text.
+	///
+	/// @param[in] __result The current result state of the encode or decode operation.
+	/// @param[in] __input_progress A contiguous range containing all of the (potentially) irreversibly read input from
+	/// an encoding operation.
+	/// @param[in] __output_progress A contiguous range containing all of the (potentially) irreversibly written output
+	/// from an encoding operation.
+	///
+	/// @remarks This function is specifically for UTF-32 input that also includes surrogate values as a valid option.
+	/// Therefore, it will skip over every too-large codepoint.
+	template <typename _Result, typename _InputProgress, typename _OutputProgress>
+	constexpr auto skip_utf32_with_surrogates_input_error(_Result&& __result, const _InputProgress& __input_progress,
+		const _OutputProgress& __output_progress) noexcept {
+		// we can only advance one character at a time.
+		auto __it     = ztd::ranges::begin(::std::forward<_Result>(__result).input);
+		auto __last   = ztd::ranges::end(__result.input);
+		using _Input  = decltype(__result.input);
+		using _UInput = ::ztd::remove_cvref_t<_Input>;
+		using _Output = decltype(__result.output);
+		using _State  = ::std::remove_reference_t<::ztd::unwrap_t<::ztd::remove_cvref_t<decltype(__result.state)>>>;
+		using _ReconstructedInput = ::ztd::ranges::reconstruct_t<_UInput, decltype(__it)&&, decltype(__last)&&>;
+		using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
+               decode_result<_ReconstructedInput, _Output, _State>,
+               encode_result<_ReconstructedInput, _Output, _State>>;
+		if (__it != __last) {
+			// if there is already some items in the input progress (things irreversibly read), then
+			// we are not obligated to do "at least" one skip; barrier it behind an empty check for
+			// progress.
+			if (::ztd::ranges::empty(__input_progress) && ::ztd::ranges::empty(__output_progress)) {
+				++__it;
+			}
+			for (; __it != __last; ++__it) {
+				if (static_cast<ztd_char32_t>(*__it) < __ztd_idk_detail_last_unicode_code_point) {
+					break;
+				}
+			}
+		}
+		return _ResultType(
+			::ztd::ranges::reconstruct(::std::in_place_type<_UInput>, ::std::move(__it), ::std::move(__last)),
+			::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
+	}
 
 	//////
 	/// @brief Attempts to skip over an input error in the text.
 	///
 	/// @param[in] __encoding The Encoding that experienced the error.
-	/// @param[in] __result The current state of the encode operation.
+	/// @param[in] __result The current result state of the encode or decode operation.
+	/// @param[in] __input_progress A contiguous range containing all of the (potentially) irreversibly read input from
+	/// an encoding operation.
+	/// @param[in] __output_progress A contiguous range containing all of the (potentially) irreversibly written output
+	/// from an encoding operation.
 	///
 	/// @remarks If there exists a well-formed function call of the form `__encoding.skip_input_error(__result)`,
 	/// it will call that function. Otherwise, it will attempt to grab the input iterator and pre-increment it
@@ -108,7 +200,7 @@ namespace ztd { namespace text {
 				::std::forward<_Result>(__result), __input_progress, __output_progress);
 		}
 		else {
-			// we can only advance one character at a time.
+			// we can only advance one input unit after a failure occurs...
 			auto __it     = ztd::ranges::begin(::std::forward<_Result>(__result).input);
 			auto __last   = ztd::ranges::end(__result.input);
 			using _Input  = decltype(__result.input);
@@ -120,8 +212,11 @@ namespace ztd { namespace text {
 			using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
                     decode_result<_ReconstructedInput, _Output, _State>,
                     encode_result<_ReconstructedInput, _Output, _State>>;
-			if (::ztd::ranges::empty(__input_progress)) {
-				if (__it != __last)
+			if (__it != __last) {
+				// if there is already some items in the input progress (things irreversibly read), then
+				// we are not obligated to do "at least" one skip; barrier it behind an empty check before making
+				// progress.
+				if (::ztd::ranges::empty(__input_progress) && ::ztd::ranges::empty(__output_progress))
 					++__it;
 			}
 			return _ResultType(

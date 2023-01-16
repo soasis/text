@@ -95,7 +95,7 @@ namespace ztd { namespace text {
 	  private __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>,
 	  private __txt_detail::__state_storage<remove_cvref_t<_ToEncoding>, remove_cvref_t<_ToState>, 1>,
 	  private __txt_detail::__cursor_cache<max_code_units_v<unwrap_remove_cvref_t<_ToEncoding>>,
-		  ranges::is_range_input_or_output_range_v<unwrap_remove_cvref_t<_Range>>>,
+		  ranges::is_range_input_or_output_range_exactly_v<unwrap_remove_cvref_t<_Range>>>,
 	  private __txt_detail::__error_cache<
 		  decode_error_handler_always_returns_ok_v<unwrap_remove_cvref_t<_FromEncoding>,
 		       unwrap_remove_cvref_t<_FromErrorHandler>> // cf
@@ -116,7 +116,7 @@ namespace ztd { namespace text {
 		using _IntermediateCodePoint                     = code_point_t<_UToEncoding>;
 		inline static constexpr ::std::size_t _MaxValues = max_code_units_v<_UToEncoding>;
 		inline static constexpr bool _IsSingleValueType  = _MaxValues == 1;
-		inline static constexpr bool _IsInputOrOutput    = ranges::is_range_input_or_output_range_v<_URange>;
+		inline static constexpr bool _IsInputOrOutput    = ranges::is_range_input_or_output_range_exactly_v<_URange>;
 		inline static constexpr bool _IsCursorless       = _IsSingleValueType && !_IsInputOrOutput;
 		inline static constexpr bool _IsErrorless
 			= decode_error_handler_always_returns_ok_v<_UFromEncoding, _UFromErrorHandler>
@@ -567,9 +567,8 @@ namespace ztd { namespace text {
 			[[maybe_unused]] decltype(__this_cache_begin) __this_cache_end {};
 			::ztd::span<value_type, _MaxValues> __cache_view(this->_M_cache);
 			_IntermediateCodePoint __intermediate_storage[max_code_points_v<_UFromEncoding>] {};
-			using _Intermediate = ::ztd::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>>;
-			_Intermediate __intermediate(__intermediate_storage);
-			pivot<_Intermediate> __pivot { __intermediate, encoding_error::ok };
+			using _Pivot = ::ztd::span<_IntermediateCodePoint, max_code_points_v<_UFromEncoding>>;
+			_Pivot __pivot(__intermediate_storage);
 			if constexpr (_IsInputOrOutput) {
 				auto __result    = transcode_one_into_raw(::std::move(__this_input_range), this->from_encoding(),
 					   __cache_view, this->to_encoding(), this->from_handler(), this->to_handler(),
@@ -586,7 +585,7 @@ namespace ztd { namespace text {
 					   this->to_state(), __pivot);
 				__this_cache_end = ::ztd::to_address(::ztd::ranges::begin(__result.output));
 				if constexpr (!_IsErrorless) {
-					this->__base_error_cache_t::_M_set_errors(__pivot.error_code, __result.error_code);
+					this->__base_error_cache_t::_M_set_errors(__result.pivot_error_code, __result.error_code);
 				}
 				this->__base_range_t::get_value()
 					= __txt_detail::__update_input<_URange>(::std::move(__result.input));

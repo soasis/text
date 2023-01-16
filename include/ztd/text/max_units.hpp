@@ -52,17 +52,30 @@ namespace ztd { namespace text {
 	/////
 
 	//////
+	/// @brief Gets the maximum number of code units needed to represent a full ztd::text::decode_one operation
+	/// without running out of output space.
+	template <typename _From>
+	inline static constexpr ::std::size_t max_decode_code_points_v = max_code_points_v<_From> * 2;
+
+	//////
+	/// @brief Gets the maximum number of code units needed to represent a full ztd::text::encode_one operation without
+	/// running out of space.
+	template <typename _From>
+	inline static constexpr ::std::size_t max_encode_code_units_v = max_code_units_v<_From> * 2;
+
+	//////
 	/// @brief Gets the maximum number of code units needed to represent a full ztd::text::transcode_one operation
 	/// without running out of output space.
 	template <typename _From, typename _To>
-	inline static constexpr ::std::size_t max_recode_code_points_v = max_code_units_v<_From> * max_code_points_v<_To>;
+	inline static constexpr ::std::size_t max_recode_code_points_v
+		= max_code_units_v<_From> * max_code_points_v<_To> * 2;
 
 	//////
 	/// @brief Gets the maximum number of code units needed to represent a full ztd::text::transcode_one operation
 	/// without running out of output space.
 	template <typename _From, typename _To>
 	inline static constexpr ::std::size_t max_transcode_code_units_v
-		= max_code_points_v<_From> * max_code_units_v<_To>;
+		= max_code_points_v<_From> * max_code_units_v<_To> * 2;
 
 	//////
 	/// @}

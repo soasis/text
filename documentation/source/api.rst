@@ -144,6 +144,7 @@ Result Types, Status Codes and Quality Aides
 	api/stateless_encode_result
 	api/encode_result
 	api/stateless_transcode_result
+	api/pivotless_transcode_result
 	api/transcode_result
 	api/stateless_recode_result
 	api/recode_result
@@ -151,6 +152,7 @@ Result Types, Status Codes and Quality Aides
 	api/count_result
 	api/stateless_validate_result
 	api/validate_result
+	api/validate_pivotless_transcode_result
 	api/validate_transcode_result
 	api/skip_input_error
 	api/propagate_error

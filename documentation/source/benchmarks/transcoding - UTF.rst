@@ -40,39 +40,6 @@ All Unicode Code Points
 
 The following benchmarks test the conversion of the basic source character set (from C and C++), going from one UTF encoding to another UTF encoding. It helps test speed under larger conversions.
 
-.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf16_well_formed.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf8_well_formed.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf32_to_utf8_well_formed.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf32_well_formed.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf32_well_formed.png
-
-
-All Unicode Code Points, With Initialization
-++++++++++++++++++++++++++++++++++++++++++++
-
-The following benchmarks measure the same conversion, but with any initialization object included within the conversion (e.g., for modeling a library that cannot store a registry/conversion descriptor somewhere).
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf16_well_formed_init.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf8_well_formed_init.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf32_to_utf8_well_formed_init.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf32_well_formed_init.png
-
-.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf32_well_formed_init.png
-
-
-
-C Basic Source Character Set
-----------------------------
-
-The following benchmarks test a much smaller conversion on the basic source character set, checking not only ASCII but how well the conversion works for a much smaller inputs.
-
 .. image:: /img/benchmark_results/conversion_speed.large/utf8_to_utf16_well_formed.png
 
 .. image:: /img/benchmark_results/conversion_speed.large/utf16_to_utf8_well_formed.png
@@ -84,8 +51,8 @@ The following benchmarks test a much smaller conversion on the basic source char
 .. image:: /img/benchmark_results/conversion_speed.large/utf16_to_utf32_well_formed.png
 
 
-C Basic Source Character Set, With Initialization
-+++++++++++++++++++++++++++++++++++++++++++++++++
+All Unicode Code Points, With Initialization
+++++++++++++++++++++++++++++++++++++++++++++
 
 The following benchmarks measure the same conversion, but with any initialization object included within the conversion (e.g., for modeling a library that cannot store a registry/conversion descriptor somewhere).
 
@@ -98,3 +65,36 @@ The following benchmarks measure the same conversion, but with any initializatio
 .. image:: /img/benchmark_results/conversion_speed.large/utf8_to_utf32_well_formed_init.png
 
 .. image:: /img/benchmark_results/conversion_speed.large/utf16_to_utf32_well_formed_init.png
+
+
+
+C Basic Source Character Set
+----------------------------
+
+The following benchmarks test a much smaller conversion on the basic source character set, checking not only ASCII but how well the conversion works for a much smaller inputs.
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf16_well_formed.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf8_well_formed.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf32_to_utf8_well_formed.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf32_well_formed.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf32_well_formed.png
+
+
+C Basic Source Character Set, With Initialization
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The following benchmarks measure the same conversion, but with any initialization object included within the conversion (e.g., for modeling a library that cannot store a registry/conversion descriptor somewhere).
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf16_well_formed_init.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf8_well_formed_init.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf32_to_utf8_well_formed_init.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf8_to_utf32_well_formed_init.png
+
+.. image:: /img/benchmark_results/conversion_speed.small/utf16_to_utf32_well_formed_init.png

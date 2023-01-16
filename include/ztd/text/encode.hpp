@@ -41,9 +41,9 @@
 #include <ztd/text/default_encoding.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
+#include <ztd/text/max_units.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/span_reconstruct.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 #include <ztd/text/detail/update_input.hpp>
@@ -103,15 +103,16 @@ namespace ztd { namespace text {
 			::std::forward<_Input>(__input), ::std::forward<_Output>(__output), __error_handler, __state);
 		using _WorkingInput  = decltype(__first_result.input);
 		using _WorkingOutput = decltype(__first_result.output);
+		using _Result        = encode_result<_WorkingInput, _WorkingOutput, _State>;
 		if (__first_result.error_code != encoding_error::ok) {
-			return encode_result<_WorkingInput, _WorkingOutput, _State>(::std::move(__first_result.input),
-				::std::move(__first_result.output), __state, __first_result.error_code, __error_count);
+			return _Result(::std::move(__first_result.input), ::std::move(__first_result.output), __state,
+				__first_result.error_code, __error_count);
 		}
 		__error_count += __first_result.error_count;
 		if (::ztd::ranges::empty(__first_result.input)) {
 			if (::ztd::text::is_state_complete(__encoding, __state)) {
-				return encode_result<_WorkingInput, _WorkingOutput, _State>(::std::move(__first_result.input),
-					::std::move(__first_result.output), __state, encoding_error::ok, __error_count);
+				return _Result(::std::move(__first_result.input), ::std::move(__first_result.output), __state,
+					encoding_error::ok, __error_count);
 			}
 		}
 
@@ -125,8 +126,8 @@ namespace ztd { namespace text {
 			__working_input  = ::std::move(__result.input);
 			__working_output = ::std::move(__result.output);
 			if (__result.error_code != encoding_error::ok) {
-				return encode_result<_WorkingInput, _WorkingOutput, _State>(::std::move(__working_input),
-					::std::move(__working_output), __state, __result.error_code, __error_count);
+				return _Result(::std::move(__working_input), ::std::move(__working_output), __state,
+					__result.error_code, __error_count);
 			}
 			if (::ztd::ranges::empty(__working_input)) {
 				if (!::ztd::text::is_state_complete(__encoding, __state)) {
@@ -135,7 +136,7 @@ namespace ztd { namespace text {
 				break;
 			}
 		}
-		return encode_result<_WorkingInput, _WorkingOutput, _State>(
+		return _Result(
 			::std::move(__working_input), ::std::move(__working_output), __state, encoding_error::ok, __error_count);
 	}
 
@@ -202,9 +203,9 @@ namespace ztd { namespace text {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = encode_state_t<_UEncoding>;
 
-		_State __state = make_encode_state(__encoding);
+		_State __state = ::ztd::text::make_encode_state(__encoding);
 		auto __stateful_result
-			= encode_into_raw(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+			= ::ztd::text::encode_into_raw(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			     ::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		return __txt_detail::__slice_to_stateless_encode(::std::move(__stateful_result));
 	}
@@ -227,7 +228,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto encode_into_raw(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
 		default_handler_t __handler {};
-		return encode_into_raw(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+		return ::ztd::text::encode_into_raw(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			::std::forward<_Output>(__output), __handler);
 	}
 
@@ -254,14 +255,16 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode_into_raw(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+			return ::ztd::text::encode_into_raw(
+				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode_into_raw(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+			return ::ztd::text::encode_into_raw(
+				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 	}
 
@@ -272,12 +275,12 @@ namespace ztd { namespace text {
 			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
 			// Well, SHIT. Write into temporary, then serialize one-by-one/bulk to output.
 			// I'll admit, this is HELLA work to support...
-			using _UEncoding     = remove_cvref_t<_Encoding>;
-			using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
+			using _UEncoding                    = remove_cvref_t<_Encoding>;
+			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
+			constexpr ::std::size_t __max_units = max_encode_code_units_v<_UEncoding>;
 			constexpr ::std::size_t __intermediate_buffer_max
-				= ZTD_TEXT_INTERMEDIATE_ENCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>)
-				     < max_code_units_v<_UEncoding>
-				? max_code_units_v<_UEncoding>
+				= ZTD_TEXT_INTERMEDIATE_ENCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>) < __max_units
+				? __max_units
 				: ZTD_TEXT_INTERMEDIATE_ENCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>);
 			using _IntermediateValueType = code_unit_t<_UEncoding>;
 			using _IntermediateInput     = __txt_detail::__span_reconstruct_t<_Input, _Input>;
@@ -292,12 +295,7 @@ namespace ztd { namespace text {
 
 			// We MUST use a temporary error handler
 			// as well as a pass-throuugh handler if we end up with lots of intermediary input
-			__progress_handler<::std::integral_constant<bool, is_ignorable_error_handler_v<_UErrorHandler>>,
-				_UEncoding>
-				__intermediate_handler {};
-			__progress_handler<::std::integral_constant<bool, is_ignorable_error_handler_v<_UErrorHandler>>,
-				_UEncoding>
-				__unused_intermediate_handler {};
+			__progress_handler<is_ignorable_error_handler_v<_UErrorHandler>, _UEncoding> __intermediate_handler {};
 
 			_IntermediateInput __intermediate_input
 				= __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
@@ -307,44 +305,44 @@ namespace ztd { namespace text {
 			for (;;) {
 				// Ignore "out of output" errors and do our best to recover properly along the way...
 				_InitialOutput __intermediate_initial_output(__intermediate_translation_buffer);
-				auto __result = encode_into_raw(::std::move(__working_input), __encoding,
+				auto __result = ::ztd::text::encode_into_raw(::std::move(__working_input), __encoding,
 					__intermediate_initial_output, __intermediate_handler, __state);
 				_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());
 				ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
 				if (__result.error_code == encoding_error::insufficient_output_space) {
 					if (__intermediate_handler._M_code_units_progress_size() != 0) {
-						// add any partially-unwritten characters to our output
+						// add any leftover partially-unwritten characters to our output
 						ranges::__rng_detail::__container_insert_bulk(
-							__output, __intermediate_handler._M_code_units_progress());
+							__output, __intermediate_handler._M_const_code_units_progress());
+						// it's okay, just loop around, we've got S P A C E for more
+						__working_input
+							= __txt_detail::__update_input<_WorkingInput>(::std::move(__result.input));
 					}
 					else if (__intermediate_handler._M_code_points_progress_size() != 0) {
-						// make sure to empty any read-but-unused characters here...!
-						auto __unused_input_progress = __intermediate_handler._M_const_code_points_progress();
-						_InitialOutput __unused_input_intermediate_initial_output(
-							__intermediate_translation_buffer);
-						auto __unused_input_result = encode_into_raw(__unused_input_progress, __encoding,
-							__unused_input_intermediate_initial_output, __unused_intermediate_handler, __state);
-						_Output __unused_input_intermediate_output(
-							__unused_input_intermediate_initial_output.data(),
-							__unused_input_result.output.data());
-						ranges::__rng_detail::__container_insert_bulk(
-							__output, __unused_input_intermediate_output);
-						if (__unused_input_result.error_code != encoding_error::ok) {
-							// mill result through actual error handler!
-							// adjust for the amount of code points potentially read from the input of
-							// the unused buffer.
-							::std::size_t __progress_offset
-								= __unused_input_result.input.data() - __unused_input_progress.data();
-							auto __final_progress
-								= __intermediate_handler._M_code_points_progress().subspan(__progress_offset);
-							auto __error_result = ::std::forward<_ErrorHandler>(__error_handler)(
-								::std::forward<_Encoding>(__encoding), ::std::move(__result), __final_progress,
-								__unused_intermediate_handler._M_code_units_progress());
-							return _Result(__error_result);
+						if constexpr (::ztd::ranges::is_range_bidirectional_range_v<_WorkingInput>) {
+							// we can try to rewind our current input by the amount that was not successfully
+							// read. This will allow us to try again, when the buffer
+							// has more space in it, and should not result in the same error,
+							// unless it was legitimiately an encoding_error::invalid_sequence.
+							__working_input = __txt_detail::__update_input<_WorkingInput>(
+								::ztd::ranges::reconstruct(::std::in_place_type<_WorkingInput>,
+								     ztd::ranges::iter_recede(ztd::ranges::begin(::std::move(__result.input)),
+								          __intermediate_handler._M_code_points_progress_size()),
+								     ztd::ranges::end(__result.input)));
+						}
+						else {
+							// this is an effectively-impossible case, as we cannot stitch the old input together
+							// with the current input.
+							// simply bail!!
+							return __result;
 						}
 					}
-					// loop around, we've got S P A C E for more
-					__working_input = ::std::move(__result.input);
+					else {
+						// it's okay, just loop around, we've got S P A C E for more
+						__working_input
+							= __txt_detail::__update_input<_WorkingInput>(::std::move(__result.input));
+					}
+					__intermediate_handler.clear();
 					continue;
 				}
 				if (__result.error_code != encoding_error::ok) {
@@ -368,15 +366,15 @@ namespace ztd { namespace text {
 			typename _ErrorHandler, typename _State>
 		constexpr auto __encode_dispatch(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UEncoding = remove_cvref_t<_Encoding>;
+			using _UEncoding                    = remove_cvref_t<_Encoding>;
+			constexpr ::std::size_t __max_units = max_encode_code_units_v<_UEncoding>;
 
 			_OutputContainer __output {};
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
 				using _SizeType = decltype(::ztd::ranges::size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
 					_SizeType __output_size_hint = static_cast<_SizeType>(::ztd::ranges::size(__input));
-					__output_size_hint *= (max_code_units_v<_UEncoding> > 1) ? (max_code_units_v<_UEncoding> / 2)
-						                                                    : max_code_units_v<_UEncoding>;
+					__output_size_hint *= (__max_units > 3) ? (__max_units / 4) : __max_units;
 					__output.reserve(__output_size_hint);
 				}
 			}
@@ -427,8 +425,8 @@ namespace ztd { namespace text {
 			     ::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		using _ReconstructedResultInput  = __txt_detail::__span_reconstruct_t<_Input, _Input>;
 		using _ReconstructedResultOutput = __txt_detail::__span_reconstruct_mutable_t<_Output, _Output>;
-		return encode_result<_ReconstructedResultInput, _ReconstructedResultOutput, _State>(
-			__txt_detail::__span_reconstruct<_Input>(::std::move(__result.input)),
+		using _Result = encode_result<_ReconstructedResultInput, _ReconstructedResultOutput, _State>;
+		return _Result(__txt_detail::__span_reconstruct<_Input>(::std::move(__result.input)),
 			__txt_detail::__span_reconstruct_mutable<_Output>(::std::move(__result.output)), __result.state);
 	}
 
@@ -456,12 +454,13 @@ namespace ztd { namespace text {
 	constexpr auto encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output,
 		_ErrorHandler&& __error_handler, _State& __state) {
 		auto __reconstructed_input = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
-		auto __result = encode_into_raw(::std::move(__reconstructed_input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __state);
+		auto __result
+			= ::ztd::text::encode_into_raw(::std::move(__reconstructed_input), ::std::forward<_Encoding>(__encoding),
+			     ::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		using _ReconstructedResultInput  = __txt_detail::__span_reconstruct_t<_Input, _Input>;
 		using _ReconstructedResultOutput = __txt_detail::__span_reconstruct_mutable_t<_Output, _Output>;
-		return encode_result<_ReconstructedResultInput, _ReconstructedResultOutput, _State>(
-			__txt_detail::__span_reconstruct<_Input>(::std::move(__result.input)),
+		using _Result = encode_result<_ReconstructedResultInput, _ReconstructedResultOutput, _State>;
+		return _Result(__txt_detail::__span_reconstruct<_Input>(::std::move(__result.input)),
 			__txt_detail::__span_reconstruct_mutable<_Output>(::std::move(__result.output)), __result.state);
 	}
 
@@ -487,9 +486,10 @@ namespace ztd { namespace text {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = encode_state_t<_UEncoding>;
 
-		_State __state         = make_encode_state(__encoding);
-		auto __stateful_result = encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __state);
+		_State __state = ::ztd::text::make_encode_state(__encoding);
+		auto __stateful_result
+			= ::ztd::text::encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+			     ::std::forward<_Output>(__output), ::std::forward<_ErrorHandler>(__error_handler), __state);
 		return __txt_detail::__slice_to_stateless_encode(::std::move(__stateful_result));
 	}
 
@@ -511,7 +511,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto encode_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
 		default_handler_t __handler {};
-		return encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+		return ::ztd::text::encode_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			::std::forward<_Output>(__output), __handler);
 	}
 
@@ -538,14 +538,16 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+			return ::ztd::text::encode_into(
+				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+			return ::ztd::text::encode_into(
+				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 	}
 
@@ -618,7 +620,7 @@ namespace ztd { namespace text {
 		using _UOutputContainer = remove_cvref_t<_OutputContainer>;
 		using _OutputCodeUnit   = code_unit_t<_UEncoding>;
 
-		_State __state                  = make_encode_state(__encoding);
+		_State __state                  = ::ztd::text::make_encode_state(__encoding);
 		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
@@ -655,7 +657,7 @@ namespace ztd { namespace text {
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode_to(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
-		return encode_to<_OutputContainer>(
+		return ::ztd::text::encode_to<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
 
@@ -681,14 +683,14 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::encode_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 	}
 
@@ -758,7 +760,7 @@ namespace ztd { namespace text {
 		using _UOutputContainer = remove_cvref_t<_OutputContainer>;
 		using _OutputCodeUnit   = code_unit_t<_UEncoding>;
 
-		_State __state                  = make_encode_state(__encoding);
+		_State __state                  = ::ztd::text::make_encode_state(__encoding);
 		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
@@ -793,7 +795,7 @@ namespace ztd { namespace text {
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto encode(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
-		return encode<_OutputContainer>(
+		return ::ztd::text::encode<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
 
@@ -819,14 +821,14 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_point_encoding_t<_CodePoint>;
 			_Encoding __encoding {};
-			return encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::encode<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 	}
 

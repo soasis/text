@@ -75,7 +75,8 @@ namespace ztd { namespace text {
 			  (_EncodeOrDecode == __transaction::__decode
 			            ? max_code_points_v<remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>>
 			            : max_code_units_v<remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>>),
-			  ranges::is_range_input_or_output_range_v<remove_cvref_t<unwrap_t<typename _Storage::range_type>>>>,
+			  ranges::is_range_input_or_output_range_exactly_v<
+			       remove_cvref_t<unwrap_t<typename _Storage::range_type>>>>,
 		  private __error_cache<(_EncodeOrDecode == __transaction::__decode
 			       ? decode_error_handler_always_returns_ok_v<
 			            remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>,
@@ -97,15 +98,16 @@ namespace ztd { namespace text {
 				= (_EncodeOrDecode == __transaction::__decode ? max_code_points_v<unwrap_remove_cvref_t<_Encoding>>
 				                                              : max_code_units_v<unwrap_remove_cvref_t<_Encoding>>);
 			inline static constexpr bool _IsSingleValueType = _MaxValues == 1;
-			inline static constexpr bool _IsInputOrOutput   = ranges::is_range_input_or_output_range_v<_URange>;
-			inline static constexpr bool _IsCursorless      = _IsSingleValueType && !_IsInputOrOutput;
-			inline static constexpr bool _IsErrorless       = _EncodeOrDecode == __transaction::__decode
-				      ? decode_error_handler_always_returns_ok_v<_UEncoding, _UErrorHandler>
-				      : encode_error_handler_always_returns_ok_v<_UEncoding, _UErrorHandler>;
-			using __base_cursor_cache_t                     = __cursor_cache<_MaxValues, _IsInputOrOutput>;
-			using __base_cursor_cache_size_t                = typename __base_cursor_cache_t::_SizeType;
-			using __base_error_cache_t                      = __error_cache<_IsErrorless>;
-			using __base_storage_t                          = _Storage;
+			inline static constexpr bool _IsInputOrOutput
+				= ranges::is_range_input_or_output_range_exactly_v<_URange>;
+			inline static constexpr bool _IsCursorless = _IsSingleValueType && !_IsInputOrOutput;
+			inline static constexpr bool _IsErrorless  = _EncodeOrDecode == __transaction::__decode
+				 ? decode_error_handler_always_returns_ok_v<_UEncoding, _UErrorHandler>
+				 : encode_error_handler_always_returns_ok_v<_UEncoding, _UErrorHandler>;
+			using __base_cursor_cache_t                = __cursor_cache<_MaxValues, _IsInputOrOutput>;
+			using __base_cursor_cache_size_t           = typename __base_cursor_cache_t::_SizeType;
+			using __base_error_cache_t                 = __error_cache<_IsErrorless>;
+			using __base_storage_t                     = _Storage;
 
 			inline static constexpr bool _IsBackwards = _EncodeOrDecode == __transaction::__encode
 				? is_detected_v<__detect_object_encode_one_backwards, _UEncoding, _URange, _UErrorHandler, _UState>

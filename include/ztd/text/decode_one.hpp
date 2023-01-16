@@ -41,10 +41,10 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
+#include <ztd/text/max_units.hpp>
 #include <ztd/text/detail/span_reconstruct.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/forward_if_move_only.hpp>
 
 #include <ztd/ranges/unbounded.hpp>
@@ -146,8 +146,8 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto decode_one_into_raw(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
 		default_handler_t __handler {};
-		return decode_one_into_raw(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_Output>(__output), __handler);
+		return ::ztd::text::decode_one_into_raw(::std::forward<_Input>(__input),
+			::std::forward<_Encoding>(__encoding), ::std::forward<_Output>(__output), __handler);
 	}
 
 	//////
@@ -173,7 +173,7 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one_into_raw(
+			return ::ztd::text::decode_one_into_raw(
 				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 		else
@@ -181,7 +181,7 @@ namespace ztd { namespace text {
 		{
 			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one_into_raw(
+			return ::ztd::text::decode_one_into_raw(
 				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 	}
@@ -192,7 +192,8 @@ namespace ztd { namespace text {
 		constexpr auto __intermediate_decode_one_to_storage(_Input&& __input, _Encoding&& __encoding,
 			_OutputContainer& __output, _ErrorHandler&& __error_handler, _State& __state) {
 			using _UEncoding                                  = remove_cvref_t<_Encoding>;
-			constexpr ::std::size_t __intermediate_buffer_max = max_code_points_v<_UEncoding>;
+			constexpr ::std::size_t __max_units               = max_code_points_v<_UEncoding> * 2;
+			constexpr ::std::size_t __intermediate_buffer_max = __max_units;
 			using _IntermediateValueType                      = code_point_t<_UEncoding>;
 			using _InitialOutput = ::ztd::span<_IntermediateValueType, __intermediate_buffer_max>;
 			using _Output        = ::ztd::span<_IntermediateValueType>;
@@ -213,14 +214,15 @@ namespace ztd { namespace text {
 			typename _ErrorHandler, typename _State>
 		constexpr auto __decode_one_dispatch(
 			_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-			using _UEncoding = remove_cvref_t<_Encoding>;
+			using _UEncoding                    = remove_cvref_t<_Encoding>;
+			constexpr ::std::size_t __max_units = max_decode_code_points_v<_UEncoding>;
 
 			_OutputContainer __output {};
 			if constexpr (is_detected_v<ranges::detect_adl_size, _Input>) {
 				using _SizeType = decltype(::ztd::ranges::size(__input));
 				if constexpr (is_detected_v<ranges::detect_reserve_with_size, _OutputContainer, _SizeType>) {
 					auto __output_size_hint = ::ztd::ranges::size(__input);
-					__output_size_hint *= max_code_points_v<_UEncoding>;
+					__output_size_hint *= (__max_units / 2);
 					__output.reserve(__output_size_hint);
 				}
 			}
@@ -321,7 +323,7 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Encoding, typename _Output>
 	constexpr auto decode_one_into(_Input&& __input, _Encoding&& __encoding, _Output&& __output) {
 		default_handler_t __handler {};
-		return decode_one_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
+		return ::ztd::text::decode_one_into(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 			::std::forward<_Output>(__output), __handler);
 	}
 
@@ -348,14 +350,16 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+			return ::ztd::text::decode_one_into(
+				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one_into(::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
+			return ::ztd::text::decode_one_into(
+				::std::forward<_Input>(__input), __encoding, ::std::forward<_Output>(__output));
 		}
 	}
 
@@ -389,16 +393,17 @@ namespace ztd { namespace text {
 		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
+		constexpr ::std::size_t __max_units = max_decode_code_points_v<_UEncoding>;
 		if constexpr (_IsVoidContainer && _IsStringable) {
 			// prevent instantiation errors with basic_string by boxing it inside of an "if constexpr"
-			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, max_code_points_v<_UEncoding>>;
+			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, __max_units>;
 			return __txt_detail::__decode_one_dispatch<false, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::static_vector<_OutputCodePoint, max_code_points_v<_UEncoding>>, _OutputContainer>;
+				::ztd::static_vector<_OutputCodePoint, __max_units>, _OutputContainer>;
 			return __txt_detail::__decode_one_dispatch<false, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
@@ -425,9 +430,9 @@ namespace ztd { namespace text {
 	constexpr auto decode_one_to(_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler) {
 		using _UEncoding = remove_cvref_t<_Encoding>;
 		using _State     = decode_state_t<_UEncoding>;
-		_State __state   = make_decode_state(__encoding);
-		return decode_one_to<_OutputContainer>(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_ErrorHandler>(__error_handler), __state);
+		_State __state   = ::ztd::text::make_decode_state(__encoding);
+		return ::ztd::text::decode_one_to<_OutputContainer>(::std::forward<_Input>(__input),
+			::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 	}
 
 	//////
@@ -447,7 +452,7 @@ namespace ztd { namespace text {
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto decode_one_to(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
-		return decode_one_to<_OutputContainer>(
+		return ::ztd::text::decode_one_to<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
 
@@ -473,14 +478,14 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::decode_one_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::decode_one_to<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 	}
 
@@ -506,14 +511,16 @@ namespace ztd { namespace text {
 		typename _State>
 	constexpr auto decode_one(
 		_Input&& __input, _Encoding&& __encoding, _ErrorHandler&& __error_handler, _State& __state) {
-		using _UEncoding                = remove_cvref_t<_Encoding>;
-		using _UOutputContainer         = remove_cvref_t<_OutputContainer>;
-		using _OutputCodePoint          = code_point_t<_UEncoding>;
-		constexpr bool _IsVoidContainer = ::std::is_void_v<_UOutputContainer>;
+		using _UEncoding                    = remove_cvref_t<_Encoding>;
+		using _UOutputContainer             = remove_cvref_t<_OutputContainer>;
+		using _OutputCodePoint              = code_point_t<_UEncoding>;
+		constexpr ::std::size_t __max_units = max_decode_code_points_v<_UEncoding>;
+		constexpr bool _IsVoidContainer     = ::std::is_void_v<_UOutputContainer>;
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
+
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, max_code_points_v<_UEncoding>>;
+			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, __max_units>;
 			return __txt_detail::__decode_one_dispatch<true, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
 				::std::forward<_ErrorHandler>(__error_handler), __state);
@@ -549,8 +556,8 @@ namespace ztd { namespace text {
 		using _State     = decode_state_t<_UEncoding>;
 
 		_State __state = make_decode_state(__encoding);
-		return decode_one<_OutputContainer>(::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding),
-			::std::forward<_ErrorHandler>(__error_handler), __state);
+		return ::ztd::text::decode_one<_OutputContainer>(::std::forward<_Input>(__input),
+			::std::forward<_Encoding>(__encoding), ::std::forward<_ErrorHandler>(__error_handler), __state);
 	}
 
 	//////
@@ -570,7 +577,7 @@ namespace ztd { namespace text {
 	template <typename _OutputContainer = void, typename _Input, typename _Encoding>
 	constexpr auto decode_one(_Input&& __input, _Encoding&& __encoding) {
 		default_handler_t __handler {};
-		return decode_one<_OutputContainer>(
+		return ::ztd::text::decode_one<_OutputContainer>(
 			::std::forward<_Input>(__input), ::std::forward<_Encoding>(__encoding), __handler);
 	}
 
@@ -596,14 +603,14 @@ namespace ztd { namespace text {
 			// Use literal encoding instead, if we meet the right criteria
 			using _Encoding = default_consteval_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::decode_one<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 		else
 #endif
 		{
 			using _Encoding = default_code_unit_encoding_t<_CodeUnit>;
 			_Encoding __encoding {};
-			return decode_one<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
+			return ::ztd::text::decode_one<_OutputContainer>(::std::forward<_Input>(__input), __encoding);
 		}
 	}
 

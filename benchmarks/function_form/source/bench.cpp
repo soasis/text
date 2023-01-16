@@ -74,8 +74,8 @@ static void err_ptrptr_ptrsize_ptrptr_ptrsize(benchmark::State& state) {
 		size_t input_size_left             = expected_input_size;
 		size_t output_size_left            = output_buffer.size();
 		for (;;) {
-			cnc_mcerror err = err_pptr_psize(&output, &output_size_left, &input, &input_size_left);
-			if (err != CNC_MCERROR_OK) {
+			cnc_mcerr err = err_pptr_psize(&output, &output_size_left, &input, &input_size_left);
+			if (err != cnc_mcerr_ok) {
 				state.SkipWithError("Data did not encode correctly.");
 				return;
 			}
@@ -106,8 +106,8 @@ static void err_ptrptr_ptr_ptrptr_ptr(benchmark::State& state) {
 		ztd_char8_t* output                = output_buffer.data();
 		ztd_char8_t* output_last           = output_buffer.data() + output_buffer.size();
 		for (;;) {
-			cnc_mcerror err = err_pptr_ptr(&output, output_last, &input, input_last);
-			if (err != CNC_MCERROR_OK) {
+			cnc_mcerr err = err_pptr_ptr(&output, output_last, &input, input_last);
+			if (err != cnc_mcerr_ok) {
 				state.SkipWithError("Data did not encode correctly.");
 				return;
 			}
@@ -140,7 +140,7 @@ static void structsize_ptr_ptr_ptr_ptr(benchmark::State& state) {
 		ztd_char8_t* output_last           = output_buffer.data() + output_buffer.size();
 		for (;;) {
 			error_size_size err = size_struct_ptr_ptr(output, output_last, input, input_last);
-			if (err.error != CNC_MCERROR_OK) {
+			if (err.error != cnc_mcerr_ok) {
 				state.SkipWithError("Data did not encode correctly.");
 				return;
 			}
@@ -175,7 +175,7 @@ static void structsize_ptr_size_ptr_size(benchmark::State& state) {
 		size_t output_size                 = output_buffer.size();
 		for (;;) {
 			error_size_size err = size_struct_ptr_size(output, output_size, input, input_size);
-			if (err.error != CNC_MCERROR_OK) {
+			if (err.error != cnc_mcerr_ok) {
 				state.SkipWithError("Data did not encode correctly.");
 				return;
 			}
@@ -212,7 +212,7 @@ static void structptr_ptr_ptr_ptr_ptr(benchmark::State& state) {
 		ztd_char8_t* output_last           = output_buffer.data() + output_buffer.size();
 		for (;;) {
 			error_ptr_ptr err = ptr_struct_ptr_ptr(output, output_last, input, input_last);
-			if (err.error != CNC_MCERROR_OK) {
+			if (err.error != cnc_mcerr_ok) {
 				state.SkipWithError("Data did not encode correctly.");
 				return;
 			}
@@ -249,7 +249,7 @@ static void structptr_ptr_size_ptr_size(benchmark::State& state) {
 		size_t output_size                 = output_buffer.size();
 		for (;;) {
 			error_ptr_ptr err = ptr_struct_ptr_size(output, output_size, input, input_size);
-			if (err.error != CNC_MCERROR_OK) {
+			if (err.error != cnc_mcerr_ok) {
 				state.SkipWithError("Data did not encode correctly.");
 				return;
 			}

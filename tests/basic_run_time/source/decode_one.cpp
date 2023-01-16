@@ -40,7 +40,7 @@ inline namespace ztd_text_tests_basic_run_time_decode_one {
 	template <typename Encoding, typename Source, typename Expected>
 	void check_decode_one(Encoding& encoding, Source& source, Expected& expected) {
 		using OutChar                    = ztd::text::code_point_t<Encoding>;
-		constexpr std::size_t MaxOutSize = ztd::text::max_code_points_v<Encoding>;
+		constexpr std::size_t MaxOutSize = ztd::text::max_decode_code_points_v<Encoding>;
 		using Output                     = ztd::static_basic_string<OutChar, MaxOutSize>;
 		auto source_it                   = source.cbegin();
 		auto source_last                 = source.cend();

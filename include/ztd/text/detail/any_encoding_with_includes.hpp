@@ -26,7 +26,6 @@
 #include <ztd/text/validate_encodable_as.hpp>
 #include <ztd/text/count_as_encoded.hpp>
 #include <ztd/text/count_as_decoded.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/char_predicates.hpp>
 
 #include <ztd/idk/ebco.hpp>

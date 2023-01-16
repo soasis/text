@@ -85,7 +85,7 @@ namespace ztd { namespace text {
 		_Input&& __input, _Encoding&& __encoding, _EncodeState& __encode_state, _DecodeState& __decode_state) {
 		using _WorkingInput = ::ztd::ranges::subrange_for_t<__txt_detail::__span_reconstruct_t<_Input, _Input>>;
 		using _UEncoding    = remove_cvref_t<_Encoding>;
-		using _Result       = validate_transcode_result<_WorkingInput, _EncodeState, _DecodeState>;
+		using _Result       = validate_pivotless_transcode_result<_WorkingInput, _EncodeState, _DecodeState>;
 
 		_WorkingInput __working_input = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
 
@@ -199,13 +199,12 @@ namespace ztd { namespace text {
 			constexpr ::std::size_t __code_unit_max  = max_code_units_v<_UEncoding>;
 			using _CodeUnit                          = code_unit_t<_UEncoding>;
 			using _CodePoint                         = code_point_t<_UEncoding>;
-			using _Pivot                             = ::ztd::text::pivot<::ztd::span<_CodeUnit, __code_unit_max>>;
+			using _Pivot                             = ::ztd::span<_CodeUnit, __code_unit_max>;
 
 			_CodePoint __code_point_buf[__code_point_max] {};
 			_CodeUnit __code_unit_buf[__code_unit_max] {};
 			::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
-			::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
-			_Pivot __pivot { ::std::move(__code_unit_view), encoding_error::ok, 0 };
+			_Pivot __pivot(__code_unit_buf);
 
 			for (;;) {
 				auto __result

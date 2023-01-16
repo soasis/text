@@ -45,7 +45,6 @@
 #include <ztd/text/is_code_units_replaceable.hpp>
 #include <ztd/text/is_unicode_code_point.hpp>
 #include <ztd/text/skip_input_error.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/pass_through_handler.hpp>
 
 #include <ztd/ranges/range.hpp>
@@ -64,8 +63,9 @@ namespace ztd { namespace text {
 
 	namespace __txt_detail {
 
-		template <typename _Encoding, typename _Input, typename _Result>
-		constexpr _Result&& __write_direct(const _Encoding&, _Input&& __input, _Result&& __result) noexcept {
+		template <typename _Encoding, typename _Replacement, typename _Result>
+		constexpr _Result&& __write_direct(
+			const _Encoding&, _Replacement&& __replacement, _Result&& __result) noexcept {
 			using _SubOutput = decltype(__result.output);
 
 			auto __out_it   = ::ztd::ranges::begin(__result.output);
@@ -75,13 +75,13 @@ namespace ztd { namespace text {
 				return ::std::forward<_Result>(__result);
 			}
 
-			if (::ztd::ranges::empty(__input)) {
+			if (::ztd::ranges::empty(__replacement)) {
 				// empty range, everything is okay
 				__result.error_code = encoding_error::ok;
 				return ::std::forward<_Result>(__result);
 			}
 
-			for (const auto& __element : ::std::forward<_Input>(__input)) {
+			for (const auto& __element : ::std::forward<_Replacement>(__replacement)) {
 				if (__out_it == __out_last) {
 					__result.output = _SubOutput(::std::move(__out_it), ::std::move(__out_last));
 					return ::std::forward<_Result>(__result);
@@ -385,8 +385,8 @@ namespace ztd { namespace text {
 
 				__txt_detail::__pass_through_handler __handler {};
 				encode_state_t<_Encoding> __state = copy_encode_state_with(__encoding, __result.state);
-				auto __encresult                  = __txt_detail::__basic_encode_one<__txt_detail::__consume::__no>(
-                         __replacement_range, __encoding, ::std::move(__result.output), __handler, __state);
+				auto __encresult
+					= __encoding.encode_one(__replacement_range, ::std::move(__result.output), __handler, __state);
 				__result.output = ::std::move(__encresult.output);
 				if (__encresult.error_code != encoding_error::ok) {
 					// we can't even encode a single code unit
@@ -459,11 +459,11 @@ namespace ztd { namespace text {
 				}
 
 				const ::ztd::span<const _InputCodeUnit> __replacement_range(__replacement, __replacement_size);
-
 				__txt_detail::__pass_through_handler __handler {};
 				decode_state_t<_Encoding> __state = copy_decode_state_with(__encoding, __result.state);
-				auto __decresult                  = __txt_detail::__basic_decode_one<__txt_detail::__consume::__no>(
-                         __replacement_range, __encoding, ::std::move(__result.output), __handler, __state);
+
+				auto __decresult = __encoding.decode_one(
+					__replacement_range, ::std::move(__result.output), __handler, __result.state);
 				__result.output = ::std::move(__decresult.output);
 				if (__decresult.error_code != encoding_error::ok) {
 					// we can't even decode a single code unit

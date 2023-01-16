@@ -85,9 +85,9 @@
 			const unsigned char* input          = (const unsigned char*)input_data.data();                          \
 			[[maybe_unused]] size_t output_size = output_data.size() * sizeof(*output_data.data());                 \
 			unsigned char* output               = (unsigned char*)output_data.data();                               \
-			cnc_mcerror err                                                                                         \
+			cnc_mcerr err                                                                                         \
 			     = cnc_conv(conversion.get(), Unbounded ? nullptr : &output_size, &output, &input_size, &input);    \
-			if (err != CNC_MCERROR_OK) {                                                                            \
+			if (err != cnc_mcerr_ok) {                                                                            \
 				result = false;                                                                                    \
 			}                                                                                                       \
 		}                                                                                                            \
@@ -153,9 +153,9 @@
 			const unsigned char* input          = (const unsigned char*)input_data.data();                          \
 			[[maybe_unused]] size_t output_size = output_data.size() * sizeof(*output_data.data());                 \
 			unsigned char* output               = (unsigned char*)output_data.data();                               \
-			cnc_mcerror err                                                                                         \
+			cnc_mcerr err                                                                                         \
 			     = cnc_conv(conversion.get(), Unbounded ? nullptr : &output_size, &output, &input_size, &input);    \
-			if (err != CNC_MCERROR_OK) {                                                                            \
+			if (err != cnc_mcerr_ok) {                                                                            \
 				result = false;                                                                                    \
 			}                                                                                                       \
 		}                                                                                                            \

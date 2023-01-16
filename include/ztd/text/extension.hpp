@@ -40,7 +40,6 @@
 #include <ztd/text/code_unit.hpp>
 #include <ztd/text/code_point.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/pivot.hpp>
 #include <ztd/text/assume_valid_handler.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_full_range_representable.hpp>

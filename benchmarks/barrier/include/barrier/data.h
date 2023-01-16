@@ -44,13 +44,13 @@
 #endif
 
 ZTD_C_LANGUAGE_LINKAGE_I_ typedef struct error_size_size {
-	cnc_mcerror error;
+	cnc_mcerr error;
 	size_t input_read;
 	size_t output_written;
 } error_size_size;
 
 ZTD_C_LANGUAGE_LINKAGE_I_ typedef struct error_ptr_ptr {
-	cnc_mcerror error;
+	cnc_mcerr error;
 	const ztd_char32_t* input;
 	ztd_char8_t* output;
 } error_ptr_ptr;

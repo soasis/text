@@ -40,14 +40,17 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/is_transcoding_compatible.hpp>
+#include <ztd/text/skip_input_error.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/cast.hpp>
 #include <ztd/text/detail/replacement_units.hpp>
 
 #include <ztd/idk/charN_t.hpp>
+#include <ztd/idk/size.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/adl.hpp>
 #include <ztd/ranges/range.hpp>
+#include <ztd/idk/text_encoding_id.hpp>
 #include <ztd/idk/detail/unicode.hpp>
 
 #include <array>
@@ -129,6 +132,15 @@ namespace ztd { namespace text {
 			/// @brief The maximum code units a single complete operation of encoding can produce. If overlong
 			/// sequence allowed, this is 6: otherwise, this is 4.
 			inline static constexpr ::std::size_t max_code_units = __overlong_allowed ? 6 : 4;
+			//////
+			///@brief The encoding ID for this type. Used for optimization purposes.
+			inline static constexpr ::ztd::text_encoding_id encoded_id = __surrogates_allowed
+				? ::ztd::text_encoding_id::wtf8
+				: (__use_overlong_null_only ? ::ztd::text_encoding_id::mutf8 : ::ztd::text_encoding_id::utf8);
+			//////
+			///@brief The encoding ID for this type. Used for optimization purposes.
+			inline static constexpr ::ztd::text_encoding_id decoded_id
+				= __surrogates_allowed ? ::ztd::text_encoding_id::ucs4 : ::ztd::text_encoding_id::utf32;
 
 			//////
 			/// @brief Returns the replacement code units to use for the ztd::text::replacement_handler_t error
@@ -148,13 +160,13 @@ namespace ztd { namespace text {
 
 			///////
 			/// @brief Allows an encoding to discard input characters if an error occurs, taking in both the
-			/// state and the input sequence (by reference) to modify.
+			/// state and the input sequence to modify through the result type.
 			///
 			/// @remarks This will skip every input value until a proper starting byte is found.
 			template <typename _Input, typename _Output, typename _State, typename _InputProgress,
 				typename _OutputProgress>
 			static constexpr auto skip_input_error(decode_result<_Input, _Output, _State> __result,
-				const _InputProgress& __input_progress, const _OutputProgress&) noexcept {
+				const _InputProgress& __input_progress, const _OutputProgress& __output_progress) noexcept {
 				auto __it   = ztd::ranges::cbegin(__result.input);
 				auto __last = ztd::ranges::cend(__result.input);
 				// there may be more values to skip beyond what was read.
@@ -162,7 +174,7 @@ namespace ztd { namespace text {
 					// if there is already some items in the input progress (things irreversibly read), then
 					// we are not obligated to do "at least" one skip; barrier it behind an empty check for
 					// progress.
-					if (::ztd::ranges::empty(__input_progress)) {
+					if (::ztd::ranges::empty(__input_progress) && ::ztd::ranges::empty(__output_progress)) {
 						++__it;
 					}
 					for (; __it != __last; ++__it) {
@@ -180,6 +192,26 @@ namespace ztd { namespace text {
 				using _SubInput = ztd::ranges::subrange_for_t<_Input>;
 				return decode_result<_SubInput, _Output, _State>(_SubInput(::std::move(__it), ::std::move(__last)),
 					::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
+			}
+
+			///////
+			/// @brief Allows an encoding to discard input characters if an error occurs, taking in both the
+			/// state and the input sequence (by reference) to modify.
+			///
+			/// @remarks This will skip every input value until a proper UTF-32 unicode scalar value (or code point)
+			/// is found.
+			template <typename _Input, typename _Output, typename _State, typename _InputProgress,
+				typename _OutputProgress>
+			static constexpr auto skip_input_error(encode_result<_Input, _Output, _State> __result,
+				const _InputProgress& __input_progress, const _OutputProgress& __output_progress) noexcept {
+				if constexpr (__surrogates_allowed) {
+					return ::ztd::text::skip_utf32_with_surrogates_input_error(
+						::std::move(__result), __input_progress, __output_progress);
+				}
+				else {
+					return ::ztd::text::skip_utf32_input_error(
+						::std::move(__result), __input_progress, __output_progress);
+				}
 			}
 
 			//////
@@ -218,43 +250,39 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it   = ::ztd::ranges::begin(__output);
-				auto __out_last = ::ztd::ranges::end(__output);
+				auto __out_it                    = ::ztd::ranges::begin(__output);
+				[[maybe_unused]] auto __out_last = ::ztd::ranges::end(__output);
 
-				code_point __points[1] {};
-				__points[0]               = *__in_it;
-				const code_point& __point = __points[0];
-				::ztd::ranges::iter_advance(__in_it);
+				const char32_t __point32 = static_cast<char32_t>(*__in_it);
 
 				if constexpr (__call_error_handler) {
-					if (__point > __ztd_idk_detail_last_unicode_code_point) {
+					if (__point32 > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::span<code_unit, 0>());
+							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 					}
 					if constexpr (!__surrogates_allowed) {
-						if (__ztd_idk_detail_is_surrogate(__point)) {
+						if (__ztd_idk_detail_is_surrogate(__point32)) {
 							__self_t __self {};
 							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::invalid_sequence),
-								::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
-								::ztd::span<code_unit, 0>());
+								::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 						}
 					}
 				}
 
 				if constexpr (__use_overlong_null_only) {
-					if (__point == static_cast<code_point>(0)) {
+					if (__point32 == U'\0') {
 						// overlong MUTF-8
 						constexpr code_unit __payload[]
 							= { static_cast<code_unit>(0b11000000u), static_cast<code_unit>(0b10000000u) };
-						constexpr ::std::size_t __payload_size = static_cast<::std::size_t>(2);
+						constexpr ::std::size_t __payload_size = ztd_c_array_size(__payload);
+						::ztd::ranges::iter_advance(__in_it);
 						for (::std::size_t i = 0; i < __payload_size; ++i) {
 							if constexpr (__call_error_handler) {
 								if (__out_it == __out_last) {
@@ -263,7 +291,7 @@ namespace ztd { namespace text {
 										_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 										     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 										     encoding_error::insufficient_output_space),
-										::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
+										::ztd::span<code_point, 0>(),
 										::ztd::span<const code_unit>(__payload + i, __payload_size - i));
 								}
 							}
@@ -275,17 +303,6 @@ namespace ztd { namespace text {
 					}
 				}
 
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						__self_t __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
-							     encoding_error::insufficient_output_space),
-							::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
-							::ztd::span<code_unit, 0>());
-					}
-				}
 				constexpr uchar8_t __first_mask_continuation_values[][2] = {
 					{ 0b01111111, __ztd_idk_detail_start_1byte_continuation },
 					{ 0b00011111, __ztd_idk_detail_start_2byte_continuation },
@@ -295,48 +312,62 @@ namespace ztd { namespace text {
 					{ 0b00000001, __ztd_idk_detail_start_6byte_continuation },
 				};
 
-				::std::size_t __length = ::ztd::__idk_detail::__utf8_decode_length<__overlong_allowed>(__point);
+				::std::size_t __length = ::ztd::__idk_detail::__utf8_decode_length<__overlong_allowed>(__point32);
 				::std::size_t __length_index          = static_cast<::std::size_t>(__length - 1);
 				const auto& __first_mask_continuation = __first_mask_continuation_values[__length_index];
 				const uchar8_t& __first_mask          = __first_mask_continuation[0];
 				const uchar8_t& __first_continuation  = __first_mask_continuation[1];
 				::std::size_t __current_shift         = static_cast<::std::size_t>(6 * __length_index);
 				uchar8_t __first
-					= __first_continuation | static_cast<uchar8_t>((__point >> __current_shift) & __first_mask);
+					= __first_continuation | static_cast<uchar8_t>((__point32 >> __current_shift) & __first_mask);
 
-				*__out_it = static_cast<code_unit>(__first);
-				::ztd::ranges::iter_advance(__out_it);
-
-				constexpr ::std::size_t __values_size = 5;
-				code_unit __values[__values_size] {};
-				if (__length_index > 0) {
-					__current_shift -= 6;
-					for (::std::size_t __index = 0; __index < __length_index; ++__index) {
-						__values[__index] = static_cast<code_unit>(__ztd_idk_detail_continuation_signature
-							| static_cast<uchar8_t>(
-							     (__point >> __current_shift) & __ztd_idk_detail_continuation_mask_value));
-						__current_shift -= 6;
-					}
-					for (::std::size_t __index = 0; __index < __length_index; ++__index) {
-						if constexpr (__call_error_handler) {
-							if (__out_it == __out_last) {
-								__self_t __self {};
-								::ztd::span<code_unit> __code_unit_progress(
-									::std::addressof(__values[__index]), __length_index - __index);
-								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
-									     encoding_error::insufficient_output_space),
-									::ztd::span<code_point, 1>(::std::addressof(__points[0]), 1),
-									__code_unit_progress);
-							}
+				if (__length == 1) {
+					if constexpr (__call_error_handler) {
+						if (__out_it == __out_last) {
+							__self_t __self {};
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::insufficient_output_space),
+								::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
 						}
-
-						*__out_it = __values[__index];
-						::ztd::ranges::iter_advance(__out_it);
 					}
+					*__out_it = static_cast<code_unit>(__first);
+					::ztd::ranges::iter_advance(__out_it);
+					::ztd::ranges::iter_advance(__in_it);
+					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 				}
 
+				constexpr ::std::size_t __values_size = 6;
+				code_unit __values[__values_size] { static_cast<code_unit>(__first) };
+
+				__current_shift -= 6;
+				for (::std::size_t __index = 1; __index < __length; ++__index) {
+					__values[__index] = static_cast<code_unit>(__ztd_idk_detail_continuation_signature
+						| static_cast<uchar8_t>(
+						     (__point32 >> __current_shift) & __ztd_idk_detail_continuation_mask_value));
+					__current_shift -= 6;
+				}
+
+				::ztd::ranges::iter_advance(__in_it);
+				for (::std::size_t __index = 0; __index < __length; ++__index) {
+					if constexpr (__call_error_handler) {
+						if (__out_it == __out_last) {
+							__self_t __self {};
+							::ztd::span<code_unit> __code_unit_progress(
+								::std::addressof(__values[__index]), __length - __index);
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::insufficient_output_space),
+								::ztd::span<code_point, 0>(), __code_unit_progress);
+						}
+					}
+
+					*__out_it = __values[__index];
+					::ztd::ranges::iter_advance(__out_it);
+				}
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 			}
@@ -377,26 +408,11 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it   = ::ztd::ranges::begin(__output);
-				auto __out_last = ::ztd::ranges::end(__output);
+				auto __out_it                    = ::ztd::ranges::begin(__output);
+				[[maybe_unused]] auto __out_last = ::ztd::ranges::end(__output);
 
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						__self_t __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
-							     encoding_error::insufficient_output_space),
-							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
-					}
-				}
-				else {
-					(void)__out_last;
-				}
-
-				::std::array<code_unit, max_code_units> __units {};
-				__units[0]             = __txt_detail::static_cast_if_lossless<code_unit>(*__in_it);
-				const uchar8_t __unit0 = static_cast<uchar8_t>(__units[0]);
+				const uchar8_t __unit0 = static_cast<uchar8_t>(*__in_it);
+				code_unit __units[max_code_units] { static_cast<code_unit>(__unit0) };
 				::std::size_t __length = static_cast<::std::size_t>(__ztd_idk_detail_utf8_sequence_length(__unit0));
 
 				if constexpr (__call_error_handler) {
@@ -406,15 +422,24 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_unit, 1>(__units.data(), __units.size()),
-							::ztd::span<code_point, 0>());
+							::ztd::span<code_unit, 1>(__units, 1), ::ztd::span<code_point, 0>());
 					}
 				}
 
 				if (__length == 1) {
-					::ztd::ranges::iter_advance(__in_it);
+					if constexpr (__call_error_handler) {
+						if (__out_it == __out_last) {
+							__self_t __self {};
+							return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::insufficient_output_space),
+								::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
+						}
+					}
 					*__out_it = static_cast<code_point>(__unit0);
 					::ztd::ranges::iter_advance(__out_it);
+					::ztd::ranges::iter_advance(__in_it);
 					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s);
 				}
@@ -431,8 +456,7 @@ namespace ztd { namespace text {
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 									     encoding_error::invalid_sequence),
-									::ztd::span<code_unit, 1>(__units.data(), 1),
-									::ztd::span<code_point, 0>());
+									::ztd::span<code_unit, 1>(__units, 1), ::ztd::span<code_point, 0>());
 							}
 						}
 					}
@@ -445,7 +469,7 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::invalid_sequence),
-								::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
+								::ztd::span<code_unit, 1>(__units, 1), ::ztd::span<code_point, 0>());
 						}
 					}
 				}
@@ -460,7 +484,7 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::incomplete_sequence),
-								::ztd::span<code_unit>(__units.data(), i), ::ztd::span<code_point, 0>());
+								::ztd::span<code_unit>(__units, i), ::ztd::span<code_point, 0>());
 						}
 					}
 					__units[i] = __txt_detail::static_cast_if_lossless<code_unit>(*__in_it);
@@ -470,7 +494,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_unit>(__units.data(), i + 1), ::ztd::span<code_point, 0>());
+							::ztd::span<code_unit>(__units, i + 1), ::ztd::span<code_point, 0>());
 					}
 					::ztd::ranges::iter_advance(__in_it);
 				}
@@ -518,7 +542,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
+							::ztd::span<code_unit>(__units, __length), ::ztd::span<code_point, 0>());
 					}
 					else {
 						break;
@@ -526,6 +550,14 @@ namespace ztd { namespace text {
 				}
 
 				if constexpr (__call_error_handler) {
+					if (static_cast<char32_t>(__decoded) > __ztd_idk_detail_last_unicode_code_point) {
+						__self_t __self {};
+						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
+							::ztd::span<code_unit>(__units, __length), ::ztd::span<code_point, 0>());
+					}
 					if constexpr (!__overlong_allowed) {
 						const bool __is_allowed_overlong_null
 							= __use_overlong_null_only ? __decoded == U'\0' && __length == 2 : false;
@@ -536,7 +568,7 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::invalid_sequence),
-								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
+								::ztd::span<code_unit>(__units, __length), ::ztd::span<code_point, 0>());
 						}
 					}
 					if constexpr (!__surrogates_allowed) {
@@ -546,19 +578,21 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::invalid_sequence),
-								::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
+								::ztd::span<code_unit>(__units, __length), ::ztd::span<code_point, 0>());
 						}
 					}
-					if (static_cast<char32_t>(__decoded) > __ztd_idk_detail_last_unicode_code_point) {
+				}
+
+				if constexpr (__call_error_handler) {
+					if (__out_it == __out_last) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
-							     encoding_error::invalid_sequence),
-							::ztd::span<code_unit>(__units.data(), __length), ::ztd::span<code_point, 0>());
+							     encoding_error::insufficient_output_space),
+							::ztd::span<code_unit>(__units, __length), ::ztd::span<code_point, 0>());
 					}
 				}
-
 				// then everything is fine
 				*__out_it = __decoded;
 				::ztd::ranges::iter_advance(__out_it);

@@ -41,7 +41,6 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
-#include <ztd/text/detail/transcode_routines.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 
 #include <ztd/idk/tag.hpp>

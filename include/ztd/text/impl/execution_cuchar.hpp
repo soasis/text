@@ -243,7 +243,7 @@ namespace ztd { namespace text {
 				}
 
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
-				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
 				auto __out_last = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
@@ -262,8 +262,7 @@ namespace ztd { namespace text {
 
 				__wutf16 __intermediate_encoding {};
 				__intermediate_state __intermediate_s {};
-				__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>, __wutf16>
-					__intermediate_handler {};
+				__txt_detail::__progress_handler<!__call_error_handler, __wutf16> __intermediate_handler {};
 				wchar_t __wide_intermediary[8] {};
 				::ztd::span<wchar_t> __wide_write_buffer(__wide_intermediary);
 				auto __intermediate_result = __intermediate_encoding.encode_one(::std::forward<_Input>(__input),
@@ -320,7 +319,7 @@ namespace ztd { namespace text {
 					__intermediate_result.error_code);
 #else
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
 				auto __out_last = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
@@ -421,7 +420,7 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
 				auto __out_last = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
@@ -481,9 +480,7 @@ namespace ztd { namespace text {
 
 					__wutf16 __intermediate_encoding {};
 					__intermediate_state __intermediate_s {};
-					__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>,
-						__wutf16>
-						__intermediate_handler {};
+					__txt_detail::__progress_handler<!__call_error_handler, __wutf16> __intermediate_handler {};
 					::ztd::span<wchar_t, sizeof(__wide_intermediary) / sizeof(wchar_t)> __wide_intermediary_view(
 						__wide_intermediary);
 					auto __intermediate_result = __intermediate_encoding.encode_one(__wide_intermediary_view,

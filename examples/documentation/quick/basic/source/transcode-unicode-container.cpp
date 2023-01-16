@@ -48,24 +48,25 @@ int main(int, char*[]) {
 	std::list<char16_t> utf16_emoji_list
 	     = ztd::text::transcode<std::list<char16_t>>(input, ztd::text::utf16);
 
-	// manually hand-serializing into a std::deque
-	std::deque<char16_t> utf16_emoji_deque {};
-	auto deque_result = ztd::text::transcode_into(input, ztd::text::utf16,
-	     ztd::ranges::unbounded_view(std::back_inserter(utf16_emoji_deque)));
+	// insert into a std::deque, with additional return information
+	auto utf16_emoji_deque_result
+	     = ztd::text::transcode_to<std::deque<char16_t>>(input, ztd::text::utf16);
 	// transcode_into_raw returns a ztd::text::transcode_result<…>
 	// which we can inspect for error codes and more!
 	// the error_code should be "ok"
-	ZTD_TEXT_ASSERT(deque_result.error_code == ztd::text::encoding_error::ok);
+	ZTD_TEXT_ASSERT(
+	     utf16_emoji_deque_result.error_code == ztd::text::encoding_error::ok);
 	// No errors should have occured, even if they were "handled" and still
 	// returned "ok"
-	ZTD_TEXT_ASSERT(!deque_result.errors_were_handled());
+	ZTD_TEXT_ASSERT(!utf16_emoji_deque_result.errors_were_handled());
 	// The input should be completely empty
-	ZTD_TEXT_ASSERT(deque_result.input.empty());
+	ZTD_TEXT_ASSERT(utf16_emoji_deque_result.input.empty());
 
 	// The results should all be the same, despite the container!
 	ZTD_TEXT_ASSERT(
 	     ztd::ranges::equal(utf16_emoji_vector, utf16_expected_output));
 	ZTD_TEXT_ASSERT(ztd::ranges::equal(utf16_emoji_list, utf16_expected_output));
-	ZTD_TEXT_ASSERT(ztd::ranges::equal(utf16_emoji_deque, utf16_expected_output));
+	ZTD_TEXT_ASSERT(ztd::ranges::equal(
+	     utf16_emoji_deque_result.output, utf16_expected_output));
 	return 0;
 }

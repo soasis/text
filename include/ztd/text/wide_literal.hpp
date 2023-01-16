@@ -207,7 +207,7 @@ namespace ztd { namespace text {
 		constexpr auto skip_input_error(_Result&& __result, const _InputProgress& __input_progress,
 			const _OutputProgress& __output_progress) const
 			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const __base_t&, _Result, const _InputProgress&,
-			     const _OutputProgress&>()) {
+			     const _OutputProgress&>) {
 			return ::ztd::text::skip_input_error(static_cast<const __base_t&>(*this),
 				::std::forward<_Result>(__result), __input_progress, __output_progress);
 		}

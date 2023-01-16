@@ -42,7 +42,6 @@
 #include <ztd/text/validate_result.hpp>
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/state.hpp>
-#include <ztd/text/pivot.hpp>
 #include <ztd/text/transcode_one.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
@@ -85,7 +84,7 @@ namespace ztd { namespace text {
 		using _UEncoding    = remove_cvref_t<_Encoding>;
 		using _InitialInput = __txt_detail::__span_reconstruct_t<_Input, _Input>;
 		using _WorkingInput = ::ztd::ranges::subrange_for_t<_InitialInput>;
-		using _Result       = validate_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
+		using _Result       = validate_pivotless_transcode_result<_WorkingInput, _DecodeState, _EncodeState>;
 
 		_WorkingInput __working_input(__txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input)));
 
@@ -173,13 +172,12 @@ namespace ztd { namespace text {
 			constexpr ::std::size_t __code_point_max = max_code_points_v<_UEncoding>;
 			using _CodeUnit                          = code_unit_t<_UEncoding>;
 			using _CodePoint                         = code_point_t<_UEncoding>;
-			using _Pivot                             = ::ztd::text::pivot<::ztd::span<_CodePoint, __code_point_max>>;
+			using _Pivot                             = ::ztd::span<_CodePoint, __code_point_max>;
 
 			_CodePoint __code_point_buf[__code_point_max] {};
 			_CodeUnit __code_unit_buf[__code_unit_max] {};
-			::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
 			::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
-			_Pivot __pivot { ::std::move(__code_point_view), encoding_error::ok, 0 };
+			_Pivot __pivot(__code_point_buf);
 
 			for (;;) {
 				auto __result = ::ztd::text::transcode_one_into_raw(::std::move(__working_input), __encoding,

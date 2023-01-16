@@ -229,7 +229,7 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
 				auto __out_last = ::ztd::ranges::end(__output);
 
 				constexpr const ::std::size_t __state_max = 32;
@@ -237,8 +237,7 @@ namespace ztd { namespace text {
 				char* __intermediate_start = &__intermediate_buffer[0];
 				::ztd::span<char, __state_max> __intermediate_output(__intermediate_start, __state_max);
 				execution_t __exec {};
-				__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>,
-					__wide_execution_cwchar>
+				__txt_detail::__progress_handler<!__call_error_handler, __wide_execution_cwchar>
 					__intermediate_handler {};
 				auto __result = __exec.encode_one(::std::forward<_Input>(__input), __intermediate_output,
 					__intermediate_handler, __s.__narrow_state);
@@ -331,7 +330,7 @@ namespace ztd { namespace text {
 						::std::forward<_Output>(__output), __s, encoding_error::ok);
 				}
 
-				auto __out_it  = ::ztd::ranges::begin(__output);
+				auto __out_it   = ::ztd::ranges::begin(__output);
 				auto __out_last = ::ztd::ranges::end(__output);
 
 				if constexpr (__call_error_handler) {
@@ -422,8 +421,7 @@ namespace ztd { namespace text {
 				}
 
 				execution_t __exec {};
-				__txt_detail::__progress_handler<::std::integral_constant<bool, !__call_error_handler>,
-					__wide_execution_cwchar>
+				__txt_detail::__progress_handler<!__call_error_handler, __wide_execution_cwchar>
 					__intermediate_handler {};
 				::ztd::span<char, __state_max> __intermediate_input(__intermediate_buffer, __state_max);
 				auto __result = __exec.decode_one(__intermediate_input, ::std::forward<_Output>(__output),
