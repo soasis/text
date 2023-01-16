@@ -65,7 +65,7 @@ public:
 	constexpr auto skip_input_error(
 	     ztd::text::decode_result<Input, Output, State> result,
 	     const InputRead& input_already_read,
-	     const OutputWritten& output_already_read) const noexcept {
+	     [[maybe_unused]] const OutputWritten& output_already_read) const noexcept {
 		// If we are decoding a UTF-16 sequence,
 		// we can have 1 or 2 UTF-16 code units.
 		// they are identifiable as leading and trailing surrogates
