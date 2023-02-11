@@ -55,8 +55,8 @@
 			cnc_conversion_registry* raw_registry = nullptr;                                                        \
 			cnc_conversion* raw_conversion        = nullptr;                                                        \
 			cnc_conversion_info info              = {};                                                             \
-			const cnc_open_error err              = cnc_registry_new(&raw_registry, CNC_REGISTRY_OPTIONS_NONE);     \
-			if (err != CNC_OPEN_ERROR_OK) {                                                                         \
+			const cnc_open_err err              = cnc_registry_new(&raw_registry, cnc_registry_options_none);     \
+			if (err != cnc_open_err_ok) {                                                                         \
 				/* something went wrong, get out of here quick! */                                                 \
 				state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
 				return;                                                                                            \
@@ -69,9 +69,9 @@
 					return;                                                                                       \
 				}                                                                                                  \
 			}                                                                                                       \
-			const cnc_open_error conv_err = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N,   \
+			const cnc_open_err conv_err = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N,   \
 			     (const ztd_char8_t*)u8"UTF-" #TO_N, &raw_conversion, &info);                                       \
-			if (conv_err != CNC_OPEN_ERROR_OK) {                                                                    \
+			if (conv_err != cnc_open_err_ok) {                                                                    \
 				/* something went wrong, get out of here quick! */                                                 \
 				state.SkipWithError("could not open conversion descriptor");                                       \
 				return;                                                                                            \
@@ -129,8 +129,8 @@
 				cnc_conversion_registry* raw_registry = nullptr;                                                   \
 				cnc_conversion* raw_conversion        = nullptr;                                                   \
 				cnc_conversion_info info              = {};                                                        \
-				const cnc_open_error err = cnc_registry_open(&raw_registry, &mbr_heap, CNC_REGISTRY_OPTIONS_NONE); \
-				if (err != CNC_OPEN_ERROR_OK) {                                                                    \
+				const cnc_open_err err = cnc_registry_open(&raw_registry, &mbr_heap, cnc_registry_options_none); \
+				if (err != cnc_open_err_ok) {                                                                    \
 					/* something went wrong, get out of here quick! */                                            \
 					result = false;                                                                               \
 					break;                                                                                        \
@@ -143,10 +143,10 @@
 						break;                                                                                   \
 					}                                                                                             \
 				}                                                                                                  \
-				const cnc_open_error conv_err                                                                      \
+				const cnc_open_err conv_err                                                                      \
 				     = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N,                       \
 				          (const ztd_char8_t*)u8"UTF-" #TO_N, &raw_conversion, &info);                             \
-				if (conv_err != CNC_OPEN_ERROR_OK) {                                                               \
+				if (conv_err != cnc_open_err_ok) {                                                               \
 					result = false;                                                                               \
 					return;                                                                                       \
 				}                                                                                                  \

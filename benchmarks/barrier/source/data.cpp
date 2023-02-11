@@ -52,12 +52,12 @@ static auto init_u8_unicode_data() {
 		ztd_char8_t* output       = output_buffer;
 		const ztd_char32_t* input = &c;
 		size_t input_size         = 1;
-		size_t output_size        = ztd_c_array_size(output_buffer);
+		size_t output_size        = ztdc_c_array_size(output_buffer);
 		cnc_mcerr err           = cnc_c32ntoc8n(&output_size, &output, &input_size, &input);
 		if (err != cnc_mcerr_ok) {
 			throw std::runtime_error("bad idea");
 		}
-		size_t written_output_size = ztd_c_array_size(output_buffer) - output_size;
+		size_t written_output_size = ztdc_c_array_size(output_buffer) - output_size;
 		if (written_output_size > 4) {
 			throw std::runtime_error("bad idea");
 		}
@@ -79,12 +79,12 @@ static auto init_u16_unicode_data() {
 		ztd_char16_t* output      = output_buffer;
 		const ztd_char32_t* input = &c;
 		size_t input_size         = 1;
-		size_t output_size        = ztd_c_array_size(output_buffer);
+		size_t output_size        = ztdc_c_array_size(output_buffer);
 		cnc_mcerr err           = cnc_c32ntoc16n(&output_size, &output, &input_size, &input);
 		if (err != cnc_mcerr_ok) {
 			throw std::runtime_error("bad idea");
 		}
-		size_t written_output_size = ztd_c_array_size(output_buffer) - output_size;
+		size_t written_output_size = ztdc_c_array_size(output_buffer) - output_size;
 		if (written_output_size > 2) {
 			throw std::runtime_error("bad idea");
 		}

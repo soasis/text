@@ -163,7 +163,7 @@ namespace ztd { namespace text {
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state, encoding_error::ok);
 				}
 				_FunctionCodePoint __intermediate_output[max_code_points] = {};
-				::std::size_t __out_size                                  = ztd_c_array_size(__intermediate_output);
+				::std::size_t __out_size                                  = ztdc_c_array_size(__intermediate_output);
 				for (::std::size_t __index = 1;; ++__index) {
 					const _FunctionCodeUnit* __typed_in_ptr
 						= static_cast<const _FunctionCodeUnit*>(__intermediate_input);
@@ -187,7 +187,7 @@ namespace ztd { namespace text {
 							++__in_size;
 							++__incremented_in_size;
 						}
-						__out_size = ztd_c_array_size(__intermediate_output);
+						__out_size = ztdc_c_array_size(__intermediate_output);
 						continue;
 					}
 					if constexpr (__call_error_handler) {
@@ -202,7 +202,7 @@ namespace ztd { namespace text {
 					}
 					break;
 				}
-				const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
+				const ::std::size_t __written_output_size = ztdc_c_array_size(__intermediate_output) - __out_size;
 				for (::std::size_t __out_index = 0; __out_index < __written_output_size;
 					++__out_it, ++__out_index) {
 					if constexpr (__call_error_handler) {
@@ -270,7 +270,7 @@ namespace ztd { namespace text {
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state, encoding_error::ok);
 				}
 				_FunctionCodeUnit __intermediate_output[max_code_units] = {};
-				::std::size_t __out_size                                = ztd_c_array_size(__intermediate_output);
+				::std::size_t __out_size                                = ztdc_c_array_size(__intermediate_output);
 				for (::std::size_t __index = 1;; ++__index) {
 					const _FunctionCodePoint* __typed_in_ptr
 						= static_cast<const _FunctionCodePoint*>(__intermediate_input);
@@ -294,7 +294,7 @@ namespace ztd { namespace text {
 							++__in_size;
 							++__incremented_in_size;
 						}
-						__out_size = ztd_c_array_size(__intermediate_output);
+						__out_size = ztdc_c_array_size(__intermediate_output);
 						continue;
 					}
 					if constexpr (__call_error_handler) {
@@ -309,7 +309,7 @@ namespace ztd { namespace text {
 					}
 					break;
 				}
-				const ::std::size_t __written_output_size = ztd_c_array_size(__intermediate_output) - __out_size;
+				const ::std::size_t __written_output_size = ztdc_c_array_size(__intermediate_output) - __out_size;
 				for (::std::size_t __out_index = 0; __out_index < __written_output_size;
 					++__out_it, ++__out_index) {
 					if constexpr (__call_error_handler) {

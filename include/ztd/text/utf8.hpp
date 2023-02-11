@@ -281,7 +281,7 @@ namespace ztd { namespace text {
 						// overlong MUTF-8
 						constexpr code_unit __payload[]
 							= { static_cast<code_unit>(0b11000000u), static_cast<code_unit>(0b10000000u) };
-						constexpr ::std::size_t __payload_size = ztd_c_array_size(__payload);
+						constexpr ::std::size_t __payload_size = ztdc_c_array_size(__payload);
 						::ztd::ranges::iter_advance(__in_it);
 						for (::std::size_t i = 0; i < __payload_size; ++i) {
 							if constexpr (__call_error_handler) {
