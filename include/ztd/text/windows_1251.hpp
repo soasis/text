@@ -30,47 +30,34 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_ENCODING_HPP
-#define ZTD_TEXT_ENCODING_HPP
+#ifndef ZTD_TEXT_WINDOWS_1251_HPP
+#define ZTD_TEXT_WINDOWS_1251_HPP
 
 #include <ztd/text/version.hpp>
 
-// general purpose encoding wrappers/shims
-#include <ztd/text/execution.hpp>
-#include <ztd/text/wide_execution.hpp>
-#include <ztd/text/encoding_scheme.hpp>
-#include <ztd/text/literal.hpp>
-#include <ztd/text/wide_literal.hpp>
-#include <ztd/text/any_encoding.hpp>
-#include <ztd/text/cuneicode_encoding.hpp>
-#include <ztd/text/cuneicode_registry_encoding.hpp>
+#include <ztd/text/unicode_code_point.hpp>
+#include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
-// specific, named encodings
-#include <ztd/text/ascii.hpp>
-#include <ztd/text/atari_st.hpp>
-#include <ztd/text/basic_iconv.hpp>
-#include <ztd/text/euc_kr.hpp>
-#include <ztd/text/ibm_424_hebrew_bulletin.hpp>
-#include <ztd/text/ibm_856_hebrew.hpp>
-#include <ztd/text/ibm_866_cyrillic.hpp>
-#include <ztd/text/ibm_1006_urdu.hpp>
-#include <ztd/text/kazakh_strk1048.hpp>
-#include <ztd/text/koi8_u.hpp>
-#include <ztd/text/shift_jis_x0208.hpp>
-#include <ztd/text/punycode.hpp>
-#include <ztd/text/utf8.hpp>
-#include <ztd/text/utf16.hpp>
-#include <ztd/text/utf32.hpp>
-#include <ztd/text/windows_1251.hpp>
-#include <ztd/text/windows_1252.hpp>
+#include <ztd/encoding_tables/windows_1251.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
+	class basic_windows_1251
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_windows_1251<_CodeUnit, _CodePoint>,
+		  &::ztd::et::windows_1251_index_to_code_point, &::ztd::et::windows_1251_code_point_to_index, _CodeUnit,
+		  _CodePoint> { };
+
+	//////
+	/// @brief An instance of skip_handler_t for ease of use.
+	inline constexpr basic_windows_1251<char> windows_1251 = {};
+
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
 
 #include <ztd/epilogue.hpp>
 

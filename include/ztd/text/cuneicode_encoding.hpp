@@ -50,27 +50,27 @@ namespace ztd { namespace text {
 	/// @tparam _CodeUnit The type for the unit of encoded data.
 	/// @tparam _CodePoint The type for the unit of decoded data.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_big5_hkscs : public __txt_impl::__fixed_cuneicode<basic_big5_hkscs<_CodeUnit, _CodePoint>,
-		                         // code unit / code point type
-		                         _CodeUnit, _CodePoint,
-		                         // max code units / code points
-		                         2, 2,
-		                         // decode functions, type + (constexpr) value
-		                         decltype(&::cnc_mcnrtoc32n_big5_hkscs), (&::cnc_mcnrtoc32n_big5_hkscs),
-		                         // encode functions, type + (constexpr) value
-		                         decltype(&::cnc_c32nrtomcn_big5_hkscs), (&::cnc_c32nrtomcn_big5_hkscs),
-		                         // decode state/completion
-		                         cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
-		                         // encode state/completion
-		                         cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
-		                         // is_injective
-		                         true, false,
-		                         // true code unit / code point types
-		                         char, char32_t> { };
+	class basic_cnc_big5_hkscs : public __txt_impl::__fixed_cuneicode<basic_cnc_big5_hkscs<_CodeUnit, _CodePoint>,
+		                             // code unit / code point type
+		                             _CodeUnit, _CodePoint,
+		                             // max code units / code points
+		                             2, 2,
+		                             // decode functions, type + (constexpr) value
+		                             decltype(&::cnc_mcnrtoc32n_big5_hkscs), (&::cnc_mcnrtoc32n_big5_hkscs),
+		                             // encode functions, type + (constexpr) value
+		                             decltype(&::cnc_c32nrtomcn_big5_hkscs), (&::cnc_c32nrtomcn_big5_hkscs),
+		                             // decode state/completion
+		                             cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
+		                             // encode state/completion
+		                             cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
+		                             // is_injective
+		                             true, false,
+		                             // true code unit / code point types
+		                             char, char32_t> { };
 
 	//////
 	/// @brief A convenience for ease of use.
-	inline constexpr basic_big5_hkscs<char, char32_t> big5_hkscs = {};
+	inline constexpr basic_cnc_big5_hkscs<char, char32_t> big5_cnc_hkscs = {};
 
 	//////
 	/// @brief An encoding implementing WHATWG's GBK.
@@ -78,27 +78,27 @@ namespace ztd { namespace text {
 	/// @tparam _CodeUnit The type for the unit of encoded data.
 	/// @tparam _CodePoint The type for the unit of decoded data.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_gbk : public __txt_impl::__fixed_cuneicode<basic_gbk<_CodeUnit, _CodePoint>,
-		                  // code unit / code point type
-		                  _CodeUnit, _CodePoint,
-		                  // max code units / code points
-		                  2, 1,
-		                  // decode functions, type + (constexpr) value
-		                  decltype(&::cnc_mcnrtoc32n_gbk), (&::cnc_mcnrtoc32n_gbk),
-		                  // encode functions, type + (constexpr) value
-		                  decltype(&::cnc_c32nrtomcn_gbk), (&::cnc_c32nrtomcn_gbk),
-		                  // decode state/completion
-		                  cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
-		                  // encode state/completion
-		                  cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
-		                  // is_injective
-		                  true, false,
-		                  // true code unit / code point types
-		                  char, char32_t> { };
+	class basic_cnc_gbk : public __txt_impl::__fixed_cuneicode<basic_cnc_gbk<_CodeUnit, _CodePoint>,
+		                      // code unit / code point type
+		                      _CodeUnit, _CodePoint,
+		                      // max code units / code points
+		                      2, 1,
+		                      // decode functions, type + (constexpr) value
+		                      decltype(&::cnc_mcnrtoc32n_gbk), (&::cnc_mcnrtoc32n_gbk),
+		                      // encode functions, type + (constexpr) value
+		                      decltype(&::cnc_c32nrtomcn_gbk), (&::cnc_c32nrtomcn_gbk),
+		                      // decode state/completion
+		                      cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
+		                      // encode state/completion
+		                      cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
+		                      // is_injective
+		                      true, false,
+		                      // true code unit / code point types
+		                      char, char32_t> { };
 
 	//////
 	/// @brief A convenience alias for ease of use.
-	inline constexpr basic_gbk<char, char32_t> gbk = {};
+	inline constexpr basic_cnc_gbk<char, char32_t> cnc_gbk = {};
 
 	//////
 	/// @brief An encoding implementing WHATWG's GB18030
@@ -106,27 +106,27 @@ namespace ztd { namespace text {
 	/// @tparam _CodeUnit The type for the unit of encoded data.
 	/// @tparam _CodePoint The type for the unit of decoded data.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_gb18030 : public __txt_impl::__fixed_cuneicode<basic_gb18030<_CodeUnit, _CodePoint>,
-		                      // code unit / code point type
-		                      _CodeUnit, _CodePoint,
-		                      // max code units / code points
-		                      4, 2,
-		                      // decode functions, type + (constexpr) value
-		                      decltype(&::cnc_mcnrtoc32n_gb18030), (&::cnc_mcnrtoc32n_gb18030),
-		                      // encode functions, type + (constexpr) value
-		                      decltype(&::cnc_c32nrtomcn_gb18030), (&::cnc_c32nrtomcn_gb18030),
-		                      // decode state/completion
-		                      cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
-		                      // encode state/completion
-		                      cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
-		                      // is_injective
-		                      true, true,
-		                      // true code unit / code point types
-		                      char, char32_t> { };
+	class basic_cnc_gb18030 : public __txt_impl::__fixed_cuneicode<basic_cnc_gb18030<_CodeUnit, _CodePoint>,
+		                          // code unit / code point type
+		                          _CodeUnit, _CodePoint,
+		                          // max code units / code points
+		                          4, 2,
+		                          // decode functions, type + (constexpr) value
+		                          decltype(&::cnc_mcnrtoc32n_gb18030), (&::cnc_mcnrtoc32n_gb18030),
+		                          // encode functions, type + (constexpr) value
+		                          decltype(&::cnc_c32nrtomcn_gb18030), (&::cnc_c32nrtomcn_gb18030),
+		                          // decode state/completion
+		                          cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
+		                          // encode state/completion
+		                          cnc_mcstate_t, decltype(&::cnc_mcstate_is_complete), &::cnc_mcstate_is_complete,
+		                          // is_injective
+		                          true, true,
+		                          // true code unit / code point types
+		                          char, char32_t> { };
 
 	//////
 	/// @brief A convenience alias for ease of use.
-	inline constexpr basic_gb18030<char, char32_t> gb18030 = {};
+	inline constexpr basic_cnc_gb18030<char, char32_t> cnc_gb18030 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
