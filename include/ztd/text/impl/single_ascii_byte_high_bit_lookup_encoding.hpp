@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_IMPL_SINGLE_BYTE_LOOKUP_ENCODING_HPP
-#define ZTD_TEXT_IMPL_SINGLE_BYTE_LOOKUP_ENCODING_HPP
+#ifndef ZTD_TEXT_IMPL_SINGLE_ASCII_BYTE_HIGH_BIT_LOOKUP_ENCODING_HPP
+#define ZTD_TEXT_IMPL_SINGLE_ASCII_BYTE_HIGH_BIT_LOOKUP_ENCODING_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -58,7 +58,7 @@ namespace ztd { namespace text {
 		template <typename _Derived, ::ztd::et::basic_lookup_index_to_code_point_function* _LookupCodePoint,
 			::ztd::et::basic_lookup_code_point_to_index_function* _LookupIndex, typename _CodeUnit = char,
 			typename _CodePoint = unicode_code_point>
-		struct __single_byte_lookup_encoding {
+		struct __single_ascii_byte_high_bit_lookup_encoding {
 			//////
 			/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
 			using code_unit = _CodeUnit;
@@ -131,9 +131,9 @@ namespace ztd { namespace text {
 				auto __out_it                     = ztd::ranges::begin(__output);
 				auto __out_last                   = ztd::ranges::end(__output);
 
-				::std::size_t __lookup_index                              = static_cast<::std::size_t>(__unit0);
-				const ::std::optional<::std::uint_least32_t> __maybe_code = _LookupCodePoint(__lookup_index);
-				if (__maybe_code) {
+				if (__unit0 <= 0x7F) {
+					// Top-Level case 0: it's an ASCII byte
+					const code_point __code_point = static_cast<code_point>(__unit0);
 					if constexpr (__call_error_handler) {
 						if (__out_it == __out_last) {
 							_Derived __self {};
@@ -145,13 +145,36 @@ namespace ztd { namespace text {
 								::ztd::span<const code_point, 0>());
 						}
 					}
-					const code_point __code_point = static_cast<code_point>(*__maybe_code);
-					*__out_it                     = __code_point;
+					*__out_it = __code_point;
 					++__in_it;
 					++__out_it;
 					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 						ztd::text::encoding_error::ok);
+				}
+				else {
+					::std::size_t __lookup_index = static_cast<::std::size_t>(__unit0) - 0x80u;
+					const ::std::optional<::std::uint_least32_t> __maybe_code = _LookupCodePoint(__lookup_index);
+					if (__maybe_code) {
+						if constexpr (__call_error_handler) {
+							if (__out_it == __out_last) {
+								_Derived __self {};
+								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
+									     ztd::text::encoding_error::insufficient_output_space),
+									::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
+									::ztd::span<const code_point, 0>());
+							}
+						}
+						const code_point __code_point = static_cast<code_point>(*__maybe_code);
+						*__out_it                     = __code_point;
+						++__in_it;
+						++__out_it;
+						return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
+							ztd::text::encoding_error::ok);
+					}
 				}
 
 				_Derived __self {};
@@ -202,8 +225,7 @@ namespace ztd { namespace text {
 				auto __out_it           = ztd::ranges::begin(__output);
 				auto __out_last         = ztd::ranges::end(__output);
 
-				const ::std::optional<::std::size_t> __maybe_index = _LookupIndex(__code_point32);
-				if (__maybe_index) {
+				if (__code_point32 < 0x80) {
 					if constexpr (__call_error_handler) {
 						if (__out_it == __out_last) {
 							// output is empty :(
@@ -214,13 +236,34 @@ namespace ztd { namespace text {
 								::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
 						}
 					}
-					const code_unit __code_unit = static_cast<code_unit>(*__maybe_index + 0x80);
-					*__out_it                   = __code_unit;
 					++__in_it;
+					*__out_it = static_cast<code_unit>(__code_point32);
 					++__out_it;
 					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 						ztd::text::encoding_error::ok);
+				}
+				else {
+					const ::std::optional<::std::size_t> __maybe_index = _LookupIndex(__code_point32);
+					if (__maybe_index) {
+						if constexpr (__call_error_handler) {
+							if (__out_it == __out_last) {
+								// output is empty :(
+								_Derived __self {};
+								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+									_Result(::std::move(__input), ::std::move(__output), __state,
+									     ztd::text::encoding_error::insufficient_output_space),
+									::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
+							}
+						}
+						const code_unit __code_unit = static_cast<code_unit>(*__maybe_index + 0x80);
+						*__out_it                   = __code_unit;
+						++__in_it;
+						++__out_it;
+						return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
+							ztd::text::encoding_error::ok);
+					}
 				}
 
 				_Derived __self {};

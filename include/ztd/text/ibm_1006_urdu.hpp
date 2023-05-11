@@ -30,15 +30,15 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_WINDOWS_1252_HPP
-#define ZTD_TEXT_WINDOWS_1252_HPP
+#ifndef ZTD_TEXT_IBM_1006_URDU_HPP
+#define ZTD_TEXT_IBM_1006_URDU_HPP
 
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
+#include <ztd/text/impl/single_byte_lookup_encoding.hpp>
 
-#include <ztd/encoding_tables/windows_1252.tables.hpp>
+#include <ztd/encoding_tables/ibm_1006_urdu.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -46,14 +46,14 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_windows_1252
-	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_windows_1252<_CodeUnit, _CodePoint>,
-		  &::ztd::et::windows_1252_index_to_code_point, &::ztd::et::windows_1252_code_point_to_index, _CodeUnit,
+	class basic_ibm_1006_urdu
+	: public __txt_impl::__single_byte_lookup_encoding<basic_ibm_1006_urdu<_CodeUnit, _CodePoint>,
+		  &::ztd::et::ibm_1006_urdu_index_to_code_point, &::ztd::et::ibm_1006_urdu_code_point_to_index, _CodeUnit,
 		  _CodePoint> { };
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_windows_1252<char> windows_1252 = {};
+	inline constexpr basic_ibm_1006_urdu<char> ibm_1006_urdu = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

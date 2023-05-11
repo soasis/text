@@ -65,20 +65,21 @@ inline namespace ztd_text_benchmarks_conversion_speed_cuneicode_help {
 		}
 	};
 
-	inline void* mbr_allocate(size_t requested_size, size_t alignment, size_t* p_actual_size, void* user_data) {
+	inline void* mbr_allocate(
+	     size_t requested_size, size_t alignment, size_t* p_actual_size, void* user_data) noexcept {
 		std::pmr::monotonic_buffer_resource& mbr = *static_cast<std::pmr::monotonic_buffer_resource*>(user_data);
 		void* ptr                                = mbr.allocate(requested_size, alignment);
 		*p_actual_size                           = requested_size;
 		return ptr;
 	}
 
-	inline void mbr_deallocate(void* ptr, size_t ptr_size, size_t alignment, void* user_data) {
+	inline void mbr_deallocate(void* ptr, size_t ptr_size, size_t alignment, void* user_data) noexcept {
 		std::pmr::monotonic_buffer_resource& mbr = *static_cast<std::pmr::monotonic_buffer_resource*>(user_data);
 		mbr.deallocate(ptr, ptr_size, alignment);
 	}
 
 	inline cnc_conversion_heap create_monotonic_buffer_heap(std::pmr::monotonic_buffer_resource& resource) {
-		cnc_conversion_heap mbr_heap = { &resource, mbr_allocate, nullptr, nullptr, nullptr, mbr_deallocate };
+		cnc_conversion_heap mbr_heap = { &resource, mbr_allocate, mbr_deallocate, nullptr, nullptr, nullptr };
 		return mbr_heap;
 	}
 

@@ -46,15 +46,22 @@
 #include <ztd/text/cuneicode_registry_encoding.hpp>
 
 // specific, named encodings
-#include <ztd/text/basic_iconv.hpp>
-#include <ztd/text/punycode.hpp>
 #include <ztd/text/ascii.hpp>
-#include <ztd/text/shift_jis_x0208.hpp>
+#include <ztd/text/atari_st.hpp>
+#include <ztd/text/basic_iconv.hpp>
 #include <ztd/text/euc_kr.hpp>
-#include <ztd/text/windows_1252.hpp>
+#include <ztd/text/ibm_424_hebrew_bulletin.hpp>
+#include <ztd/text/ibm_856_hebrew.hpp>
+#include <ztd/text/ibm_1006_urdu.hpp>
+#include <ztd/text/kazakh_strk1048.hpp>
+#include <ztd/text/koi8_u.hpp>
+#include <ztd/text/punycode.hpp>
+#include <ztd/text/shift_jis_x0208.hpp>
+#include <ztd/text/punycode.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/utf32.hpp>
+#include <ztd/text/windows_1252.hpp>
 
 #include <ztd/prologue.hpp>
 

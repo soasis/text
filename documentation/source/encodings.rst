@@ -100,10 +100,42 @@ As a general point, we hope to support almost all of the encodings here in one f
 	* - ``cuneicode`` Encoding
 	  - Yes
 	  - Yes
-	  - :doc:`WIP 🛠️ </api/encodings/cuneicode_registry_encoding>`
+	  - :doc:`Yes ✅ </api/encodings/cuneicode_registry_encoding>`
+	* - ATARIST
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/atari_st>`
+	* - KOI8-U
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/koi8_u>`
+	* - IBM Codepage 424 Hebrew (Bulletin)
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/ibm_424_hebrew_bulletin>`
+	* - IBM Codepage 856 Hebrew
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/ibm_856_hebrew>`
+	* - IBM Codepage 866 Cyrillic (Russian)
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/ibm_866_cyrillic>`
+	* - IBM Codepage 1006 Urdu
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/ibm_1006_urdu>`
+	* - Kazakh-STRK1048 / KZ-1048 / RK1048
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/kazakh_strk1048>`
+	* - CP1252 / Windows-1252 / Latin-1
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/windows_1252>`
 	* - UTF-EBCDIC
 	  - No
-	  - Yes
+	  - No ❌ (Proprietary Licensed)
 	  - No ❌
 	* - UTF-7
 	  - Yes
@@ -173,19 +205,11 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - KOI8-U
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
 	* - KOI8-RU
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
 	* - KOI8-T
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ATARIST
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
@@ -502,14 +526,6 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unconfirmed
 	  - No ❌
 	* - PT154
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - RK1048
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - RK1048
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌

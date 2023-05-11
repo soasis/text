@@ -30,15 +30,15 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_WINDOWS_1252_HPP
-#define ZTD_TEXT_WINDOWS_1252_HPP
+#ifndef ZTD_TEXT_TATAR_ANSI_HPP
+#define ZTD_TEXT_TATAR_ANSI_HPP
 
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
-#include <ztd/encoding_tables/windows_1252.tables.hpp>
+#include <ztd/encoding_tables/tatar_ANSI.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -46,14 +46,14 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_windows_1252
-	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_windows_1252<_CodeUnit, _CodePoint>,
-		  &::ztd::et::windows_1252_index_to_code_point, &::ztd::et::windows_1252_code_point_to_index, _CodeUnit,
+	class basic_tatar_ansi
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_tatar_ansi<_CodeUnit, _CodePoint>,
+		  &::ztd::et::tatar_ansi_index_to_code_point, &::ztd::et::tatar_ansi_code_point_to_index, _CodeUnit,
 		  _CodePoint> { };
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_windows_1252<char> windows_1252 = {};
+	inline constexpr basic_tatar_ansi<char> tatar_ansi = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
