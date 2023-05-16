@@ -79,7 +79,7 @@ namespace ztd { namespace text {
 			bool __output_pending;
 
 			__execution_decode_state() noexcept : __narrow_state(), __output_pending(false) {
-				char32_t __ghost_space[2];
+				ztd_char32_t __ghost_space[2];
 				::std::size_t __init_result
 					= ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(__ghost_space, "\0", 1, &__narrow_state);
 				// make sure it is initialized
@@ -501,7 +501,7 @@ namespace ztd { namespace text {
 #else
 				if (__s.__output_pending) {
 					// need to drain potential mbstate_t of any leftover code points?
-					char32_t __intermediary_output[max_code_points] {};
+					ztd_char32_t __intermediary_output[max_code_points] {};
 					::std::size_t __res
 						= ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(::std::addressof(__intermediary_output[0]), nullptr, 0,
 						     ::std::addressof(__s.__narrow_state));
@@ -528,7 +528,7 @@ namespace ztd { namespace text {
 					::std::mbstate_t __preserved_state   = __s.__narrow_state;
 					__intermediary_input[__state_offset] = *__in_it;
 					::ztd::ranges::iter_advance(__in_it);
-					char32_t __intermediary_output[1] {};
+					ztd_char32_t __intermediary_output[1] {};
 					::std::size_t __res = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(
 						::std::addressof(__intermediary_output[0]), ::std::addressof(__intermediary_input[0]),
 						__state_count, ::std::addressof(__preserved_state));

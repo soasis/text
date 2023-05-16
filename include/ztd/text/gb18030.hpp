@@ -30,43 +30,29 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_REPLACEMENT_HPP
-#define ZTD_TEXT_DETAIL_REPLACEMENT_HPP
+#ifndef ZTD_TEXT_GB18030_HPP
+#define ZTD_TEXT_GB18030_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/detail/unicode.hpp>
-
-#include <array>
+#include <ztd/text/impl/gbk_or_gb18030.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __txt_detail {
+	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
+	class basic_gb18030
+	: public __txt_impl::__basic_gb18030<basic_gb18030<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint, false> { };
 
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 1> __question_mark_replacement_units { { static_cast<_CharType>(
-			__ztd_idk_detail_ascii_replacement) } };
-
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 1> __0xfffd_replacement_units { { static_cast<_CharType>(
-			__ztd_idk_detail_replacement) } };
-
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 3> __0xfffd_utf8_replacement_units { { static_cast<_CharType>(0xEF),
-			static_cast<_CharType>(0xBF), static_cast<_CharType>(0xBD) } };
-
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 4> __0xfffd_gb18030_replacement_units { { static_cast<_CharType>(
-				                                                                              0x84),
-			static_cast<_CharType>(0x31), static_cast<_CharType>(0xA4), static_cast<_CharType>(0x37) } };
-
-	} // namespace __txt_detail
+	//////
+	/// @brief An instance of skip_handler_t for ease of use.
+	inline constexpr basic_gb18030<char> gb18030 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
 
 #include <ztd/epilogue.hpp>
 

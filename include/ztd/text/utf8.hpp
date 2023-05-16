@@ -253,7 +253,7 @@ namespace ztd { namespace text {
 				auto __out_it                    = ::ztd::ranges::begin(__output);
 				[[maybe_unused]] auto __out_last = ::ztd::ranges::end(__output);
 
-				const char32_t __point32 = static_cast<char32_t>(*__in_it);
+				const ztd_char32_t __point32 = static_cast<ztd_char32_t>(*__in_it);
 
 				if constexpr (__call_error_handler) {
 					if (__point32 > __ztd_idk_detail_last_unicode_code_point) {
@@ -550,7 +550,7 @@ namespace ztd { namespace text {
 				}
 
 				if constexpr (__call_error_handler) {
-					if (static_cast<char32_t>(__decoded) > __ztd_idk_detail_last_unicode_code_point) {
+					if (static_cast<ztd_char32_t>(__decoded) > __ztd_idk_detail_last_unicode_code_point) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
@@ -600,6 +600,10 @@ namespace ztd { namespace text {
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s);
 			}
+
+		private:
+			static_assert((sizeof(code_point) * CHAR_BIT) > 21,
+				"The code point type for a UTF-8 (or similar) encoding must be at least 22 bits wide");
 		};
 	} // namespace __txt_impl
 

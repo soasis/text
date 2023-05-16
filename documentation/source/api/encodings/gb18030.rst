@@ -28,17 +28,18 @@
 ..
 .. =============================================================================>
 
-Tatar (ASCII Variant / Windows-1252 Variant / Latin-1 Variant)
-==============================================================
+GB18030
+=======
+
+An encoding capable of handling all known Unicode-encoded characters, and occasionally a few more (the most recent version of Unicode covers all values available in the most up-to-date GB-18030).
+
+
+.. doxygenvariable:: ztd::text::gb18030
 
 
 
-.. doxygenvariable:: ztd::text::tatar_ascii
+Base Templates
+--------------
 
-
-
-Base Template
--------------
-
-.. doxygenclass:: ztd::text::basic_tatar_ascii
+.. doxygenclass:: ztd::text::basic_gb18030
 	:members:

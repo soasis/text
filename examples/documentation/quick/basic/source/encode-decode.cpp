@@ -39,7 +39,7 @@ int main(int, char*[]) {
 
 	// Decode, with result to check!
 	auto korean_decoded_output_result
-	     = ztd::text::decode_to(input, ztd::text::euc_kr);
+	     = ztd::text::decode_to(input, ztd::text::euc_kr_uhc);
 	ZTD_TEXT_ASSERT(korean_decoded_output_result.error_code
 	     == ztd::text::encoding_error::ok);
 	ZTD_TEXT_ASSERT(!korean_decoded_output_result.errors_were_handled());
@@ -59,7 +59,7 @@ int main(int, char*[]) {
 	// it back to EUC-KR.
 	ZTD_TEXT_ASSERT(ztd::ranges::equal(std::string_view(input),
 	     ztd::text::transcode(korean_utf8_output, ztd::text::compat_utf8,
-	          ztd::text::euc_kr, ztd::text::pass_handler)));
+	          ztd::text::euc_kr_uhc, ztd::text::pass_handler)));
 	// A korean greeting!
 	std::cout.write(korean_utf8_output.data(), korean_utf8_output.size());
 	std::cout << std::endl;

@@ -30,43 +30,36 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_DETAIL_REPLACEMENT_HPP
-#define ZTD_TEXT_DETAIL_REPLACEMENT_HPP
+#ifndef ZTD_TEXT_ATASCII_HPP
+#define ZTD_TEXT_ATASCII_HPP
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/idk/detail/unicode.hpp>
+#include <ztd/text/unicode_code_point.hpp>
+#include <ztd/text/impl/single_byte_lookup_encoding.hpp>
 
-#include <array>
+#include <ztd/encoding_tables/atascii.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	namespace __txt_detail {
+	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
+	class basic_atascii
+	: public __txt_impl::__single_byte_lookup_encoding<basic_atascii<_CodeUnit, _CodePoint>,
+		  &::ztd::et::atascii_index_to_code_point, &::ztd::et::atascii_code_point_to_index, _CodeUnit, _CodePoint> {
+		static_assert((sizeof(typename basic_atascii::code_point) * CHAR_BIT) > 21,
+			"The code point type for atascii must be at least 22 bits wide");
+	};
 
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 1> __question_mark_replacement_units { { static_cast<_CharType>(
-			__ztd_idk_detail_ascii_replacement) } };
-
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 1> __0xfffd_replacement_units { { static_cast<_CharType>(
-			__ztd_idk_detail_replacement) } };
-
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 3> __0xfffd_utf8_replacement_units { { static_cast<_CharType>(0xEF),
-			static_cast<_CharType>(0xBF), static_cast<_CharType>(0xBD) } };
-
-		template <typename _CharType>
-		inline constexpr ::std::array<_CharType, 4> __0xfffd_gb18030_replacement_units { { static_cast<_CharType>(
-				                                                                              0x84),
-			static_cast<_CharType>(0x31), static_cast<_CharType>(0xA4), static_cast<_CharType>(0x37) } };
-
-	} // namespace __txt_detail
+	//////
+	/// @brief An instance of skip_handler_t for ease of use.
+	inline constexpr basic_atascii<char> atascii = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
+
 
 #include <ztd/epilogue.hpp>
 

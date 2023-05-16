@@ -221,9 +221,9 @@ namespace ztd { namespace text {
 						::std::move(__input), ::std::move(__output), __state, ztd::text::encoding_error::ok);
 				}
 
-				char32_t __code_point32 = static_cast<char32_t>(*__in_it);
-				auto __out_it           = ztd::ranges::begin(__output);
-				auto __out_last         = ztd::ranges::end(__output);
+				ztd_char32_t __code_point32 = static_cast<ztd_char32_t>(*__in_it);
+				auto __out_it               = ztd::ranges::begin(__output);
+				auto __out_last             = ztd::ranges::end(__output);
 
 				if (__code_point32 < 0x80) {
 					if constexpr (__call_error_handler) {

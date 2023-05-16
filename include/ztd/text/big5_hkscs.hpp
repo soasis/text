@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_SHIFT_JIS_X0208_HPP
-#define ZTD_TEXT_SHIFT_JIS_X0208_HPP
+#ifndef ZTD_TEXT_BIG5_HKSCS_HPP
+#define ZTD_TEXT_BIG5_HKSCS_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -42,7 +42,7 @@
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/replacement_units.hpp>
 
-#include <ztd/encoding_tables/shift_jis_x0208.tables.hpp>
+#include <ztd/encoding_tables/big5_hkscs.tables.hpp>
 #include <ztd/ranges/adl.hpp>
 
 #include <ztd/prologue.hpp>
@@ -51,7 +51,8 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_shift_jis_x0208 {
+	class basic_big5_hkscs {
+	public:
 		//////
 		/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
 		using code_unit = _CodeUnit;
@@ -66,7 +67,7 @@ namespace ztd { namespace text {
 
 		//////
 		/// @brief The Shift-JIS encoding can put out at most 1 __code_point point per decoding action.
-		static constexpr inline std::size_t max_code_points = 1;
+		static constexpr inline std::size_t max_code_points = 2;
 
 		//////
 		/// @brief The Shift-JIS encoding can put out at most 2 __code_point units per encoding action.
@@ -95,7 +96,7 @@ namespace ztd { namespace text {
 		/// very little.
 		///
 		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
-		/// a reference to the passed-in state.
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -123,18 +124,17 @@ namespace ztd { namespace text {
 			auto __out_it                     = ztd::ranges::begin(__output);
 			auto __out_last                   = ztd::ranges::end(__output);
 
-			if (__unit0 <= 0x80) {
+			if (__unit0 <= 0x7F) {
 				// Top-Level case 0: it's an ASCII byte
 				const code_point __code_point = static_cast<code_point>(__unit0);
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
-						basic_shift_jis_x0208 __self {};
+						basic_big5_hkscs __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 							     ztd::text::encoding_error::insufficient_output_space),
-							::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
-							::ztd::span<const code_point, 0>());
+							::ztd::span<const code_unit, 0>(), ::ztd::span<const code_point, 0>());
 					}
 				}
 				*__out_it = __code_point;
@@ -144,32 +144,11 @@ namespace ztd { namespace text {
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 					ztd::text::encoding_error::ok);
 			}
-			else if (__unit0 <= 0xDF && __unit0 >= 0xA1) {
-				// Top-Level case 1: it's non-ASCII single-byte
-				const code_point __code_point = static_cast<code_point>((0xFF61 - 0xA1) + __unit0);
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						basic_shift_jis_x0208 __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-							     ztd::text::encoding_error::insufficient_output_space),
-							::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
-							::ztd::span<const code_point, 0>());
-					}
-				}
-				++__in_it;
-				*__out_it = __code_point;
-				++__out_it;
-				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-					ztd::text::encoding_error::ok);
-			}
-			else if ((__unit0 <= 0x9F && __unit0 >= 0x81) || (__unit0 <= 0xFC && __unit0 >= 0xE0)) {
-				// Top-Level case 2: this is a double-byte sequence!
+			else if ((__unit0 <= 0xFE && __unit0 >= 0x81)) {
+				// Top-Level case 1: this is a double-byte sequence!
 				if constexpr (__call_error_handler) {
 					if (__in_it == __in_last) {
-						basic_shift_jis_x0208 __self {};
+						basic_big5_hkscs __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__input), ::std::move(__output), __state,
 							     ztd::text::encoding_error::incomplete_sequence),
@@ -178,68 +157,94 @@ namespace ztd { namespace text {
 					}
 				}
 				++__in_it;
-				__units[1]                         = static_cast<code_unit>(*__in_it);
-				unsigned char __second_byte        = static_cast<unsigned char>(__units[1]);
-				unsigned char __lookup_offset      = __second_byte < 0x7F ? 0x40 : 0x41;
-				unsigned char __lead_lookup_offset = __unit0 < 0xA0 ? 0x81 : 0xC1;
-				::std::size_t __lookup_index       = 0;
+				__units[1]                  = static_cast<code_unit>(*__in_it);
+				unsigned char __second_byte = static_cast<unsigned char>(__units[1]);
 				if ((__second_byte <= 0x7E && __second_byte >= 0x40)
-					|| (__second_byte <= 0xFC && __second_byte >= 0x80)) {
-					__lookup_index = (((__unit0 - __lead_lookup_offset) * 188) + __second_byte) - __lookup_offset;
-					if (__lookup_index <= 10715 && __lookup_index >= 8836) {
+					|| (__second_byte <= 0xFE && __second_byte >= 0xA1)) {
+					const unsigned char __second_byte_offset = __second_byte < 0x7F ? 0x40 : 0x62;
+					const ::std::size_t __lookup_index
+						= ((__unit0 - 0x81) * 157) + (__second_byte - __second_byte_offset);
+					constexpr auto __serialize_double_byte
+						= [&](const std::size_t __double_code_point_values_index) {
+							  if constexpr (__call_error_handler) {
+								  if (__out_it == __out_last) {
+									  basic_big5_hkscs __self {};
+									  return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+									       _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+									            _SubOutput(::std::move(__out_it), ::std::move(__out_last)),
+									            __state, ztd::text::encoding_error::insufficient_output_space),
+									       ::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
+									       ::ztd::span<const code_point, 0>());
+								  }
+							  }
+							  *__out_it = __double_code_point_values[__double_code_point_values_index][0];
+							  ++__out_it;
+							  if constexpr (__call_error_handler) {
+								  if (__out_it == __out_last) {
+									  basic_big5_hkscs __self {};
+									  return ::std::forward<_ErrorHandler>(__error_handler)(__self,
+									       _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+									            _SubOutput(::std::move(__out_it), ::std::move(__out_last)),
+									            __state, ztd::text::encoding_error::insufficient_output_space),
+									       ::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
+									       ::ztd::span<const code_point, 1>(
+									            ::std::addressof(__double_code_point_values[0], 1)));
+								  }
+							  }
+							  *__out_it = __double_code_point_values[__double_code_point_values_index][0];
+							  ++__in_it;
+							  ++__out_it;
+							  return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							       _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
+							       ztd::text::encoding_error::ok);
+						  };
+					switch (__lookup_index) {
+					case 1133:
+						return __serialize_double_byte(0);
+					case 1135:
+						return __serialize_double_byte(1);
+					case 1164:
+						return __serialize_double_byte(2);
+					case 1166:
+						return __serialize_double_byte(3);
+					default:
+						break;
+					}
+
+					const ::std::optional<::std::uint_least32_t> __maybe_code
+						= ::ztd::et::big5_hkscs_index_to_code_point(__lookup_index);
+					if (__maybe_code) {
 						if constexpr (__call_error_handler) {
 							if (__out_it == __out_last) {
-								basic_shift_jis_x0208 __self {};
+								basic_big5_hkscs __self {};
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 									     ztd::text::encoding_error::insufficient_output_space),
 									::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
-									::ztd::span<const code_point, 0>());
+									::ztd::span<const code_point, 1>(
+									     ::std::addressof(__double_code_point_values[0]), 1));
 							}
 						}
-						ztd_char32_t __code_point = static_cast<ztd_char32_t>(0xE000 - 8836 + __lookup_index);
-						*__out_it             = static_cast<code_point>(__code_point);
+						const code_point __code_point = static_cast<code_point>(*__maybe_code);
+						*__out_it                     = __code_point;
 						++__in_it;
 						++__out_it;
 						return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 							ztd::text::encoding_error::ok);
 					}
-					else {
-						::std::optional<::std::uint_least32_t> __maybe_code
-							= ztd::et::shift_jis_x0208_index_to_code_point(__lookup_index);
-						if (__maybe_code) {
-							if constexpr (__call_error_handler) {
-								if (__out_it == __out_last) {
-									basic_shift_jis_x0208 __self {};
-									return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-										_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-										     _SubOutput(::std::move(__out_it), ::std::move(__out_last)),
-										     __state, ztd::text::encoding_error::insufficient_output_space),
-										::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
-										::ztd::span<const code_point, 0>());
-								}
-							}
-							const ztd_char32_t& __code_point = *__maybe_code;
-							*__out_it                        = static_cast<code_point>(__code_point);
-							++__in_it;
-							++__out_it;
-							return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-								_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-								ztd::text::encoding_error::ok);
-						}
-					}
 				}
 			}
 
-			// Top-Level case 3 (default): unrecognized byte sequence!!
-			basic_shift_jis_x0208 __self {};
+			// Top-Level case 2 (default): unrecognized byte sequence!!
+			basic_big5_hkscs __self {};
 			return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 				_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 				     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 				     ztd::text::encoding_error::invalid_sequence),
-				::ztd::span<const code_unit, 0>(), ::ztd::span<const code_point, 0>());
+				::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
+				::ztd::span<const code_point, 0>());
 		}
 
 		//////
@@ -277,15 +282,15 @@ namespace ztd { namespace text {
 			}
 
 			ztd_char32_t __code_point32 = static_cast<ztd_char32_t>(*__in_it);
-			code_point __code_point = static_cast<code_point>(__code_point32);
-			auto __out_it           = ztd::ranges::begin(__output);
-			auto __out_last         = ztd::ranges::end(__output);
+			code_point __code_point     = static_cast<code_point>(__code_point32);
+			auto __out_it               = ztd::ranges::begin(__output);
+			auto __out_last             = ztd::ranges::end(__output);
 
-			if (__code_point32 <= 0x80) {
+			if (__code_point32 <= 0x7F) {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis_x0208 __self {};
+						basic_big5_hkscs __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__input), ::std::move(__output), __state,
 							     ztd::text::encoding_error::insufficient_output_space),
@@ -299,82 +304,19 @@ namespace ztd { namespace text {
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 					ztd::text::encoding_error::ok);
 			}
-			else if (__code_point32 == 0x00A5) {
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						// output is empty :(
-						basic_shift_jis_x0208 __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-							     ztd::text::encoding_error::insufficient_output_space),
-							::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
-					}
-				}
-				++__in_it;
-				*__out_it = static_cast<code_unit>(0x5C);
-				++__out_it;
-				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-					ztd::text::encoding_error::ok);
-			}
-			else if (__code_point32 == 0x203E) {
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						// output is empty :(
-						basic_shift_jis_x0208 __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-							     ztd::text::encoding_error::insufficient_output_space),
-							::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
-					}
-				}
-				++__in_it;
-				*__out_it = static_cast<code_unit>(0x7E);
-				++__out_it;
-				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-					ztd::text::encoding_error::ok);
-			}
-			else if (__code_point32 >= 0xFF61 && __code_point32 <= 0xFF9F) {
-				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						// output is empty :(
-						basic_shift_jis_x0208 __self {};
-						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
-							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-							     ztd::text::encoding_error::insufficient_output_space),
-							::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
-					}
-				}
-				++__in_it;
-				ztd_char32_t __intermediate = (__code_point32 - 0xFF61);
-				*__out_it               = static_cast<code_unit>(__intermediate + 0xA1);
-				++__out_it;
-				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
-					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
-					ztd::text::encoding_error::ok);
-			}
 
-			if (__code_point == 0x2212) {
-				__code_point = 0xFF0D;
-			}
-
-			::std::optional<::std::size_t> __maybe_index
-				= ::ztd::et::shift_jis_x0208_code_point_to_index(__code_point);
+			::std::optional<::std::size_t> __maybe_index = ::ztd::et::big5_hkscs_code_point_to_index(__code_point32);
 			if (__maybe_index) {
-				::std::size_t __index         = *__maybe_index;
-				::std::size_t __first         = __index / 188;
-				::std::size_t __first_offset  = __first < 0x1F ? 0x81 : 0xC1;
-				::std::size_t __second        = __index % 188;
-				::std::size_t __second_offset = __second < 0x3F ? 0x40 : 0x41;
+				const ::std::size_t __index              = *__maybe_index;
+				const ::std::size_t __second_byte_base   = (__index % 157);
+				const ::std::size_t __second_byte_offset = __second_byte_base < 0x34 ? 0x40 : 0x62;
+				::std::size_t __first                    = (__index / 157) + 0x81;
+				::std::size_t __second                   = __second_byte_base + __second_byte_offset;
 
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis_x0208 __self {};
+						basic_big5_hkscs __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -382,14 +324,12 @@ namespace ztd { namespace text {
 							::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
 					}
 				}
-				unsigned char __unituc = static_cast<unsigned char>(__first + __first_offset);
-				const code_unit __unit = static_cast<code_unit>(__unituc);
+				const code_unit __unit = static_cast<code_unit>(__first);
 				*__out_it              = __unit;
-				++__out_it;
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_shift_jis_x0208 __self {};
+						basic_big5_hkscs __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -398,26 +338,39 @@ namespace ztd { namespace text {
 							::ztd::span<const code_unit, 1>(::std::addressof(__unit), 1));
 					}
 				}
+				++__out_it;
 				++__in_it;
-				*__out_it = static_cast<code_unit>(__second + __second_offset);
+				*__out_it = static_cast<code_unit>(__second);
 				++__out_it;
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 					ztd::text::encoding_error::ok);
 			}
 
-			basic_shift_jis_x0208 __self {};
+			basic_big5_hkscs __self {};
 			return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 				_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 				     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 				     ztd::text::encoding_error::invalid_sequence),
 				::ztd::span<const code_point, 0>(), ::ztd::span<const code_unit, 0>());
 		}
+
+	private:
+		inline static constexpr const code_point __double_code_point_values[4][2] = {
+			{ 0xCA, 0x304 },
+			{ 0xCA, 0x30C },
+			{ 0xEA, 0x304 },
+			{ 0xEA, 0x30C },
+		};
+
+		static_assert((sizeof(code_point) * CHAR_BIT) > 15,
+			"The code point type for Big5 Hong Kong Supplementary Character Set (big5_hkscs) must be at least 16 "
+			"bits wide");
 	};
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_shift_jis_x0208<char> shift_jis_x0208 = {};
+	inline constexpr basic_big5_hkscs<char> big5_hkscs = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

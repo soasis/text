@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_EUC_KR_HPP
-#define ZTD_TEXT_EUC_KR_HPP
+#ifndef ZTD_TEXT_EUC_KR_UHC_HPP
+#define ZTD_TEXT_EUC_KR_UHC_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -51,7 +51,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_euc_kr {
+	struct basic_euc_kr_uhc {
 		//////
 		/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
 		using code_unit = _CodeUnit;
@@ -128,13 +128,12 @@ namespace ztd { namespace text {
 				const code_point __code_point = static_cast<code_point>(__unit0);
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
-						basic_euc_kr __self {};
+						basic_euc_kr_uhc __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
 							     ztd::text::encoding_error::insufficient_output_space),
-							::ztd::span<const code_unit, 1>(::std::addressof(__units[0]), 1),
-							::ztd::span<const code_point, 0>());
+							::ztd::span<const code_unit, 0>(), ::ztd::span<const code_point, 0>());
 					}
 				}
 				*__out_it = __code_point;
@@ -148,7 +147,7 @@ namespace ztd { namespace text {
 				// Top-Level case 1: this is a double-byte sequence!
 				if constexpr (__call_error_handler) {
 					if (__in_it == __in_last) {
-						basic_euc_kr __self {};
+						basic_euc_kr_uhc __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__input), ::std::move(__output), __state,
 							     ztd::text::encoding_error::incomplete_sequence),
@@ -166,7 +165,7 @@ namespace ztd { namespace text {
 					if (__maybe_code) {
 						if constexpr (__call_error_handler) {
 							if (__out_it == __out_last) {
-								basic_euc_kr __self {};
+								basic_euc_kr_uhc __self {};
 								return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -187,7 +186,7 @@ namespace ztd { namespace text {
 			}
 
 			// Top-Level case 2 (default): unrecognized byte sequence!!
-			basic_euc_kr __self {};
+			basic_euc_kr_uhc __self {};
 			return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 				_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 				     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -239,7 +238,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_euc_kr __self {};
+						basic_euc_kr_uhc __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(::std::move(__input), ::std::move(__output), __state,
 							     ztd::text::encoding_error::insufficient_output_space),
@@ -263,7 +262,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_euc_kr __self {};
+						basic_euc_kr_uhc __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -276,7 +275,7 @@ namespace ztd { namespace text {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						// output is empty :(
-						basic_euc_kr __self {};
+						basic_euc_kr_uhc __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -294,7 +293,7 @@ namespace ztd { namespace text {
 					ztd::text::encoding_error::ok);
 			}
 
-			basic_euc_kr __self {};
+			basic_euc_kr_uhc __self {};
 			return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 				_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 				     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -305,7 +304,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_euc_kr<char> euc_kr = {};
+	inline constexpr basic_euc_kr_uhc<char> euc_kr_uhc = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

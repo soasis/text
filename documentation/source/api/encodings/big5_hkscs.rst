@@ -28,17 +28,17 @@
 ..
 .. =============================================================================>
 
-Atari ST
-========
+Big5 Hong Kong Supplementary Character Set (HKSCS)
+==================================================
 
 
 
-.. doxygenvariable:: ztd::text::atari_st
+.. doxygenvariable:: ztd::text::big5_hkscs
 
 
 
-Base Template
--------------
+Base Templates
+--------------
 
-.. doxygenclass:: ztd::text::basic_atari_st
+.. doxygenclass:: ztd::text::basic_big5_hkscs
 	:members:

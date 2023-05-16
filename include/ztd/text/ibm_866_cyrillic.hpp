@@ -36,7 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/impl/single_byte_lookup_encoding.hpp>
+#include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
 #include <ztd/encoding_tables/ibm_866_cyrillic.tables.hpp>
 
@@ -47,7 +47,7 @@ namespace ztd { namespace text {
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_ibm_866_cyrillic
-	: public __txt_impl::__single_byte_lookup_encoding<basic_ibm_866_cyrillic<_CodeUnit, _CodePoint>,
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_ibm_866_cyrillic<_CodeUnit, _CodePoint>,
 		  &::ztd::et::ibm_866_cyrillic_index_to_code_point, &::ztd::et::ibm_866_cyrillic_code_point_to_index,
 		  _CodeUnit, _CodePoint> { };
 

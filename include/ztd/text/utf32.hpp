@@ -66,8 +66,9 @@ namespace ztd { namespace text {
 		/// @internal
 		///
 		/// @remarks Relies on CRTP.
-		template <typename _Derived = void, typename _CodeUnit = char32_t, typename _CodePoint = unicode_code_point,
-			bool __validate_decodable_as = true, bool __surrogates_allowed = false>
+		template <typename _Derived = void, typename _CodeUnit = ztd_char32_t,
+			typename _CodePoint = unicode_code_point, bool __validate_decodable_as = true,
+			bool __surrogates_allowed = false>
 		class __utf32_with : public __utf32_tag {
 		private:
 			using __self_t = ::std::conditional_t<::std::is_void_v<_Derived>, __utf32_with, _Derived>;
@@ -89,7 +90,7 @@ namespace ztd { namespace text {
 			using state = __txt_detail::__empty_state;
 			//////
 			/// @brief The individual units that result from an encode operation or are used as input to a decode
-			/// operation. For UTF-32 formats, this is usually char32_t, but this can change (see
+			/// operation. For UTF-32 formats, this is usually ztd_char32_t, but this can change (see
 			/// ztd::text::basic_utf32).
 			using code_unit = _CodeUnit;
 			//////
@@ -192,12 +193,12 @@ namespace ztd { namespace text {
 					(void)__out_last;
 				}
 
-				code_unit __unit  = static_cast<code_unit>(*__in_it);
-				char32_t __unit32 = static_cast<char32_t>(__unit);
+				code_unit __unit      = static_cast<code_unit>(*__in_it);
+				ztd_char32_t __unit32 = static_cast<ztd_char32_t>(__unit);
 				if constexpr (__validate_decodable_as && __call_error_handler) {
 					if (__unit32 > __ztd_idk_detail_last_unicode_code_point
 						|| (!__surrogates_allowed
-						     && __ztd_idk_detail_is_surrogate(static_cast<char32_t>(__unit)))) {
+						     && __ztd_idk_detail_is_surrogate(static_cast<ztd_char32_t>(__unit)))) {
 						__self_t __self {};
 						return ::std::forward<_ErrorHandler>(__error_handler)(__self,
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
@@ -252,7 +253,7 @@ namespace ztd { namespace text {
 				auto __out_it                    = ::ztd::ranges::begin(__output);
 				[[maybe_unused]] auto __out_last = ::ztd::ranges::end(__output);
 
-				char32_t __point32 = static_cast<char32_t>(*__in_it);
+				ztd_char32_t __point32 = static_cast<ztd_char32_t>(*__in_it);
 
 				if constexpr (__call_error_handler) {
 					if (__point32 > __ztd_idk_detail_last_unicode_code_point
@@ -283,6 +284,10 @@ namespace ztd { namespace text {
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 			}
+
+		private:
+			static_assert((sizeof(code_point) * CHAR_BIT) > 21,
+				"The code point type for a UTF-32 (or similar) encoding must be at least 22 bits wide");
 		};
 	} // namespace __txt_impl
 
@@ -303,8 +308,8 @@ namespace ztd { namespace text {
 	class basic_utf32 : public __txt_impl::__utf32_with<basic_utf32<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint> { };
 
 	//////
-	/// @brief A UTF-32 Encoding that traffics in char32_t. See ztd::text::basic_utf32 for more details.
-	using utf32_t = basic_utf32<char32_t>;
+	/// @brief A UTF-32 Encoding that traffics in ztd_char32_t. See ztd::text::basic_utf32 for more details.
+	using utf32_t = basic_utf32<ztd_char32_t>;
 
 	//////
 	/// @brief An instance of the UTF-32 encoding for ease of use.

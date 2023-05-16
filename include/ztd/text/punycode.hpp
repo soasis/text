@@ -83,7 +83,7 @@ namespace ztd { namespace text {
 		  // is_injective
 		  true, true,
 		  // true code unit / code point types
-		  char, char32_t> { };
+		  char, ztd_char32_t> { };
 
 	//////
 	/// @brief A convenience typedef for ztd::text::basic_any_punycode with the ztd::text::idna::no provided.

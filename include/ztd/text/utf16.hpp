@@ -370,8 +370,8 @@ namespace ztd { namespace text {
 							::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
 					}
 				}
-				char32_t __point32 = __ztd_idk_detail_utf16_combine_surrogates(__lead16, __trail16);
-				*__out_it          = static_cast<code_point>(__point32);
+				ztd_char32_t __point32 = __ztd_idk_detail_utf16_combine_surrogates(__lead16, __trail16);
+				*__out_it              = static_cast<code_point>(__point32);
 				::ztd::ranges::iter_advance(__out_it);
 				::ztd::ranges::iter_advance(__in_it);
 
@@ -525,6 +525,10 @@ namespace ztd { namespace text {
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 			}
+
+		private:
+			static_assert((sizeof(code_point) * CHAR_BIT) > 21,
+				"The code point type for a UTF-16 (or similar) encoding must be at least 22 bits wide");
 		};
 	} // namespace __txt_impl
 

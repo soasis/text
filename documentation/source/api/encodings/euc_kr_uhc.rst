@@ -28,17 +28,18 @@
 ..
 .. =============================================================================>
 
-IBM Codepage 866 - Cyrillic (Russian)
-=====================================
+EUC-KR (Unified Hangul Code)
+============================
 
 
 
-.. doxygenvariable:: ztd::text::ibm_866_cyrillic
+
+.. doxygenvariable:: ztd::text::euc_kr_uch
 
 
 
-Base Template
--------------
+Base Templates
+--------------
 
-.. doxygenclass:: ztd::text::basic_ibm_866_cyrillic
+.. doxygenclass:: ztd::text::basic_euc_kr_uch
 	:members:

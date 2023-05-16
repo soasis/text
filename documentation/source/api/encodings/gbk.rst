@@ -28,17 +28,18 @@
 ..
 .. =============================================================================>
 
-IBM Codepage 424 - Hebrew (Bulletin)
-====================================
+GBK
+===
+
+A legacy encoding typically for Chinese languages.
+
+
+.. doxygenvariable:: ztd::text::gbk
 
 
 
-.. doxygenvariable:: ztd::text::ibm_424_hebrew_bulletin
+Base Templates
+--------------
 
-
-
-Base Template
--------------
-
-.. doxygenclass:: ztd::text::basic_ibm_424_hebrew_bulletin
+.. doxygenclass:: ztd::text::basic_gbk
 	:members:

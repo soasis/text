@@ -57,19 +57,20 @@ namespace ztd { namespace text {
 
 		template <typename _Derived, ::ztd::et::basic_lookup_index_to_code_point_function* _LookupCodePoint,
 			::ztd::et::basic_lookup_code_point_to_index_function* _LookupIndex, typename _CodeUnit = char,
-			typename _CodePoint = unicode_code_point>
+			typename _CodePoint = unicode_code_point, typename _State = __txt_detail::__empty_state>
 		struct __single_byte_lookup_encoding {
 			//////
-			/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
+			/// @brief The code unit capable of storing at least 8 bits of data.
 			using code_unit = _CodeUnit;
 
 			//////
-			/// @brief Shift-JIS outputs Unicode Scalar Values.
+			/// @brief The output type for this encoding. Most single-byte lookup encodings output Unicode Scalar
+			/// Values.
 			using code_point = _CodePoint;
 
 			//////
-			/// @brief Shift-JIS requires no state.
-			using state = __txt_detail::__empty_state;
+			/// @brief The state used for this single-byte lookup encoding.
+			using state = _State;
 
 			//////
 			/// @brief The Shift-JIS encoding can put out at most 1 __code_point point per decoding action.
@@ -198,9 +199,9 @@ namespace ztd { namespace text {
 						::std::move(__input), ::std::move(__output), __state, ztd::text::encoding_error::ok);
 				}
 
-				char32_t __code_point32 = static_cast<char32_t>(*__in_it);
-				auto __out_it           = ztd::ranges::begin(__output);
-				auto __out_last         = ztd::ranges::end(__output);
+				ztd_char32_t __code_point32 = static_cast<ztd_char32_t>(*__in_it);
+				auto __out_it               = ztd::ranges::begin(__output);
+				auto __out_last             = ztd::ranges::end(__output);
 
 				const ::std::optional<::std::size_t> __maybe_index = _LookupIndex(__code_point32);
 				if (__maybe_index) {

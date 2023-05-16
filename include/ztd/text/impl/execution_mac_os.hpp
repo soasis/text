@@ -70,9 +70,9 @@ namespace ztd { namespace text {
 		/// text. Their documentation states that all text "should" be UTF-8, but very explicitly goes out of its way
 		/// to not make that hard guarantee. Since it is a BSD-like system and they left plenty of that data behind
 		/// from C libraries, this may break in extremely obscure cases. Please be careful on Apple machines!
-		class __execution_mac_os : private __utf8_with<__execution_mac_os, char, char32_t> {
+		class __execution_mac_os : private __utf8_with<__execution_mac_os, char, ztd_char32_t> {
 		private:
-			using __base_t = __utf8_with<__execution_mac_os, char, char32_t>;
+			using __base_t = __utf8_with<__execution_mac_os, char, ztd_char32_t>;
 
 		public:
 			//////

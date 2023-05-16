@@ -66,11 +66,11 @@ namespace ztd { namespace text {
 		                             // is_injective
 		                             true, false,
 		                             // true code unit / code point types
-		                             char, char32_t> { };
+		                             char, ztd_char32_t> { };
 
 	//////
 	/// @brief A convenience for ease of use.
-	inline constexpr basic_cnc_big5_hkscs<char, char32_t> big5_cnc_hkscs = {};
+	inline constexpr basic_cnc_big5_hkscs<char, ztd_char32_t> big5_cnc_hkscs = {};
 
 	//////
 	/// @brief An encoding implementing WHATWG's GBK.
@@ -94,11 +94,11 @@ namespace ztd { namespace text {
 		                      // is_injective
 		                      true, false,
 		                      // true code unit / code point types
-		                      char, char32_t> { };
+		                      char, ztd_char32_t> { };
 
 	//////
 	/// @brief A convenience alias for ease of use.
-	inline constexpr basic_cnc_gbk<char, char32_t> cnc_gbk = {};
+	inline constexpr basic_cnc_gbk<char, ztd_char32_t> cnc_gbk = {};
 
 	//////
 	/// @brief An encoding implementing WHATWG's GB18030
@@ -122,11 +122,11 @@ namespace ztd { namespace text {
 		                          // is_injective
 		                          true, true,
 		                          // true code unit / code point types
-		                          char, char32_t> { };
+		                          char, ztd_char32_t> { };
 
 	//////
 	/// @brief A convenience alias for ease of use.
-	inline constexpr basic_cnc_gb18030<char, char32_t> cnc_gb18030 = {};
+	inline constexpr basic_cnc_gb18030<char, ztd_char32_t> cnc_gb18030 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

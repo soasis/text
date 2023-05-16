@@ -28,17 +28,25 @@
 ..
 .. =============================================================================>
 
-KOI8-U
-======
+PETSCII (Shifted & Unhsifted, Combined) / CBM ASCII
+===================================================
+
+PET Standard Code of Information Interchange (PETSCII) was used for Commodore Buisiness Maschines and then moved into other Commodore machines (and adjacent machines). It has a "shifted" version (when the shift key was held) and an "unshifted" version (when the shift key was not being held).
+
+The state object for this encoding contains an enumeration that allows the user to select the shifted or unshifted versions at-will.
 
 
 
-.. doxygenvariable:: ztd::text::koi8_u
+.. doxygenclass:: ztd::text::petscii_state
+
+.. doxygenenum:: ztd::text::petscii_shift
+
+.. doxygenvariable:: ztd::text::petscii
 
 
 
-Base Template
--------------
+Base Templates
+--------------
 
-.. doxygenclass:: ztd::text::basic_koi8_u
+.. doxygenclass:: ztd::text::basic_petscii
 	:members:

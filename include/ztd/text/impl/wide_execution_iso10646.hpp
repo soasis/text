@@ -69,9 +69,9 @@ namespace ztd { namespace text {
 		/// @remarks This is generally only turned on when the Standard Definition is turn oned ( `__STDC_ISO_10646__`
 		/// ). It effectively uses UTF-32 since that's the only encoding that can meet the original requirement of the
 		/// C Standard and C Standard Library with respect to what happens with individual `wchar_t` objects.
-		class __wide_execution_iso10646 : private __utf32_with<__wide_execution_iso10646, wchar_t, char32_t> {
+		class __wide_execution_iso10646 : private __utf32_with<__wide_execution_iso10646, wchar_t, ztd_char32_t> {
 		private:
-			using __base_t = __utf32_with<__wide_execution_iso10646, wchar_t, char32_t>;
+			using __base_t = __utf32_with<__wide_execution_iso10646, wchar_t, ztd_char32_t>;
 
 		public:
 			//////

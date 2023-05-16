@@ -36,7 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/impl/single_byte_lookup_encoding.hpp>
+#include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
 #include <ztd/encoding_tables/koi8_u.tables.hpp>
 
@@ -47,7 +47,7 @@ namespace ztd { namespace text {
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_koi8_u
-	: public __txt_impl::__single_byte_lookup_encoding<basic_koi8_u<_CodeUnit, _CodePoint>,
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_koi8_u<_CodeUnit, _CodePoint>,
 		  &::ztd::et::koi8_u_index_to_code_point, &::ztd::et::koi8_u_code_point_to_index, _CodeUnit, _CodePoint> { };
 
 	//////

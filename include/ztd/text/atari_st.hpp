@@ -49,6 +49,9 @@ namespace ztd { namespace text {
 	class basic_atari_st
 	: public __txt_impl::__single_byte_lookup_encoding<basic_atari_st<_CodeUnit, _CodePoint>,
 		  &::ztd::et::atari_st_index_to_code_point, &::ztd::et::atari_st_code_point_to_index, _CodeUnit, _CodePoint> {
+	private:
+		static_assert((sizeof(typename basic_atari_st::code_point) * CHAR_BIT) > 21,
+			"The code point type for the Atari ST encoding must be at least 22 bits wide");
 	};
 
 	//////

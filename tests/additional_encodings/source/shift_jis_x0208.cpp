@@ -38,7 +38,8 @@
 #include <iostream>
 #include <vector>
 
-TEST_CASE("text/additional_encodings/shift_jis_x0208", "test a quick roundtrip using example SHIFT-JIS text to UTF-32") {
+TEST_CASE(
+     "text/additional_encodings/shift_jis_x0208", "test a quick roundtrip using example SHIFT-JIS text to UTF-32") {
 	constexpr const char* original_filename = "data/tests/additional_encodings/shift_jis_x0208/shift_jis_x0208.txt";
 	std::ifstream original_ifstr(
 	     original_filename, static_cast<std::ios_base::openmode>(std::ios_base::in | std::ios_base::binary));
@@ -59,7 +60,7 @@ TEST_CASE("text/additional_encodings/shift_jis_x0208", "test a quick roundtrip u
 	std::u32string_view expected(
 	     reinterpret_cast<const char32_t*>(expected_data.data()), expected_data.size() / sizeof(char32_t));
 
-	auto decoded_result           = ztd::text::decode_to(original, ztd::text::shift_jis_x0208, ztd::text::pass_handler);
+	auto decoded_result = ztd::text::decode_to(original, ztd::text::shift_jis_x0208, ztd::text::pass_handler);
 	const std::u32string& decoded = decoded_result.output;
 	REQUIRE(decoded_result.error_code == ztd::text::encoding_error::ok);
 	REQUIRE_FALSE(decoded_result.errors_were_handled());
