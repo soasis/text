@@ -135,6 +135,14 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Kamenicky
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-437 / DOS Latin-US
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
 	* - Windows-874
 	  - No
 	  - Yes
@@ -260,10 +268,6 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unconfirmed
 	  - No ❌
 	* - TDS565
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - CP437
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌

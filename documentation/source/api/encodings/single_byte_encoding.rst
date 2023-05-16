@@ -76,6 +76,8 @@ Known Encodings
 
 .. doxygenvariable:: ztd::text::iso_8859_16
 
+.. doxygenvariable:: ztd::text::kamenicky
+
 .. doxygenvariable:: ztd::text::kazakh_strk1048
 
 .. doxygenvariable:: ztd::text::koi8_r
@@ -89,6 +91,10 @@ Known Encodings
 .. doxygenvariable:: ztd::text::tatar_ansi
 
 .. doxygenvariable:: ztd::text::tatar_ascii
+
+.. doxygenvariable:: ztd::text::windows_437_dos_latin_us
+
+.. doxygenvariable:: ztd::text::windows_874
 
 .. doxygenvariable:: ztd::text::windows_1251
 
@@ -171,6 +177,9 @@ Base Templates
 .. doxygenclass:: ztd::text::basic_iso_8859_16
 	:members:
 
+.. doxygenclass:: ztd::text::basic_kamenicky
+	:members:
+
 .. doxygenclass:: ztd::text::basic_kazakh_strk1048
 	:members:
 
@@ -190,6 +199,12 @@ Base Templates
 	:members:
 
 .. doxygenclass:: ztd::text::basic_tatar_ascii
+	:members:
+
+.. doxygenclass:: ztd::text::basic_windows_437_dos_latin_us
+	:members:
+
+.. doxygenclass:: ztd::text::basic_windows_874
 	:members:
 
 .. doxygenclass:: ztd::text::basic_windows_1251
