@@ -86,4 +86,4 @@ target_link_libraries(ztd.text.tests.additional_encodings
 add_dependencies(ztd.text.tests.additional_encodings ztd.text.tests.additional_encodings.data)
 add_test(NAME ztd.text.tests.additional_encodings
 	COMMAND ztd.text.tests.additional_encodings
-	WORKING_DIRECTORY ${ztd-text-})
+	WORKING_DIRECTORY ${ztd-text-tests-additional-encodings-data-destination})
