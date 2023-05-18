@@ -48,7 +48,7 @@ Known Encodings
 
 .. doxygenvariable:: ztd::text::iso_8859_1_1985
 
-.. doxygenvariable:: ztd::text::iso_8859_1_1988
+.. doxygenvariable:: ztd::text::iso_8859_1_1998
 
 .. doxygenvariable:: ztd::text::iso_8859_1
 
@@ -135,7 +135,7 @@ Base Templates
 .. doxygenclass:: ztd::text::basic_iso_8859_1_1985
 	:members:
 
-.. doxygenclass:: ztd::text::basic_iso_8859_1_1988
+.. doxygenclass:: ztd::text::basic_iso_8859_1_1998
 	:members:
 
 .. doxygenclass:: ztd::text::basic_iso_8859_1

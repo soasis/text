@@ -199,7 +199,7 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - ISO-8859-1 (1988)
+	* - ISO-8859-1 (1998)
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌

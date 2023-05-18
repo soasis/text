@@ -30,15 +30,15 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_ISO_8859_1_1988_HPP
-#define ZTD_TEXT_ISO_8859_1_1988_HPP
+#ifndef ZTD_TEXT_ISO_8859_1_1998_HPP
+#define ZTD_TEXT_ISO_8859_1_1998_HPP
 
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/impl/single_byte_lookup_encoding.hpp>
 
-#include <ztd/encoding_tables/iso_8859_1_1988.tables.hpp>
+#include <ztd/encoding_tables/iso_8859_1_1998.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -46,14 +46,14 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_iso_8859_1_1988
-	: public __txt_impl::__single_byte_lookup_encoding<basic_iso_8859_1_1988<_CodeUnit, _CodePoint>,
-		  &::ztd::et::iso_8859_1_1988_index_to_code_point, &::ztd::et::iso_8859_1_1988_code_point_to_index, _CodeUnit,
+	class basic_iso_8859_1_1998
+	: public __txt_impl::__single_byte_lookup_encoding<basic_iso_8859_1_1998<_CodeUnit, _CodePoint>,
+		  &::ztd::et::iso_8859_1_1998_index_to_code_point, &::ztd::et::iso_8859_1_1998_code_point_to_index, _CodeUnit,
 		  _CodePoint> { };
 
 	//////
 	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_iso_8859_1_1988<char> iso_8859_1_1988 = {};
+	inline constexpr basic_iso_8859_1_1998<char> iso_8859_1_1998 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text
