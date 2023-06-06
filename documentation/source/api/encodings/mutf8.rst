@@ -33,6 +33,11 @@ Modified UTF-8
 
 Modified Unicode Transformation Format 8 (MUTF-8) is a UTF-8 format employed by some Android components and other ecosystems. It's special property is that it encodes the NULL character in C-style strings (``'\0'``) as an overlong sequence. This is normally illegal in UTF-8, but allowed here to allow easier interoperation with these systems.
 
+
+
+Aliases
+-------
+
 .. doxygenvariable:: ztd::text::mutf8
 
 .. doxygentypedef:: ztd::text::mutf8_t

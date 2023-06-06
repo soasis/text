@@ -45,13 +45,19 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the Macintosh Roman encoding specification.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_mac_roman : public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<
-		                        basic_mac_roman<_CodeUnit, _CodePoint>, &::ztd::et::mac_roman_index_to_code_point,
-		                        &::ztd::et::mac_roman_code_point_to_index, _CodeUnit, _CodePoint> { };
+	class basic_mac_roman
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_mac_roman<_CodeUnit, _CodePoint>,
+		  &::ztd::et::mac_roman_index_to_code_point, &::ztd::et::mac_roman_code_point_to_index, _CodeUnit,
+		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_mac_roman for ease of use.
 	inline constexpr basic_mac_roman<char> mac_roman = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

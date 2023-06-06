@@ -45,6 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches Microsoft Windows's Codepage 437 (DOS Latin, US).
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_windows_437_dos_latin_us
 	: public __txt_impl::__single_byte_lookup_encoding<basic_windows_437_dos_latin_us<_CodeUnit, _CodePoint>,
@@ -52,7 +57,7 @@ namespace ztd { namespace text {
 		  &::ztd::et::windows_437_dos_latin_us_code_point_to_index, _CodeUnit, _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_windows_437_dos_latin_us for ease of use.
 	inline constexpr basic_windows_437_dos_latin_us<char> windows_437_dos_latin_us = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

@@ -45,6 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The Hebrew encoding that matches IBM's Codepage 856.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_ibm_856_hebrew
 	: public __txt_impl::__single_byte_lookup_encoding<basic_ibm_856_hebrew<_CodeUnit, _CodePoint>,
@@ -52,7 +57,7 @@ namespace ztd { namespace text {
 		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_ibm_856_hebrew for ease of use.
 	inline constexpr basic_ibm_856_hebrew<char> ibm_856_hebrew = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

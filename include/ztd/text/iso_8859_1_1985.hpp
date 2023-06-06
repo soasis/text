@@ -45,6 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches ISO/IEC 8859-1 specification published in 1985.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_iso_8859_1_1985
 	: public __txt_impl::__single_byte_lookup_encoding<basic_iso_8859_1_1985<_CodeUnit, _CodePoint>,
@@ -56,7 +61,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_iso_8859_1_1985 for ease of use.
 	inline constexpr basic_iso_8859_1_1985<char> iso_8859_1_1985 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

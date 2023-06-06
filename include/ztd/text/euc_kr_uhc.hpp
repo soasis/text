@@ -50,6 +50,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The EUC-KR (Unified Hangul Code) encoding.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	struct basic_euc_kr_uhc {
 		//////
@@ -303,7 +308,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of euc_kr_uhc for ease of use.
 	inline constexpr basic_euc_kr_uhc<char> euc_kr_uhc = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

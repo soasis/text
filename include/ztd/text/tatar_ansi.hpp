@@ -36,23 +36,28 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
+#include <ztd/text/impl/single_ansi_byte_high_bit_lookup_encoding.hpp>
 
-#include <ztd/encoding_tables/tatar_ANSI.tables.hpp>
+#include <ztd/encoding_tables/tatar_ansi.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the TATAR encoding (it's ANSI variant, based on Windows Code Page 1252.)
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_tatar_ansi
-	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_tatar_ansi<_CodeUnit, _CodePoint>,
+	: public __txt_impl::__single_ansi_byte_high_bit_lookup_encoding<basic_tatar_ansi<_CodeUnit, _CodePoint>,
 		  &::ztd::et::tatar_ansi_index_to_code_point, &::ztd::et::tatar_ansi_code_point_to_index, _CodeUnit,
 		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_tatar_ansi for ease of use.
 	inline constexpr basic_tatar_ansi<char> tatar_ansi = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

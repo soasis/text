@@ -45,14 +45,19 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the ISO/IEC 8859-15 encoding specification.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_iso_8859_13
-	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<
-		  basic_iso_8859_13<_CodeUnit, _CodePoint>, &::ztd::et::iso_8859_13_index_to_code_point,
-		  &::ztd::et::iso_8859_13_code_point_to_index, _CodeUnit, _CodePoint> { };
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_iso_8859_13<_CodeUnit, _CodePoint>,
+		  &::ztd::et::iso_8859_13_index_to_code_point, &::ztd::et::iso_8859_13_code_point_to_index, _CodeUnit,
+		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_iso_8859_13 for ease of use.
 	inline constexpr basic_iso_8859_13<char> iso_8859_13 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

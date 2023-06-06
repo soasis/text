@@ -31,15 +31,19 @@
 EUC-KR (Unified Hangul Code)
 ============================
 
+The Extended Unix Code (EUC) encoding for Korean (KR), for the Unified Hangul Code (UHC) variant. This is the same encoding that is present for the WHATWG Encoding Specification.
 
 
 
-.. doxygenvariable:: ztd::text::euc_kr_uch
+Alias
+-----
+
+.. doxygenvariable:: ztd::text::euc_kr_uhc
 
 
 
 Base Templates
 --------------
 
-.. doxygenclass:: ztd::text::basic_euc_kr_uch
+.. doxygenclass:: ztd::text::basic_euc_kr_uhc
 	:members:

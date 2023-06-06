@@ -59,6 +59,7 @@
 #include <ztd/text/ibm_866_cyrillic.hpp>
 #include <ztd/text/ibm_1006_urdu.hpp>
 #include <ztd/text/iso_8859_1_1985.hpp>
+#include <ztd/text/iso_8859_1_1998.hpp>
 #include <ztd/text/iso_8859_1.hpp>
 #include <ztd/text/iso_8859_2.hpp>
 #include <ztd/text/iso_8859_3.hpp>

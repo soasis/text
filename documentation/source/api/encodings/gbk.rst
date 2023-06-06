@@ -34,6 +34,10 @@ GBK
 A legacy encoding typically for Chinese languages.
 
 
+
+Alias
+-----
+
 .. doxygenvariable:: ztd::text::gbk
 
 

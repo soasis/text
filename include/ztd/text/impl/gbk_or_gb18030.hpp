@@ -109,7 +109,17 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief Marks this encoding as injective for the decode portion of its encoding actions.
-			using is_decode_injective = std::true_type;
+			using is_decode_injective = ::std::true_type;
+
+			//////
+			/// @brief Marks this encoding as injective for the encode portion of its encoding actions. This is true
+			/// for GB18030, and not true for pure GBK.
+			using is_encode_injective = ::std::integral_constant<bool, !_IsGbk>;
+
+			//////
+			/// @brief GB18030-style encodings are Unicode Encodings (can encode all Unicode code points). GBK
+			/// cannot.
+			using is_unicode_encoding = ::std::integral_constant<bool, !_IsGbk>;
 
 			//////
 			/// @brief Decodes a single complete unit of information as __code_point points and produces a result

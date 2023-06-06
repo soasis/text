@@ -39,12 +39,19 @@ As such, it is advisable to perhaps attempt to find some out-of-band data to see
 
 
 
-.. doxygenvariable:: ztd::text::shift_jisx0208
+Aliases
+-------
+
+.. doxygenvariable:: ztd::text::shift_jis_x0208
+
+.. doxygentypedef:: ztd::text::shift_jis
 
 
 
 Base Templates
 --------------
 
-.. doxygenclass:: ztd::text::basic_shift_jisx0208
+.. doxygentypedef:: ztd::text::basic_shift_jis
+
+.. doxygenclass:: ztd::text::basic_shift_jis_x0208
 	:members:

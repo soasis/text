@@ -33,5 +33,10 @@ any_encoding_with
 
 This is the lowest level base template, ``any_encoding_with``, that sits beneath :doc:`any_encoding and any_byte_encoding </api/encodings/any_encoding>`. It is recommended for power users with specific goals for the input and output types of the encode and decode operations, where normal buffer-based I/O is unsuitable. In general, you should be relying on :doc:`any_encoding and any_byte_encoding </api/encodings/any_encoding>`.
 
+
+
+Base Template
+-------------
+
 .. doxygenclass:: ztd::text::any_encoding_with
 	:members:

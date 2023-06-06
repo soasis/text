@@ -59,56 +59,24 @@ namespace ztd { namespace text {
 			::ztd::et::basic_lookup_code_point_to_index_function* _LookupIndex, typename _CodeUnit = char,
 			typename _CodePoint = unicode_code_point, typename _State = __txt_detail::__empty_state>
 		struct __single_byte_lookup_encoding {
-			//////
-			/// @brief The code unit capable of storing at least 8 bits of data.
 			using code_unit = _CodeUnit;
 
-			//////
-			/// @brief The output type for this encoding. Most single-byte lookup encodings output Unicode Scalar
-			/// Values.
 			using code_point = _CodePoint;
 
-			//////
-			/// @brief The state used for this single-byte lookup encoding.
 			using state = _State;
 
-			//////
-			/// @brief The Shift-JIS encoding can put out at most 1 __code_point point per decoding action.
 			static constexpr inline std::size_t max_code_points = 1;
 
-			//////
-			/// @brief The Shift-JIS encoding can put out at most 2 __code_point units per encoding action.
 			static constexpr inline std::size_t max_code_units = 1;
 
-			//////
-			/// @brief A fixed-size 1-element span with the __code_point unit "?"
 			constexpr ztd::span<const code_unit, 1> replacement_code_units() const noexcept {
 				return ztd::span<const code_unit, 1>(
 					__txt_detail::__question_mark_replacement_units<code_unit>.data(),
 					__txt_detail::__question_mark_replacement_units<code_unit>.size());
 			}
 
-			//////
-			/// @brief Marks this encoding as injective for the decode portion of its encoding actions.
 			using is_decode_injective = std::true_type;
 
-			//////
-			/// @brief Decodes a single complete unit of information as __code_point points and produces a result
-			/// with the input and output ranges moved past what was successfully read and written; or, produces an
-			/// error and returns the input and output ranges untouched.
-			///
-			/// @param[in] __input The input view to read __code_point uunits from.
-			/// @param[in] __output The output view to write __code_point points into.
-			/// @param[in] __error_handler The error handler to invoke if encoding fails.
-			/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and
-			/// means very little.
-			///
-			/// @returns A ztd::text::decode_result object that contains the reconstructed input range,
-			/// reconstructed output range, error handler, and a reference to the passed-in state.
-			///
-			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
-			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
-			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
 			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto decode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, state& __state) noexcept {
@@ -164,23 +132,6 @@ namespace ztd { namespace text {
 					::ztd::span<const code_point, 0>());
 			}
 
-			//////
-			/// @brief Encodes a single complete unit of information as __code_point units and produces a result with
-			/// the input and output ranges moved past what was successfully read and written; or, produces an error
-			/// and returns the input and output ranges untouched.
-			///
-			/// @param[in] __input The input view to read __code_point points from.
-			/// @param[in] __output The output view to write __code_point units into.
-			/// @param[in] __error_handler The error handler to invoke if encoding fails.
-			/// @param[in, out] __state The necessary state information. For this encoding, the state is empty and
-			/// means very little.
-			///
-			/// @returns A ztd::text::encode_result object that contains the reconstructed input range,
-			/// reconstructed output range, error handler, and a reference to the passed-in state.
-			///
-			/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
-			/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
-			/// incremented even if an error occurs due to the semantics of any view that models an input_range.
 			template <typename _Input, typename _Output, typename _ErrorHandler>
 			static constexpr auto encode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, state& __state) noexcept {

@@ -45,6 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the KZ1048 / Kazakh STRK-1048 encoding specification.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_kazakh_strk1048
 	: public __txt_impl::__single_byte_lookup_encoding<basic_kazakh_strk1048<_CodeUnit, _CodePoint>,
@@ -52,7 +57,7 @@ namespace ztd { namespace text {
 		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_kazakh_strk1048 for ease of use.
 	inline constexpr basic_kazakh_strk1048<char> kazakh_strk1048 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

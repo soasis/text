@@ -38,13 +38,19 @@
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
-#include <ztd/encoding_tables/tatar_ASCII.tables.hpp>
+#include <ztd/encoding_tables/tatar_ascii.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the TATAR encoding specification (based on its "ASCII" variant, IBM Code Page
+	/// 866).
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_tatar_ascii
 	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_tatar_ascii<_CodeUnit, _CodePoint>,
@@ -52,7 +58,7 @@ namespace ztd { namespace text {
 		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_tatar_ascii for ease of use.
 	inline constexpr basic_tatar_ascii<char> tatar_ascii = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

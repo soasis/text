@@ -45,23 +45,45 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	enum class petscii_shift { unshifted = 0, shifted = 1 };
+	//////
+	/// @brief The current shift state of a PETSCII encoding object and it's associated state during an encoding
+	/// operation.
+	enum class petscii_shift {
+		//////
+		/// @brief The SHIFT button is not pressed, and character codes should be interpreted as not being "shifted".
+		unshifted = 0,
+		//////
+		/// @brief The SHIFT button is pressed, and character codes should be interpreted as being "shifted".
+		shifted = 1
+	};
 
+	//////
+	/// @brief The state associated with an ongoing PETSCII encoding operation.
 	class petscii_state {
 	public:
+		//////
+		/// @brief The current 'shift' button state of a PETSCII encoding conversion.
 		petscii_shift shift;
 	};
 
+	//////
+	/// @brief The encoding that matches the PETSCII (CBM ASCII) encoding specification, for shifted characters (when
+	/// the SHIFT button was pressed on a PET/CBM device).
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_petscii {
 		//////
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
 		using code_unit = _CodeUnit;
+
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 		using code_point = _CodePoint;
+
 		//////
 		/// @brief The state that can be used between calls to the encoder and decoder.
 		///
@@ -69,22 +91,26 @@ namespace ztd { namespace text {
 		/// encoded information. It is also only `state` and not separately `decode_state` and `encode_state`
 		/// because one type suffices for both.
 		using state = petscii_state;
+
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		using is_decode_injective = ::std::true_type;
+
 		//////
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values.
 		using is_encode_injective = ::std::false_type;
+
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
 		inline static constexpr const ::std::size_t max_code_units = 1;
+
 		//////
-		/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
-		/// 1 for all Unicode Transformation Format (UTF) encodings.
+		/// @brief The maximum number of code points a single complete operation of decoding can produce.
 		inline static constexpr const ::std::size_t max_code_points = 1;
+
 		//////
-		/// @brief A range of code units representing the values to use when a replacement happen. For ASCII, this
-		/// must be '?' instead of the usual Unicode Replacement Character U'�'.
+		/// @brief A range of code units representing the values to use when a replacement happen; for PETSCII, this
+		/// is '?'.
 		static constexpr ::ztd::span<const code_unit, 1> replacement_code_units() noexcept {
 			return __txt_detail::__question_mark_replacement_units<code_unit>;
 		}
@@ -163,7 +189,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_petscii for ease of use.
 	inline constexpr basic_petscii<char> petscii = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

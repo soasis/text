@@ -45,13 +45,18 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the KAMENICKY encoding specification.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_kamenicky : public __txt_impl::__single_byte_lookup_encoding<basic_kamenicky<_CodeUnit, _CodePoint>,
 		                        &::ztd::et::kamenicky_index_to_code_point, &::ztd::et::kamenicky_code_point_to_index,
 		                        _CodeUnit, _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_kamenicky for ease of use.
 	inline constexpr basic_kamenicky<char> kamenicky = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

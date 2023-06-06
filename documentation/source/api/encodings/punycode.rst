@@ -31,7 +31,16 @@
 punycode
 ========
 
-Punycode is an encoding that turns Unicode-encoded text into a sequence of ASCII code units, making it readily inspectable by simple systems and human eyes to see differences between text even if confusable characters are used in the Unicode text. It is most frequently used in the Internationalized Domain Name in Applications system, specifically for DNS purposes. Despite it's unfriendliness to stream-based, one-at-a-time interfaces, sufficiently heap-based state allows encoding and decoding in a useful manner.
+Punycode is an encoding that turns Unicode-encoded text into a sequence of ASCII code units, making it readily inspectable by simple systems and human eyes to see differences between text even if confusable characters are used in the Unicode text.
+
+It is most frequently used in the Internationalized Domain Name in Applications system, specifically for DNS purposes. Despite it's unfriendliness to stream-based, one-at-a-time interfaces, sufficiently heap-based state allows encoding and decoding in a useful manner.
+
+It is also used as Rust's choice encoding for its symbol names when stored in binary form for use with any given platform's library/executable's linker and loader.
+
+
+
+Aliases
+-------
 
 .. doxygenvariable:: ztd::text::punycode
 

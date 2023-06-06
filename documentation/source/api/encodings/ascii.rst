@@ -33,6 +33,11 @@ ASCII
 
 The American Standard Code for Information Interchange (ASCII). A typical 7-bit encoding that is bitwise-compatible with UTF-8.
 
+
+
+Aliases
+-------
+
 .. doxygenvariable:: ztd::text::ascii
 
 .. doxygentypedef:: ztd::text::ascii_t

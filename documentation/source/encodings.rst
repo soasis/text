@@ -33,7 +33,7 @@ Available Encodings
 
 Below is a table of encodings. Here, we track which encodings can be represented using the :doc:`Lucky 7 </design/lucky 7>` technique, whether or not we have produced such an implementation, and (if applicable) a link to said implementation.
 
-Most are table-driven encodings, but a select few are not. Tables and data for this are included as part of the `Encoding Tables repository <https://github.com/soasis/encoding_tables>`_
+Most are table-driven encodings, but a select few are not. Tables and data for this are included as part of the `Encoding Tables repository <https://github.com/soasis/encoding_tables>`_.
 
 As a general point, we hope to support almost all of the encodings here in one form or another! If you'd like to request prioritization of a certain encoding, let us know.
 
@@ -415,14 +415,14 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - SHIFT-JIS
-	  - Yes, shift states
+	* - SHIFT-JIS (AKA SHIFT-JISX0208)
+	  - No
 	  - Yes
-	  - No ❌
-	* - SHIFT-JISX0213
-	  - Yes, shift states
+	  - :doc:`Yes ✅ </api/encodings/shift_jis_x0208>`
+	* - SHIFT-JISX0208
+	  - No
 	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/shift_jisx0208>`
+	  - :doc:`Yes ✅ </api/encodings/shift_jis_x0208>`
 	* - SHIFT-JISX0213
 	  - Yes, shift states
 	  - Yes

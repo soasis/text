@@ -30,8 +30,8 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_iso_8859_1_HPP
-#define ZTD_TEXT_iso_8859_1_HPP
+#ifndef ZTD_TEXT_ISO_8859_1_HPP
+#define ZTD_TEXT_ISO_8859_1_HPP
 
 #include <ztd/text/version.hpp>
 
@@ -46,13 +46,11 @@ namespace ztd { namespace text {
 	/// @{
 
 	//////
-	/// @brief The American Standard Code for Information Exchange (iso_8859_1) Encoding.
+	/// @brief The ISO/IEC 8859-1 encoding, occasionally referred to as Latin-1 (erroneously). Matches Unicode's
+	/// encoding of the first 256 bytes one-to-one.
 	///
 	/// @tparam _CodeUnit The code unit type to work over.
-	///
-	/// @remarks The most vanilla and unimaginative encoding there is in the world, excluding tons of other languages,
-	/// dialects, and even common English idioms and borrowed words. Please don't pick this unless you have good
-	/// reason!
+	/// @tparam _CodePoint The code point type to work over.
 	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	class basic_iso_8859_1 {
 	public:
@@ -60,33 +58,40 @@ namespace ztd { namespace text {
 		/// @brief The individual units that result from an encode operation or are used as input to a decode
 		/// operation.
 		using code_unit = _CodeUnit;
+
 		//////
 		/// @brief The individual units that result from a decode operation or as used as input to an encode
 		/// operation. For most encodings, this is going to be a Unicode Code Point or a Unicode Scalar Value.
 		using code_point = _CodePoint;
+
 		//////
-		/// @brief The state that can be used between calls to the encoder and decoder.
+		/// @brief The state that can be used between calls to the encoder and decoder. This is empty for this
+		/// encoding.
 		using state = __txt_detail::__empty_state;
+
 		//////
 		/// @brief Whether or not the decode operation can process all forms of input into code point values.
 		///
-		/// @remarks iso_8859_1 can decode from its 7-bit (unpacked) code units to Unicode Code Points. Since the
+		/// @remarks ISO/IEC 8859-1 can decode from its 8-bit (unpacked) code units to Unicode Code Points. Since the
 		/// converion is lossless, this property is true.
 		using is_decode_injective = ::std::true_type;
 		//////
+
 		/// @brief Whether or not the encode operation can process all forms of input into code unit values. This is
-		/// not true for iso_8859_1, as many Unicode Code Point and Unicode Scalar Values cannot be represented in
-		/// iso_8859_1. Since the conversion is lossy, this property is false.
+		/// not true for ISO/IEC 8859-1, as many Unicode Code Point and Unicode Scalar Values cannot be represented in
+		/// ISO/IEC 8859-1. Since the conversion is lossy, this property is false.
 		using is_encode_injective = ::std::false_type;
+
 		//////
 		/// @brief The maximum code units a single complete operation of encoding can produce.
 		inline static constexpr const ::std::size_t max_code_units = 1;
+
 		//////
-		/// @brief The maximum number of code points a single complete operation of decoding can produce. This is
-		/// 1 for all Unicode Transformation Format (UTF) encodings.
+		/// @brief The maximum number of code points a single complete operation of decoding can produce.
 		inline static constexpr const ::std::size_t max_code_points = 1;
+
 		//////
-		/// @brief A range of code units representing the values to use when a replacement happen. For iso_8859_1,
+		/// @brief A range of code units representing the values to use when a replacement happen. For ISO/IEC 8859-1,
 		/// this must be '?' instead of the usual Unicode Replacement Character U'�'.
 		static constexpr ::ztd::span<const code_unit, 1> replacement_code_units() noexcept {
 			return __txt_detail::__question_mark_replacement_units<code_unit>;

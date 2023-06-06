@@ -33,6 +33,11 @@ any_encoding
 
 ``any_encoding`` is a class type whose sole purpose is to provide a type-generic, byte-based, runtime-deferred way of handling encodings.
 
+
+
+Aliases
+-------
+
 .. doxygentypedef:: ztd::text::any_encoding
 
 

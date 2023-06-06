@@ -45,6 +45,12 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the PETSCII (CBM ASCII) encoding specification, for unshifted characters (when
+	/// the SHIFT button was NOT pressed on a PET/CBM device).
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_petscii_unshifted
 	: public __txt_impl::__single_byte_lookup_encoding<basic_petscii_unshifted<_CodeUnit, _CodePoint>,
@@ -52,7 +58,7 @@ namespace ztd { namespace text {
 		  _CodeUnit, _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_petscii_unshifted for ease of use.
 	inline constexpr basic_petscii_unshifted<char> petscii_unshifted = {};
 
 

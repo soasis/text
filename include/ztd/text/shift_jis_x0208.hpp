@@ -50,8 +50,15 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The Shift-JIS Encoding (with extensions x0208) for use with most Shift-JIS applications. Identical
+	/// version of what is a part of the WHATWG encoding standard for Shift-JIS.
+	///
+	/// @tparam _CodeUnit The code unit type to use.
+	/// @tparam _CodePoint The code point type to use.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_shift_jis_x0208 {
+	class basic_shift_jis_x0208 {
+	public:
 		//////
 		/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
 		using code_unit = _CodeUnit;
@@ -199,7 +206,7 @@ namespace ztd { namespace text {
 							}
 						}
 						ztd_char32_t __code_point = static_cast<ztd_char32_t>(0xE000 - 8836 + __lookup_index);
-						*__out_it             = static_cast<code_point>(__code_point);
+						*__out_it                 = static_cast<code_point>(__code_point);
 						++__in_it;
 						++__out_it;
 						return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
@@ -277,9 +284,9 @@ namespace ztd { namespace text {
 			}
 
 			ztd_char32_t __code_point32 = static_cast<ztd_char32_t>(*__in_it);
-			code_point __code_point = static_cast<code_point>(__code_point32);
-			auto __out_it           = ztd::ranges::begin(__output);
-			auto __out_last         = ztd::ranges::end(__output);
+			code_point __code_point     = static_cast<code_point>(__code_point32);
+			auto __out_it               = ztd::ranges::begin(__output);
+			auto __out_last             = ztd::ranges::end(__output);
 
 			if (__code_point32 <= 0x80) {
 				if constexpr (__call_error_handler) {
@@ -351,7 +358,7 @@ namespace ztd { namespace text {
 				}
 				++__in_it;
 				ztd_char32_t __intermediate = (__code_point32 - 0xFF61);
-				*__out_it               = static_cast<code_unit>(__intermediate + 0xA1);
+				*__out_it                   = static_cast<code_unit>(__intermediate + 0xA1);
 				++__out_it;
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state,
@@ -415,9 +422,16 @@ namespace ztd { namespace text {
 		}
 	};
 
+	template <typename _CodeUnit, typename _CodePoint>
+	using basic_shift_jis = basic_shift_jis_x0208<_CodeUnit, _CodePoint>;
+
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_shift_jis_x0208 for ease of use.
 	inline constexpr basic_shift_jis_x0208<char> shift_jis_x0208 = {};
+
+	//////
+	/// @brief An instance of basic_shift_jis for ease of use.
+	inline constexpr auto& shift_jis = shift_jis_x0208;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

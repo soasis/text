@@ -44,7 +44,16 @@ If you like to live dangerously and do not care for the warnings, you can define
 (This is usually a catastrophically terrible idea, but let is not be said that we didn't give you the power to do great things, even if it cost you your foot.)
 
 
+
+Alias
+-----
+
 .. doxygenvariable:: ztd::text::wide_literal
+
+
+
+Base Type
+---------
 
 .. doxygenclass:: ztd::text::wide_literal_t
 	:members:

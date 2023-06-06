@@ -45,6 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief
+	///
+	/// @tparam _CodeUnit
+	/// @tparam _CodePoint
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_atascii
 	: public __txt_impl::__single_byte_lookup_encoding<basic_atascii<_CodeUnit, _CodePoint>,
@@ -54,7 +59,7 @@ namespace ztd { namespace text {
 	};
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_atascii for ease of use.
 	inline constexpr basic_atascii<char> atascii = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

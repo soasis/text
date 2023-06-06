@@ -30,29 +30,35 @@
 
 #pragma once
 
-#ifndef ZTD_TEXT_KOI8_R_HPP
-#define ZTD_TEXT_KOI8_R_HPP
+#ifndef ZTD_TEXT_ISO_8859_15_HPP
+#define ZTD_TEXT_ISO_8859_15_HPP
 
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
-#include <ztd/encoding_tables/koi8_r.tables.hpp>
+#include <ztd/encoding_tables/iso_8859_15.tables.hpp>
 
 #include <ztd/prologue.hpp>
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches the ISO/IEC 8859-15 encoding specification.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	class basic_koi8_r
-	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_koi8_r<_CodeUnit, _CodePoint>,
-		  &::ztd::et::koi8_r_index_to_code_point, &::ztd::et::koi8_r_code_point_to_index, _CodeUnit, _CodePoint> { };
+	class basic_iso_8859_15
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_iso_8859_15<_CodeUnit, _CodePoint>,
+		  &::ztd::et::iso_8859_15_index_to_code_point, &::ztd::et::iso_8859_15_code_point_to_index, _CodeUnit,
+		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
-	inline constexpr basic_koi8_r<char> koi8_r = {};
+	/// @brief An instance of basic_iso_8859_15 for ease of use.
+	inline constexpr basic_iso_8859_15<char> iso_8859_15 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

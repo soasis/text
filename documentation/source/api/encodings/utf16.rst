@@ -32,6 +32,10 @@ UTF-16
 ======
 
 
+
+Aliases
+-------
+
 .. doxygenvariable:: ztd::text::utf16
 
 .. doxygentypedef:: ztd::text::utf16_t

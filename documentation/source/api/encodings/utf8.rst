@@ -33,6 +33,11 @@ UTF-8
 
 Unicode Transformation Format 8 (UTF-8) is an encoding for text that traffics code units 8-bits at a time. It is ubiquitous amongst web and other shared protocols and the preferred storage format for non-legacy environments and operations. It is preferred that all text is placed in UTF-8 format when working internally in your application, unless you have some special reason (e.g., interoperation with JavaScript or Qt).
 
+
+
+Aliases
+-------
+
 .. doxygenvariable:: ztd::text::utf8
 
 .. doxygentypedef:: ztd::text::utf8_t

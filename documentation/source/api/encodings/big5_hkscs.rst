@@ -31,7 +31,12 @@
 Big5 Hong Kong Supplementary Character Set (HKSCS)
 ==================================================
 
+The Big5 encoding, with the Hong Kong Supplementary Character Set (HKSCS) included with it. This is the most prevalent encoding besides GBK in use for Chinese languages (though there exist many subsets captured by other variants and encodings that may use the same name).
 
+
+
+Alias
+-----
 
 .. doxygenvariable:: ztd::text::big5_hkscs
 

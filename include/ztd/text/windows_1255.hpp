@@ -45,6 +45,11 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The encoding that matches Microsoft Windows's Codepage 1255.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_windows_1255
 	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_windows_1255<_CodeUnit, _CodePoint>,
@@ -52,7 +57,7 @@ namespace ztd { namespace text {
 		  _CodePoint> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_windows_1255 for ease of use.
 	inline constexpr basic_windows_1255<char> windows_1255 = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

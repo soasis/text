@@ -34,6 +34,10 @@ GB18030
 An encoding capable of handling all known Unicode-encoded characters, and occasionally a few more (the most recent version of Unicode covers all values available in the most up-to-date GB-18030).
 
 
+
+Alias
+-----
+
 .. doxygenvariable:: ztd::text::gb18030
 
 

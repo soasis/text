@@ -35,6 +35,9 @@ Wobby Transformat Format 8 (WTF-8) is an encoding scheme that preserves lone-enc
 
 
 
+Aliases
+-------
+
 .. doxygenvariable:: ztd::text::wtf8
 
 .. doxygentypedef:: ztd::text::wtf8_t

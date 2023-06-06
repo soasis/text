@@ -42,12 +42,17 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief The single-byte GBK encoding, primarily for use with Chinese text.
+	///
+	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
+	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_gbk
 	: public __txt_impl::__basic_gb18030<basic_gbk<_CodeUnit, _CodePoint>, _CodeUnit, _CodePoint, true> { };
 
 	//////
-	/// @brief An instance of skip_handler_t for ease of use.
+	/// @brief An instance of basic_gbk for ease of use.
 	inline constexpr basic_gbk<char> gbk = {};
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

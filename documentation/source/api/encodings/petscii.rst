@@ -37,6 +37,9 @@ The state object for this encoding contains an enumeration that allows the user 
 
 
 
+Aliases
+-------
+
 .. doxygenclass:: ztd::text::petscii_state
 
 .. doxygenenum:: ztd::text::petscii_shift
