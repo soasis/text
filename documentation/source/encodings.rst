@@ -103,177 +103,37 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - Yes
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/cuneicode_registry_encoding>`
+	* - ARMSCII-8
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
 	* - ATARIST
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - KOI8-U
+	* - BIG5
 	  - No
 	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - KOI8-R
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - IBM 424 Hebrew (Bulletin)
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - IBM 856 Hebrew
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - IBM 866 Cyrillic (Russian)
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - IBM 1006 Urdu
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Kazakh-STRK1048 / KZ-1048
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Kamenicky
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-437 / DOS Latin-US
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-865 / DOS Nordic
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-874
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1251
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1252 / Latin-1
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1253
-	  - Yes
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1254
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1255
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1256
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1257
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Windows-1258
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - PETSCII (Shifted and Unshifted)
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/petscii>`
-	* - UTF-EBCDIC
-	  - No
-	  - No (Licensed)
 	  - No ❌
-	* - UTF-7
+	* - BIG5-2003
+	  - No
 	  - Yes
-	  - No (Licensed)
 	  - No ❌
-	* - UTF-7-IMAP
+	* - Big5-HKSCS
+	  - No
 	  - Yes
-	  - No (Licensed)
+	  - :doc:`Yes ✅</api/encodings/big5_hkscs>`
+	* - Big5-HKSCS:1999
+	  - No
+	  - Yes
 	  - No ❌
-	* - ISO-8859-1-1985
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
+	* - Big5-HKSCS:2001
+	  - No
+	  - Yes
 	  - No ❌
-	* - ISO-8859-1 (1998)
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-8859-2
+	* - Big5-HKSCS:2004
 	  - No
 	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-3
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-4
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-5
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-6
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-7
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-8
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-9
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-8859-10
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-13
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-14
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-15
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - ISO-8859-16
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Tatar (IBM/ASCII)
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Tatar (Windows/ANSI)
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - RISCOS-LATIN1
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - TDS565
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
 	  - No ❌
 	* - CP737
 	  - ❓ Unresearched
@@ -363,15 +223,183 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - MacRoman
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - MacCentralEurope
+	* - EUC-CN
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - MacIceland
+	* - EUC-JISX0213
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - EUC-JP
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - EUC-KR
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅</api/encodings/euc_kr_uhc>`
+	* - EUC-TW
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - GB18030 (Unicode-capable)
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/gb18030>`
+	* - GBK
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/gbk>`
+	* - Georgian-Academy
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - Georgian-PS
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - HP-ROMAN8
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - HZ
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - IBM 424 Hebrew (Bulletin)
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - IBM 856 Hebrew
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - IBM 866 Cyrillic (Russian)
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - IBM 1006 Urdu
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-2022-CN
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-CN-EXT
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-JP
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-JP-1
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-JP-2
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-JP-3
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-JP-MS
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-2022-KR
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-8859-1-1985
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-8859-1 (1998)
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-8859-2
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-3
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-4
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-5
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-6
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-7
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-8
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-9
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - ISO-8859-10
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-13
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-14
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-15
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - ISO-8859-16
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - JOHAB
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - Kamenicky
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Kazakh-STRK1048 / KZ-1048
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - KOI8-U
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - KOI8-R
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - MacArabic
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - MacCentralEurope
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
@@ -379,27 +407,11 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - MacRomania
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
 	* - MacCryllic
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - MacUkraine
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
 	* - MacGreek
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - MacTurkish
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - Macintosh
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
@@ -407,11 +419,51 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - MacArabic
+	* - MacIceland
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - Macintosh
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - MacRoman
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - MacRomania
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
 	* - MacThai
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - MacTurkish
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - MacUkraine
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - MuleLao-1
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - NEXTSTEP
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - PETSCII (Shifted and Unshifted)
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/petscii>`
+	* - PT154
+	  - ❓ Unresearched
+	  - ❓ Unconfirmed
+	  - No ❌
+	* - RISCOS-LATIN1
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
@@ -427,119 +479,23 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - Yes, shift states
 	  - Yes
 	  - No ❌
-	* - JOHAB
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - GB18030 (Unicode-capable)
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/gb18030>`
-	* - EUC-KR
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅</api/encodings/euc_kr_uhc>`
-	* - BIG5
-	  - No
-	  - Yes
-	  - No ❌
-	* - BIG5-2003
-	  - No
-	  - Yes
-	  - No ❌
-	* - Big5-HKSCS
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅</api/encodings/big5_hkscs>`
 	* - TACE
 	  - No
 	  - Yes
 	  - No ❌
-	* - TSCII
+	* - Tatar (IBM/ASCII)
 	  - No
 	  - Yes
-	  - No ❌
-	* - EUC-JP
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - EUC-JISX0213
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - EUC-CN
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - EUC-TW
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - Big5-HKSCS:1999
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Tatar (Windows/ANSI)
 	  - No
 	  - Yes
-	  - No ❌
-	* - Big5-HKSCS:2001
-	  - No
-	  - Yes
-	  - No ❌
-	* - Big5-HKSCS:2004
-	  - No
-	  - Yes
-	  - No ❌
-	* - GBK
-	  - No
-	  - Yes
-	  - :doc:`Yes ✅ </api/encodings/gbk>`
-	* - HZ
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-JP
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-JP-2
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-JP-1
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-JP-3
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-JP-MS
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-CN
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-CN-EXT
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ISO-2022-KR
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - VISCII
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - ARMSCII-8
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
 	* - TCVN
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - PT154
+	* - TDS565
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
@@ -547,25 +503,69 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - MuleLao-1
+	* - TSCII
+	  - No
+	  - Yes
+	  - No ❌
+	* - UTF-EBCDIC
+	  - No
+	  - No (Licensed)
+	  - No ❌
+	* - UTF-7
+	  - Yes
+	  - No (Licensed)
+	  - No ❌
+	* - UTF-7-IMAP
+	  - Yes
+	  - No (Licensed)
+	  - No ❌
+	* - VISCII
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌
-	* - HP-ROMAN8
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - NEXTSTEP
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - Georgian-Academy
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - Georgian-PS
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
+	* - Windows-437 / DOS Latin-US
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-865 / DOS Nordic
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-874
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1251
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1252 / Latin-1
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1253
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1254
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1255
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1256
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1257
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-1258
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
 
 If you know of an encoding not listed here, let us know in the issue tracker!
