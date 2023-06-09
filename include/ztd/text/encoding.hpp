@@ -86,6 +86,8 @@
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/utf32.hpp>
+#include <ztd/text/windows_437_dos_latin_us.hpp>
+#include <ztd/text/windows_865_dos_nordic.hpp>
 #include <ztd/text/windows_874.hpp>
 #include <ztd/text/windows_1251.hpp>
 #include <ztd/text/windows_1252.hpp>

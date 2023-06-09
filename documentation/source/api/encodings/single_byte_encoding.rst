@@ -38,6 +38,8 @@ Known Encodings
 
 .. doxygenvariable:: ztd::text::atari_st
 
+.. doxygenvariable:: ztd::text::atascii
+
 .. doxygenvariable:: ztd::text::ibm_424_hebrew_bulletin
 
 .. doxygenvariable:: ztd::text::ibm_856_hebrew
@@ -94,6 +96,8 @@ Known Encodings
 
 .. doxygenvariable:: ztd::text::windows_437_dos_latin_us
 
+.. doxygenvariable:: ztd::text::windows_865_dos_nordic
+
 .. doxygenvariable:: ztd::text::windows_874
 
 .. doxygenvariable:: ztd::text::windows_1251
@@ -116,6 +120,9 @@ Known Encodings
 
 Base Templates
 --------------
+
+.. doxygenclass:: ztd::text::basic_atascii
+	:members:
 
 .. doxygenclass:: ztd::text::basic_atari_st
 	:members:
@@ -202,6 +209,9 @@ Base Templates
 	:members:
 
 .. doxygenclass:: ztd::text::basic_windows_437_dos_latin_us
+	:members:
+
+.. doxygenclass:: ztd::text::basic_windows_865_dos_nordic
 	:members:
 
 .. doxygenclass:: ztd::text::basic_windows_874

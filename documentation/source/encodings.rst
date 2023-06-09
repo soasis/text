@@ -143,6 +143,10 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
+	* - Windows-865 / DOS Nordic
+	  - No
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
 	* - Windows-874
 	  - No
 	  - Yes
@@ -255,11 +259,11 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Tatar (Windows/ASCII)
+	* - Tatar (IBM/ASCII)
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
-	* - Tatar (IBM/ANSI)
+	* - Tatar (Windows/ANSI)
 	  - No
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/single_byte_encoding>`
@@ -320,10 +324,6 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - ❓ Unconfirmed
 	  - No ❌
 	* - CP864
-	  - ❓ Unresearched
-	  - ❓ Unconfirmed
-	  - No ❌
-	* - CP865
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed
 	  - No ❌

@@ -56,7 +56,8 @@ namespace ztd { namespace text {
 	/// @tparam _CodeUnit The default code unit type to use when outputting encoded units.
 	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
-	struct basic_euc_kr_uhc {
+	class basic_euc_kr_uhc {
+	public:
 		//////
 		/// @brief Shift-JIS is generally stored as minimum-8-bit values in a sequence.
 		using code_unit = _CodeUnit;
