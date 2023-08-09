@@ -33,7 +33,7 @@ Execution
 
 This is the locale-based, runtime encoding. It uses a number of compile-time and runtime heuristics to eventually be resolved to an implementation-defined encoding. It is not required to work in constant expressions either: for this, use :doc:`ztd::text::literal </api/encodings/literal>`, which represents the compile-time string (e.g. ``"my string"``) encoding.
 
-Currently, the hierachy of behaviors is like so:
+Currently, the hierarchy of behaviors is like so:
 
 - If the platform is MacOS, then it assumes this is :doc:`UTF-8 </api/encodings/utf8>`;
 - Otherwise, if the :term:`cuneicode`, then Cuneicode will be used.

@@ -116,7 +116,7 @@ From these 3 operations above, everything else on this library can be built.
 Breaking it Down
 ----------------
 
-The first three typedefs are what let internal and externel machinery know what kind of values you expect out of the ranges that go into the ``decode_one`` and ``encode_one`` function calls:
+The first three typedefs are what let internal and external machinery know what kind of values you expect out of the ranges that go into the ``decode_one`` and ``encode_one`` function calls:
 
 - ``code_unit`` - the input for decoding (``decode_one``) operations and the output for encode operations.
 - ``code_point`` - the input for encode operations and the output for decoding (``decode_one``) operations.

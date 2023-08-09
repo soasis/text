@@ -104,7 +104,7 @@ Going from a Unicode Encoding to another Unicode Encoding just requires going th
 Transcode from Execution Encoding to UTF-8
 ++++++++++++++++++++++++++++++++++++++++++
 
-The :term:`execution encoding` is the encoding that comes with the system. It is typically the encoding that all locale data comes in, especially for e.g. command line parameters on Windows. To encode from such an enoding to the highly successful and popular UTF-8, you may use the same :doc:`ztd::text::transcode </api/conversions/transcode>` as above with the appropriate :doc:`ztd::text::(compat_)utf8 </api/encodings/utf8>`:
+The :term:`execution encoding` is the encoding that comes with the system. It is typically the encoding that all locale data comes in, especially for e.g. command line parameters on Windows. To encode from such an encoding to the highly successful and popular UTF-8, you may use the same :doc:`ztd::text::transcode </api/conversions/transcode>` as above with the appropriate :doc:`ztd::text::(compat_)utf8 </api/encodings/utf8>`:
 
 .. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-execution-utf8.cpp
 	:language: cpp
@@ -204,7 +204,7 @@ Error handlers like the :cpp:var:`ztd::text::skip_handler` and :cpp:var:`ztd::te
 	:linenos:
 	:start-after: // ============================================================================ //
 
-Comapred to the :cpp:var:`ztd::text::pass_handler`, which will stop at the first potential error:
+Compared to the :cpp:var:`ztd::text::pass_handler`, which will stop at the first potential error:
 
 .. literalinclude:: ../../examples/documentation/quick/basic/source/transcode-unicode-multi-errors.pass.cpp
 	:language: cpp
@@ -239,7 +239,7 @@ Encoding and decoding look identical to :ref:`Transcoding <quick:transcoding>`, 
 	:start-after: // ============================================================================ //
 
 
-Encode and decode operations are part of each encoding, represented by its encoding type. Every encoding object natively understands how to go from a sequence of its encoded data to its decoded data, and vice-versa, with the ``encode_one`` and ``decode_one`` functions. One should not call these functions directly, however, and instead used the above-provided functinos. Because decode and encode operations do not feature intermediate steps, there is no :doc:`ztd::text::pivot\<…> </api/pivot>` for these functions.
+Encode and decode operations are part of each encoding, represented by its encoding type. Every encoding object natively understands how to go from a sequence of its encoded data to its decoded data, and vice-versa, with the ``encode_one`` and ``decode_one`` functions. One should not call these functions directly, however, and instead used the above-provided functions. Because decode and encode operations do not feature intermediate steps, there is no :doc:`ztd::text::pivot\<…> </api/pivot>` for these functions.
 
 
 
@@ -272,4 +272,4 @@ Validation is checking whether or not the input sequence can be encoded, decoded
 There's More!
 -------------
 
-There is more you can do with this library, from :doc:`authoring your own encoding objects/types </design/lucky 7>` to :doc:`taking control of the perforance of conversions </design/lucky 7 extensions/speed>`. More will be added to this Getting Started as time goes on, but if you have any inkling of something that should work, give it a try! If it fails in a way you don't think is helpful, please let us known through any of our available communication channels so we can assist you!
+There is more you can do with this library, from :doc:`authoring your own encoding objects/types </design/lucky 7>` to :doc:`taking control of the performance of conversions </design/lucky 7 extensions/speed>`. More will be added to this Getting Started as time goes on, but if you have any inkling of something that should work, give it a try! If it fails in a way you don't think is helpful, please let us known through any of our available communication channels so we can assist you!

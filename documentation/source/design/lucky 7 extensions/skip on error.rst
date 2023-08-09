@@ -31,7 +31,7 @@
 Skip Input on Error
 ===================
 
-Some encodings know how to find the next valid sequence after they encounter an error. Many of these encodings are :doc:`self synchronizing codes </api/is_self_synchronizing_code>`, but yet still others may have enough information on their (encode/deocde) state to skip additional invalid input. This is where the function :doc:`ztd::text::skip_input_error </api/skip_input_error>` comes in, and the Lucky 7 Extension hook that allows an encoding to define the function. There are 2 versions of this function that are optional and can be written by an encoding author:
+Some encodings know how to find the next valid sequence after they encounter an error. Many of these encodings are :doc:`self synchronizing codes </api/is_self_synchronizing_code>`, but yet still others may have enough information on their (encode/decode) state to skip additional invalid input. This is where the function :doc:`ztd::text::skip_input_error </api/skip_input_error>` comes in, and the Lucky 7 Extension hook that allows an encoding to define the function. There are 2 versions of this function that are optional and can be written by an encoding author:
 
 - ``decode_result<…> skip_input_error(decode_result<…> result)``, which is meant to skip over bad input from a failed decode operation;
 - and, ``encode_result<…> skip_input_error(encode_result<…> result)``, which is meant to skip over bad input from a failed encode operation.

@@ -38,7 +38,7 @@ Occasionally, we may need to use precise language to describe what we want. This
 	:sorted:
 
 	code unit
-		A single unit of encoded information. This is typically, 8-, 16-, or 32-bit entites arranged in some sequential fashion that, when read or treated in a certain manner, end up composing higher-level units which make up readable text. Much of the world's most useful encodings that encode text use multiple code units in sequence to give a specific meaning to something, which makes most encodings variable length encodings.
+		A single unit of encoded information. This is typically, 8-, 16-, or 32-bit entities arranged in some sequential fashion that, when read or treated in a certain manner, end up composing higher-level units which make up readable text. Much of the world's most useful encodings that encode text use multiple code units in sequence to give a specific meaning to something, which makes most encodings variable length encodings.
 
 	code point
 		A single unit of decoded information. Most typically associated with :term:`unicode code points <unicode code point>`, but they can be other things such as :term:`unicode scalar values <unicode scalar value>` or even a 13-bit value.
@@ -73,7 +73,7 @@ Occasionally, we may need to use precise language to describe what we want. This
 		Converting from a stream of input, typically code points, to a stream of output, typically code units. The output may be less suitable for general interchange or consumption, or is in a specific interchange format for the interoperation. Frequently, this library expects and works with the goal that any decoding process is producing :term:`unicode code points <unicode code point>` or :term:`unicode scalar values <unicode scalar value>` from some set of :term:`code units <code unit>`.
 
 	decode
-		Converting from a stream of input, typically code units, to a stream of output, typically code points. The output is generally in a form that is more widely consummable or easier to process than when it started. Frequently, this library expects and works with the goal that any decoding process is producing :term:`unicode code points <unicode code point>` or :term:`unicode scalar values <unicode scalar value>` from some set of :term:`code units <code unit>`.
+		Converting from a stream of input, typically code units, to a stream of output, typically code points. The output is generally in a form that is more widely consumable or easier to process than when it started. Frequently, this library expects and works with the goal that any decoding process is producing :term:`unicode code points <unicode code point>` or :term:`unicode scalar values <unicode scalar value>` from some set of :term:`code units <code unit>`.
 
 	transcode
 		Converting from one form of encoded information to another form of encoded information. In the context of this library, it means going from an input in one :term:`encoding <encoding>`'s code units to an output of another encoding's code units. Typically, this is done by invoking the :term:`decode <decode>` of the original encoding to reach a common interchange format (such as :term:`unicode code points <unicode code point>`) before taking that intermediate output and piping it through the :term:`encode <encode>` step of the other encoding. Different transcode operations may not need to go through a common interchange, and may transcode "directly", as a way to improve space utilization, time spent, or both.
@@ -82,7 +82,7 @@ Occasionally, we may need to use precise language to describe what we want. This
 		An operation which can map all input information to an output. This is used for this library, particularly, to determine whether an operation is lossy (loses information) or not. For example, UTF-8 to UTF-32 is an injective operation because the values in a UTF-8 encoding are preserved in a UTF-32 encoding. UTF-16 to GB18030 is also an injective operation. But, converting something like Latin-1 to ASCII is a lossy operation, or UTF-8 to SHIFT-JIS.
 
 	mojibake
-		(Japanese: 文字化け Pronunciation: [modʑibake] "unintelligible sequence of characters".) From Japanese 文字 (moji), meaning "character" and 化け (bake), meaning change, is an occurence of incorrect unreadable characters displayed when computer software fails to render text correctly to its associated character encoding.
+		(Japanese: 文字化け Pronunciation: [modʑibake] "unintelligible sequence of characters".) From Japanese 文字 (moji), meaning "character" and 化け (bake), meaning change, is an occurrence of incorrect unreadable characters displayed when computer software fails to render text correctly to its associated character encoding.
 
 	execution encoding
 		The locale-based encoding related to "multibyte characters" (C and C++ magic words) processed during program evaluation/execution. It is directly related to the ``std::set_locale(LC_CTYPE, ...)`` calls. Note that this is different from :term:`literal encoding`, which is the encoding of string literals. The two may not be (and many times, are not) the same.

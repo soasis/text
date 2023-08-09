@@ -35,7 +35,7 @@ This operation counts how much text will result from a transcode operation. Esse
 
 Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``code_unit``\ s with an ``encoding``, an initial ``count`` set at 0, and any necessary additional ``state``, we can generically predict how many code units will result from a decoding operation by running the following loop:
 
-* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results with the the empty ``input``, curent ``count``, and ``state``, everything is okay ✅!
+* ⏩ Is the ``input`` value empty? If so, is the ``state`` finished and have nothing to output? If both are true, return the current results with the the empty ``input``, current ``count``, and ``state``, everything is okay ✅!
 * ⏩ Otherwise,
 
    0. Set up an ``intermediate`` storage location of ``code_point``\ s (of the input encoding), using the ``max_code_points`` of the input encoding; and, set up an ``intermediate_output`` storage location of ``code_unit``\ s (of the output encoding), for the next operations.
@@ -43,7 +43,7 @@ Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``co
 
       * 🛑 If it failed, return with the current ``input`` (unmodified from before this iteration, if possible), current ``count``, and ``state``\ s.
 
-   2. Do the ``encode_one`` step from ``intermdiate`` (using its ``begin()`` and ``end()``) into the ``intermediate_output`` ``code_unit`` storage location, saving the returned ``intermediate_output`` from the ``encode_one`` call.
+   2. Do the ``encode_one`` step from ``intermediate`` (using its ``begin()`` and ``end()``) into the ``intermediate_output`` ``code_unit`` storage location, saving the returned ``intermediate_output`` from the ``encode_one`` call.
 
       * 🛑 If it failed, return with the current ``input`` (unmodified from before this iteration, if possible), current ``count``, and ``state``\ s.
 

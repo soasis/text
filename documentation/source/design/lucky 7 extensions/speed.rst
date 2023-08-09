@@ -38,7 +38,7 @@ The core encoding/decoding loops and the :doc:`Lucky 7 design </design/lucky 7>`
 Extension points: Arguments
 ---------------------------
 
-For all extension points, arguments are given based on what was input to one of the original higher-level functions. They have these forms and general requimrents:
+For all extension points, arguments are given based on what was input to one of the original higher-level functions. They have these forms and general requirements:
 
 - ``tag`` - The first argument to every extension point that takes a single encoding. The ``tag`` type is ``ztd::tag<...>`` with any ``const``, ``volatile``, or references (``&`` and ``&&``) removed from the ``decltype`` of the ``encoding``.
 - ``duo_tag`` - The first argument to every extension point that takes 2 encodings. The ``tag`` type is ``ztd::tag<...>`` with any ``const``, ``volatile``, or references (``&`` and ``&&``) removed from the ``decltype`` of the two ``encoding``\ s.
@@ -62,7 +62,7 @@ Overriding any one of these extension points allows you to hook that behavior. I
 
 Form: ``text_decode(tag, input, encoding, output, handler, state)``.
 
-An extension point to speed up decoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/state>`.
+An extension point to speed up decoding operations for a given encoding, its input and output ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/state>`.
 
 Must return a :doc:`ztd::text::decode_result </api/decode_result>`.
 
@@ -72,7 +72,7 @@ Must return a :doc:`ztd::text::decode_result </api/decode_result>`.
 
 Form: ``text_encode(input, encoding, output, handler, state)``.
 
-An extension point to speed up encoding operations for a given encoding, its input and outpuut ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/state>`.
+An extension point to speed up encoding operations for a given encoding, its input and output ranges, and the associated error handler and state. This can be helpful for encodings which :doc:`may need to hide certain parts of their state </design/lucky 7 extensions/state>`.
 
 Must return a :doc:`ztd::text::encode_result </api/encode_result>`.
 
@@ -132,7 +132,7 @@ Must return a :doc:`ztd::text::validate_transcode_result </api/validate_transcod
 
 Form: ``text_validate_encodable_as(input, encoding, state)``
 
-An extension point to provide faster bulk code point validation. There are many tricks to speed up validationg of text using bit twiddling of the input sequence and more.
+An extension point to provide faster bulk code point validation. There are many tricks to speed up validating of text using bit twiddling of the input sequence and more.
 
 Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
@@ -142,7 +142,7 @@ Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
 Form: ``text_validate_decodable_as(input, encoding, state)``
 
-An extension point to provide faster bulk code unit validation. There are many tricks to speed up validationg of text using bit twiddling of the input sequence and more.
+An extension point to provide faster bulk code unit validation. There are many tricks to speed up validating of text using bit twiddling of the input sequence and more.
 
 Must return a :doc:`ztd::text::validate_result </api/validate_result>`.
 
@@ -191,4 +191,4 @@ Must return a :doc:`ztd::text::count_result </api/count_result>`.
 That's All of Them
 ------------------
 
-Each of these extension points are important to one person, or another. For example, Daniel Lemire spends a lot of time optimizing :term:`UTF-8 routines for fast validation <Fast UTF-8 Validation>` or :term:`Fast Deterministic Finite Automata (DFA) decoding of UTF-8 and more <Fast UTF-8>`. There are many more sped up counting, validating, encoding, and decoding routines: therefore it is critical that any library writer or application developer can produce those for their encodings and, on occassion, override the base behavior and implementation-defined internal speed up written by ztd.text itself.
+Each of these extension points are important to one person, or another. For example, Daniel Lemire spends a lot of time optimizing :term:`UTF-8 routines for fast validation <Fast UTF-8 Validation>` or :term:`Fast Deterministic Finite Automata (DFA) decoding of UTF-8 and more <Fast UTF-8>`. There are many more sped up counting, validating, encoding, and decoding routines: therefore it is critical that any library writer or application developer can produce those for their encodings and, on occasion, override the base behavior and implementation-defined internal speed up written by ztd.text itself.

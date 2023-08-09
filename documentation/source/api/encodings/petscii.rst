@@ -28,10 +28,10 @@
 ..
 .. =============================================================================>
 
-PETSCII (Shifted & Unhsifted, Combined) / CBM ASCII
+PETSCII (Shifted & Unshifted, Combined) / CBM ASCII
 ===================================================
 
-PET Standard Code of Information Interchange (PETSCII) was used for Commodore Buisiness Maschines and then moved into other Commodore machines (and adjacent machines). It has a "shifted" version (when the shift key was held) and an "unshifted" version (when the shift key was not being held).
+PET Standard Code of Information Interchange (PETSCII) was used for Commodore Business Machines and then moved into other Commodore machines (and adjacent machines). It has a "shifted" version (when the shift key was held) and an "unshifted" version (when the shift key was not being held).
 
 The state object for this encoding contains an enumeration that allows the user to select the shifted or unshifted versions at-will.
 
