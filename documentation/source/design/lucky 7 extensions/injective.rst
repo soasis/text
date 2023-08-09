@@ -40,7 +40,7 @@ As detailed in the :doc:`/design/error handling/lossy protection` section, ``is_
 	-- `Wikipedia, February 2nd, 2021 <https://en.wikipedia.org/wiki/Injective_function>`_
 
 
-This is very fancy speak for the fact that for every complete, well-formed input value, there is a well-formed, distinct output value. It does not have to cover all of the potential output values: so long as there is a one-to-one mapping that is unambigious for all the input values, it is injective. For practical purposes, it means that all of the code unit sequences that are valid can produce a unique code point sequence ("the decode operation is injective"). And, in the reverse case, it means that all the code point sequences that are valid can produce a unique code unit sequence ("the encode operation is injective").
+This is very fancy speak for the fact that for every complete, well-formed input value, there is a well-formed, distinct output value. It does not have to cover all of the potential output values: so long as there is a one-to-one mapping that is unambiguous for all the input values, it is injective. For practical purposes, it means that all of the code unit sequences that are valid can produce a unique code point sequence ("the decode operation is injective"). And, in the reverse case, it means that all the code point sequences that are valid can produce a unique code unit sequence ("the encode operation is injective").
 
 These two properties appear on the type itself, and is a way to opt-in to saying that a conversion is not lossy (e.g., it preserves information perfectly if the input is well-formed). You can define them by placing them on your Encoding Object Type's definition:
 

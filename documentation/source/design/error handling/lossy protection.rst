@@ -31,7 +31,7 @@
 Lossy Operation Protection
 ==========================
 
-Occasionally, you will end up in a situation where you want to convert some text from its pristine and ideal Unicode form to some other form. Maybe for interopation purposes, maybe because some function call can't properly handle embedded ``NUL``\ s in the text so you need to :doc:`use an overlong sequence to encode the 0 value in your text </api/encodings/mutf8>`. No matter what the case is, you need to leave the world of :term:`Unicode Code Points <unicode code point>`, :term:`Unicode Scalar Values <unicode scalar value>`, and all the guarantees they provide you. Let's take an example, going from UTF-8 to 7-bit-clean ASCII:
+Occasionally, you will end up in a situation where you want to convert some text from its pristine and ideal Unicode form to some other form. Maybe for interoperation purposes, maybe because some function call can't properly handle embedded ``NUL``\ s in the text so you need to :doc:`use an overlong sequence to encode the 0 value in your text </api/encodings/mutf8>`. No matter what the case is, you need to leave the world of :term:`Unicode Code Points <unicode code point>`, :term:`Unicode Scalar Values <unicode scalar value>`, and all the guarantees they provide you. Let's take an example, going from UTF-8 to 7-bit-clean ASCII:
 
 .. literalinclude:: /../../examples/documentation/compile_fails/source/error_handler.replacement.ascii.cpp
 	:language: cpp

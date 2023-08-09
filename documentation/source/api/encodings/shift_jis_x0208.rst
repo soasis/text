@@ -33,7 +33,7 @@ SHIFT-JISX0208
 
 The version of SHIFT-JIS that corresponds to standard X0208, one of the more prevalent versions.
 
-Note that many versions of SHIFT-JIS do not correspond to one standard and often have different interpretations or characteristics. The communities which use them label them, indiscriminatly, as SHIFT-JIS without any kind of specific indicator or even out-of-band modifier. The text community surrounding this is, with all due respect, one gigantic mess. Most industry professionals inside and outside of Japan dealing with such text tend to gravitate towards the SHIFT-JISX0208 release, and simply use replacement characters / invalid indicators for such input text.
+Note that many versions of SHIFT-JIS do not correspond to one standard and often have different interpretations or characteristics. The communities which use them label them, indiscriminately, as SHIFT-JIS without any kind of specific indicator or even out-of-band modifier. The text community surrounding this is, with all due respect, one gigantic mess. Most industry professionals inside and outside of Japan dealing with such text tend to gravitate towards the SHIFT-JISX0208 release, and simply use replacement characters / invalid indicators for such input text.
 
 As such, it is advisable to perhaps attempt to find some out-of-band data to see if a specific data is, indeed, meant to be SHIFT-JISX0208.
 

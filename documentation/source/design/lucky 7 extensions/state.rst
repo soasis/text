@@ -35,7 +35,7 @@ Some states need extra functionality or additional information to function prope
 
 - needing extra data on a per-conversion basis that you can maintain yourself;
 - needing 2 different types for encode/decode operations;
-- OR, needing runtime-dependent, conversion-dependent information for a specific converison.
+- OR, needing runtime-dependent, conversion-dependent information for a specific conversion.
 
 
 
@@ -66,7 +66,7 @@ The ``state_handle_t`` and ``state_handle_has_no_more_output`` are fictitious, b
 Separate Encode/Decode States
 -----------------------------
 
-It is no secret that encoding and decoding may carrying with them separate states. While converting from a legacy encoding to Unicode may require maintenance of a shift state or code unit modifier, the opposite direction may not need any at all. Therefore, as an optimization, an encoding object can define both an ``encode_state`` and a ``decode_state``, seperate from each other. As an example, here is a (simplified) version of how :doc:`ztd::text::execution </api/encodings/execution>`, the encoding for the Locale-based Runtime Execution Encoding, has two seperate states that need to be initialized in different manners:
+It is no secret that encoding and decoding may carrying with them separate states. While converting from a legacy encoding to Unicode may require maintenance of a shift state or code unit modifier, the opposite direction may not need any at all. Therefore, as an optimization, an encoding object can define both an ``encode_state`` and a ``decode_state``, separate from each other. As an example, here is a (simplified) version of how :doc:`ztd::text::execution </api/encodings/execution>`, the encoding for the Locale-based Runtime Execution Encoding, has two separate states that need to be initialized in different manners:
 
 .. literalinclude:: /../../examples/documentation/snippets/source/runtime_locale_encoding.cpp
 	:language: cpp

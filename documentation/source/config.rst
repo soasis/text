@@ -59,7 +59,7 @@ There are various configuration macros and CMake/build-time switches that will c
 .. _config-ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE:
 
 - ``ZTD_TEXT_UNICODE_SCALAR_VALUE_DISTINCT_TYPE``
-	- Turns ``ztd::text::unicode_scalar_value`` from a type definition to ``char32_t`` to an implemenation-defined class type which enforces the various invariants of being a :term:`unicode scalar value`.
+	- Turns ``ztd::text::unicode_scalar_value`` from a type definition to ``char32_t`` to an implementation-defined class type which enforces the various invariants of being a :term:`unicode scalar value`.
 	- Default: **on**.
 	- Not turned off by-default under any conditions.
 

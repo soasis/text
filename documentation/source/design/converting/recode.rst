@@ -52,6 +52,6 @@ Thusly, we use the algorithm as below to do the work. Given an ``input`` of ``co
 * ⏩ Update ``input``\ 's ``begin()`` value to point to after what was read by the ``decode_one`` step.
 * ⤴️ Go back to the start.
 
-This fundamental process works for any 2 encoding pairs, and does not require the first encoding ``from_encoding`` to know any details about the second encoding ``to_encoding``! This means a user is only responsible for upholding their end of the bargain with their encoding object, and can thusly interoperate with every other encoding that speaks in the same intermediade, decoded values (i.e. :term:`unicode code points <unicode code point>`).
+This fundamental process works for any 2 encoding pairs, and does not require the first encoding ``from_encoding`` to know any details about the second encoding ``to_encoding``! This means a user is only responsible for upholding their end of the bargain with their encoding object, and can thusly interoperate with every other encoding that speaks in the same intermediate, decoded values (i.e. :term:`unicode code points <unicode code point>`).
 
 Check out the API documentation for :doc:`ztd::text::recode </api/conversions/recode>` to learn more.

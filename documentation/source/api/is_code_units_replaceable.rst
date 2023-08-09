@@ -31,7 +31,7 @@
 is_code_units_(maybe\ _)replaceable
 ===================================
 
-These two traits detect whether or not the given Encoding type have calls on them which return either a replacement range (``is_code_units_repleacable``) or a ``std::optional`` of a replacement range (``is_code_units_maybe_replaceable``).
+These two traits detect whether or not the given Encoding type have calls on them which return either a replacement range (``is_code_units_replaceable``) or a ``std::optional`` of a replacement range (``is_code_units_maybe_replaceable``).
 
 The former is useful when it is guaranteed that your encoding will have a replacement range on it and does not need the extra cost of an indirection from not knowing. The latter is useful when something like a wrapped encoding may or may not have a replacement sequence.
 

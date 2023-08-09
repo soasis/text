@@ -44,7 +44,7 @@ If:
 - you want a no-overhead way to track and keep data in a specific encoding (Unicode-based or not);
 - you want a no-memory-overhead way to archive;
 - you want to prevent data in the wrong encoding from infiltrating your application and causing `Mojibake <https://en.wikipedia.org/wiki/Mojibake>`_;
-- you want to work with higher-level primitives (code points, graphames) when iterating text that do not break your text apart;
+- you want to work with higher-level primitives (code points, graphemes) when iterating text that do not break your text apart;
 - you want safe defaults for working with text;
 
 then ztd.text is for you!

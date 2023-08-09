@@ -81,7 +81,7 @@ There are many in the programming space that believe that just switching everyth
 The core problem with the "``std::string`` is always UTF-8" decision (even when they are as big as Google, Apple, Facebook, or Microsoft and own everything from the data center to the browser you work with) is that they live on a planet with other people who do not share the same sweeping generalizations about their application environments. Nor have they invoked the ability to, magically, rewrite everyone's code or the data that's been put out by these programs in the last 50 or 60 years. This results in a gratuitous amount of replacement characters or :term:`Mojibake <mojibake>` when things do not encode or decode properly:
 
 .. image:: /img/paris-post-office.jpg
-	:alt: A package going between Russia and Paris, written in Mojibake because of interpreting text with the wrong encoding. It has been corrected in marker with the correct lettering, because they are so used to this occurence for international packages.
+	:alt: A package going between Russia and Paris, written in Mojibake because of interpreting text with the wrong encoding. It has been corrected in marker with the correct lettering, because they are so used to this occurrence for international packages.
 
 There is a distinct problem that human beings are so used to computers failing them with encoding that they know how to recognize the mistranslated text:
 
@@ -123,7 +123,7 @@ Of course, sometimes this is not always possible. ABI stability mandates some fu
 
 	void read_name(const char* untagged_name) {
 		using utf8_view = ztd::text::decode_view<
-			ztd::text::comapt_utf8, // use "char" as the code unit type
+			ztd::text::compat_utf8, // use "char" as the code unit type
 			std::string_view // explicitly use this view type
 		>;
 		// constructs a std::string_view and
@@ -132,7 +132,7 @@ Of course, sometimes this is not always possible. ABI stability mandates some fu
 		// use it...
 	}
 
-Because the range and container types are templated on not only encoding, but the underlying storage type, you can wrap up both parameter and return values. You can also access the underlying ``std::string_view`` using ``.base()``, so it remains easy to interop and work with pre-existing systems using newer, more explicit types. Other ranges become possible, including, say, the `__gnu_cxx::rope <https://gcc.gnu.org/onlinedocs/gcc-10.2.0/libstdc++/api/a08538.html>` class that is part of the GCC Extensions Library. It genuinely doesn't matter what you pick: we will wrap it up and present the proper interface to you. This also follows UTF-8 Everywhere's requirements for what it would want out of a C++ Library that does text Correctly™:
+Because the range and container types are templated on not only encoding, but the underlying storage type, you can wrap up both parameter and return values. You can also access the underlying ``std::string_view`` using ``.base()``, so it remains easy to interop and work with pre-existing systems using newer, more explicit types. Other ranges become possible, including, say, the `__gnu_cxx::rope <https://gcc.gnu.org/onlinedocs/gcc-10.2.0/libstdc++/api/a08538.html>`_ class that is part of the GCC Extensions Library. It genuinely doesn't matter what you pick: we will wrap it up and present the proper interface to you. This also follows UTF-8 Everywhere's requirements for what it would want out of a C++ Library that does text Correctly™:
 
 .. epigraph::
 

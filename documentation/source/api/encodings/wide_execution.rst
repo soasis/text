@@ -33,7 +33,7 @@ Wide Execution
 
 This is the locale-based, wide runtime encoding. It uses a number of compile-time and runtime heuristics to eventually be resolved to an implementation-defined encoding. It is not required to work in constant expressions either: for this, use :doc:`ztd::text::wide_literal </api/encodings/wide_literal>`, which represents the compile-time wide string (e.g. ``L"my string"``) encoding.
 
-Currently, the hierachy of behaviors is like so:
+Currently, the hierarchy of behaviors is like so:
 
 - If the platform is Windows, then it assumes this is :doc:`UTF-16 </api/encodings/utf16>`;
 - If the platform is MacOS or ``__STDC_ISO10646__``, then it assumed this is :doc:`UTF-32 </api/encodings/utf32>` of some kind;
