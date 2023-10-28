@@ -40,6 +40,7 @@
 #include <ztd/ranges/algorithm.hpp>
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/detail/unicode.hpp>
+#include <ztd/idk/mbstate_t.hpp>
 
 #include <utility>
 #include <string>
@@ -145,102 +146,102 @@ namespace ztd { namespace text {
 
 namespace std {
 
-	template <>
-	class char_traits<::ztd::text::__txt_impl::__unicode_code_point> {
-		using char_type  = ::ztd::text::__txt_impl::__unicode_code_point;
-		using int_type   = ::std::int_least32_t;
-		using pos_type   = ::std::streampos;
-		using off_type   = ::std::streamoff;
-		using state_type = ::std::mbstate_t;
+template <>
+class char_traits<::ztd::text::__txt_impl::__unicode_code_point> {
+	using char_type  = ::ztd::text::__txt_impl::__unicode_code_point;
+	using int_type   = ::std::int_least32_t;
+	using pos_type   = ::std::streampos;
+	using off_type   = ::std::streamoff;
+	using state_type = ztd_mbstate_t;
 
-		static constexpr char_type* copy(
-		     char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
-			(void)::ztd::ranges::__rng_detail::__copy_n_unsafe(__source, __count, __destination);
-			return __destination;
+	static constexpr char_type* copy(
+		char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
+		(void)::ztd::ranges::__rng_detail::__copy_n_unsafe(__source, __count, __destination);
+		return __destination;
+	}
+
+	static constexpr char_type* move(
+		char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
+		(void)::ztd::ranges::__rng_detail::__copy_n_unsafe(__source, __count, __destination);
+		return __destination;
+	}
+
+	ZTD_NODISCARD_I_ static constexpr int compare(
+		const char_type* __left, const char_type* __right, ::std::size_t __count) noexcept {
+		if (__count == 0) {
+			return 0;
 		}
+		return ::ztd::ranges::__rng_detail::__lexicographical_compare_three_way_basic(
+			__left, __left + __count, __right, __right + __count);
+	}
 
-		static constexpr char_type* move(
-		     char_type* __destination, const char_type* __source, ::std::size_t __count) noexcept {
-			(void)::ztd::ranges::__rng_detail::__copy_n_unsafe(__source, __count, __destination);
-			return __destination;
+	ZTD_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {
+		size_t __count = 0;
+		const char_type __null_value {};
+		while (*__it != __null_value) {
+			++__count;
+			++__it;
 		}
+		return __count;
+	}
 
-		ZTD_NODISCARD_I_ static constexpr int compare(
-		     const char_type* __left, const char_type* __right, ::std::size_t __count) noexcept {
-			if (__count == 0) {
-				return 0;
+	ZTD_NODISCARD_I_ static constexpr const char_type* find(
+		const char_type* __it, size_t __count, const char_type& __c) noexcept {
+		for (; 0 < __count; --__count, (void)++__it) {
+			if (*__it == __c) {
+				return __it;
 			}
-			return ::ztd::ranges::__rng_detail::__lexicographical_compare_three_way_basic(
-			     __left, __left + __count, __right, __right + __count);
 		}
+		return nullptr;
+	}
 
-		ZTD_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {
-			size_t __count = 0;
-			const char_type __null_value {};
-			while (*__it != __null_value) {
-				++__count;
-				++__it;
-			}
-			return __count;
+	static constexpr char_type* assign(char_type* __first, size_t __count, const char_type __c) noexcept {
+		for (char_type* __it = __first; __count > 0; --__count, (void)++__it) {
+			*__it = __c;
 		}
+		return __first;
+	}
 
-		ZTD_NODISCARD_I_ static constexpr const char_type* find(
-		     const char_type* __it, size_t __count, const char_type& __c) noexcept {
-			for (; 0 < __count; --__count, (void)++__it) {
-				if (*__it == __c) {
-					return __it;
-				}
-			}
-			return nullptr;
-		}
+	static constexpr void assign(char_type& __left, const char_type& __right) noexcept {
+		__left = __right;
+	}
 
-		static constexpr char_type* assign(char_type* __first, size_t __count, const char_type __c) noexcept {
-			for (char_type* __it = __first; __count > 0; --__count, (void)++__it) {
-				*__it = __c;
-			}
-			return __first;
-		}
+	ZTD_NODISCARD_I_ static constexpr bool eq(const char_type& __left, const char_type& __right) noexcept {
+		return __left == __right;
+	}
 
-		static constexpr void assign(char_type& __left, const char_type& __right) noexcept {
-			__left = __right;
-		}
+	ZTD_NODISCARD_I_ static constexpr bool lt(const char_type& __left, const char_type& __right) noexcept {
+		return __left < __right;
+	}
 
-		ZTD_NODISCARD_I_ static constexpr bool eq(const char_type& __left, const char_type& __right) noexcept {
-			return __left == __right;
-		}
+	ZTD_NODISCARD_I_ static constexpr char_type to_char_type(const int_type& __c_as_int) noexcept {
+		return char_type(static_cast<char32_t>(__c_as_int));
+	}
 
-		ZTD_NODISCARD_I_ static constexpr bool lt(const char_type& __left, const char_type& __right) noexcept {
-			return __left < __right;
-		}
+	ZTD_NODISCARD_I_ static constexpr int_type to_int_type(const char_type& __c) noexcept {
+		return static_cast<int_type>(__c.value());
+	}
 
-		ZTD_NODISCARD_I_ static constexpr char_type to_char_type(const int_type& __c_as_int) noexcept {
-			return char_type(static_cast<char32_t>(__c_as_int));
-		}
+	ZTD_NODISCARD_I_ static constexpr bool eq_int_type(const int_type& __left, const int_type& __right) noexcept {
+		return __left == __right;
+	}
 
-		ZTD_NODISCARD_I_ static constexpr int_type to_int_type(const char_type& __c) noexcept {
-			return static_cast<int_type>(__c.value());
-		}
+	ZTD_NODISCARD_I_ static constexpr int_type not_eof(const int_type& __c_as_int) noexcept {
+		return __c_as_int != eof() ? __c_as_int : !eof();
+	}
 
-		ZTD_NODISCARD_I_ static constexpr bool eq_int_type(const int_type& __left, const int_type& __right) noexcept {
-			return __left == __right;
-		}
-
-		ZTD_NODISCARD_I_ static constexpr int_type not_eof(const int_type& __c_as_int) noexcept {
-			return __c_as_int != eof() ? __c_as_int : !eof();
-		}
-
-		ZTD_NODISCARD_I_ static constexpr int_type eof() noexcept {
-			return static_cast<int_type>(EOF);
-		}
-	};
+	ZTD_NODISCARD_I_ static constexpr int_type eof() noexcept {
+		return static_cast<int_type>(EOF);
+	}
+};
 } // namespace std
 
 namespace ztd {
-	template <>
-	class is_character<::ztd::text::__txt_impl::__unicode_code_point> : public ::std::true_type { };
+template <>
+class is_character<::ztd::text::__txt_impl::__unicode_code_point> : public ::std::true_type { };
 
-	template <>
-	class is_char_traitable<::ztd::text::__txt_impl::__unicode_code_point> : public std::true_type { };
+template <>
+class is_char_traitable<::ztd::text::__txt_impl::__unicode_code_point> : public std::true_type { };
 } // namespace ztd
 
 #include <ztd/epilogue.hpp>

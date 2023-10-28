@@ -33,7 +33,7 @@
 
 #include <ztd/text/version.hpp>
 
-#if (ZTD_IS_ON(ZTD_UCHAR) || ZTD_IS_ON(ZTD_CUCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
+#if (ZTD_IS_ON(ZTD_UCHAR_H) || ZTD_IS_ON(ZTD_CUCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 
 #include <benchmark/benchmark.h>
 
@@ -65,7 +65,7 @@ static void utf16_to_utf32_well_formed_standard_c(benchmark::State& state) {
 		const from_char_t* const input_last = input_data.data() + input_data.size();
 		for (;;) {
 			if (input != input_last) {
-				const size_t from_result = ZTD_UCHAR_ACCESSOR_I_ c16rtomb(intermediate, *input, &from_state);
+				const size_t from_result = ZTD_UCHAR_SCOPE_I_ c16rtomb(intermediate, *input, &from_state);
 				switch (from_result) {
 				case static_cast<size_t>(-1):
 					// encoding error: everyhting has failed. bail.
@@ -80,7 +80,7 @@ static void utf16_to_utf32_well_formed_standard_c(benchmark::State& state) {
 				}
 				const size_t intermediate_size = from_result + (intermediate - intermediate_data);
 				const size_t to_result
-				     = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(output, intermediate_data, intermediate_size, &to_state);
+				     = ZTD_UCHAR_SCOPE_I_ mbrtoc32(output, intermediate_data, intermediate_size, &to_state);
 				switch (to_result) {
 				case static_cast<size_t>(-1):
 					// encoding error: everyhting has failed. bail.
@@ -110,10 +110,10 @@ static void utf16_to_utf32_well_formed_standard_c(benchmark::State& state) {
 				// finish processing text without having to check if you have cleaned out
 				// the state. You have to call the function more to make sure
 				// you have drained off all the surrogates...
-				while (ZTD_UCHAR_ACCESSOR_I_ mbsinit(&to_state) == 0) {
+				while (ZTD_UCHAR_SCOPE_I_ mbsinit(&to_state) == 0) {
 					// try to drain the (last?) input out...
 					to_char_t last_c;
-					const size_t last_to_result = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(&last_c, "", 1, &to_state);
+					const size_t last_to_result = ZTD_UCHAR_SCOPE_I_ mbrtoc32(&last_c, "", 1, &to_state);
 					if (last_to_result == static_cast<size_t>(-3)) {
 						// we had extra, vomit it out...
 						*output = last_c;
@@ -159,7 +159,7 @@ static void utf32_to_utf16_well_formed_standard_c(benchmark::State& state) {
 		const from_char_t* const input_last = input_data.data() + input_data.size();
 		for (;;) {
 			if (input != input_last) {
-				const size_t from_result = ZTD_UCHAR_ACCESSOR_I_ c32rtomb(intermediate, *input, &from_state);
+				const size_t from_result = ZTD_UCHAR_SCOPE_I_ c32rtomb(intermediate, *input, &from_state);
 				switch (from_result) {
 				case static_cast<size_t>(-1):
 					// encoding error: everyhting has failed. bail.
@@ -174,7 +174,7 @@ static void utf32_to_utf16_well_formed_standard_c(benchmark::State& state) {
 				}
 				const size_t intermediate_size = from_result + (intermediate - intermediate_data);
 				const size_t to_result
-				     = ZTD_UCHAR_ACCESSOR_I_ mbrtoc16(output, intermediate_data, intermediate_size, &to_state);
+				     = ZTD_UCHAR_SCOPE_I_ mbrtoc16(output, intermediate_data, intermediate_size, &to_state);
 				switch (to_result) {
 				case static_cast<size_t>(-1):
 					// encoding error: everyhting has failed. bail.
@@ -205,10 +205,10 @@ static void utf32_to_utf16_well_formed_standard_c(benchmark::State& state) {
 				// finish processing text without having to check if you have cleaned out
 				// the state. You have to call the function more to make sure
 				// you have drained off all the surrogates...
-				while (ZTD_UCHAR_ACCESSOR_I_ mbsinit(&to_state) == 0) {
+				while (ZTD_UCHAR_SCOPE_I_ mbsinit(&to_state) == 0) {
 					// try to drain the (last?) input out...
 					to_char_t last_c;
-					const size_t last_to_result = ZTD_UCHAR_ACCESSOR_I_ mbrtoc16(&last_c, "", 1, &to_state);
+					const size_t last_to_result = ZTD_UCHAR_SCOPE_I_ mbrtoc16(&last_c, "", 1, &to_state);
 					if (last_to_result == static_cast<size_t>(-3)) {
 						// we had extra, vomit it out...
 						*output = last_c;
@@ -250,7 +250,7 @@ static void utf32_to_utf8_well_formed_standard_c(benchmark::State& state) {
 		const from_char_t* input            = input_data.data();
 		const from_char_t* const input_last = input_data.data() + input_data.size();
 		for (; input != input_last;) {
-			const size_t from_result = ZTD_UCHAR_ACCESSOR_I_ c32rtomb(output, *input, &from_state);
+			const size_t from_result = ZTD_UCHAR_SCOPE_I_ c32rtomb(output, *input, &from_state);
 			switch (from_result) {
 			case static_cast<size_t>(-1):
 				// encoding error: everyhting has failed. bail.
@@ -294,7 +294,7 @@ static void utf8_to_utf32_well_formed_standard_c(benchmark::State& state) {
 		for (;;) {
 			if (input != input_last) {
 				const std::size_t input_size = input_last - input;
-				const size_t to_result       = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(output, input, input_size, &to_state);
+				const size_t to_result       = ZTD_UCHAR_SCOPE_I_ mbrtoc32(output, input, input_size, &to_state);
 				switch (to_result) {
 				case static_cast<size_t>(-1):
 					// encoding error: everyhting has failed. bail.
@@ -323,10 +323,10 @@ static void utf8_to_utf32_well_formed_standard_c(benchmark::State& state) {
 				// finish processing text without having to check if you have cleaned out
 				// the state. You have to call the function more to make sure
 				// you have drained off all the surrogates...
-				while (ZTD_UCHAR_ACCESSOR_I_ mbsinit(&to_state) == 0) {
+				while (ZTD_UCHAR_SCOPE_I_ mbsinit(&to_state) == 0) {
 					// try to drain the (last?) input out...
 					to_char_t last_c;
-					const size_t last_to_result = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(&last_c, "", 1, &to_state);
+					const size_t last_to_result = ZTD_UCHAR_SCOPE_I_ mbrtoc32(&last_c, "", 1, &to_state);
 					if (last_to_result == static_cast<size_t>(-3)) {
 						// we had extra, vomit it out...
 						*output = last_c;
@@ -368,7 +368,7 @@ static void utf16_to_utf8_well_formed_standard_c(benchmark::State& state) {
 		const from_char_t* input            = input_data.data();
 		const from_char_t* const input_last = input_data.data() + input_data.size();
 		for (; input != input_last;) {
-			const size_t from_result = ZTD_UCHAR_ACCESSOR_I_ c16rtomb(output, *input, &from_state);
+			const size_t from_result = ZTD_UCHAR_SCOPE_I_ c16rtomb(output, *input, &from_state);
 			switch (from_result) {
 			case static_cast<size_t>(-1):
 				// encoding error: everyhting has failed. bail.
@@ -412,7 +412,7 @@ static void utf8_to_utf16_well_formed_standard_c(benchmark::State& state) {
 		for (;;) {
 			if (input != input_last) {
 				const std::size_t input_size = input_last - input;
-				const size_t to_result       = ZTD_UCHAR_ACCESSOR_I_ mbrtoc16(output, input, input_size, &to_state);
+				const size_t to_result       = ZTD_UCHAR_SCOPE_I_ mbrtoc16(output, input, input_size, &to_state);
 				switch (to_result) {
 				case static_cast<size_t>(-1):
 					// encoding error: everyhting has failed. bail.
@@ -441,10 +441,10 @@ static void utf8_to_utf16_well_formed_standard_c(benchmark::State& state) {
 				// finish processing text without having to check if you have cleaned out
 				// the state. You have to call the function more to make sure
 				// you have drained off all the surrogates...
-				while (ZTD_UCHAR_ACCESSOR_I_ mbsinit(&to_state) == 0) {
+				while (ZTD_UCHAR_SCOPE_I_ mbsinit(&to_state) == 0) {
 					// try to drain the (last?) input out...
 					to_char_t last_c;
-					const size_t last_to_result = ZTD_UCHAR_ACCESSOR_I_ mbrtoc16(&last_c, "", 1, &to_state);
+					const size_t last_to_result = ZTD_UCHAR_SCOPE_I_ mbrtoc16(&last_c, "", 1, &to_state);
 					if (last_to_result == static_cast<size_t>(-3)) {
 						// we had extra, vomit it out...
 						*output = last_c;

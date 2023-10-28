@@ -47,6 +47,7 @@
 #include <ztd/ranges/range.hpp>
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/encoding_detection.hpp>
+#include <ztd/idk/mbstate_t.hpp>
 #include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>
@@ -62,7 +63,7 @@ namespace ztd { namespace text {
 
 		class __wide_execution_decode_state {
 		public:
-			::std::mbstate_t __wide_state;
+			ztd_mbstate_t __wide_state;
 			decode_state_t<execution_t> __narrow_state;
 
 			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {

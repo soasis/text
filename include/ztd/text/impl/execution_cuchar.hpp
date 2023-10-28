@@ -51,9 +51,10 @@
 #include <ztd/idk/span.hpp>
 #include <ztd/idk/encoding_detection.hpp>
 #include <ztd/idk/type_traits.hpp>
+#include <ztd/idk/mbstate_t.hpp>
 #include <ztd/idk/detail/windows.hpp>
 
-#if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
+#if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR_H)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 
 // clang-format off
 #if ZTD_IS_ON(ZTD_CUCHAR)
@@ -75,13 +76,12 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		class __execution_decode_state {
 		public:
-			::std::mbstate_t __narrow_state;
+			ztd_mbstate_t __narrow_state;
 			bool __output_pending;
 
 			__execution_decode_state() noexcept : __narrow_state(), __output_pending(false) {
 				ztd_char32_t __ghost_space[2];
-				::std::size_t __init_result
-					= ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(__ghost_space, "\0", 1, &__narrow_state);
+				::std::size_t __init_result = ZTD_UCHAR_SCOPE_I_ mbrtoc32(__ghost_space, "\0", 1, &__narrow_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == U'\0');
 				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
@@ -90,12 +90,12 @@ namespace ztd { namespace text {
 
 		class __execution_encode_state {
 		public:
-			::std::mbstate_t __narrow_state;
+			ztd_mbstate_t __narrow_state;
 			bool __output_pending;
 
 			__execution_encode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char __ghost_space[MB_LEN_MAX];
-				::std::size_t __init_result = ZTD_UCHAR_ACCESSOR_I_ c32rtomb(__ghost_space, U'\0', &__narrow_state);
+				::std::size_t __init_result = ZTD_UCHAR_SCOPE_I_ c32rtomb(__ghost_space, U'\0', &__narrow_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT_I_(__init_result == 1 && __ghost_space[0] == '\0');
 				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
@@ -336,7 +336,7 @@ namespace ztd { namespace text {
 				code_point __codepoint = *__in_it;
 				::ztd::ranges::iter_advance(__in_it);
 				code_unit __intermediary_output[(MB_LEN_MAX)] {};
-				::std::size_t __res = ZTD_UCHAR_ACCESSOR_I_ c32rtomb(
+				::std::size_t __res = ZTD_UCHAR_SCOPE_I_ c32rtomb(
 					__intermediary_output, __codepoint, ::std::addressof(__s.__narrow_state));
 				if constexpr (__call_error_handler) {
 					if (__res == static_cast<::std::size_t>(-1)) {
@@ -502,9 +502,8 @@ namespace ztd { namespace text {
 				if (__s.__output_pending) {
 					// need to drain potential mbstate_t of any leftover code points?
 					ztd_char32_t __intermediary_output[max_code_points] {};
-					::std::size_t __res
-						= ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(::std::addressof(__intermediary_output[0]), nullptr, 0,
-						     ::std::addressof(__s.__narrow_state));
+					::std::size_t __res = ZTD_UCHAR_SCOPE_I_ mbrtoc32(::std::addressof(__intermediary_output[0]),
+						nullptr, 0, ::std::addressof(__s.__narrow_state));
 					if constexpr (__call_error_handler) {
 						if (__res == static_cast<::std::size_t>(-1)) {
 							__execution_cuchar __self {};
@@ -529,9 +528,9 @@ namespace ztd { namespace text {
 					__intermediary_input[__state_offset] = *__in_it;
 					::ztd::ranges::iter_advance(__in_it);
 					ztd_char32_t __intermediary_output[1] {};
-					::std::size_t __res = ZTD_UCHAR_ACCESSOR_I_ mbrtoc32(
-						::std::addressof(__intermediary_output[0]), ::std::addressof(__intermediary_input[0]),
-						__state_count, ::std::addressof(__preserved_state));
+					::std::size_t __res = ZTD_UCHAR_SCOPE_I_ mbrtoc32(::std::addressof(__intermediary_output[0]),
+						::std::addressof(__intermediary_input[0]), __state_count,
+						::std::addressof(__preserved_state));
 
 					switch (__res) {
 					case static_cast<::std::size_t>(-2):
