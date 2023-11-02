@@ -283,7 +283,6 @@ if(ZTD_TEXT_SCRATCH)
 	target_link_libraries(scratch
 		PRIVATE
 		ztd::text
-		ztd::text::benchmarks::barrier
 	)
 	target_include_directories(scratch PRIVATE tests/shared/include)
 	target_compile_options(scratch

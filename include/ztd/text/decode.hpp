@@ -291,8 +291,8 @@ namespace ztd { namespace text {
 			using _Output                = ::ztd::span<_IntermediateValueType>;
 			using _Result                = decltype(__encoding.decode_one(
                     ::std::declval<_IntermediateInput>(), ::std::declval<_Output>(), __error_handler, __state));
-			using _WorkingInput          = __span_reconstruct_t<decltype(::std::declval<_Result>().input),
-                    decltype(::std::declval<_Result>().input)>;
+			using _ResultInput           = decltype(::std::declval<_Result>().input);
+			using _WorkingInput          = __span_reconstruct_t<_ResultInput, _ResultInput>;
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_Encoding, _ErrorHandler>,
 				ZTD_TEXT_LOSSY_DECODE_MESSAGE_I_);

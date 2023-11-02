@@ -595,16 +595,16 @@ namespace ztd { namespace text {
 				__real_decode_state& __actual_decode_state = this->_M_get_state(__state);
 				auto& __encoding                           = this->_M_get_encoding();
 				if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_decoded_one,
-					              _Encoding, _DecodeCodeUnits, __decode_error_handler, __real_decode_state>) {
-					auto __raw_result = text_count_as_decoded_one(::ztd::tag<_Encoding> {}, __encoding,
-						::std::move(__input), __error_handler, __actual_decode_state);
+					              _DecodeCodeUnits, _Encoding, __decode_error_handler, __real_decode_state>) {
+					auto __raw_result = text_count_as_decoded_one(::ztd::tag<_Encoding> {}, ::std::move(__input),
+						__encoding, __error_handler, __actual_decode_state);
 					return __count_as_decoded_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.error_count);
 				}
 				else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_count_as_decoded_one,
-					                   _Encoding, _DecodeCodeUnits, __decode_error_handler, __real_decode_state>) {
-					auto __raw_result = __text_count_as_decoded_one(::ztd::tag<_Encoding> {}, __encoding,
-						::std::move(__input), __error_handler, __actual_decode_state);
+					                   _DecodeCodeUnits, _Encoding, __decode_error_handler, __real_decode_state>) {
+					auto __raw_result = __text_count_as_decoded_one(::ztd::tag<_Encoding> {}, ::std::move(__input),
+						__encoding, __error_handler, __actual_decode_state);
 					return __count_as_decoded_result(::std::move(__raw_result.input), __raw_result.count, __state,
 						__raw_result.error_code, __raw_result.error_count);
 				}

@@ -44,14 +44,15 @@ Aliases
 
 .. doxygenvariable:: ztd::text::shift_jis_x0208
 
-.. doxygentypedef:: ztd::text::shift_jis
+.. doxygenvariable:: ztd::text::shift_jis
 
+.. doxygentypedef:: ztd::text::shift_jis_t
+
+.. doxygentypedef:: ztd::text::basic_shift_jis
 
 
 Base Templates
 --------------
-
-.. doxygentypedef:: ztd::text::basic_shift_jis
 
 .. doxygenclass:: ztd::text::basic_shift_jis_x0208
 	:members:

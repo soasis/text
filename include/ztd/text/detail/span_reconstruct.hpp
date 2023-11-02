@@ -66,7 +66,7 @@ namespace ztd { namespace text {
 					::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
 			}
 			else if constexpr (::ztd::is_span_v<_UInput>) {
-				using _Ty = ::std::conditional_t<_Mutable, ::ztd::ranges::range_cv_value_type_t<_UInput>,
+				using _Ty = ::std::conditional_t<_Mutable, typename _UInput::element_type,
 					const typename _UInput::value_type>;
 				return ::ztd::span<_Ty, _UInput::extent>(__input);
 			}
@@ -87,7 +87,7 @@ namespace ztd { namespace text {
 			}
 			else {
 				if constexpr (ranges::is_range_contiguous_range_v<_CVInput> && ranges::is_sized_range_v<_CVInput>) {
-					using _Ty = ::ztd::ranges::range_cv_value_type_t<_CVInput>;
+					using _Ty = ::ztd::ranges::range_element_type_t<_CVInput>;
 					return ::ztd::ranges::reconstruct(
 						::std::in_place_type<::ztd::span<_Ty>>, ::std::forward<_Input>(__input));
 				}

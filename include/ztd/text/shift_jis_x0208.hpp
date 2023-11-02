@@ -422,12 +422,18 @@ namespace ztd { namespace text {
 		}
 	};
 
-	template <typename _CodeUnit, typename _CodePoint>
+	//////
+	/// @brief A convenience alais that defaults `basic_shift_jis` to the x0208 version.
+	template <typename _CodeUnit, typename _CodePoint = unicode_code_point>
 	using basic_shift_jis = basic_shift_jis_x0208<_CodeUnit, _CodePoint>;
 
 	//////
 	/// @brief An instance of basic_shift_jis_x0208 for ease of use.
 	inline constexpr basic_shift_jis_x0208<char> shift_jis_x0208 = {};
+
+	//////
+	/// @brief A convenience alais that defaults `shift_jis` to the x0208 version.
+	using shift_jis_t = basic_shift_jis_x0208<char>;
 
 	//////
 	/// @brief An instance of basic_shift_jis for ease of use.
