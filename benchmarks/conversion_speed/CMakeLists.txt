@@ -1,7 +1,7 @@
 # =============================================================================
 #
 # ztd.text
-# Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+# Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 # Contact: opensource@soasis.org
 #
 # Commercial License Usage
@@ -33,6 +33,8 @@ file(GLOB_RECURSE ztd.text.benchmarks.conversion_speed.sources
 	CONFIGURE_DEPENDS
 	LIST_DIRECTORIES NO
 	source/**)
+set(ztd.text.benchmarks.conversion_speed.sources.no_warnings ${ztd.text.benchmarks.conversion_speed.sources})
+list(FILTER ztd.text.benchmarks.conversion_speed.sources.no_warnings INCLUDE REGEX ".*\.no_warnings\..*")
 
 function (generate_converion_speed_benchmark_targets name data_name title)
 	add_executable(ztd.text.benchmarks.conversion_speed.${name} ${ztd.text.benchmarks.conversion_speed.sources})
@@ -49,11 +51,18 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			ztd::cuneicode::shared::simdutf
 			ztd::text
 			ctre::ctre
-			utf8::cpp
+			utf8cpp
 			$<$<BOOL:${ZTD_TEXT_BOOST.TEXT}>:Boost::text>
 			benchmark::benchmark
 			${CMAKE_DL_LIBS}
 	)
+	# boost.text is a landmine of bad warning-vomiting code
+	if (ztd.text.benchmarks.conversion_speed.sources.no_warnings)
+		set_source_files_properties(${ztd.text.benchmarks.conversion_speed.sources.no_warnings}
+			PROPERTIES
+				COMPILE_OPTIONS ${--warn-none}
+		)
+	endif()
 	target_compile_options(ztd.text.benchmarks.conversion_speed.${name}
 		PRIVATE
 			${--utf8-literal-encoding}
@@ -67,7 +76,7 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			${--allow-alignas-extra-padding}
 			${--allow-stringop-overflow} ${--allow-stringop-overread}
 			${--allow-array-bounds}
-			)
+	)
 	target_compile_definitions(ztd.text.benchmarks.conversion_speed.${name}
 		PRIVATE
 			u8_data=u8_${data_name}_data

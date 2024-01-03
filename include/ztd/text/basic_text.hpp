@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -347,16 +347,16 @@ namespace ztd { namespace text {
 
 		constexpr basic_text(::std::in_place_t, range_type __range)            // cf
 			noexcept(::std::is_nothrow_default_constructible_v<encoding_type> // cf
-			          && ::std::is_nothrow_move_constructible_v<range_type>   // cf
-			               && ::std::is_nothrow_default_constructible_v<normalization_type>)
+			     && ::std::is_nothrow_move_constructible_v<range_type>        // cf
+			     && ::std::is_nothrow_default_constructible_v<normalization_type>)
 		: _M_encoding(), _M_normalization(), _M_range(::std::move(__range)) {
 			this->_M_verify_integrity();
 		}
 
 		constexpr basic_text(::std::in_place_t, range_type __range, encoding_type __encoding) // cf
 			noexcept(::std::is_nothrow_default_constructible_v<encoding_type>                // cf
-			          && ::std::is_nothrow_move_constructible_v<range_type>                  // cf
-			               && ::std::is_nothrow_default_constructible_v<normalization_type>)
+			     && ::std::is_nothrow_move_constructible_v<range_type>                       // cf
+			     && ::std::is_nothrow_default_constructible_v<normalization_type>)
 		: _M_encoding(::std::move(__encoding)), _M_normalization(), _M_range(::std::move(__range)) {
 			this->_M_verify_integrity();
 		}
@@ -364,8 +364,8 @@ namespace ztd { namespace text {
 		constexpr basic_text(::std::in_place_t, range_type __range, encoding_type __encoding,
 			normalization_type __normalization_form)                          // cf
 			noexcept(::std::is_nothrow_default_constructible_v<encoding_type> // cf
-			          && ::std::is_nothrow_move_constructible_v<range_type>   // cf
-			               && ::std::is_nothrow_default_constructible_v<normalization_type>)
+			     && ::std::is_nothrow_move_constructible_v<range_type>        // cf
+			     && ::std::is_nothrow_default_constructible_v<normalization_type>)
 		: _M_encoding(::std::move(__encoding))
 		, _M_normalization(::std::move(__normalization_form))
 		, _M_range(::std::move(__range)) {

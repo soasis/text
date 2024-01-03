@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -150,8 +150,8 @@ namespace ztd { namespace text {
 		/// invoked. This allows the value to be provided directly when constructing this result type.
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr stateless_recode_result(_ArgInput&& __input, _ArgOutput&& __output, encoding_error __error_code,
-			::std::size_t __error_count) noexcept(::std::is_nothrow_constructible_v<_Input,
-			_ArgInput>&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput>)
+			::std::size_t __error_count) noexcept(::std::is_nothrow_constructible_v<_Input, _ArgInput>
+			&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput>)
 		: input(::std::forward<_ArgInput>(__input))
 		, output(::std::forward<_ArgOutput>(__output))
 		, error_code(__error_code)

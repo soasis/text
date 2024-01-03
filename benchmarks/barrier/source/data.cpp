@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -53,7 +53,7 @@ static auto init_u8_unicode_data() {
 		const ztd_char32_t* input = &c;
 		size_t input_size         = 1;
 		size_t output_size        = ztdc_c_array_size(output_buffer);
-		cnc_mcerr err           = cnc_c32ntoc8n(&output_size, &output, &input_size, &input);
+		cnc_mcerr err             = cnc_c32ntoc8n(&output_size, &output, &input_size, &input);
 		if (err != cnc_mcerr_ok) {
 			throw std::runtime_error("bad idea");
 		}
@@ -80,7 +80,7 @@ static auto init_u16_unicode_data() {
 		const ztd_char32_t* input = &c;
 		size_t input_size         = 1;
 		size_t output_size        = ztdc_c_array_size(output_buffer);
-		cnc_mcerr err           = cnc_c32ntoc16n(&output_size, &output, &input_size, &input);
+		cnc_mcerr err             = cnc_c32ntoc16n(&output_size, &output, &input_size, &input);
 		if (err != cnc_mcerr_ok) {
 			throw std::runtime_error("bad idea");
 		}
@@ -121,17 +121,20 @@ ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char32_t u32_unicode_data
      = make_c_span_char32_t(u32_unicode_vec.data(), u32_unicode_vec.data() + u32_unicode_vec.size());
 
 static auto init_u8_basic_source_data() {
-	std::vector<ztd_char8_t> data(ztd::tests::u8_basic_source_character_set.cbegin(), ztd::tests::u8_basic_source_character_set.cend());
+	std::vector<ztd_char8_t> data(
+	     ztd::tests::u8_basic_source_character_set.cbegin(), ztd::tests::u8_basic_source_character_set.cend());
 	return data;
 }
 
 static auto init_u16_basic_source_data() {
-	std::vector<ztd_char16_t> data(ztd::tests::u16_basic_source_character_set.cbegin(), ztd::tests::u16_basic_source_character_set.cend());
+	std::vector<ztd_char16_t> data(
+	     ztd::tests::u16_basic_source_character_set.cbegin(), ztd::tests::u16_basic_source_character_set.cend());
 	return data;
 }
 
 static auto init_u32_basic_source_data() {
-	std::vector<ztd_char32_t> data(ztd::tests::u32_basic_source_character_set.cbegin(), ztd::tests::u32_basic_source_character_set.cend());
+	std::vector<ztd_char32_t> data(
+	     ztd::tests::u32_basic_source_character_set.cbegin(), ztd::tests::u32_basic_source_character_set.cend());
 	return data;
 }
 

@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -134,7 +134,7 @@ namespace ztd { namespace text {
 		///
 		/// @param[in] __range The range this normalization iterator will walk over.
 		constexpr normalized_iterator(_Range __range) noexcept(::std::is_nothrow_move_constructible_v<_Range> // cf
-			     && ::std::is_nothrow_default_constructible_v<_NormalizationForm>)
+			&& ::std::is_nothrow_default_constructible_v<_NormalizationForm>)
 		: __base_normalization_form_t(), __base_range_t(::std::move(__range)) {
 			this->_M_get_more();
 		}
@@ -146,7 +146,7 @@ namespace ztd { namespace text {
 		/// @param[in] __normalization_form The normalization form object to use for this iterator.
 		constexpr normalized_iterator(_Range __range, _NormalizationForm __normalization_form) noexcept(
 			::std::is_nothrow_move_constructible_v<_NormalizationForm> // cf
-			     && ::std::is_nothrow_move_constructible_v<_Range>)
+			&& ::std::is_nothrow_move_constructible_v<_Range>)
 		: __base_normalization_form_t(::std::move(__normalization_form)), __base_range_t(::std::move(__range)) {
 			this->_M_get_more();
 		}

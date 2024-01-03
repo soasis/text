@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -53,8 +53,8 @@ namespace ztd { namespace text { namespace tests {
 	template <typename Encoding>
 	constexpr auto basic_source_character_set_for() {
 		using CodeUnit = ztd::text::code_unit_t<Encoding>;
-		if constexpr (std::is_same_v<Encoding,
-				         utf8_t> || std::is_same_v<Encoding, mutf8_t> || std::is_same_v<Encoding, wtf8_t>) {
+		if constexpr (std::is_same_v<Encoding, utf8_t> || std::is_same_v<Encoding, mutf8_t>
+			|| std::is_same_v<Encoding, wtf8_t>) {
 			return ztd::tests::u8_basic_source_character_set;
 		}
 		else {
@@ -108,8 +108,8 @@ namespace ztd { namespace text { namespace tests {
 		}
 		else {
 			if constexpr (std::is_same_v<CodeUnit, char>) {
-				if constexpr (std::is_same_v<Encoding,
-						         ztd::text::literal_t> && !ztd::text::is_unicode_encoding_v<Encoding>) {
+				if constexpr (std::is_same_v<Encoding, ztd::text::literal_t>
+					&& !ztd::text::is_unicode_encoding_v<Encoding>) {
 					static_assert(ztd::always_false_v<Encoding>,
 						"The encoding ztd::text::literal_t is not a unicode encoding, and therefore doesn't "
 						"work here!");
@@ -117,8 +117,8 @@ namespace ztd { namespace text { namespace tests {
 				return ztd::tests::unicode_sequence_truth_native_endian;
 			}
 			else if constexpr (std::is_same_v<CodeUnit, wchar_t>) {
-				if constexpr (std::is_same_v<Encoding,
-						         ztd::text::wide_literal_t> && !ztd::text::is_unicode_encoding_v<Encoding>) {
+				if constexpr (std::is_same_v<Encoding, ztd::text::wide_literal_t>
+					&& !ztd::text::is_unicode_encoding_v<Encoding>) {
 					static_assert(ztd::always_false_v<Encoding>,
 						"The encoding ztd::text::literal_t is not a unicode encoding, and therefore doesn't "
 						"work here!");

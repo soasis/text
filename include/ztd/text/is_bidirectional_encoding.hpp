@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -60,9 +60,9 @@ namespace ztd { namespace text {
 	template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>
 	class is_bidirectional_encoding
 	: public ::std::integral_constant<bool,
-		  is_detected_v<__txt_detail::__detect_decode_backward, _Type, _Input, _Output, _State,
-		       _ErrorHandler> && is_detected_v<__txt_detail::__detect_encode_backward, _Type, _Input, _Output, _State, _ErrorHandler>> {
-	};
+		  is_detected_v<__txt_detail::__detect_decode_backward, _Type, _Input, _Output, _State, _ErrorHandler>
+		       && is_detected_v<__txt_detail::__detect_encode_backward, _Type, _Input, _Output, _State,
+		            _ErrorHandler>> { };
 
 	template <typename _Type, typename _Input, typename _Output, typename _State, typename _ErrorHandler>
 	inline constexpr bool is_bidirectional_encoding_v

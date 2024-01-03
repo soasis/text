@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -74,9 +74,9 @@ namespace ztd { namespace text {
 			using _SubOutput = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result    = normalization_result<_SubInput, _SubOutput>;
 
-			auto __in_it   = ::ztd::ranges::begin(__input);
-			auto __in_last = ::ztd::ranges::end(__input);
-			auto __out_it  = ::ztd::ranges::begin(__output);
+			auto __in_it    = ::ztd::ranges::begin(__input);
+			auto __in_last  = ::ztd::ranges::end(__input);
+			auto __out_it   = ::ztd::ranges::begin(__output);
 			auto __out_last = ::ztd::ranges::end(__output);
 			if (__in_it == __in_last) {
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),

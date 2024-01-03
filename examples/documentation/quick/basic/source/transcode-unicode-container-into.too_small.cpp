@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -39,7 +39,8 @@ int main(int, char*[]) {
 	constexpr const ztd_char8_t input[] = u8"bark🐶⛄🐶🔔bark!";
 	constexpr std::size_t input_last_exclamation_mark_index
 	     = ztdc_c_string_array_size(input) - 1;
-	constexpr const std::u16string_view full_expected_output = u"bark🐶⛄🐶🔔bark!";
+	constexpr const std::u16string_view full_expected_output
+	     = u"bark🐶⛄🐶🔔bark!";
 	constexpr std::size_t truncated_input_size = 15;
 	// string_view containing: "bark🐶⛄🐶🔔bark" (no ending exclamation point)
 	constexpr const std::u16string_view truncated_expected_ouput

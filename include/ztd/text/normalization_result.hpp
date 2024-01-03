@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -88,7 +88,7 @@ namespace ztd { namespace text {
 		template <typename _ArgInput, typename _ArgOutput>
 		constexpr normalization_result(_ArgInput&& __input, _ArgOutput&& __output,
 			normalization_error __error_code) noexcept(::std::is_nothrow_constructible_v<_Input, _ArgInput> // cf
-			     && ::std::is_nothrow_constructible_v<_Output, _ArgOutput>)
+			&& ::std::is_nothrow_constructible_v<_Output, _ArgOutput>)
 		: input(::std::forward<_ArgInput>(__input))
 		, output(::std::forward<_ArgOutput>(__output))
 		, error_code(__error_code) {

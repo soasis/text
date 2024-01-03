@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -38,57 +38,76 @@
 
 #include <vector>
 
-#define UTF_CONVERSION_BENCHMARK(FROM_N, TO_N)                                                                    \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode(benchmark::State& state) {                    \
-		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),      \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));  \
-		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                \
-		bool result = true;                                                                                     \
-		for (auto _ : state) {                                                                                  \
-			size_t input_size                 = input_data.size();                                             \
-			const ztd_char##FROM_N##_t* input = input_data.data();                                             \
-			size_t output_size                = output_data.size();                                            \
-			ztd_char##TO_N##_t* output        = output_data.data();                                            \
-			cnc_mcerr err = cnc_c##FROM_N##sntoc##TO_N##sn(&output_size, &output, &input_size, &input);      \
-			if (err != cnc_mcerr_ok) {                                                                       \
-				result = false;                                                                               \
-			}                                                                                                  \
-		}                                                                                                       \
-		const bool is_equal                                                                                     \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result) {                                                                                          \
-			state.SkipWithError("conversion failed with an error");                                            \
-		}                                                                                                       \
-		else if (!is_equal) {                                                                                   \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
-		}                                                                                                       \
-	}                                                                                                            \
-                                                                                                                  \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_unbounded(benchmark::State& state) {          \
-		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),      \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));  \
-		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                \
-		bool result = true;                                                                                     \
-		for (auto _ : state) {                                                                                  \
-			size_t input_size                 = input_data.size();                                             \
-			const ztd_char##FROM_N##_t* input = input_data.data();                                             \
-			ztd_char##TO_N##_t* output        = output_data.data();                                            \
-			cnc_mcerr err = cnc_c##FROM_N##sntoc##TO_N##sn(nullptr, &output, &input_size, &input);           \
-			if (err != cnc_mcerr_ok) {                                                                       \
-				result = false;                                                                               \
-			}                                                                                                  \
-		}                                                                                                       \
-		const bool is_equal                                                                                     \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data), \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));     \
-		if (!result) {                                                                                          \
-			state.SkipWithError("conversion failed with an error");                                            \
-		}                                                                                                       \
-		else if (!is_equal) {                                                                                   \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
-		}                                                                                                       \
-	}                                                                                                            \
+#define UTF_CONVERSION_BENCHMARK(FROM_N, TO_N)                                                                         \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode(benchmark::State& state) {                         \
+		const auto input_begin = c_span_char##FROM_N##_t_data(u##FROM_N##_data);                                     \
+		const auto input_end                                                                                         \
+		     = c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data);      \
+		const auto expected_begin = c_span_char##TO_N##_t_data(u##TO_N##_data);                                      \
+		const auto expected_end                                                                                      \
+		     = c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data);              \
+		const auto expected_size = c_span_char##TO_N##_t_size(u##TO_N##_data);                                       \
+		const std::vector<ztd_char##FROM_N##_t> input_data(input_begin, input_end);                                  \
+		std::vector<ztd_char##TO_N##_t> output_data(expected_size);                                                  \
+		bool result = true;                                                                                          \
+		for (auto _ : state) {                                                                                       \
+			size_t input_size                 = input_data.size();                                                  \
+			const ztd_char##FROM_N##_t* input = input_data.data();                                                  \
+			size_t output_size                = output_data.size();                                                 \
+			ztd_char##TO_N##_t* output        = output_data.data();                                                 \
+			cnc_mcerr err = cnc_c##FROM_N##sntoc##TO_N##sn(&output_size, &output, &input_size, &input);             \
+			if (err != cnc_mcerr_ok) {                                                                              \
+				result = false;                                                                                    \
+			}                                                                                                       \
+		}                                                                                                            \
+		const auto mismatch_result                                                                                   \
+		     = std::mismatch(output_data.cbegin(), output_data.cend(), expected_begin, expected_end);                \
+		const bool is_equal = mismatch_result.first == output_data.cend() && mismatch_result.second == expected_end; \
+		if (!result) {                                                                                               \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion failed with an error");                                            \
+			}                                                                                                       \
+		}                                                                                                            \
+		else if (!is_equal) {                                                                                        \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion succeeded but produced illegitimate data at index "                \
+				     + std::to_string(mismatch_result.second - expected_begin));                                   \
+			}                                                                                                       \
+		}                                                                                                            \
+	}                                                                                                                 \
+                                                                                                                       \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_unbounded(benchmark::State& state) {               \
+		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),           \
+		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));       \
+		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                     \
+		bool result = true;                                                                                          \
+		for (auto _ : state) {                                                                                       \
+			size_t input_size                 = input_data.size();                                                  \
+			const ztd_char##FROM_N##_t* input = input_data.data();                                                  \
+			ztd_char##TO_N##_t* output        = output_data.data();                                                 \
+			cnc_mcerr err = cnc_c##FROM_N##sntoc##TO_N##sn(nullptr, &output, &input_size, &input);                  \
+			if (err != cnc_mcerr_ok) {                                                                              \
+				result = false;                                                                                    \
+			}                                                                                                       \
+		}                                                                                                            \
+		const auto expected_begin = c_span_char##TO_N##_t_data(u##TO_N##_data);                                      \
+		const auto expected_end                                                                                      \
+		     = c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data);              \
+		const auto mismatch_result                                                                                   \
+		     = std::mismatch(output_data.cbegin(), output_data.cend(), expected_begin, expected_end);                \
+		const bool is_equal = mismatch_result.first == output_data.cend() && mismatch_result.second == expected_end; \
+		if (!result) {                                                                                               \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion failed with an error");                                            \
+			}                                                                                                       \
+		}                                                                                                            \
+		else if (!is_equal) {                                                                                        \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion succeeded but produced illegitimate data at index "                \
+				     + std::to_string(mismatch_result.second - expected_begin));                                   \
+			}                                                                                                       \
+		}                                                                                                            \
+	}                                                                                                                 \
 	static_assert(true, "")
 
 UTF_CONVERSION_BENCHMARK(8, 16);

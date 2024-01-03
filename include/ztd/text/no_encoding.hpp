@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -106,7 +106,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and a reference to the passed-in state\.
+		/// @returns A ztd::text::decode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -128,7 +129,7 @@ namespace ztd { namespace text {
 					::std::forward<_Output>(__output), __s, encoding_error::ok);
 			}
 
-			auto __out_it  = ::ztd::ranges::begin(__output);
+			auto __out_it   = ::ztd::ranges::begin(__output);
 			auto __out_last = ::ztd::ranges::end(__output);
 
 			if constexpr (__call_error_handler) {
@@ -166,7 +167,8 @@ namespace ztd { namespace text {
 		/// @param[in, out] __s The necessary state information. For this encoding, the state is empty and means
 		/// very little.
 		///
-		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and a reference to the passed-in state\.
+		/// @returns A ztd::text::encode_result object that contains the input range, output range, error handler, and
+		/// a reference to the passed-in state\.
 		///
 		/// @remarks To the best ability of the implementation, the iterators will be returned untouched (e.g.,
 		/// the input models at least a view and a forward_range). If it is not possible, returned ranges may be
@@ -188,7 +190,7 @@ namespace ztd { namespace text {
 					::std::forward<_Output>(__output), __s, encoding_error::ok);
 			}
 
-			auto __out_it  = ::ztd::ranges::begin(__output);
+			auto __out_it   = ::ztd::ranges::begin(__output);
 			auto __out_last = ::ztd::ranges::end(__output);
 
 			if constexpr (__call_error_handler) {

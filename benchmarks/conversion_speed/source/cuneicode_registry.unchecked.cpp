@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -46,9 +46,15 @@
 	template <bool Fast, bool Unbounded>                                                                              \
 	static void utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_unchecked_core(                          \
 	     benchmark::State& state) {                                                                                   \
-		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),           \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));       \
-		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                     \
+		const auto input_begin = c_span_char##FROM_N##_t_data(u##FROM_N##_data);                                     \
+		const auto input_end                                                                                         \
+		     = c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data);      \
+		const auto expected_begin = c_span_char##TO_N##_t_data(u##TO_N##_data);                                      \
+		const auto expected_end                                                                                      \
+		     = c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data);              \
+		const auto expected_size = c_span_char##TO_N##_t_size(u##TO_N##_data);                                       \
+		const std::vector<ztd_char##FROM_N##_t> input_data(input_begin, input_end);                                  \
+		std::vector<ztd_char##TO_N##_t> output_data(expected_size);                                                  \
 		/* create registry to use, and conversion descriptor too */                                                  \
 		std::unique_ptr<cnc_conversion_registry, registry_deleter> registry = nullptr;                               \
 		std::unique_ptr<cnc_conversion, conversion_deleter> conversion      = nullptr;                               \
@@ -56,24 +62,24 @@
 			cnc_conversion_registry* raw_registry = nullptr;                                                        \
 			cnc_conversion* raw_conversion        = nullptr;                                                        \
 			cnc_conversion_info info              = {};                                                             \
-			const cnc_open_err err              = cnc_registry_new(&raw_registry, cnc_registry_options_none);     \
-			if (err != cnc_open_err_ok) {                                                                         \
+			const cnc_open_err err                = cnc_registry_new(&raw_registry, cnc_registry_options_none);     \
+			if (err != cnc_open_err_ok) {                                                                           \
 				/* something went wrong, get out of here quick! */                                                 \
-				state.SkipWithError("conversion succeeded but produced illegitimate data");                        \
+				state.SkipWithError("could not open registry");                                                    \
 				return;                                                                                            \
 			}                                                                                                       \
 			registry.reset(raw_registry);                                                                           \
 			if constexpr (Fast) {                                                                                   \
 				if (!cnc_shared_add_simdutf_to_registry(registry.get())) {                                         \
 					/* something went wrong, get out of here quick! */                                            \
-					state.SkipWithError("could not add conversion to registry");                                  \
+					state.SkipWithError("could not add conversions to registry");                                 \
 					return;                                                                                       \
 				}                                                                                                  \
 			}                                                                                                       \
-			const cnc_open_err conv_err                                                                           \
+			const cnc_open_err conv_err                                                                             \
 			     = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N "-unchecked",               \
 			          (const ztd_char8_t*)u8"UTF-" #TO_N "-unchecked", &raw_conversion, &info);                     \
-			if (conv_err != cnc_open_err_ok) {                                                                    \
+			if (conv_err != cnc_open_err_ok) {                                                                      \
 				/* something went wrong, get out of here quick! */                                                 \
 				state.SkipWithError("could not open conversion descriptor");                                       \
 				return;                                                                                            \
@@ -92,14 +98,19 @@
 				result = false;                                                                                    \
 			}                                                                                                       \
 		}                                                                                                            \
-		const bool is_equal                                                                                          \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),      \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));          \
+		const auto mismatch_result                                                                                   \
+		     = std::mismatch(output_data.cbegin(), output_data.cend(), expected_begin, expected_end);                \
+		const bool is_equal = mismatch_result.first == output_data.cend() && mismatch_result.second == expected_end; \
 		if (!result) {                                                                                               \
-			state.SkipWithError("conversion failed with an error");                                                 \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion failed with an error");                                            \
+			}                                                                                                       \
 		}                                                                                                            \
 		else if (!is_equal) {                                                                                        \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                             \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion succeeded but produced illegitimate data at index "                \
+				     + std::to_string(mismatch_result.second - expected_begin));                                   \
+			}                                                                                                       \
 		}                                                                                                            \
 	}                                                                                                                 \
                                                                                                                        \
@@ -114,9 +125,15 @@
 	template <bool Fast, bool Unbounded>                                                                              \
 	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_unchecked_core(                      \
 	     benchmark::State& state) {                                                                                   \
-		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),           \
-		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));       \
-		std::vector<ztd_char##TO_N##_t> output_data(c_span_char##TO_N##_t_size(u##TO_N##_data));                     \
+		const auto input_begin = c_span_char##FROM_N##_t_data(u##FROM_N##_data);                                     \
+		const auto input_end                                                                                         \
+		     = c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data);      \
+		const auto expected_begin = c_span_char##TO_N##_t_data(u##TO_N##_data);                                      \
+		const auto expected_end                                                                                      \
+		     = c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data);              \
+		const auto expected_size = c_span_char##TO_N##_t_size(u##TO_N##_data);                                       \
+		const std::vector<ztd_char##FROM_N##_t> input_data(input_begin, input_end);                                  \
+		std::vector<ztd_char##TO_N##_t> output_data(expected_size);                                                  \
 		bool result = true;                                                                                          \
 		std::pmr::monotonic_buffer_resource mbr(static_cast<std::size_t>(4096));                                     \
 		cnc_conversion_heap mbr_heap = create_monotonic_buffer_heap(mbr);                                            \
@@ -128,9 +145,10 @@
 				cnc_conversion_registry* raw_registry = nullptr;                                                   \
 				cnc_conversion* raw_conversion        = nullptr;                                                   \
 				cnc_conversion_info info              = {};                                                        \
-				const cnc_open_err err = cnc_registry_open(&raw_registry, &mbr_heap, cnc_registry_options_none); \
-				if (err != cnc_open_err_ok) {                                                                    \
+				const cnc_open_err err = cnc_registry_open(&raw_registry, &mbr_heap, cnc_registry_options_none);   \
+				if (err != cnc_open_err_ok) {                                                                      \
 					/* something went wrong, get out of here quick! */                                            \
+					state.SkipWithError("could not open registry");                                               \
 					result = false;                                                                               \
 					break;                                                                                        \
 				}                                                                                                  \
@@ -138,14 +156,16 @@
 				if constexpr (Fast) {                                                                              \
 					if (!cnc_shared_add_simdutf_to_registry(registry.get())) {                                    \
 						/* something went wrong, get out of here quick! */                                       \
+						state.SkipWithError("could not add conversions to registry");                            \
 						result = false;                                                                          \
 						break;                                                                                   \
 					}                                                                                             \
 				}                                                                                                  \
-				const cnc_open_err conv_err                                                                      \
+				const cnc_open_err conv_err                                                                        \
 				     = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N "-unchecked",          \
 				          (const ztd_char8_t*)u8"UTF-" #TO_N "-unchecked", &raw_conversion, &info);                \
-				if (conv_err != cnc_open_err_ok) {                                                               \
+				if (conv_err != cnc_open_err_ok) {                                                                 \
+					state.SkipWithError("could not open conversion descriptor");                                  \
 					result = false;                                                                               \
 					return;                                                                                       \
 				}                                                                                                  \
@@ -161,14 +181,19 @@
 				result = false;                                                                                    \
 			}                                                                                                       \
 		}                                                                                                            \
-		const bool is_equal                                                                                          \
-		     = std::equal(output_data.cbegin(), output_data.cend(), c_span_char##TO_N##_t_data(u##TO_N##_data),      \
-		          c_span_char##TO_N##_t_data(u##TO_N##_data) + c_span_char##TO_N##_t_size(u##TO_N##_data));          \
+		const auto mismatch_result                                                                                   \
+		     = std::mismatch(output_data.cbegin(), output_data.cend(), expected_begin, expected_end);                \
+		const bool is_equal = mismatch_result.first == output_data.cend() && mismatch_result.second == expected_end; \
 		if (!result) {                                                                                               \
-			state.SkipWithError("conversion failed with an error");                                                 \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion failed with an error");                                            \
+			}                                                                                                       \
 		}                                                                                                            \
 		else if (!is_equal) {                                                                                        \
-			state.SkipWithError("conversion succeeded but produced illegitimate data");                             \
+			if (!state.skipped()) {                                                                                 \
+				state.SkipWithError("conversion succeeded but produced illegitimate data at index "                \
+				     + std::to_string(mismatch_result.second - expected_begin));                                   \
+			}                                                                                                       \
 		}                                                                                                            \
 	}                                                                                                                 \
                                                                                                                        \

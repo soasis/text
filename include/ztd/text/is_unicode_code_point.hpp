@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -55,9 +55,9 @@ namespace ztd { namespace text {
 	template <typename _Type>
 	class is_unicode_code_point
 	: public ::std::integral_constant<bool,
-		  ::std::is_same_v<::ztd::remove_cvref_t<_Type>,
-		       char32_t> || ::std::is_same_v<::ztd::remove_cvref_t<_Type>, __txt_impl::__unicode_code_point> || is_unicode_scalar_value_v<::ztd::remove_cvref_t<_Type>>> {
-	};
+		  ::std::is_same_v<::ztd::remove_cvref_t<_Type>, char32_t>
+		       || ::std::is_same_v<::ztd::remove_cvref_t<_Type>, __txt_impl::__unicode_code_point>
+		       || is_unicode_scalar_value_v<::ztd::remove_cvref_t<_Type>>> { };
 
 	template <typename _Type>
 	inline constexpr bool is_unicode_code_point_v = is_unicode_code_point<::ztd::remove_cvref_t<_Type>>::value;

@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -55,7 +55,7 @@ static void utf16_to_utf8_well_formed_windows_api(benchmark::State& state) {
 		size_t output_size   = output_data.size();
 		char* output         = (char*)output_data.data();
 		int err              = WideCharToMultiByte(
-		                  CP_UTF8, WC_ERR_INVALID_CHARS, input, (int)input_size, output, (int)output_size, 0, 0);
+               CP_UTF8, WC_ERR_INVALID_CHARS, input, (int)input_size, output, (int)output_size, 0, 0);
 		if (err == 0) {
 			result = false;
 		}

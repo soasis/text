@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -150,11 +150,11 @@ namespace ztd { namespace text {
 			}
 
 			constexpr __iterator_storage(range_type __range, encoding_type __encoding,
-				error_handler_type __error_handler)                                     // cf
-				noexcept(::std::is_nothrow_move_constructible_v<encoding_type>          // cf
-				          && ::std::is_nothrow_move_constructible_v<error_handler_type> // cf
-				               && ::std::is_nothrow_move_constructible_v<range_type>    // cf
-				                    && noexcept(__base_state_t(::std::declval<encoding_type&>())))
+				error_handler_type __error_handler)                                // cf
+				noexcept(::std::is_nothrow_move_constructible_v<encoding_type>     // cf
+				     && ::std::is_nothrow_move_constructible_v<error_handler_type> // cf
+				     && ::std::is_nothrow_move_constructible_v<range_type>         // cf
+				          && noexcept(__base_state_t(::std::declval<encoding_type&>())))
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->_M_get_encoding())
@@ -162,12 +162,11 @@ namespace ztd { namespace text {
 			}
 
 			constexpr __iterator_storage(range_type __range, encoding_type __encoding,
-				error_handler_type __error_handler, state_type __state) noexcept(  // cf
-				::std::is_nothrow_move_constructible_v<encoding_type>              // cf
-				     && ::std::is_nothrow_move_constructible_v<error_handler_type> // cf
-				          && ::std::is_nothrow_move_constructible_v<range_type>    // cf
-				               && noexcept(
-				                    __base_state_t(::std::declval<encoding_type&>(), ::std::declval<state_type>())))
+				error_handler_type __error_handler, state_type __state) noexcept( // cf
+				::std::is_nothrow_move_constructible_v<encoding_type>             // cf
+				&& ::std::is_nothrow_move_constructible_v<error_handler_type>     // cf
+				&& ::std::is_nothrow_move_constructible_v<range_type>             // cf
+				     && noexcept(__base_state_t(::std::declval<encoding_type&>(), ::std::declval<state_type>())))
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->_M_get_encoding(), ::std::move(__state))

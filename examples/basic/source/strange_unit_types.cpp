@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -38,7 +38,8 @@ int main(int, char*[]) {
 	using weird_9bit_utf8_t                           = ztd::text::basic_utf8<_BitInt(9), unsigned _BitInt(21)>;
 	constexpr const weird_9bit_utf8_t weird_9bit_utf8 = {};
 
-	auto weird_data_vec = ztd::text::transcode<std::vector<_BitInt(9)>>(u"🎉 Even this works?! 🤪 🎉", weird_9bit_utf8);
+	auto weird_data_vec
+	     = ztd::text::transcode<std::vector<_BitInt(9)>>(u"🎉 Even this works?! 🤪 🎉", weird_9bit_utf8);
 	for (const auto& utf8_9_code_unit : weird_data_vec) {
 		std::cout.put(static_cast<char>(utf8_9_code_unit));
 	}

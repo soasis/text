@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -196,13 +196,13 @@ namespace ztd { namespace text {
 		///
 		/// @remarks This can only work if the underlying encodings, error handlers, and states can handle default
 		/// construction.
-		constexpr transcode_iterator() noexcept(::std::is_nothrow_default_constructible_v<
-			__base_from_encoding_t>&& ::std::is_nothrow_default_constructible_v<__base_to_encoding_t>&& ::std::
-			     is_nothrow_default_constructible_v<__base_from_error_handler_t>&& ::std::
-			          is_nothrow_default_constructible_v<
-			               __base_to_error_handler_t>&& ::std::is_nothrow_constructible_v<__base_from_state_t,
-			               _FromEncoding>&& ::std::is_nothrow_constructible_v<__base_to_state_t,
-			               _ToEncoding>&& ::std::is_default_constructible_v<__base_range_t>)
+		constexpr transcode_iterator() noexcept(::std::is_nothrow_default_constructible_v<__base_from_encoding_t>
+			&& ::std::is_nothrow_default_constructible_v<__base_to_encoding_t>
+			&& ::std::is_nothrow_default_constructible_v<__base_from_error_handler_t>
+			&& ::std::is_nothrow_default_constructible_v<__base_to_error_handler_t>
+			&& ::std::is_nothrow_constructible_v<__base_from_state_t, _FromEncoding>
+			&& ::std::is_nothrow_constructible_v<__base_to_state_t, _ToEncoding>
+			&& ::std::is_default_constructible_v<__base_range_t>)
 		: __base_from_encoding_t()
 		, __base_to_encoding_t()
 		, __base_from_error_handler_t()

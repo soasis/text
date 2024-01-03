@@ -49,11 +49,10 @@ BreakBeforeBraces: Custom
 BraceWrapping:
   AfterEnum: false
   AfterStruct: false
+  AfterUnion: false
   AfterControlStatement: false
   AfterClass: false
   AfterNamespace: false
-  AfterStruct: false
-  AfterUnion: false
   BeforeElse: true
   BeforeCatch: true
   IndentBraces: false

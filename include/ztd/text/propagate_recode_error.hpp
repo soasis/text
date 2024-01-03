@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -143,8 +143,8 @@ namespace ztd { namespace text {
 		_ToState& __to_state, _FromInputProgress&& __from_input_progress,
 		_FromOutputProgress&& __from_output_progress, _ToInputProgress&& __to_input_progress,
 		_ToOutputProgress&& __to_output_progress) noexcept {
-		using _Result = recode_result<_ResultInput, ::ztd::remove_cvref_t<_Output>, _FromState, _ToState,
-			_ResultIntermediate>;
+		using _Result
+			= recode_result<_ResultInput, ::ztd::remove_cvref_t<_Output>, _FromState, _ToState, _ResultIntermediate>;
 		return ::ztd::text::propagate_recode_encode_error<_Result>(::std::forward<_Output>(__output),
 			::std::move(__encode_result), ::std::forward<_FromEncoding>(__from_encoding),
 			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_EncodeErrorHandler>(__encode_error_handler),
@@ -328,8 +328,8 @@ namespace ztd { namespace text {
 		_ToState& __to_state, _FromInputProgress&& __from_input_progress,
 		_FromOutputProgress&& __from_output_progress, _ToInputProgress&& __to_input_progress,
 		_ToOutputProgress&& __to_output_progress) noexcept {
-		using _Result = recode_result<_ResultInput, ::ztd::remove_cvref_t<_Output>, _FromState, _ToState,
-			_ResultIntermediate>;
+		using _Result
+			= recode_result<_ResultInput, ::ztd::remove_cvref_t<_Output>, _FromState, _ToState, _ResultIntermediate>;
 		return ::ztd::text::propagate_recode_encode_error_with<_Result>(::std::forward<_Input>(__input),
 			::std::forward<_Output>(__output), ::std::move(__encode_result),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),

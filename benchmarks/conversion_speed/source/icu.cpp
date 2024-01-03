@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -183,7 +183,7 @@ static void utf16_to_utf8_well_formed_icu_ucnv_fromUChars(benchmark::State& stat
 		UErrorCode err     = U_ZERO_ERROR;
 		int32_t output_len = (int32_t)(output_data.size() * sizeof(ztd_char8_t));
 		int32_t len        = ucnv_fromUChars(
-		            conv.get(), (char*)output_data.data(), output_len, str.getBuffer(), (int32_t)str.length(), &err);
+               conv.get(), (char*)output_data.data(), output_len, str.getBuffer(), (int32_t)str.length(), &err);
 		if (!U_SUCCESS(err)) {
 			result = false;
 		}
@@ -223,7 +223,7 @@ static void utf16_to_utf32_well_formed_icu_ucnv_fromUChars(benchmark::State& sta
 		UErrorCode err     = U_ZERO_ERROR;
 		int32_t output_len = (int32_t)(output_data.size() * sizeof(ztd_char32_t));
 		int32_t len        = ucnv_fromUChars(
-		            conv.get(), (char*)output_data.data(), output_len, str.getBuffer(), (int32_t)str.length(), &err);
+               conv.get(), (char*)output_data.data(), output_len, str.getBuffer(), (int32_t)str.length(), &err);
 		if (!U_SUCCESS(err)) {
 			result = false;
 		}

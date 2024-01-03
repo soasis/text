@@ -1,7 +1,7 @@
 // ============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -52,7 +52,7 @@
 		using UToErrorHandler   = ztd::remove_cvref_t<ToErrorHandler>;                                               \
 		using UPivot            = ztd::remove_cvref_t<Pivot>;                                                        \
 		using TranscodeResult                                                                                        \
-		     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;     \
+		     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;           \
 		if constexpr (ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> /* cf */                            \
 		     && ztd::text::is_ignorable_error_handler_v<UToErrorHandler>) {                                          \
 			const std::size_t written_chars = (ztd::endian::native == ztd::endian::big                              \
@@ -96,7 +96,7 @@
 		using UToErrorHandler   = ztd::remove_cvref_t<ToErrorHandler>;                                               \
 		using UPivot            = ztd::remove_cvref_t<Pivot>;                                                        \
 		using TranscodeResult                                                                                        \
-		     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;     \
+		     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;           \
 		if constexpr (!ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> /* cf */                           \
 		     || !ztd::text::is_ignorable_error_handler_v<UToErrorHandler>) {                                         \
 			const simdutf::result validate_res = (ztd::endian::native == ztd::endian::big                           \
@@ -153,8 +153,7 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 	using UFromErrorHandler = ztd::remove_cvref_t<FromErrorHandler>;
 	using UToErrorHandler   = ztd::remove_cvref_t<ToErrorHandler>;
 	using UPivot            = ztd::remove_cvref_t<Pivot>;
-	using TranscodeResult
-	     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;
+	using TranscodeResult = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;
 	constexpr bool no_error_handling = ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> // cf
 	     && ztd::text::is_ignorable_error_handler_v<UToErrorHandler>;
 	if constexpr (no_error_handling) {
@@ -203,8 +202,7 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 	using UFromErrorHandler = ztd::remove_cvref_t<FromErrorHandler>;
 	using UToErrorHandler   = ztd::remove_cvref_t<ToErrorHandler>;
 	using UPivot            = ztd::remove_cvref_t<Pivot>;
-	using TranscodeResult
-	     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;
+	using TranscodeResult = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;
 	constexpr bool no_error_handling = ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> // cf
 	     && ztd::text::is_ignorable_error_handler_v<UToErrorHandler>;
 	if constexpr (!no_error_handling) {

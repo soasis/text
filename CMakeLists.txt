@@ -1,7 +1,7 @@
 # =============================================================================
 #
 # ztd.text
-# Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+# Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 # Contact: opensource@soasis.org
 #
 # Commercial License Usage
@@ -107,6 +107,7 @@ if(ZTD_TEXT_IS_TOP_LEVEL_PROJECT)
 		# Warning flags
 		check_compiler_flag(warn-pedantic MSVC /permissive- GCC -pedantic)
 		check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
+		check_compiler_flag(warn-none MSVC /W0 GCC -w Clang -w)
 		check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
 		check_compiler_flag(warn-extra GCC -Wextra Clang -Wextra)
 		check_compiler_diagnostic(alignas-extra-padding MSVC 4324 LANGUAGES CXX)

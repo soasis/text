@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -69,7 +69,7 @@ public:
 		// If we are decoding a UTF-16 sequence,
 		// we can have 1 or 2 UTF-16 code units.
 		// they are identifiable as leading and trailing surrogates
-		constexpr char16_t last_utf16_lead_surrogate = u'\xDBFF';
+		constexpr char16_t last_utf16_lead_surrogate = 0xDBFF;
 		auto it   = ztd::ranges::begin(result.input);
 		auto last = ztd::ranges::end(result.input);
 		if (it != last) {

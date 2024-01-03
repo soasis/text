@@ -1,7 +1,7 @@
 // =============================================================================
 //
 // ztd.text
-// Copyright © 2022-2023 JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
+// Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
@@ -163,7 +163,7 @@ namespace ztd { namespace text {
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __state, encoding_error::ok);
 				}
 				_FunctionCodePoint __intermediate_output[max_code_points] = {};
-				::std::size_t __out_size                                  = ztdc_c_array_size(__intermediate_output);
+				::std::size_t __out_size = ztdc_c_array_size(__intermediate_output);
 				for (::std::size_t __index = 1;; ++__index) {
 					const _FunctionCodeUnit* __typed_in_ptr
 						= static_cast<const _FunctionCodeUnit*>(__intermediate_input);
