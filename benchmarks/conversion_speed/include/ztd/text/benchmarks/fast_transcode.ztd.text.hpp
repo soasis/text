@@ -188,7 +188,7 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 		     from_state, to_state, pivot);
 		return TranscodeResult(basic_result.input, basic_result.output.begin(), from_state, to_state,
 		     basic_result.error_code, basic_result.error_count, std::forward<Pivot>(pivot),
-		     ztd::text::encoding_error::ok, 0);
+		     basic_result.pivot_error_code, basic_result.pivot_error_count);
 	}
 }
 
@@ -241,7 +241,8 @@ auto text_transcode(::ztd::tag<ztd::text::utf8_t, ztd::text::utf32_t>, ztd::span
 	     ::std::forward<FromErrorHandler>(from_error_handler), ::std::forward<ToErrorHandler>(to_error_handler),
 	     from_state, to_state, pivot);
 	return TranscodeResult(basic_result.input, basic_result.output, from_state, to_state, basic_result.error_code,
-	     basic_result.error_count, std::forward<Pivot>(pivot), ztd::text::encoding_error::ok, 0);
+	     basic_result.error_count, std::forward<Pivot>(pivot), basic_result.pivot_error_code,
+	     basic_result.pivot_error_count);
 }
 
 #endif
