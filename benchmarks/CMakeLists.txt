@@ -94,6 +94,7 @@ ztd_platform_dependency_jail()
 add_subdirectory(barrier)
 add_subdirectory(function_form)
 add_subdirectory(conversion_speed)
+add_subdirectory(error_handling)
 
 add_custom_target(ztd.text.benchmarks.graphs.all
 	COMMENT "[ztd.text] graphing all benchmarks...")
@@ -102,3 +103,8 @@ add_dependencies(ztd.text.benchmarks.graphs.all
 	ztd.tools.benchmark_grapher.function_form.small
 	ztd.tools.benchmark_grapher.conversion_speed.small
 	ztd.tools.benchmark_grapher.conversion_speed.large)
+if (ZTD_TEXT_BENCHMARKS_INTERNALS)
+	add_dependencies(ztd.text.benchmarks.graphs.all
+		ztd.tools.benchmark_grapher.conversion_speed.internal.small
+		ztd.tools.benchmark_grapher.conversion_speed.internal.large)
+endif()

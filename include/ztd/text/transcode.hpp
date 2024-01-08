@@ -225,9 +225,9 @@ namespace ztd { namespace text {
 				auto __result = ::ztd::ranges::__rng_detail::__copy(
 					::ztd::ranges::cbegin(::std::forward<_Input>(__input)), ::ztd::ranges::cend(__input),
 					::ztd::ranges::begin(::std::forward<_Output>(__output)), ::ztd::ranges::end(__output));
-				using _Result = transcode_result<decltype(__result.input), decltype(__result.output), _FromState,
+				using _Result = transcode_result<decltype(__result.in), decltype(__result.out), _FromState,
 					_ToState, _UPivot>;
-				return _Result(::std::move(__result.input), __result.out, __from_state, __to_state,
+				return _Result(::std::move(__result.in), ::std::move(__result.out), __from_state, __to_state,
 					encoding_error::ok, 0, ::std::forward<_Pivot>(__pivot), encoding_error::ok, 0);
 			}
 			else if constexpr (is_detected_v<__txt_detail::__detect_adl_internal_text_transcode_one, _Input,

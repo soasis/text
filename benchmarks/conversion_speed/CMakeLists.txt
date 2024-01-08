@@ -41,6 +41,7 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 	target_include_directories(ztd.text.benchmarks.conversion_speed.${name}
 		PRIVATE
 			include
+			../include
 	)
 	target_link_libraries(ztd.text.benchmarks.conversion_speed.${name}
 		PRIVATE
@@ -90,7 +91,9 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_BENCHMARKS=1
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_UNCHECKED_BENCHMARKS=1
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_BASIC_BENCHMARKS=$<IF:$<BOOL:${ZTD_TEXT_BENCHMARKS_INTERNALS}>,1,0>
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_SINGLE_FROM_BULK_BENCHMARKS=$<IF:$<BOOL:${ZTD_TEXT_BENCHMARKS_INTERNALS}>,1,0>
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_BASIC_UNCHECKED_BENCHMARKS=$<IF:$<BOOL:${ZTD_TEXT_BENCHMARKS_INTERNALS}>,1,0>
+			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_CUNEICODE_SINGLE_FROM_BULK_UNCHECKED_BENCHMARKS=$<IF:$<BOOL:${ZTD_TEXT_BENCHMARKS_INTERNALS}>,1,0>
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICU_BENCHMARKS=1
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICONV_BENCHMARKS=1
 			ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ENCODING_C_BENCHMARKS=1
@@ -106,22 +109,43 @@ function (generate_converion_speed_benchmark_targets name data_name title)
 			_SILENCE_CXX26_CODECVT_FACETS_DEPRECATION_WARNING=1
 	)
 	generate_target_manifest(ztd.text.benchmarks.conversion_speed.${name})
-	set(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_TITLE ${title})
+	set(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_TITLE "${title}")
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/graph_config.in.json
 		${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json
 		@ONLY
 	)
-	ztd_tools_add_benchmark_grapher(
-		NAME
-			conversion_speed.${name}
-		CONFIG
-			"${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json"
-		TARGETS
-			ztd.text.benchmarks.conversion_speed.${name}
-		REPETITIONS
-			${ZTD_TEXT_BENCHMARKS_REPETITIONS}
+	set(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_TITLE "${title} - Internals")
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/graph_config.internal.in.json
+		${CMAKE_CURRENT_BINARY_DIR}/graph_config.internal.${name}.json
+		@ONLY
 	)
+	
+	if (ZTD_TEXT_BENCHMARKS_INTERNALS)
+		ztd_tools_add_benchmark_grapher(
+			NAMES
+				conversion_speed.${name}
+				conversion_speed.internal.${name}
+			CONFIGS
+				"${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json"
+				"${CMAKE_CURRENT_BINARY_DIR}/graph_config.internal.${name}.json"
+			TARGETS
+				ztd.text.benchmarks.conversion_speed.${name}
+			REPETITIONS
+				${ZTD_TEXT_BENCHMARKS_REPETITIONS}
+		)
+	else()
+		ztd_tools_add_benchmark_grapher(
+			NAMES
+				conversion_speed.${name}
+			CONFIGS
+				"${CMAKE_CURRENT_BINARY_DIR}/graph_config.${name}.json"
+			TARGETS
+				ztd.text.benchmarks.conversion_speed.${name}
+			REPETITIONS
+				${ZTD_TEXT_BENCHMARKS_REPETITIONS}
+		)
+	endif()
 endfunction()
 
-generate_converion_speed_benchmark_targets(large unicode "All Unicode Scalar Values")
-generate_converion_speed_benchmark_targets(small basic_source "C Character Set")
+generate_converion_speed_benchmark_targets(large unicode "All Unicode Scalar Values Conversion")
+generate_converion_speed_benchmark_targets(small basic_source "C Character Set Conversion")

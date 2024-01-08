@@ -215,6 +215,10 @@
 	}                                                                                                              \
 	static_assert(true, "")
 
+UTF_CONVERSION_BENCHMARK(8, 8);
+UTF_CONVERSION_BENCHMARK(16, 16);
+UTF_CONVERSION_BENCHMARK(32, 32);
+
 UTF_CONVERSION_BENCHMARK(8, 16);
 UTF_CONVERSION_BENCHMARK(16, 8);
 
@@ -226,12 +230,20 @@ UTF_CONVERSION_BENCHMARK(32, 16);
 
 #undef UTF_CONVERSION_BENCHMARK
 
+BENCHMARK(utf8_to_utf8_well_formed_ztd_text_basic_unbounded_unchecked);
+BENCHMARK(utf16_to_utf16_well_formed_ztd_text_basic_unbounded_unchecked);
+BENCHMARK(utf32_to_utf32_well_formed_ztd_text_basic_unbounded_unchecked);
+
 BENCHMARK(utf8_to_utf16_well_formed_ztd_text_basic_unbounded_unchecked);
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text_basic_unbounded_unchecked);
 BENCHMARK(utf16_to_utf32_well_formed_ztd_text_basic_unbounded_unchecked);
 BENCHMARK(utf16_to_utf8_well_formed_ztd_text_basic_unbounded_unchecked);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_basic_unbounded_unchecked);
 BENCHMARK(utf32_to_utf8_well_formed_ztd_text_basic_unbounded_unchecked);
+
+BENCHMARK(utf8_to_utf8_well_formed_ztd_text_basic_unchecked);
+BENCHMARK(utf16_to_utf16_well_formed_ztd_text_basic_unchecked);
+BENCHMARK(utf32_to_utf32_well_formed_ztd_text_basic_unchecked);
 
 BENCHMARK(utf8_to_utf16_well_formed_ztd_text_basic_unchecked);
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text_basic_unchecked);
@@ -240,12 +252,20 @@ BENCHMARK(utf16_to_utf32_well_formed_ztd_text_basic_unchecked);
 BENCHMARK(utf32_to_utf8_well_formed_ztd_text_basic_unchecked);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_basic_unchecked);
 
+BENCHMARK(utf8_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf16_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
+BENCHMARK(utf32_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
+
 BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
 BENCHMARK(utf16_to_utf32_well_formed_ztd_text_single_unbounded_unchecked);
 BENCHMARK(utf16_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
 BENCHMARK(utf32_to_utf8_well_formed_ztd_text_single_unbounded_unchecked);
 BENCHMARK(utf32_to_utf16_well_formed_ztd_text_single_unbounded_unchecked);
+
+BENCHMARK(utf8_to_utf8_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf16_to_utf16_well_formed_ztd_text_single_unchecked);
+BENCHMARK(utf32_to_utf32_well_formed_ztd_text_single_unchecked);
 
 BENCHMARK(utf8_to_utf16_well_formed_ztd_text_single_unchecked);
 BENCHMARK(utf8_to_utf32_well_formed_ztd_text_single_unchecked);

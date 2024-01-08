@@ -39,7 +39,7 @@
 #include <vector>
 
 #define UTF_CONVERSION_BENCHMARK(FROM_N, TO_N)                                                                         \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_single(benchmark::State& state) {                  \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_basic_single(benchmark::State& state) {            \
 		const auto input_begin = c_span_char##FROM_N##_t_data(u##FROM_N##_data);                                     \
 		const auto input_end                                                                                         \
 		     = c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data);      \
@@ -55,10 +55,11 @@
 			const ztd_char##FROM_N##_t* input = input_data.data();                                                  \
 			size_t output_size                = output_data.size();                                                 \
 			ztd_char##TO_N##_t* output        = output_data.data();                                                 \
-			cnc_mcstate_t state               = {};                                                                 \
+			cnc_mcstate_t cstate              = {};                                                                 \
 			for (const ztd_char##FROM_N##_t* const input_last = input + input_size;                                 \
-			     input != input_last || !cnc_mcstate_is_complete(&state);) {                                        \
-				cnc_mcerr err = cnc_c##FROM_N##nrtoc##TO_N##n(&output_size, &output, &input_size, &input, &state); \
+			     input != input_last || !cnc_mcstate_is_complete(&cstate);) {                                       \
+				cnc_mcerr err                                                                                      \
+				     = cnc_c##FROM_N##nrtoc##TO_N##n(&output_size, &output, &input_size, &input, &cstate);         \
 				if (err != cnc_mcerr_ok) {                                                                         \
 					result = false;                                                                               \
 					break;                                                                                        \
@@ -81,7 +82,7 @@
 		}                                                                                                            \
 	}                                                                                                                 \
                                                                                                                        \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_single_unbounded(benchmark::State& state) {        \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_basic_single_unbounded(benchmark::State& state) {  \
 		const auto input_begin = c_span_char##FROM_N##_t_data(u##FROM_N##_data);                                     \
 		const auto input_end                                                                                         \
 		     = c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data);      \
@@ -96,10 +97,10 @@
 			size_t input_size                 = input_data.size();                                                  \
 			const ztd_char##FROM_N##_t* input = input_data.data();                                                  \
 			ztd_char##TO_N##_t* output        = output_data.data();                                                 \
-			cnc_mcstate_t state               = {};                                                                 \
+			cnc_mcstate_t cstate              = {};                                                                 \
 			for (const ztd_char##FROM_N##_t* const input_last = input + input_size;                                 \
-			     input != input_last || !cnc_mcstate_is_complete(&state);) {                                        \
-				cnc_mcerr err = cnc_c##FROM_N##nrtoc##TO_N##n(nullptr, &output, &input_size, &input, &state);      \
+			     input != input_last || !cnc_mcstate_is_complete(&cstate);) {                                       \
+				cnc_mcerr err = cnc_c##FROM_N##nrtoc##TO_N##n(nullptr, &output, &input_size, &input, &cstate);     \
 				if (err != cnc_mcerr_ok) {                                                                         \
 					result = false;                                                                               \
 					break;                                                                                        \
@@ -123,6 +124,10 @@
 	}                                                                                                                 \
 	static_assert(true, "")
 
+UTF_CONVERSION_BENCHMARK(8, 8);
+UTF_CONVERSION_BENCHMARK(16, 16);
+UTF_CONVERSION_BENCHMARK(32, 32);
+
 UTF_CONVERSION_BENCHMARK(8, 16);
 UTF_CONVERSION_BENCHMARK(16, 8);
 
@@ -134,19 +139,26 @@ UTF_CONVERSION_BENCHMARK(32, 16);
 
 #undef UTF_CONVERSION_BENCHMARK
 
-BENCHMARK(utf8_to_utf16_well_formed_cuneicode_single);
-BENCHMARK(utf8_to_utf16_well_formed_cuneicode_single_unbounded);
-BENCHMARK(utf16_to_utf8_well_formed_cuneicode_single);
-BENCHMARK(utf16_to_utf8_well_formed_cuneicode_single_unbounded);
+BENCHMARK(utf8_to_utf8_well_formed_cuneicode_basic_single);
+BENCHMARK(utf8_to_utf8_well_formed_cuneicode_basic_single_unbounded);
+BENCHMARK(utf16_to_utf16_well_formed_cuneicode_basic_single);
+BENCHMARK(utf16_to_utf16_well_formed_cuneicode_basic_single_unbounded);
+BENCHMARK(utf32_to_utf32_well_formed_cuneicode_basic_single);
+BENCHMARK(utf32_to_utf32_well_formed_cuneicode_basic_single_unbounded);
 
-BENCHMARK(utf8_to_utf32_well_formed_cuneicode_single);
-BENCHMARK(utf8_to_utf32_well_formed_cuneicode_single_unbounded);
-BENCHMARK(utf32_to_utf8_well_formed_cuneicode_single);
-BENCHMARK(utf32_to_utf8_well_formed_cuneicode_single_unbounded);
+BENCHMARK(utf8_to_utf16_well_formed_cuneicode_basic_single);
+BENCHMARK(utf8_to_utf16_well_formed_cuneicode_basic_single_unbounded);
+BENCHMARK(utf16_to_utf8_well_formed_cuneicode_basic_single);
+BENCHMARK(utf16_to_utf8_well_formed_cuneicode_basic_single_unbounded);
 
-BENCHMARK(utf16_to_utf32_well_formed_cuneicode_single);
-BENCHMARK(utf16_to_utf32_well_formed_cuneicode_single_unbounded);
-BENCHMARK(utf32_to_utf16_well_formed_cuneicode_single);
-BENCHMARK(utf32_to_utf16_well_formed_cuneicode_single_unbounded);
+BENCHMARK(utf8_to_utf32_well_formed_cuneicode_basic_single);
+BENCHMARK(utf8_to_utf32_well_formed_cuneicode_basic_single_unbounded);
+BENCHMARK(utf32_to_utf8_well_formed_cuneicode_basic_single);
+BENCHMARK(utf32_to_utf8_well_formed_cuneicode_basic_single_unbounded);
+
+BENCHMARK(utf16_to_utf32_well_formed_cuneicode_basic_single);
+BENCHMARK(utf16_to_utf32_well_formed_cuneicode_basic_single_unbounded);
+BENCHMARK(utf32_to_utf16_well_formed_cuneicode_basic_single);
+BENCHMARK(utf32_to_utf16_well_formed_cuneicode_basic_single_unbounded);
 
 #endif

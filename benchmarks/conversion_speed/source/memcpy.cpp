@@ -87,14 +87,24 @@
 	}                                                                                                            \
 	static_assert(true, "")
 
+UTF_CONVERSION_BENCHMARK(8, 8);
+UTF_CONVERSION_BENCHMARK(16, 16);
+UTF_CONVERSION_BENCHMARK(32, 32);
+
 UTF_CONVERSION_BENCHMARK(8, 16);
 UTF_CONVERSION_BENCHMARK(16, 8);
+
 UTF_CONVERSION_BENCHMARK(32, 16);
 UTF_CONVERSION_BENCHMARK(16, 32);
+
 UTF_CONVERSION_BENCHMARK(8, 32);
 UTF_CONVERSION_BENCHMARK(32, 8);
 
 #undef UTF_CONVERSION_BENCHMARK
+
+BENCHMARK(utf8_to_utf8_well_formed_memcpy);
+BENCHMARK(utf16_to_utf16_well_formed_memcpy);
+BENCHMARK(utf32_to_utf32_well_formed_memcpy);
 
 BENCHMARK(utf8_to_utf16_well_formed_memcpy);
 BENCHMARK(utf8_to_utf32_well_formed_memcpy);

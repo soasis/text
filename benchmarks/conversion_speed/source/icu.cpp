@@ -362,6 +362,9 @@ static void utf8_to_utf16_well_formed_icu_ucnv_toUChars(benchmark::State& state)
 	}                                                                                                                 \
 	static_assert(true, "")
 
+UTF_CONVERSION_BENCHMARK(8, 8, , , , );
+UTF_CONVERSION_BENCHMARK(16, 16, BE, LE, BE, LE);
+UTF_CONVERSION_BENCHMARK(32, 32, BE, LE, BE, LE);
 
 UTF_CONVERSION_BENCHMARK(8, 16, , , BE, LE);
 UTF_CONVERSION_BENCHMARK(8, 32, , , BE, LE);
@@ -374,6 +377,9 @@ UTF_CONVERSION_BENCHMARK(32, 16, BE, LE, BE, LE);
 
 #undef UTF_CONVERSION_BENCHMARK
 
+BENCHMARK(utf8_to_utf8_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf16_to_utf16_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf32_to_utf32_well_formed_icu_ucnv_convertEx);
 
 BENCHMARK(utf8_to_utf16_well_formed_icu_ucnv_convertEx);
 BENCHMARK(utf8_to_utf16_well_formed_icu_u_strFromUTF8);

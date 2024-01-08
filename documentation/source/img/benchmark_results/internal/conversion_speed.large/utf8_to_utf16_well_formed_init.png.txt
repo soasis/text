@@ -1,0 +1,38 @@
+Title: "All Unicode Scalar Values - UTF-8 to UTF-16 (Well-Formed, with Init)". Description: "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+
+There are 17 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- encoding_c is 17th. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
+  This group had an error: "unsupported".
+- cuneicode_registry_single_from_bulk_unbounded is 16th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "14.911774293364338" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_single_from_bulk is 15th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "12.072044677812503" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_basic_single is 14th. It has no description.
+  Measures to a mean of "1.482524049334849" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_basic_single_unbounded is 13th. It has no description.
+  Measures to a mean of "1.4758733746471506" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_basic_single_unchecked is 12th. It has no description.
+  Measures to a mean of "1.440226226670978" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_basic_single_unchecked_unbounded is 11th. It has no description.
+  Measures to a mean of "1.4257519279932604" milliseconds, from 150 multi-iteration samples.
+- icu_ucnv_convertEx is 10th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "0.6677643857145172" milliseconds, from 150 multi-iteration samples.
+- iconv is 9th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "0.6673413452392977" milliseconds, from 150 multi-iteration samples.
+- standard_cpp is 8th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
+  Measures to a mean of "0.4592697606250119" milliseconds, from 150 multi-iteration samples.
+- encoding_c_direct is 7th. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c and not using the general-purpose conversion routes (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
+  Measures to a mean of "0.25655993405019956" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry is 6th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "0.17798007059974683" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unbounded is 5th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "0.17332544717399967" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked is 4th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "0.15605517395670176" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked_unbounded is 3rd. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
+  Measures to a mean of "0.1459029477923096" milliseconds, from 150 multi-iteration samples.
+- memcpy is 2nd. It has no description.
+  Measures to a mean of "0.025935325667599027" milliseconds, from 150 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.353320355216662e-17" milliseconds, from 150 multi-iteration samples.

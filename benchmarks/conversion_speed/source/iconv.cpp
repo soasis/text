@@ -138,6 +138,10 @@ inline namespace ztd_text_benchmarks_conversion_speed_iconv {
 	}                                                                                                                \
 	static_assert(true, "")
 
+UTF_CONVERSION_BENCHMARKS(8, 8, , , , );
+UTF_CONVERSION_BENCHMARKS(16, 16, BE, LE, BE, LE);
+UTF_CONVERSION_BENCHMARKS(32, 32, BE, LE, BE, LE);
+
 UTF_CONVERSION_BENCHMARKS(8, 16, , , BE, LE);
 UTF_CONVERSION_BENCHMARKS(16, 8, BE, LE, , );
 
@@ -148,6 +152,10 @@ UTF_CONVERSION_BENCHMARKS(16, 32, BE, LE, BE, LE);
 UTF_CONVERSION_BENCHMARKS(32, 16, BE, LE, BE, LE);
 
 #undef UTF_CONVERSION_BENCHMARK
+
+BENCHMARK(utf8_to_utf8_well_formed_iconv);
+BENCHMARK(utf16_to_utf16_well_formed_iconv);
+BENCHMARK(utf32_to_utf32_well_formed_iconv);
 
 BENCHMARK(utf8_to_utf16_well_formed_iconv);
 BENCHMARK(utf8_to_utf32_well_formed_iconv);

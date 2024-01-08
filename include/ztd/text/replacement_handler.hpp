@@ -136,7 +136,8 @@ namespace ztd { namespace text {
 			}
 			else {
 				static_assert(always_false_v<_Encoding>,
-					"There is no logical replacement code points to insert into the stream on failure for the "
+					"There is no logical replacement code points to insert into the stream on failure for "
+					"the "
 					"specified encoding type.");
 			}
 		}
@@ -239,7 +240,8 @@ namespace ztd { namespace text {
 			}
 			else {
 				static_assert(always_false_v<_Encoding>,
-					"There is no logical replacement code points to insert into the stream on failure for the "
+					"There is no logical replacement code points to insert into the stream on failure for "
+					"the "
 					"specified encoding type.");
 			}
 		}
@@ -310,15 +312,16 @@ namespace ztd { namespace text {
 	/// @brief An error handler that replaces bad code points and code units with a chosen code point / code unit
 	/// sequence.
 	///
-	/// @remarks This class hooks into the encodings passed as the first parameter to the error handling functions to
-	/// see if they define either `replacement_code_points()` or `replacement_code_units()` function. If so, they
-	/// will call them and use the returned contiguous range to isnert code points or code units into the function. If
-	/// neither of these exist, then it checks for a definition of a `maybe_replacement_code_points()` or a @c
-	/// maybe_replacement_code_units() function. If either is present, they are expected to return a `std::optional`
-	/// of a contiguous range. If it is engaged (the `std::optional` is filled) it will be used. Otherwise, if it is
-	/// not engaged, then it will explicitly fall back to attempt to insert the default replacement character `U`+FFFD
-	/// (<tt>U'�'</tt>) or <tt>?</tt> character. If the output is out of room for the desired object, then nothing will
-	/// be inserted at all.
+	/// @remarks This class hooks into the encodings passed as the first parameter to the error handling functions
+	/// to see if they define either `replacement_code_points()` or `replacement_code_units()` function. If so,
+	/// they will call them and use the returned contiguous range to isnert code points or code units into the
+	/// function. If neither of these exist, then it checks for a definition of a
+	/// `maybe_replacement_code_points()` or a @c maybe_replacement_code_units() function. If either is present,
+	/// they are expected to return a `std::optional` of a contiguous range. If it is engaged (the `std::optional`
+	/// is filled) it will be used. Otherwise, if it is not engaged, then it will explicitly fall back to attempt
+	/// to insert the default replacement character `U`+FFFD
+	/// (<tt>U'�'</tt>) or <tt>?</tt> character. If the output is out of room for the desired object, then nothing
+	/// will be inserted at all.
 	class replacement_handler_t {
 	private:
 		template <typename _Encoding, typename _Input, typename _Output, typename _State>
@@ -478,15 +481,15 @@ namespace ztd { namespace text {
 
 	public:
 		//////
-		/// @brief The function call for inserting replacement code units at the point of failure, before returning
-		/// flow back to the caller of the encode operation.
+		/// @brief The function call for inserting replacement code units at the point of failure, before
+		/// returning flow back to the caller of the encode operation.
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range before
-		/// undergoing the attempted encode operation.
-		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output range
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range
 		/// before undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output
+		/// range before undergoing the attempted encode operation.
 		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
 			typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, encode_result<_Input, _Output, _State> __result,
@@ -503,15 +506,15 @@ namespace ztd { namespace text {
 		}
 
 		//////
-		/// @brief The function call for inserting replacement code points at the point of failure, before returning
-		/// flow back to the caller of the decode operation.
+		/// @brief The function call for inserting replacement code points at the point of failure, before
+		/// returning flow back to the caller of the decode operation.
 		///
 		/// @param[in] __encoding The Encoding that experienced the error.
 		/// @param[in] __result The current state of the encode operation.
-		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range before
-		/// undergoing the attempted encode operation.
-		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output range
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range
 		/// before undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output
+		/// range before undergoing the attempted encode operation.
 		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
 			typename _OutputProgress>
 		constexpr auto operator()(const _Encoding& __encoding, decode_result<_Input, _Output, _State> __result,
@@ -531,6 +534,93 @@ namespace ztd { namespace text {
 	//////
 	/// @brief A convenience variable for passing the replacement_handler_t handler to functions.
 	inline constexpr replacement_handler_t replacement_handler = {};
+
+	//////
+	/// @brief An error handler that replaces bad code points and code units with a chosen code point / code unit
+	/// sequence provided directly in the constructor rather than by the encoding object.
+	///
+	/// @tparam _CodePointRange The code point range type to insert.
+	/// @tparam _CodeUnitRange The code unit range type to insert.
+	///
+	/// @remarks Unlike ztd::text::replacement_handler_t, this class does not hook into anything and will simply
+	/// insert the desired sequences of code units or code points into the output with no attempt at negotiating
+	/// anything. It will store the two sequences given as the range types provided in the template arguments.
+	template <typename _CodePointRange, typename _CodeUnitRange>
+	class replacement_of_handler {
+	public:
+		//////
+		/// @brief The code units that will be inserted when the error handler is called for encoding operations.
+		ZTD_USE(ZTD_NO_UNIQUE_ADDRESS) _CodePointRange code_point_replacement;
+		//////
+		/// @brief The code units that will be inserted when the error handler is called for decoding operations.
+		ZTD_USE(ZTD_NO_UNIQUE_ADDRESS) _CodeUnitRange code_unit_replacement;
+
+		template <typename _CodePoints, typename _CodeUnits>
+		constexpr replacement_of_handler(_CodePoints&& __code_points, _CodeUnits&& __code_units) noexcept(
+			::std::is_nothrow_constructible_v<_CodePointRange, _CodePoints>
+			&& ::std::is_nothrow_constructible_v<_CodeUnitRange, _CodeUnits>)
+		: code_point_replacement(::std::forward<_CodePoints>(__code_points))
+		, code_unit_replacement(::std::forward<_CodeUnits>(__code_units)) {
+		}
+
+		//////
+		/// @brief The function call for inserting replacement code units at the point of failure, before
+		/// returning flow back to the caller of the encode operation.
+		///
+		/// @param[in] __encoding The Encoding that experienced the error.
+		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range
+		/// before undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output
+		/// range before undergoing the attempted encode operation.
+		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
+			typename _OutputProgress>
+		constexpr auto operator()(const _Encoding& __encoding, encode_result<_Input, _Output, _State> __result,
+			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const _Encoding&,
+			     encode_result<_Input, _Output, _State>, const _InputProgress&, const _OutputProgress&>) {
+			if (__result.error_code == encoding_error::insufficient_output_space) {
+				// BAIL
+				return __result;
+			}
+			auto __copy_result
+				= ::ztd::ranges::__rng_detail::__copy(code_unit_replacement, ::std::move(__result.output));
+			__result.output = ::std::move(__copy_result.out);
+			return ::ztd::text::skip_input_error(
+				__encoding, ::std::move(__result), __input_progress, __output_progress);
+		}
+
+		//////
+		/// @brief The function call for inserting replacement code points at the point of failure, before
+		/// returning flow back to the caller of the decode operation.
+		///
+		/// @param[in] __encoding The Encoding that experienced the error.
+		/// @param[in] __result The current state of the encode operation.
+		/// @param[in] __input_progress How much input was (potentially irreversibly) read from the input range
+		/// before undergoing the attempted encode operation.
+		/// @param[in] __output_progress How much output was (potentially irreversibly) written to the output
+		/// range before undergoing the attempted encode operation.
+		template <typename _Encoding, typename _Input, typename _Output, typename _State, typename _InputProgress,
+			typename _OutputProgress>
+		constexpr auto operator()(const _Encoding& __encoding, decode_result<_Input, _Output, _State> __result,
+			const _InputProgress& __input_progress, const _OutputProgress& __output_progress) const
+			noexcept(::ztd::text::is_nothrow_skip_input_error_v<const _Encoding&,
+			     decode_result<_Input, _Output, _State>, const _InputProgress&, const _OutputProgress&>) {
+			if (__result.error_code == encoding_error::insufficient_output_space) {
+				// BAIL
+				return __result;
+			}
+			auto __copy_result
+				= ::ztd::ranges::__rng_detail::__copy(code_point_replacement, ::std::move(__result.output));
+			__result.output = ::std::move(__copy_result.out);
+			return ::ztd::text::skip_input_error(
+				__encoding, ::std::move(__result), __input_progress, __output_progress);
+		}
+	};
+
+	template <typename _CodePoints, typename _CodeUnits>
+	replacement_of_handler(_CodePoints&&, _CodeUnits&&)
+		-> replacement_of_handler<::std::remove_reference_t<_CodePoints>, ::std::remove_reference_t<_CodeUnits>>;
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

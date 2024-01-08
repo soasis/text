@@ -44,7 +44,8 @@
 
 #define UTF_CONVERSION_BENCHMARK(FROM_N, TO_N)                                                                         \
 	template <bool Fast, bool Unbounded>                                                                              \
-	static void utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_single_core(benchmark::State& state) {   \
+	static void utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_basic_single_core(                       \
+	     benchmark::State& state) {                                                                                   \
 		const auto input_begin = c_span_char##FROM_N##_t_data(u##FROM_N##_data);                                     \
 		const auto input_end                                                                                         \
 		     = c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data);      \
@@ -69,9 +70,9 @@
 			}                                                                                                       \
 			registry.reset(raw_registry);                                                                           \
 			if constexpr (Fast) {                                                                                   \
-				if (!cnc_shared_add_simdutf_to_registry(registry.get())) {                                         \
+				if (!cnc_shared_add_bulk_simdutf_to_registry(registry.get())) {                                    \
 					/* something went wrong, get out of here quick! */                                            \
-					state.SkipWithError("could not add conversions to registry");                                 \
+					state.SkipWithError("could not add bulk conversions to registry");                            \
 					return;                                                                                       \
 				}                                                                                                  \
 			}                                                                                                       \
@@ -115,16 +116,16 @@
 		}                                                                                                            \
 	}                                                                                                                 \
                                                                                                                        \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_registry_single(benchmark::State& state) {         \
-		utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_single_core<true, false>(state);                \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_registry_basic_single(benchmark::State& state) {   \
+		utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_basic_single_core<false, false>(state);         \
 	}                                                                                                                 \
-	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_registry_single_unbounded(                         \
+	static void utf##FROM_N##_to_utf##TO_N##_well_formed_cuneicode_registry_basic_single_unbounded(                   \
 	     benchmark::State& state) {                                                                                   \
-		utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_single_core<true, true>(state);                 \
+		utf##FROM_N##_to_utf##TO_N##__well_formed_cuneicode_registry_basic_single_core<false, true>(state);          \
 	}                                                                                                                 \
                                                                                                                        \
 	template <bool Fast, bool Unbounded>                                                                              \
-	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_single_core(                         \
+	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_basic_single_core(                   \
 	     benchmark::State& state) {                                                                                   \
 		const std::vector<ztd_char##FROM_N##_t> input_data(c_span_char##FROM_N##_t_data(u##FROM_N##_data),           \
 		     c_span_char##FROM_N##_t_data(u##FROM_N##_data) + c_span_char##FROM_N##_t_size(u##FROM_N##_data));       \
@@ -149,9 +150,9 @@
 				}                                                                                                  \
 				registry.reset(raw_registry);                                                                      \
 				if constexpr (Fast) {                                                                              \
-					if (!cnc_shared_add_simdutf_to_registry(registry.get())) {                                    \
+					if (!cnc_shared_add_bulk_simdutf_to_registry(registry.get())) {                               \
 						/* something went wrong, get out of here quick! */                                       \
-						state.SkipWithError("could not add conversions to registry");                            \
+						state.SkipWithError("could not add bulk conversions to registry");                       \
 						result = false;                                                                          \
 						break;                                                                                   \
 					}                                                                                             \
@@ -160,6 +161,7 @@
 				     = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" #FROM_N,                       \
 				          (const ztd_char8_t*)u8"UTF-" #TO_N, &raw_conversion, &info);                             \
 				if (conv_err != cnc_open_err_ok) {                                                                 \
+					state.SkipWithError("could not open conversion descriptor");                                  \
 					result = false;                                                                               \
 					return;                                                                                       \
 				}                                                                                                  \
@@ -197,19 +199,24 @@
 		}                                                                                                            \
 	}                                                                                                                 \
                                                                                                                        \
-	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_single(benchmark::State& state) {    \
-		utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_single_core<true, false>(state);            \
-	}                                                                                                                 \
-	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_single_unbounded(                    \
+	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_basic_single(                        \
 	     benchmark::State& state) {                                                                                   \
-		utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_single_core<true, true>(state);             \
+		utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_basic_single_core<false, false>(state);     \
+	}                                                                                                                 \
+	static void utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_basic_single_unbounded(              \
+	     benchmark::State& state) {                                                                                   \
+		utf##FROM_N##_to_utf##TO_N##_init_well_formed_cuneicode_registry_basic_single_core<false, true>(state);      \
 	}                                                                                                                 \
 	static_assert(true, "")
+
+UTF_CONVERSION_BENCHMARK(8, 8);
+UTF_CONVERSION_BENCHMARK(16, 16);
+UTF_CONVERSION_BENCHMARK(32, 32);
 
 UTF_CONVERSION_BENCHMARK(16, 8);
 UTF_CONVERSION_BENCHMARK(16, 32);
 
-// UTF_CONVERSION_BENCHMARK(32, 8);
+UTF_CONVERSION_BENCHMARK(32, 8);
 UTF_CONVERSION_BENCHMARK(32, 16);
 
 UTF_CONVERSION_BENCHMARK(8, 16);
@@ -217,182 +224,41 @@ UTF_CONVERSION_BENCHMARK(8, 32);
 
 #undef UTF_CONVERSION_BENCHMARK
 
-template <bool Fast, bool Unbounded>
-static void utf32_to_utf8__well_formed_cuneicode_registry_single_core(benchmark::State& state) {
-	const auto input_begin    = c_span_char32_t_data(u32_data);
-	const auto input_end      = c_span_char32_t_data(u32_data) + c_span_char32_t_size(u32_data);
-	const auto expected_begin = c_span_char8_t_data(u8_data);
-	const auto expected_end   = c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data);
-	const auto expected_size  = c_span_char8_t_size(u8_data);
-	const std::vector<ztd_char32_t> input_data(input_begin, input_end);
-	std::vector<ztd_char8_t> output_data(expected_size); /* create registry to use, and conversion descriptor too */
-	std::unique_ptr<cnc_conversion_registry, registry_deleter> registry = nullptr;
-	std::unique_ptr<cnc_conversion, conversion_deleter> conversion      = nullptr;
-	{
-		cnc_conversion_registry* raw_registry = nullptr;
-		cnc_conversion* raw_conversion        = nullptr;
-		cnc_conversion_info info              = {};
-		const cnc_open_err err                = cnc_registry_new(&raw_registry, cnc_registry_options_none);
-		if (err != cnc_open_err_ok) { /* something went wrong, get out of here quick! */
-			state.SkipWithError("could not open registry");
-			return;
-		}
-		registry.reset(raw_registry);
-		if constexpr (Fast) {
-			if (!cnc_shared_add_simdutf_to_registry(
-			         registry.get())) { /* something went wrong, get out of here quick! */
-				state.SkipWithError("could not add conversions to registry");
-				return;
-			}
-		}
-		const cnc_open_err conv_err = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" "32",
-		     (const ztd_char8_t*)u8"UTF-" "8", &raw_conversion, &info);
-		if (conv_err != cnc_open_err_ok) { /* something went wrong, get out of here quick! */
-			state.SkipWithError("could not open conversion descriptor");
-			return;
-		}
-		conversion.reset(raw_conversion);
-	}
-	bool result = true;
-	for (auto _ : state) {
-		size_t input_size                   = input_data.size() * sizeof(*input_data.data());
-		const unsigned char* input          = (const unsigned char*)input_data.data();
-		[[maybe_unused]] size_t output_size = output_data.size() * sizeof(*output_data.data());
-		unsigned char* output               = (unsigned char*)output_data.data();
-		for (; input_size > 0 || !cnc_conv_state_is_complete(conversion.get());) {
-			cnc_mcerr err
-			     = cnc_conv_one(conversion.get(), Unbounded ? nullptr : &output_size, &output, &input_size, &input);
-			if (err != cnc_mcerr_ok) {
-				result = false;
-				break;
-			}
-		}
-	}
-	const auto mismatch_result = std::mismatch(output_data.cbegin(), output_data.cend(), expected_begin, expected_end);
-	const bool is_equal        = mismatch_result.first == output_data.cend() && mismatch_result.second == expected_end;
-	if (!result) {
-		if (!state.skipped()) {
-			state.SkipWithError("conversion failed with an error");
-		}
-	}
-	else if (!is_equal) {
-		if (!state.skipped()) {
-			state.SkipWithError("conversion succeeded but produced illegitimate data at index "
-			     + std::to_string(mismatch_result.second - expected_begin));
-		}
-	}
-}
+BENCHMARK(utf8_to_utf8_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf8_to_utf8_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf16_to_utf16_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf16_to_utf16_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf32_to_utf32_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf32_to_utf32_well_formed_cuneicode_registry_basic_single_unbounded);
 
-static void utf32_to_utf8_well_formed_cuneicode_registry_single(benchmark::State& state) {
-	utf32_to_utf8__well_formed_cuneicode_registry_single_core<true, false>(state);
-}
-static void utf32_to_utf8_well_formed_cuneicode_registry_single_unbounded(benchmark::State& state) {
-	utf32_to_utf8__well_formed_cuneicode_registry_single_core<true, true>(state);
-}
+BENCHMARK(utf8_to_utf16_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf8_to_utf16_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf16_to_utf8_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf16_to_utf8_well_formed_cuneicode_registry_basic_single_unbounded);
 
-template <bool Fast, bool Unbounded>
-static void utf32_to_utf8_init_well_formed_cuneicode_registry_single_core(benchmark::State& state) {
-	const std::vector<ztd_char32_t> input_data(
-	     c_span_char32_t_data(u32_data), c_span_char32_t_data(u32_data) + c_span_char32_t_size(u32_data));
-	std::vector<ztd_char8_t> output_data(c_span_char8_t_size(u8_data));
-	bool result = true;
-	std::pmr::monotonic_buffer_resource mbr(static_cast<std::size_t>(4096));
-	cnc_conversion_heap mbr_heap = create_monotonic_buffer_heap(mbr);
-	for (auto _ : state) { /* create registry to use, and conversion descriptor too */
-		std::unique_ptr<cnc_conversion_registry, registry_deleter> registry = nullptr;
-		std::unique_ptr<cnc_conversion, conversion_deleter> conversion      = nullptr;
-		{
-			cnc_conversion_registry* raw_registry = nullptr;
-			cnc_conversion* raw_conversion        = nullptr;
-			cnc_conversion_info info              = {};
-			const cnc_open_err err = cnc_registry_open(&raw_registry, &mbr_heap, cnc_registry_options_none);
-			if (err != cnc_open_err_ok) { /* something went wrong, get out of here quick! */
-				state.SkipWithError("unable to open registry");
-				result = false;
-				break;
-			}
-			registry.reset(raw_registry);
-			if constexpr (Fast) {
-				if (!cnc_shared_add_simdutf_to_registry(
-				         registry.get())) { /* something went wrong, get out of here quick! */
-					state.SkipWithError("could not add conversions to registry");
-					result = false;
-					break;
-				}
-			}
-			const cnc_open_err conv_err = cnc_conv_new_c8(registry.get(), (const ztd_char8_t*)u8"UTF-" "32",
-			     (const ztd_char8_t*)u8"UTF-" "8", &raw_conversion, &info);
-			if (conv_err != cnc_open_err_ok) {
-				result = false;
-				return;
-			}
-			conversion.reset(raw_conversion);
-		}
-		size_t input_size                   = input_data.size() * sizeof(*input_data.data());
-		const unsigned char* input          = (const unsigned char*)input_data.data();
-		[[maybe_unused]] size_t output_size = output_data.size() * sizeof(*output_data.data());
-		unsigned char* output               = (unsigned char*)output_data.data();
-		for (; input_size > 0 || !cnc_conv_state_is_complete(conversion.get());) {
-			cnc_mcerr err
-			     = cnc_conv_one(conversion.get(), Unbounded ? nullptr : &output_size, &output, &input_size, &input);
-			if (err != cnc_mcerr_ok) {
-				result = false;
-				break;
-			}
-		}
-	}
-	const auto expected_begin  = c_span_char8_t_data(u8_data);
-	const auto expected_end    = c_span_char8_t_data(u8_data) + c_span_char8_t_size(u8_data);
-	const auto mismatch_result = std::mismatch(output_data.cbegin(), output_data.cend(), expected_begin, expected_end);
-	const bool is_equal        = mismatch_result.first == output_data.cend() && mismatch_result.second == expected_end;
-	if (!result) {
-		if (!state.skipped()) {
-			state.SkipWithError("conversion failed with an error");
-		}
-	}
-	else if (!is_equal) {
-		if (!state.skipped()) {
-			state.SkipWithError("conversion succeeded but produced illegitimate data at index "
-			     + std::to_string(mismatch_result.second - expected_begin));
-		}
-	}
-}
+BENCHMARK(utf8_to_utf32_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf8_to_utf32_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf32_to_utf8_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf32_to_utf8_well_formed_cuneicode_registry_basic_single_unbounded);
 
-static void utf32_to_utf8_init_well_formed_cuneicode_registry_single(benchmark::State& state) {
-	utf32_to_utf8_init_well_formed_cuneicode_registry_single_core<true, false>(state);
-}
-static void utf32_to_utf8_init_well_formed_cuneicode_registry_single_unbounded(benchmark::State& state) {
-	utf32_to_utf8_init_well_formed_cuneicode_registry_single_core<true, true>(state);
-}
+BENCHMARK(utf16_to_utf32_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf16_to_utf32_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf32_to_utf16_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf32_to_utf16_well_formed_cuneicode_registry_basic_single_unbounded);
 
-BENCHMARK(utf8_to_utf16_well_formed_cuneicode_registry_single);
-BENCHMARK(utf8_to_utf16_well_formed_cuneicode_registry_single_unbounded);
-BENCHMARK(utf16_to_utf8_well_formed_cuneicode_registry_single);
-BENCHMARK(utf16_to_utf8_well_formed_cuneicode_registry_single_unbounded);
+BENCHMARK(utf8_to_utf16_init_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf8_to_utf16_init_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf16_to_utf8_init_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf16_to_utf8_init_well_formed_cuneicode_registry_basic_single_unbounded);
 
-BENCHMARK(utf8_to_utf32_well_formed_cuneicode_registry_single);
-BENCHMARK(utf8_to_utf32_well_formed_cuneicode_registry_single_unbounded);
-BENCHMARK(utf32_to_utf8_well_formed_cuneicode_registry_single);
-BENCHMARK(utf32_to_utf8_well_formed_cuneicode_registry_single_unbounded);
+BENCHMARK(utf8_to_utf32_init_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf8_to_utf32_init_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf32_to_utf8_init_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf32_to_utf8_init_well_formed_cuneicode_registry_basic_single_unbounded);
 
-BENCHMARK(utf16_to_utf32_well_formed_cuneicode_registry_single);
-BENCHMARK(utf16_to_utf32_well_formed_cuneicode_registry_single_unbounded);
-BENCHMARK(utf32_to_utf16_well_formed_cuneicode_registry_single);
-BENCHMARK(utf32_to_utf16_well_formed_cuneicode_registry_single_unbounded);
-
-BENCHMARK(utf8_to_utf16_init_well_formed_cuneicode_registry_single);
-BENCHMARK(utf8_to_utf16_init_well_formed_cuneicode_registry_single_unbounded);
-BENCHMARK(utf16_to_utf8_init_well_formed_cuneicode_registry_single);
-BENCHMARK(utf16_to_utf8_init_well_formed_cuneicode_registry_single_unbounded);
-
-BENCHMARK(utf8_to_utf32_init_well_formed_cuneicode_registry_single);
-BENCHMARK(utf8_to_utf32_init_well_formed_cuneicode_registry_single_unbounded);
-BENCHMARK(utf32_to_utf8_init_well_formed_cuneicode_registry_single);
-BENCHMARK(utf32_to_utf8_init_well_formed_cuneicode_registry_single_unbounded);
-
-BENCHMARK(utf16_to_utf32_init_well_formed_cuneicode_registry_single);
-BENCHMARK(utf16_to_utf32_init_well_formed_cuneicode_registry_single_unbounded);
-BENCHMARK(utf32_to_utf16_init_well_formed_cuneicode_registry_single);
-BENCHMARK(utf32_to_utf16_init_well_formed_cuneicode_registry_single_unbounded);
+BENCHMARK(utf16_to_utf32_init_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf16_to_utf32_init_well_formed_cuneicode_registry_basic_single_unbounded);
+BENCHMARK(utf32_to_utf16_init_well_formed_cuneicode_registry_basic_single);
+BENCHMARK(utf32_to_utf16_init_well_formed_cuneicode_registry_basic_single_unbounded);
 
 #endif

@@ -35,13 +35,15 @@ Below is a all of the benchmarks currently conducted and built-in to the code of
 
 The specification for these benchmarks is as follows:
 
-- The latest of each library was used as of 23 December, 2022.
+- The latest of each library was used as of 05 January, 2024.
 - Windows 10 Pro machine, general user processes running in the background (but machine not being used).
-- AMD Ryzen 5 3600 6-Core @ 3600 MHz (12 Logical Processors), 32.0 GB Physical Memory
+- AMD Ryzen 9 5950X @ 3400 MHz (16 Core Processor), 32.0 GB Physical Memory
 - Clang 15.0.3, latest available Clang at the time of generation with MSVC ABI.
 - Entire software stack for every dependency build under default CMake flags (including ICU and libiconv from vcpkg).
 - Anywhere from 150 to 10million samples per iteration, with mean (average) of 100 iterations forming transparent dots on graph.
-- Each bar graph is mean of the 100 iterations, with provided standard deviation-based error bars.
+- Each bar graph is mean of the 150 iterations, with provided standard deviation-based error bars.
+- For the sake of keeping an almost identical set of bars in each graph, sometimes a library is explicitly shown as "unsupported". "Unsupported" is different from doing a conversion but then failing, or doing a conversion and producing the wrong output.
+- If an error occurs during the benchmark, its graph will instead feature a short text blurb explaining what went wrong. The benchmarking code can be read to understand further what happened.
 - In general, unless explicitly noted, the fastest possible API under the constraints was used to produce the data.
 	- "Unbounded" means that, where shown, the available space left for writing was not considered.
 	- "Unchecked" means that, where shown, the input was not validated before being converted.

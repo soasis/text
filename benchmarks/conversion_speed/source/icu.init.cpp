@@ -115,6 +115,10 @@ inline namespace ztd_text_benchmarks_conversion_speed_icu_init {
 	static_assert(true, "")
 
 
+UTF_CONVERSION_BENCHMARK(8, 8, , , , );
+UTF_CONVERSION_BENCHMARK(16, 16, BE, LE, BE, LE);
+UTF_CONVERSION_BENCHMARK(32, 32, BE, LE, BE, LE);
+
 UTF_CONVERSION_BENCHMARK(8, 16, , , BE, LE);
 UTF_CONVERSION_BENCHMARK(8, 32, , , BE, LE);
 
@@ -126,6 +130,9 @@ UTF_CONVERSION_BENCHMARK(32, 16, BE, LE, BE, LE);
 
 #undef UTF_CONVERSION_BENCHMARK
 
+BENCHMARK(utf8_to_utf8_init_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf16_to_utf16_init_well_formed_icu_ucnv_convertEx);
+BENCHMARK(utf32_to_utf32_init_well_formed_icu_ucnv_convertEx);
 
 BENCHMARK(utf8_to_utf16_init_well_formed_icu_ucnv_convertEx);
 BENCHMARK(utf8_to_utf32_init_well_formed_icu_ucnv_convertEx);

@@ -1,0 +1,156 @@
+{
+	"name": "@ZTD_TEXT_BENCHMARKS_ERROR_HANDLING_TITLE@",
+	"scale": {
+		"type": "relative",
+		"to": "base"
+	},
+	"categories": [
+		{
+			"name": "Skip Input, Replace Errors (U+FFFD)",
+			"pattern": "skip_input_unicode_replacement_",
+			"ascending": false,
+			"description": "A conversion from UTF-8 data to UTF-16 data that fills incomplete or erroneous sequences with the U+003A (Replacement Character, \"�\") character.",
+			"file_name": "skip_input_unicode_replacement"
+		},
+		{
+			"name": "Skip Input, Replace Errors (U+003A)",
+			"pattern": "skip_input_ascii_replacement_",
+			"ascending": false,
+			"description": "A conversion from UTF-8 data to UTF-16 data that fills incomplete or erroneous sequences with the U+003A (Question Mark, \"?\") character.",
+			"file_name": "skip_input_ascii_replacement"
+		},
+		{
+			"name": "Skip Input, No Replacement",
+			"pattern": "skip_input_no_replacement_",
+			"ascending": false,
+			"description": "A conversion from UTF-8 data to UTF-16 data that fills incomplete or erroneous sequences with the U+003A (Question Mark, \"?\") character.",
+			"file_name": "skip_input_no_replacement"
+		}
+	],
+	"data_groups": [
+		{
+			"name": "boost.text (unbounded)",
+			"pattern": "boost_text$",
+			"description": "Measures the boost.text library from Zach Laine and its encoding routines, particularly the all-at-once bulk routines."
+		},
+		{
+			"name": "boost.text view",
+			"pattern": "boost_text_view$",
+			"description": "Measures the boost.text library from Zach laine and its encoding routines, partocularly the one-at-a-time views that can be fed into C and C++ algorithms using the view's iterator abstraction."
+		},
+		{
+			"name": "cuneicode registry",
+			"pattern": "cuneicode_registry$",
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone."
+		},
+		{
+			"name": "cuneicode",
+			"pattern": "cuneicode$",
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines."
+		},
+		{
+			"name": "Rust's encoding_c",
+			"pattern": "encoding_c$",
+			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
+		},
+		{
+			"name": "Rust's encoding_c (manual)",
+			"pattern": "encoding_c_direct$",
+			"description": "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c and not using the general-purpose conversion routes (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine."
+		},
+		{
+			"name": "ctre (assume valid)",
+			"pattern": "ctre_unchecked$",
+			"description": "Measures the performance of the Compile-Time Regular Expression (CTRE) library's internal encoding conversion routines, which assume the input is valid (or produce invalid code points when it is not)."
+		},
+		{
+			"name": "ICU (2 UConverter convertEx)",
+			"pattern": "icu_ucnv_convertEx$",
+			"description": "Measures the ICU library and its conversion routines when routed through 2 generic \"UConverter\" converter objects."
+		},
+		{
+			"name": "ICU (u_strFromUTF8)",
+			"pattern": "icu_u_strFromUTF8$",
+			"description": "Measures the ICU library conversion routine using the specific u_strFromUTF8 function."
+		},
+		{
+			"name": "ICU (ucnv_toUChars)",
+			"pattern": "icu_ucnv_toUChars$",
+			"description": "Measures the ICU library conversion routine using the specific ucnv_toUChars function."
+		},
+		{
+			"name": "ICU (u_strToUTF8)",
+			"pattern": "icu_u_strToUTF8$",
+			"description": "Measures the ICU library conversion routine using the specific u_strToUTF8 function."
+		},
+		{
+			"name": "ICU (UnicodeString_toUTF8)",
+			"pattern": "icu_UnicodeString_toUTF8$",
+			"description": "Measures the ICU library conversion routine using the specific UnicodeString_toUTF8 function."
+		},
+		{
+			"name": "ICU (ucnv_fromUChars)",
+			"pattern": "icu_ucnv_fromUChars$",
+			"description": "Measures the ICU library conversion routine using the specific ucnv_fromUChars function."
+		},
+		{
+			"name": "ICU (u_strFromUTF32)",
+			"pattern": "u_strFromUTF32$",
+			"description": "Measures the ICU library conversion routine using the specific u_strFromUTF32 function."
+		},
+		{
+			"name": "ztd.text",
+			"pattern": "ztd_text$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode function."
+		},
+		{
+			"name": "ztd.text view",
+			"pattern": "ztd_text_view$",
+			"description": "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction."
+		},
+		{
+			"name": "Win32",
+			"pattern": "windows_api$",
+			"description": "Measures the Win32 API conversion routine using MultibyteToWideChar function or the WideCharToMultibyte function."
+		},
+		{
+			"name": "Standard C",
+			"pattern": "standard_c$",
+			"description": "Measures the <uchar.h>, <wchar.h>, and similar functionality present in the C standard library."
+		},
+		{
+			"name": "Standard C++",
+			"pattern": "standard_cpp$",
+			"description": "Measures the deprecated std::codecvt_* functionality present in the C++ standard library."
+		},
+		{
+			"name": "noop",
+			"pattern": "noop$",
+			"description": "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.",
+			"always_included": true
+		}
+	],
+	"data_labels": [
+		{
+			"name": "real time",
+			"id": "real_time",
+			"format": "clock",
+			"primary": true,
+			"description": "The amount of elapsed time in the real world; also known as \"wall clock\" time."
+		},
+		{
+			"name": "cpu time",
+			"id": "cpu_time",
+			"format": "clock",
+			"description": "The amount of elapsed time if work done was laid out in linear time and did not have concurrency, parallelization, or multithreading in use."
+		}
+	],
+	"remove_suffixes": [
+		",",
+		"_"
+	],
+	"remove_prefixes": [
+		",",
+		"_"
+	]
+}
