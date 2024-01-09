@@ -398,6 +398,11 @@
 			"pattern": "noop$",
 			"description": "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.",
 			"always_included": true
+		},
+		{
+			"name": "memcpy",
+			"pattern": "memcpy$",
+			"description": "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be."
 		}
 	],
 	"data_labels": [
