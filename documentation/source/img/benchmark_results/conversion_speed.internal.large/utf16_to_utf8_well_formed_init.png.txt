@@ -1,0 +1,28 @@
+Title: "All Unicode Scalar Values Conversion - Internals - UTF-16 to UTF-8 (Well-Formed, with Init)". Description: "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+
+There are 12 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- cuneicode_registry_single_from_bulk is 12th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "4.742564127268976" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_single_from_bulk_unbounded is 11th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "4.581718817774931" milliseconds, from 150 multi-iteration samples.
+- iconv is 10th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "0.624850499405771" milliseconds, from 150 multi-iteration samples.
+- standard_cpp is 9th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
+  Measures to a mean of "0.5944339238118292" milliseconds, from 150 multi-iteration samples.
+- icu_ucnv_convertEx is 8th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "0.40178449767587127" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "0.2946717253022165" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked is 6th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "0.2874606572956669" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unbounded is 5th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "0.2675145941919052" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked_unbounded is 4th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
+  Measures to a mean of "0.267131784203736" milliseconds, from 150 multi-iteration samples.
+- encoding_c is 3rd. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
+  Measures to a mean of "0.24554072333343185" milliseconds, from 150 multi-iteration samples.
+- memcpy is 2nd. Described as: "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be.".
+  Measures to a mean of "0.02614271653387407" milliseconds, from 150 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.3266612465182939e-17" milliseconds, from 150 multi-iteration samples.

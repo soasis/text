@@ -145,6 +145,9 @@ namespace ztd { namespace text {
 			/// and the input sequence (by reference) to modify.
 			///
 			/// @param[in] __result The decode result being processed by the error handler.
+			/// @param[in] __input_progress The input that has been read but not committed to consumption.
+			/// @param[in] __output_progress The output that has been written but could not be committed due to an
+			/// error.
 			///
 			/// @remarks This will skip every input value until a proper UTF-16 starting byte (single or leading
 			/// surrogate).

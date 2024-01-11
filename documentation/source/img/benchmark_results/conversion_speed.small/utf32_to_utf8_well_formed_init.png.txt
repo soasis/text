@@ -1,22 +1,22 @@
-Title: "C Character Set - UTF-32 to UTF-8 (Well-Formed, with Init)". Description: "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+Title: "C Character Set Conversion - UTF-32 to UTF-8 (Well-Formed, with Init)". Description: "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
 
 There are 9 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
 
-- cuneicode_registry_unchecked is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
-  Measures to a mean of "36.017675223755624" microseconds, from 100 multi-iteration samples.
-- cuneicode_registry is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
-  Measures to a mean of "35.558318405259755" microseconds, from 100 multi-iteration samples.
+- cuneicode_registry is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "120.05985440499943" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "118.12127635445601" microseconds, from 150 multi-iteration samples.
 - cuneicode_registry_unchecked_unbounded is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
-  Measures to a mean of "33.09449557060781" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "115.6310708332707" microseconds, from 150 multi-iteration samples.
 - cuneicode_registry_unbounded is 6th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
-  Measures to a mean of "32.76002559384703" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "115.00976107137312" microseconds, from 150 multi-iteration samples.
 - standard_cpp is 5th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
-  Measures to a mean of "23.272853562157255" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "17.047142730851224" microseconds, from 150 multi-iteration samples.
 - icu_ucnv_convertEx is 4th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
-  Measures to a mean of "0.7223440000052507" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.5671470101200006" microseconds, from 150 multi-iteration samples.
 - iconv is 3rd. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
-  Measures to a mean of "0.6357855401646313" microseconds, from 100 multi-iteration samples.
-- memcpy is 2nd. It has no description.
-  Measures to a mean of "0.003479758895076957" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.48104906558330124" microseconds, from 150 multi-iteration samples.
+- memcpy is 2nd. Described as: "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be.".
+  Measures to a mean of "0.003872987514875517" microseconds, from 150 multi-iteration samples.
 - noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
-  Measures to a mean of "1.559988595545292e-10" microseconds, from 100 multi-iteration samples.
+  Measures to a mean of "1.606669199342529e-13" microseconds, from 150 multi-iteration samples.

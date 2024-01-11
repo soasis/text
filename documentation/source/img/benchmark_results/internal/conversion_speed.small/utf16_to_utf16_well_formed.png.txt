@@ -1,8 +1,0 @@
-Title: "C Character Set - UTF-16 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-16 data to UTF-16 data that contains no ill-formed or incomplete sequences."
-
-There are 2 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
-
-- memcpy is 2nd. It has no description.
-  Measures to a mean of "4.367579341738689" nanoseconds, from 150 multi-iteration samples.
-- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
-  Measures to a mean of "1.4933369432886443e-10" nanoseconds, from 150 multi-iteration samples.

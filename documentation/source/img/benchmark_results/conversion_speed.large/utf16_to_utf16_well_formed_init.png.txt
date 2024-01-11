@@ -1,0 +1,20 @@
+Title: "All Unicode Scalar Values Conversion - UTF-16 to UTF-16 (Well-Formed, with Init)". Description: "A conversion from UTF-16 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+
+There are 8 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- iconv is 8th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "0.5027891163217793" milliseconds, from 150 multi-iteration samples.
+- icu_ucnv_convertEx is 7th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "0.2666442391414559" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry is 6th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "0.0478968601473448" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unbounded is 5th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "0.04752234532863048" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked_unbounded is 4th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
+  Measures to a mean of "0.03912439200150414" milliseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked is 3rd. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "0.038767802715808236" milliseconds, from 150 multi-iteration samples.
+- memcpy is 2nd. Described as: "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be.".
+  Measures to a mean of "0.025822365616673837" milliseconds, from 150 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.3266612465182939e-17" milliseconds, from 150 multi-iteration samples.

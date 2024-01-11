@@ -70,7 +70,7 @@ inline namespace ztd_text_tests_basic_run_time_transcode_one {
 } // namespace ztd_text_tests_basic_run_time_transcode_one
 
 TEST_CASE(
-     "transcode_one can roundtrip through data one indivisable unit at a time", "[text][transcode_one][roundtrip]") {
+     "transcode_one can roundtrip through data one indivisible unit at a time", "[text][transcode_one][roundtrip]") {
 	SECTION("execution") {
 		check_transcode_one(ztd::text::execution, ztd::text::execution, ztd::tests::basic_source_character_set,
 		     ztd::tests::basic_source_character_set);

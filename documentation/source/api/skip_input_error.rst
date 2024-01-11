@@ -36,3 +36,7 @@ Utilizes :doc:`ztd::text::is_input_error_skippable </api/is_input_error_skippabl
 It is particularly used with :doc:`ztd::text::replacement_handler </api/error handlers/replacement_handler>` and :doc:`ztd::text::skip_handler </api/error handlers/skip_handler>`. You can use this function to perform encoding-aware and encoding-specific skips for a given encode and decode operation. This is particularly useful for Unicode encodings, as well as other variable-width encodings in the wild, which may be good to accommodate for in your own error handlers.
 
 .. doxygenfunction:: ztd::text::skip_input_error
+
+.. doxygenfunction:: ztd::text::skip_utf32_input_error
+
+.. doxygenfunction:: ztd::text::skip_utf32_with_surrogates_input_error

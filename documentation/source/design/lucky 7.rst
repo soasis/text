@@ -174,7 +174,8 @@ The only other thing we need is the error handler, now. Generally, this is a tem
 		ue_decode_result(
 			const utf_ebcdic&,
 			ue_decode_result,
-			ztd::span<char>
+			ztd::span<char>,
+			ztd::span<char32_t>
 		)
 	>;
 
@@ -182,7 +183,8 @@ The only other thing we need is the error handler, now. Generally, this is a tem
 		ue_encode_result(
 			const utf_ebcdic&,
 			ue_encode_result,
-			ztd::span<char32_t>
+			ztd::span<char32_t>,
+			ztd::span<char>
 		)
 	>;
 
@@ -191,6 +193,7 @@ The error handlers use a result-in, result-out design. The parameters given are:
 0. The encoding which triggered the error. This allows you to access any information about the encoding object type or any values stored on the encoding object itself.
 1. The result object. This object has the ``error_code`` member set to what went wrong (see :doc:`ztd::text::encoding_error </api/encoding_error>`), and any other changes made to the ``input`` or ``output`` during the operation.
 2. A contiguous range (``ztd::span``) of ``code_unit``\ s or ``code_point``\ s that were already read by the algorithm. This is useful for when the ``input`` range uses input iterators, which sometimes cannot be "rolled back" after something is read (e.g., consider `std::istream_iterator <https://en.cppreference.com/w/cpp/iterator/istream_iterator>`_).
+3. A contiguous range (``ztd::span``) of ``code_unit``\ s or ``code_point``\ s that were already read by the algorithm. This is useful for when the ``output`` range uses output iterators, which sometimes cannot be "rolled back" after something is written (e.g., consider `std::ostream_iterator <https://en.cppreference.com/w/cpp/iterator/ostream_iterator>`_).
 
 It returns the same type as the result object. Within this function, anyone can perform any modifications they like to the type, before returning it. This is an incredibly useful behavior that comes in handy for defining custom error handling behaviors, as shown in :doc:`the Error Handling Design section </design/error handling>`. For example, this allows us to do things like insert **REPLACEMENT_CHARACTER \\uFFFD** (�) into a encoding through the :doc:`ztd::text::replacement_handler_t </api/error handlers/replacement_handler>` or enable speedy encoding for pre-validated text using :doc:`ztd::text::assume_valid_handler </api/error handlers/assume_valid_handler>`. When writing your ``encode_one`` or ``decode_one`` function, it is your responsibility to invoke the error handler (or not, depending on the value of :doc:`ztd::text::is_ignorable_error_handler </api/is_ignorable_error_handler>`).
 

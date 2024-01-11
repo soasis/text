@@ -36,16 +36,17 @@ find_package(Sphinx QUIET)
 include(GNUInstallDirs)
 
 # Find all the public headers
-file(GLOB_RECURSE ztd_text_public_headers
+file(GLOB_RECURSE ztd_globbed_text_public_headers
 	LIST_DIRECTORIES NO
 	CONFIGURE_DEPENDS
-	${CMAKE_CURRENT_SOURCE_DIR}/../include/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp)
-
-# make a list copy for use with dependency tracking later down below
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/**.h
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/**.hpp)
+cmake_path(CONVERT "${ztd_globbed_text_public_headers}"
+	TO_CMAKE_PATH_LIST
+	ztd_text_public_headers
+	NORMALIZE)
 set(ztd_text_doxygen_public_headers ${ztd_text_public_headers})
-
-# Remove every single public header
+# Remove every single private header
 list(FILTER ztd_text_doxygen_public_headers EXCLUDE REGEX /detail/.*)
 
 # separate text with spaces and surround them with quotes for Doxygen to understand them all
@@ -110,7 +111,7 @@ add_custom_target(ztd.text.documentation.doxygen ALL
 	DEPENDS ${ZTD_TEXT_DOXYGEN_INDEX_FILE} ${ztd_text_public_headers} 
 )
 
-if(NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
+if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
 	add_custom_command(OUTPUT ${ZTD_TEXT_SPHINX_INDEX_FILE}
 		COMMAND Sphinx::Build
 		ARGS

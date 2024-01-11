@@ -41,12 +41,14 @@
 
 #include <ztd/prologue.hpp>
 
+//////
+/// @file code point abstractions
+
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
 	/// @{
 	/////
 
@@ -75,7 +77,6 @@ namespace ztd { namespace text {
 
 	//////
 	/// @}
-	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -274,7 +274,7 @@ namespace ztd { namespace text {
 	public:
 		//////
 		/// @brief The range used to hold the intermediate pivot transcoding units.
-		_Pivot pivot;
+		ZTD_USE(ZTD_NO_UNIQUE_ADDRESS) _Pivot pivot;
 		//////
 		/// @brief The kind of error that occured, if any, for the intermediate pivot.
 		encoding_error pivot_error_code;
@@ -337,6 +337,7 @@ namespace ztd { namespace text {
 		/// @param[in] __error_count Whether or not an error was handled. Some error handlers are corrective (see
 		/// ztd::text::replacement_handler_t), and so the error code is not enough to determine if the handler was
 		/// invoked. This allows the value to be provided directly when constructing this result type.
+		/// @param[in] __pivot The pivot for this transcode operation.
 		/// @param[in] __pivot_error_code The error code for the decode step of the transcode oepration, if it failed.
 		/// @param[in] __pivot_error_count Whether or not an error was handled during the decode step of the transcode
 		/// operation. Some error handlers are corrective (see ztd::text::replacement_handler_t), and so the error

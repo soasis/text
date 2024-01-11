@@ -42,19 +42,6 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	//////
-	/// @addtogroup ztd_text_ciscode ztd::text::ciscode[_into/_to]
-	///
-	/// @brief These functions convert from a view of input code units into a view of output code units
-	/// (typically, through an intermediary code point type that is similar between the two) using either the
-	/// inferred or specified encodings. If no error handler is provided, the equivalent of the
-	/// ztd::text::default_handler_t is used by default, but it is marked as careless. If no associated state is
-	/// provided for either the "to" or "from" encodings, one will be created with automatic storage duration (as
-	/// a "stack" variable) for the provided encoding.
-	/// @{
-
-	//////
-	/// @copydoc ztd::text::basic_recode_into_raw
 	template <typename... _Args>
 	constexpr auto basic_ciscode_into_raw(_Args&&... __args) noexcept(
 		noexcept(::ztd::text::basic_recode_into_raw(::std::forward<_Args>(__args)...)))
@@ -62,8 +49,6 @@ namespace ztd { namespace text {
 		return ::ztd::text::basic_recode_into_raw(::std::forward<_Args>(__args)...);
 	}
 
-	//////
-	/// @copydoc ztd::text::recode_into_raw
 	template <typename... _Args>
 	constexpr auto ciscode_into_raw(_Args&&... __args) noexcept(
 		noexcept(::ztd::text::recode_into_raw(::std::forward<_Args>(__args)...)))
@@ -71,8 +56,6 @@ namespace ztd { namespace text {
 		return ::ztd::text::recode_into_raw(::std::forward<_Args>(__args)...);
 	}
 
-	//////
-	/// @copydoc ztd::text::recode_into
 	template <typename... _Args>
 	constexpr auto ciscode_into(_Args&&... __args) noexcept(
 		noexcept(::ztd::text::recode_into(::std::forward<_Args>(__args)...)))
@@ -80,8 +63,6 @@ namespace ztd { namespace text {
 		return ::ztd::text::recode_into(::std::forward<_Args>(__args)...);
 	}
 
-	//////
-	/// @copydoc ztd::text::recode_to
 	template <typename _Arg0 = void, typename... _Args>
 	constexpr auto ciscode_to(_Args&&... __args) noexcept(
 		noexcept(::ztd::text::recode_to<_Arg0>(::std::forward<_Args>(__args)...)))
@@ -89,18 +70,12 @@ namespace ztd { namespace text {
 		return ::ztd::text::recode_to<_Arg0>(::std::forward<_Args>(__args)...);
 	}
 
-	//////
-	/// @copydoc ztd::text::recode_to
 	template <typename _Arg0 = void, typename... _Args>
 	constexpr auto ciscode(_Args&&... __args) noexcept(
 		noexcept(::ztd::text::recode<_Arg0>(::std::forward<_Args>(__args)...)))
 		-> decltype(::ztd::text::recode<_Arg0>(::std::forward<_Args>(__args)...)) {
 		return ::ztd::text::recode<_Arg0>(::std::forward<_Args>(__args)...);
 	}
-
-
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

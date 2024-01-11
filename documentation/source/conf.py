@@ -19,7 +19,7 @@ import typing
 # -- Project information -----------------------------------------------------
 
 project = 'ztd.text'
-copyright = "2022, ThePhD & Shepherd's Oasis, LLC"
+copyright = "ThePhD & Shepherd's Oasis, LLC"
 author = "ThePhD & Shepherd's Oasis, LLC"
 
 # The full version, including alpha/beta/rc tags

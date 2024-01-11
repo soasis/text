@@ -231,8 +231,6 @@ namespace std { namespace ranges {
 
 namespace ztd { namespace ranges {
 
-	//////
-	/// @brief Mark subranges as appropriately borrowed ranges.
 	template <typename _FromEncoding, typename _ToEncoding, typename _Range, typename _FromErrorHandler,
 		typename _ToErrorHandler, typename _FromState, typename _ToState>
 	inline constexpr bool enable_borrowed_range<::ztd::text::transcode_view<_FromEncoding, _ToEncoding, _Range,

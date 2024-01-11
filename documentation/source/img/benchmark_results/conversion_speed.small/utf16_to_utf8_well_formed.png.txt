@@ -1,66 +1,66 @@
-Title: "C Character Set - UTF-16 to UTF-8 (Well-Formed)". Description: "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
+Title: "C Character Set Conversion - UTF-16 to UTF-8 (Well-Formed)". Description: "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
 
 There are 31 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
 
-- cuneicode is 31st. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines.".
-  Measures to a mean of "631.8699053621718" nanoseconds, from 100 multi-iteration samples.
-- cuneicode_single is 30th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines that use the "indivisable unit fo conversion" functions.".
-  Measures to a mean of "623.339317857504" nanoseconds, from 100 multi-iteration samples.
-- cuneicode_unbounded is 29th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines (without providing an output size).".
-  Measures to a mean of "583.5981384048605" nanoseconds, from 100 multi-iteration samples.
-- cuneicode_single_unbounded is 28th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines "indivisable unit fo conversion" functions (without providing an output size).".
-  Measures to a mean of "578.7593570002355" nanoseconds, from 100 multi-iteration samples.
-- ztd_text is 27th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
-  Measures to a mean of "569.5266250008717" nanoseconds, from 100 multi-iteration samples.
-- ztd_text_unchecked is 26th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
-  Measures to a mean of "565.406912513676" nanoseconds, from 100 multi-iteration samples.
-- ztd_text_unbounded is 25th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
-  Measures to a mean of "552.682624111185" nanoseconds, from 100 multi-iteration samples.
-- iconv is 24th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
-  Measures to a mean of "508.1686790054665" nanoseconds, from 100 multi-iteration samples.
-- ztd_text_view_unchecked is 23rd. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction.".
-  Measures to a mean of "439.00678314732403" nanoseconds, from 100 multi-iteration samples.
+- ztd_text_unchecked is 31st. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
+  Measures to a mean of "0.5556030946651784" microseconds, from 150 multi-iteration samples.
+- ztd_text is 30th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
+  Measures to a mean of "0.5510555017878818" microseconds, from 150 multi-iteration samples.
+- ztd_text_unbounded is 29th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
+  Measures to a mean of "0.5317149690464638" microseconds, from 150 multi-iteration samples.
+- cuneicode_unbounded_unchecked is 28th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines (without providing an output size).".
+  Measures to a mean of "0.4771081386401083" microseconds, from 150 multi-iteration samples.
+- cuneicode_unbounded is 27th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines (without providing an output size).".
+  Measures to a mean of "0.47614302592507557" microseconds, from 150 multi-iteration samples.
+- cuneicode is 26th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines.".
+  Measures to a mean of "0.47529099941098973" microseconds, from 150 multi-iteration samples.
+- cuneicode_unchecked is 25th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines.".
+  Measures to a mean of "0.4746748779773746" microseconds, from 150 multi-iteration samples.
+- ztd_text_view_unchecked is 24th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction.".
+  Measures to a mean of "0.44586387653945103" microseconds, from 150 multi-iteration samples.
+- iconv is 23rd. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "0.43926555374988924" microseconds, from 150 multi-iteration samples.
 - ztd_text_view is 22nd. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction.".
-  Measures to a mean of "413.6480435874045" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.31441190773832556" microseconds, from 150 multi-iteration samples.
 - standard_c is 21st. Described as: "Measures the <uchar.h>, <wchar.h>, and similar functionality present in the C standard library.".
-  Measures to a mean of "301.41276215392463" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.26730738025242184" microseconds, from 150 multi-iteration samples.
 - boost_text_view is 20th. Described as: "Measures the boost.text library from Zach laine and its encoding routines, partocularly the one-at-a-time views that can be fed into C and C++ algorithms using the view's iterator abstraction.".
-  Measures to a mean of "216.4293724970776" nanoseconds, from 100 multi-iteration samples.
-- standard_cpp is 19th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
-  Measures to a mean of "208.86485398329475" nanoseconds, from 100 multi-iteration samples.
-- icu_ucnv_convertEx is 18th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
-  Measures to a mean of "184.72397756715162" nanoseconds, from 100 multi-iteration samples.
-- utf8cpp is 17th. Described as: "Measures the utf8cpp library and its conversion routines, which do not check for available output space.".
-  Measures to a mean of "103.54321843769867" nanoseconds, from 100 multi-iteration samples.
-- icu_UnicodeString_toUTF8 is 16th. Described as: "Measures the ICU library conversion routine using the specific UnicodeString_toUTF8 function.".
-  Measures to a mean of "81.0615214281175" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.23363417526450728" microseconds, from 150 multi-iteration samples.
+- icu_ucnv_convertEx is 19th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "0.16951464523775767" microseconds, from 150 multi-iteration samples.
+- standard_cpp is 18th. Described as: "Measures the deprecated std::codecvt_* functionality present in the C++ standard library.".
+  Measures to a mean of "0.16122259761881913" microseconds, from 150 multi-iteration samples.
+- icu_ucnv_fromUChars is 17th. Described as: "Measures the ICU library conversion routine using the specific ucnv_fromUChars function.".
+  Measures to a mean of "0.08364482113096788" microseconds, from 150 multi-iteration samples.
+- utf8cpp is 16th. Described as: "Measures the utf8cpp library and its conversion routines, which do not check for available output space.".
+  Measures to a mean of "0.0729077261158593" microseconds, from 150 multi-iteration samples.
 - boost_text is 15th. Described as: "Measures the boost.text library from Zach Laine and its encoding routines, particularly the all-at-once bulk routines.".
-  Measures to a mean of "79.30164977707527" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.07284467291681809" microseconds, from 150 multi-iteration samples.
 - utf8cpp_unchecked is 14th. Described as: "Measures the utf8cpp library and its conversion routines, which do not check for available output space and also assume the input is valid.".
-  Measures to a mean of "76.56239040105513" nanoseconds, from 100 multi-iteration samples.
-- icu_ucnv_fromUChars is 13th. Described as: "Measures the ICU library conversion routine using the specific ucnv_fromUChars function.".
-  Measures to a mean of "73.91292678689102" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.06955067172616293" microseconds, from 150 multi-iteration samples.
+- icu_UnicodeString_toUTF8 is 13th. Described as: "Measures the ICU library conversion routine using the specific UnicodeString_toUTF8 function.".
+  Measures to a mean of "0.06546258708343279" microseconds, from 150 multi-iteration samples.
 - icu_u_strToUTF8 is 12th. Described as: "Measures the ICU library conversion routine using the specific u_strToUTF8 function.".
-  Measures to a mean of "68.5553694646972" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.05770315964274189" microseconds, from 150 multi-iteration samples.
 - cuneicode_registry is 11th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
-  Measures to a mean of "45.89229820841674" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.04091426826815275" microseconds, from 150 multi-iteration samples.
 - cuneicode_registry_unchecked is 10th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
-  Measures to a mean of "38.704384040491796" nanoseconds, from 100 multi-iteration samples.
-- windows_api is 9th. Described as: "Measures the Win32 API conversion routine using MultibyteToWideChar function or the WideCharToMultibyte function.".
-  Measures to a mean of "31.722072946390007" nanoseconds, from 100 multi-iteration samples.
-- cuneicode_registry_unbounded is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
-  Measures to a mean of "23.5636774268246" nanoseconds, from 100 multi-iteration samples.
-- cuneicode_registry_unchecked_unbounded is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
-  Measures to a mean of "22.998861004636495" nanoseconds, from 100 multi-iteration samples.
-- encoding_c is 6th. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
-  Measures to a mean of "20.29220509524028" nanoseconds, from 100 multi-iteration samples.
-- simdutf is 5th. Described as: "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads.".
-  Measures to a mean of "15.649876540244025" nanoseconds, from 100 multi-iteration samples.
-- ztd_text_unbounded_unchecked is 4th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
-  Measures to a mean of "15.644740021889447" nanoseconds, from 100 multi-iteration samples.
-- simdutf_unchecked is 3rd. Described as: "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads.".
-  Measures to a mean of "15.627829531149475" nanoseconds, from 100 multi-iteration samples.
-- memcpy is 2nd. It has no description.
-  Measures to a mean of "3.489329386116232" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "0.03419666666682357" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked_unbounded is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
+  Measures to a mean of "0.02788113359875512" microseconds, from 150 multi-iteration samples.
+- windows_api is 8th. Described as: "Measures the Win32 API conversion routine using MultibyteToWideChar function or the WideCharToMultibyte function.".
+  Measures to a mean of "0.024774838714372548" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unbounded is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "0.022895186374989863" microseconds, from 150 multi-iteration samples.
+- ztd_text_unbounded_unchecked is 6th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
+  Measures to a mean of "0.01645920900296222" microseconds, from 150 multi-iteration samples.
+- simdutf_unchecked is 5th. Described as: "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads.".
+  Measures to a mean of "0.016160853497066932" microseconds, from 150 multi-iteration samples.
+- simdutf is 4th. Described as: "Measures the performance of Daniel Lemire's simdutf library, which is meant to be highly optimized and performant under all unicode workloads.".
+  Measures to a mean of "0.016148684107126127" microseconds, from 150 multi-iteration samples.
+- encoding_c is 3rd. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
+  Measures to a mean of "0.015760537574442426" microseconds, from 150 multi-iteration samples.
+- memcpy is 2nd. Described as: "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be.".
+  Measures to a mean of "0.003682290916664594" microseconds, from 150 multi-iteration samples.
 - noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
-  Measures to a mean of "1.559988595545292e-07" nanoseconds, from 100 multi-iteration samples.
+  Measures to a mean of "1.606669199342529e-13" microseconds, from 150 multi-iteration samples.

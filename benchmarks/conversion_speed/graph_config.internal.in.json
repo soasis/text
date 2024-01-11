@@ -226,12 +226,12 @@
 		{
 			"name": "cuneicode (single loop)",
 			"pattern": "cuneicode_single$",
-			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines that use the \"indivisable unit fo conversion\" functions."
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines that use the \"indivisible unit fo conversion\" functions."
 		},
 		{
 			"name": "cuneicode (single loop, unbounded)",
 			"pattern": "cuneicode_single_unbounded$",
-			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines \"indivisable unit fo conversion\" functions (without providing an output size)."
+			"description": "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines \"indivisible unit fo conversion\" functions (without providing an output size)."
 		},
 		{
 			"name": "libiconv",

@@ -185,7 +185,7 @@ namespace ztd { namespace text {
 	/// `"\xC0\x9F\x8D\xB7meow"`
 	///
 	/// when used in conjunction with ztd::text::utf8 (and similar), a proper decode/transcode call will error on
-	/// `'\\xC0'` before this function skips until the `'m'` input code unit, resulting in a leftover sequence of
+	/// `'\\xC0'`. Then, this function skips until the `'m'` input code unit, resulting in a leftover sequence of
 	///
 	/// "meow".
 	template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>

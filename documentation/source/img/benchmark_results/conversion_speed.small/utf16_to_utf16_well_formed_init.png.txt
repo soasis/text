@@ -1,0 +1,20 @@
+Title: "C Character Set Conversion - UTF-16 to UTF-16 (Well-Formed, with Init)". Description: "A conversion from UTF-16 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+
+There are 8 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- cuneicode_registry is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "121.15543678567822" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unbounded is 7th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "120.6896515334712" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked is 6th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "118.43144035751938" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked_unbounded is 5th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
+  Measures to a mean of "118.03384750013113" microseconds, from 150 multi-iteration samples.
+- icu_ucnv_convertEx is 4th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "0.5072926686671175" microseconds, from 150 multi-iteration samples.
+- iconv is 3rd. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "0.44001872666570613" microseconds, from 150 multi-iteration samples.
+- memcpy is 2nd. Described as: "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be.".
+  Measures to a mean of "0.004162930768441178" microseconds, from 150 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.606669199342529e-13" microseconds, from 150 multi-iteration samples.

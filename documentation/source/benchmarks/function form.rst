@@ -50,10 +50,10 @@ Here, we can see how writing the bulk conversion functions in terms of the singl
 All Unicode Code Points
 -----------------------
 
-.. image:: /img/benchmark_results/function_form.large/transform_two_spans.png
-
+.. figure:: /img/benchmark_results/function_form.large/transform_two_spans.png
+	
 
 C Basic Source Character Set
 ----------------------------
 
-.. image:: /img/benchmark_results/function_form.large/transform_two_spans.png
+.. figure:: /img/benchmark_results/function_form.large/transform_two_spans.png

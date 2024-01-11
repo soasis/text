@@ -1,0 +1,58 @@
+Title: "C Character Set Conversion - Internals - UTF-16 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-16 data to UTF-16 data that contains no ill-formed or incomplete sequences."
+
+There are 27 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+
+- cuneicode_registry_single_from_bulk is 27th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "1.3744027605368727" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_single_from_bulk_unbounded is 26th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "1.3647167809516154" microseconds, from 150 multi-iteration samples.
+- ztd_text_unbounded is 25th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
+  Measures to a mean of "0.6414753357147719" microseconds, from 150 multi-iteration samples.
+- ztd_text is 24th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
+  Measures to a mean of "0.630442338094976" microseconds, from 150 multi-iteration samples.
+- ztd_text_view is 23rd. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction.".
+  Measures to a mean of "0.3842694077382346" microseconds, from 150 multi-iteration samples.
+- iconv is 22nd. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
+  Measures to a mean of "0.37962784560964535" microseconds, from 150 multi-iteration samples.
+- cuneicode_unbounded_unchecked is 21st. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines (without providing an output size).".
+  Measures to a mean of "0.2503730085713046" microseconds, from 150 multi-iteration samples.
+- cuneicode_unchecked is 20th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines.".
+  Measures to a mean of "0.2502155476189468" microseconds, from 150 multi-iteration samples.
+- cuneicode_unbounded is 19th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines (without providing an output size).".
+  Measures to a mean of "0.24972223595208823" microseconds, from 150 multi-iteration samples.
+- cuneicode is 18th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the typed, non-generic C-style encoding routines.".
+  Measures to a mean of "0.24896089976135133" microseconds, from 150 multi-iteration samples.
+- icu_ucnv_convertEx is 17th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
+  Measures to a mean of "0.18526107350559226" microseconds, from 150 multi-iteration samples.
+- ztd_text_single is 16th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function.".
+  Measures to a mean of "0.13625775952386904" microseconds, from 150 multi-iteration samples.
+- ztd_text_basic is 15th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::basic_transcode_into_raw function.".
+  Measures to a mean of "0.1354555430152595" microseconds, from 150 multi-iteration samples.
+- ztd_text_single_unbounded is 14th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function in a loop, with output bounds checking turned off.".
+  Measures to a mean of "0.1157898952082178" microseconds, from 150 multi-iteration samples.
+- ztd_text_basic_unbounded is 13th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::basic_transcode_into_raw function, with output bounds checking turned off.".
+  Measures to a mean of "0.11350291770844101" microseconds, from 150 multi-iteration samples.
+- ztd_text_basic_unchecked is 12th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
+  Measures to a mean of "0.026571842462199" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry is 11th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
+  Measures to a mean of "0.016102289806557177" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unbounded is 10th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size).".
+  Measures to a mean of "0.015901376889875488" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked_unbounded is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with specific conversion pathways overridden (without providing an output size, and without checking input validity).".
+  Measures to a mean of "0.008729868601191508" microseconds, from 150 multi-iteration samples.
+- cuneicode_registry_unchecked is 8th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone (without checking for the validity of the input).".
+  Measures to a mean of "0.008647899791753249" microseconds, from 150 multi-iteration samples.
+- memcpy is 7th. Described as: "Measures just copying the correct, expected data to the desired output. This is useful as a reflection of how fast it could potentially be.".
+  Measures to a mean of "0.004087079307098182" microseconds, from 150 multi-iteration samples.
+- ztd_text_single_unchecked is 6th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function.".
+  Measures to a mean of "0.0033916121052977775" microseconds, from 150 multi-iteration samples.
+- ztd_text_single_unbounded_unchecked is 5th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_one function in a loop, with output bounds checking turned off.".
+  Measures to a mean of "0.002733057510357032" microseconds, from 150 multi-iteration samples.
+- ztd_text_unchecked is 4th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
+  Measures to a mean of "0.0027320321270277964" microseconds, from 150 multi-iteration samples.
+- ztd_text_unbounded_unchecked is 3rd. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
+  Measures to a mean of "0.002724816557986205" microseconds, from 150 multi-iteration samples.
+- ztd_text_basic_unbounded_unchecked is 2nd. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function, with output bounds checking turned off.".
+  Measures to a mean of "0.0027225561297124197" microseconds, from 150 multi-iteration samples.
+- noop is 1st. Described as: "Measures doing literally nothing (no written expressions/statements in the benchmarking loop). Can be useful for determining potential environment noise.".
+  Measures to a mean of "1.606669199342529e-13" microseconds, from 150 multi-iteration samples.

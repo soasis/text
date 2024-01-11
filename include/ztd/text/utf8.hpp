@@ -610,6 +610,7 @@ namespace ztd { namespace text {
 
 	//////
 	/// @addtogroup ztd_text_encodings Encodings
+	///
 	/// @brief These classes are implementations of the Encoding concept. They serve as the backbone of the library,
 	/// and the point of extension for users.
 	/// @{

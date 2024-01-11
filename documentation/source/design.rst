@@ -46,6 +46,7 @@ These four goals inform the design of the library to its deepest levels and help
 	:caption: Contents:
 
 	design/lucky 7
+	design/bulk vs single
 	design/loss
 	design/error handling
 	design/converting
