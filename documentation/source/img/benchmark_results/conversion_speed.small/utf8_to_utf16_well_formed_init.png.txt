@@ -1,6 +1,6 @@
 Title: "C Character Set Conversion - UTF-8 to UTF-16 (Well-Formed, with Init)". Description: "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 
-There are 11 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 11 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - encoding_c is 11th. Described as: "Measures the performance of the Rust encoding_rs library, called through its C bindings encoding_c (typically statically linked in to achieve the same optimization potential). Used in the Gecko web engine.".
   This group had an error: "unsupported".

@@ -1,6 +1,6 @@
 Title: "C Character Set Conversion - UTF-32 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 
-There are 26 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 26 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - standard_c is 26th. Described as: "Measures the <uchar.h>, <wchar.h>, and similar functionality present in the C standard library.".
   Measures to a mean of "0.7307057166660906" microseconds, from 150 multi-iteration samples.

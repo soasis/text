@@ -1,6 +1,6 @@
 Title: "All Unicode Scalar Values Conversion - UTF-32 to UTF-32 (Well-Formed)". Description: "A conversion from UTF-32 data to UTF-32 data that contains no ill-formed or incomplete sequences."
 
-There are 17 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 17 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - icu_ucnv_convertEx is 17th. Described as: "Measures the ICU library and its conversion routines when routed through 2 generic "UConverter" converter objects.".
   Measures to a mean of "0.5019257940002717" milliseconds, from 150 multi-iteration samples.

@@ -1,6 +1,6 @@
 Title: "All Unicode Scalar Values Conversion - UTF-16 to UTF-8 (Well-Formed, with Init)". Description: "A conversion from UTF-16 data to UTF-8 data that contains no ill-formed or incomplete sequences."
 
-There are 10 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 10 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - iconv is 10th. Described as: "Measures the libiconv (GNU version) encoding library, using its POSIX-compliant function call "iconv".".
   Measures to a mean of "0.624850499405771" milliseconds, from 150 multi-iteration samples.

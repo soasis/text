@@ -1,6 +1,6 @@
 Title: "All Unicode Scalar Values Conversion - Internals - UTF-8 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-8 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 
-There are 41 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 41 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - boost_text is 41st. Described as: "Measures the boost.text library from Zach Laine and its encoding routines, particularly the all-at-once bulk routines.".
   This group had an error: "conversion succeeded but produced illegitimate data".

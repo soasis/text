@@ -412,12 +412,6 @@
 			"format": "clock",
 			"primary": true,
 			"description": "The amount of elapsed time in the real world; also known as \"wall clock\" time."
-		},
-		{
-			"name": "cpu time",
-			"id": "cpu_time",
-			"format": "clock",
-			"description": "The amount of elapsed time if work done was laid out in linear time and did not have concurrency, parallelization, or multithreading in use."
 		}
 	],
 	"remove_suffixes": [

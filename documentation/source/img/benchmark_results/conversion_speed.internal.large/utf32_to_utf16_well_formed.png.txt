@@ -1,6 +1,6 @@
 Title: "All Unicode Scalar Values Conversion - Internals - UTF-32 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-32 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 
-There are 36 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 36 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - cuneicode_registry_single_from_bulk is 36th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
   Measures to a mean of "2.5500250974362597" milliseconds, from 150 multi-iteration samples.

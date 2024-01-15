@@ -1,6 +1,6 @@
 Title: "All Unicode Scalar Values Conversion - UTF-16 to UTF-16 (Well-Formed)". Description: "A conversion from UTF-16 data to UTF-16 data that contains no ill-formed or incomplete sequences."
 
-There are 17 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 17 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - ztd_text_view is 17th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode_view range abstraction.".
   Measures to a mean of "0.5636661966666967" milliseconds, from 150 multi-iteration samples.

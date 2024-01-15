@@ -1,6 +1,6 @@
 Title: "C Character Set Conversion - UTF-32 to UTF-8 (Well-Formed, with Init)". Description: "A conversion from UTF-32 data to UTF-8 data that contains no ill-formed or incomplete sequences."
 
-There are 9 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 9 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - cuneicode_registry is 9th. Described as: "Measures the ztd.cuneicode library from Shepherd's Oasis and its encoding routines, particularly the non-typed conversion routines from its Conversion Registry abstraction with all defaults left alone.".
   Measures to a mean of "120.05985440499943" microseconds, from 150 multi-iteration samples.

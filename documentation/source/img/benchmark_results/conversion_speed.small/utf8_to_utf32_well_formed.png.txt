@@ -1,6 +1,6 @@
 Title: "C Character Set Conversion - UTF-8 to UTF-32 (Well-Formed)". Description: "A conversion from UTF-8 data to UTF-32 data that contains no ill-formed or incomplete sequences."
 
-There are 27 groups, and 2 data labels (cpu time, real time) per each group with data. Lower is better. 
+There are 27 groups, and 1 data label (real time) per each group with data. Lower is better. 
 
 - ztd_text is 27th. Described as: "Measures the ztd.text library conversion routine using the ztd::text::transcode function.".
   Measures to a mean of "0.5629055488091018" microseconds, from 150 multi-iteration samples.
