@@ -629,8 +629,7 @@ namespace ztd { namespace text {
 			/// @returns Whether or not there are additional information stored in any part of the standard-based
 			/// streams have accumulated information for a continual decode operation.
 			bool state_is_complete(const __txt_detail::__execution_decode_state& __state) const noexcept {
-				return ::std::mbsinit(&__state.__wide_state)
-					&& ::ztd::text::is_state_complete(__state.__narrow_state);
+				return !__state.__output_pending && ::ztd::text::is_state_complete(__state.__narrow_state);
 			}
 
 
@@ -643,8 +642,7 @@ namespace ztd { namespace text {
 			/// @returns Whether or not there are additional information stored in any part of the standard-based
 			/// streams have accumulated information for a continual encode operation.
 			bool state_is_complete(const __txt_detail::__execution_encode_state& __state) const noexcept {
-				return ::std::mbsinit(&__state.__wide_state)
-					&& ::ztd::text::is_state_complete(__state.__narrow_state);
+				return !__state.__output_pending && ::ztd::text::is_state_complete(__state.__narrow_state);
 			}
 		};
 	} // namespace __txt_impl
