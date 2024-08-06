@@ -30,7 +30,11 @@
 
 # Dependencies
 find_package(Doxygen REQUIRED)
+if (NOT ZTD_TEXT_DOCUMENTATION_NO_SPHINX)
+find_package(Sphinx REQUIRED)
+else()
 find_package(Sphinx QUIET)
+endif()
 
 # For the install target and related directories
 include(GNUInstallDirs)

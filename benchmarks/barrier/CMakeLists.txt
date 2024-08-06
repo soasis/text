@@ -27,7 +27,7 @@
 #
 # =========================================================================== #
 
-# # Benchmarks
+# # Benchmarks data, compiled behind a shared data barrier
 file(GLOB_RECURSE ztd.text.benchmarks.barrier.sources
 	LIST_DIRECTORIES FALSE
 	CONFIGURE_DEPENDS

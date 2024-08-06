@@ -39,6 +39,7 @@
 
 #include <ztd/idk/c_span.h>
 #include <ztd/idk/charN_t.hpp>
+#include <ztd/idk/mbstate_t.hpp>
 #include <barrier/barrier.h>
 
 #if ZTD_IS_ON(ZTD_CUCHAR)
@@ -55,8 +56,8 @@ static void utf16_to_utf32_well_formed_standard_c(benchmark::State& state) {
 	std::vector<to_char_t> output_data(c_span_char32_t_size(u32_data));
 	bool result = true;
 	for (auto _ : state) {
-		mbstate_t from_state {};
-		mbstate_t to_state {};
+		ztd_mbstate_t from_state {};
+		ztd_mbstate_t to_state {};
 		char intermediate_data[MB_LEN_MAX * 2];
 		to_char_t* output                   = output_data.data();
 		to_char_t* output_last              = output_data.data() + output_data.size();
@@ -149,8 +150,8 @@ static void utf32_to_utf16_well_formed_standard_c(benchmark::State& state) {
 	std::vector<to_char_t> output_data(c_span_char16_t_size(u16_data));
 	bool result = true;
 	for (auto _ : state) {
-		mbstate_t from_state {};
-		mbstate_t to_state {};
+		ztd_mbstate_t from_state {};
+		ztd_mbstate_t to_state {};
 		char intermediate_data[MB_LEN_MAX * 2];
 		to_char_t* output                   = output_data.data();
 		to_char_t* output_last              = output_data.data() + output_data.size();
@@ -244,7 +245,7 @@ static void utf32_to_utf8_well_formed_standard_c(benchmark::State& state) {
 	std::vector<to_char_t> output_data(c_span_char8_t_size(u8_data));
 	bool result = true;
 	for (auto _ : state) {
-		mbstate_t from_state {};
+		ztd_mbstate_t from_state {};
 		to_char_t* output                   = output_data.data();
 		to_char_t* output_last              = output_data.data() + output_data.size();
 		const from_char_t* input            = input_data.data();
@@ -286,7 +287,7 @@ static void utf8_to_utf32_well_formed_standard_c(benchmark::State& state) {
 	std::vector<to_char_t> output_data(c_span_char32_t_size(u32_data));
 	bool result = true;
 	for (auto _ : state) {
-		mbstate_t to_state {};
+		ztd_mbstate_t to_state {};
 		const from_char_t* input            = input_data.data();
 		const from_char_t* const input_last = input_data.data() + input_data.size();
 		to_char_t* output                   = output_data.data();
@@ -362,7 +363,7 @@ static void utf16_to_utf8_well_formed_standard_c(benchmark::State& state) {
 	std::vector<to_char_t> output_data(c_span_char8_t_size(u8_data));
 	bool result = true;
 	for (auto _ : state) {
-		mbstate_t from_state {};
+		ztd_mbstate_t from_state {};
 		to_char_t* output                   = output_data.data();
 		to_char_t* output_last              = output_data.data() + output_data.size();
 		const from_char_t* input            = input_data.data();
@@ -404,7 +405,7 @@ static void utf8_to_utf16_well_formed_standard_c(benchmark::State& state) {
 	std::vector<to_char_t> output_data(c_span_char16_t_size(u16_data));
 	bool result = true;
 	for (auto _ : state) {
-		mbstate_t to_state {};
+		ztd_mbstate_t to_state {};
 		const from_char_t* input            = input_data.data();
 		const from_char_t* const input_last = input_data.data() + input_data.size();
 		to_char_t* output                   = output_data.data();

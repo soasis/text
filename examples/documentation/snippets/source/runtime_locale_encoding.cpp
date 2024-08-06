@@ -34,6 +34,8 @@
 // This example doesn't work on Apple/libc++ because they don't have
 // standard C or C++ headers.
 
+#include <ztd/idk/mbstate_t.hpp>
+
 #include <cstddef>
 #if defined(__has_include) && __has_include(<cuchar>)
 #include <cuchar>
@@ -50,7 +52,6 @@ extern "C" {
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #else
-
 #endif
 
 class runtime_locale {
@@ -63,22 +64,30 @@ public:
 	inline static constexpr std::size_t max_code_units  = MB_LEN_MAX;
 
 	struct decode_state {
-		std::mbstate_t c_stdlib_state;
+		ztd_mbstate_t c_stdlib_state;
 
 		decode_state() noexcept : c_stdlib_state() {
 			// properly set for mbrtoc32 state
 			code_point ghost_ouput[2] {};
 			UCHAR_ACCESS mbrtoc32(ghost_ouput, "\0", 1, &c_stdlib_state);
 		}
+
+		bool is_complete() const noexcept {
+			return UCHAR_ACCESS mbsinit(&c_stdlib_state) != 0;
+		}
 	};
 
 	struct encode_state {
-		std::mbstate_t c_stdlib_state;
+		ztd_mbstate_t c_stdlib_state;
 
 		encode_state() noexcept : c_stdlib_state() {
 			// properly set for c32rtomb state
 			code_unit ghost_ouput[MB_LEN_MAX] {};
 			UCHAR_ACCESS c32rtomb(ghost_ouput, U'\0', &c_stdlib_state);
+		}
+
+		bool is_complete() const noexcept {
+			return UCHAR_ACCESS mbsinit(&c_stdlib_state) != 0;
 		}
 	};
 

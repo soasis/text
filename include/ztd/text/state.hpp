@@ -331,6 +331,25 @@ namespace ztd { namespace text {
 	/// @brief Returns whether or not a state has completed any associated operations and has no more manipulations on
 	/// the output to perform, even if the input source is empty.
 	///
+	/// @param[in] __state The state to check for completion.
+	///
+	/// @remarks If the state does not have a member function `is_complete`, then this will simply return `true`.
+	/// Otherwise, it invokes `__state.is_complete()`.
+	template <typename _State>
+	constexpr bool is_state_complete(_State& __state) noexcept {
+		if constexpr (::ztd::is_detected_v<__txt_detail::__detect_state_is_complete, _State&>) {
+			return __state.is_complete();
+		}
+		else {
+			(void)__state;
+			return true;
+		}
+	}
+
+	//////
+	/// @brief Returns whether or not a state has completed any associated operations and has no more manipulations on
+	/// the output to perform, even if the input source is empty.
+	///
 	/// @param[in] __encoding The encoding for the state.
 	/// @param[in] __state The state to check for completion.
 	///
@@ -341,11 +360,8 @@ namespace ztd { namespace text {
 		if constexpr (::ztd::is_detected_v<__txt_detail::__detect_encoding_is_state_complete, _Encoding&, _State&>) {
 			return __encoding.is_state_complete(__state);
 		}
-		else if constexpr (::ztd::is_detected_v<__txt_detail::__detect_state_is_complete, _State&>) {
-			return __state.is_complete();
-		}
 		else {
-			return true;
+			return is_state_complete(__state);
 		}
 	}
 

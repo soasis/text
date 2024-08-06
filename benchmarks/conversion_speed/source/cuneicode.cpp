@@ -58,7 +58,7 @@
 			const ztd_char##FROM_N##_t* input = input_data.data();                                                  \
 			size_t output_size                = output_data.size();                                                 \
 			ztd_char##TO_N##_t* output        = output_data.data();                                                 \
-			cnc_mcerr err = cnc_c##FROM_N##sntoc##TO_N##sn(&output_size, &output, &input_size, &input, &cstate);    \
+			cnc_mcerr err = cnc_c##FROM_N##snrtoc##TO_N##sn(&output_size, &output, &input_size, &input, &cstate);   \
 			if (err != cnc_mcerr_ok) {                                                                              \
 				result = false;                                                                                    \
 			}                                                                                                       \

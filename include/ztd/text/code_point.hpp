@@ -42,7 +42,19 @@
 #include <ztd/prologue.hpp>
 
 //////
-/// @file code point abstractions
+/// @file code_point.hpp
+///
+/// @brief code point abstractions
+
+//////
+/// @namespace ztd
+///
+/// @brief The core library namespace.
+
+//////
+/// @namespace ztd::text
+///
+/// @brief The text library namespace.
 
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
@@ -50,7 +62,6 @@ namespace ztd { namespace text {
 	//////
 	/// @addtogroup ztd_text_properties Property and Trait Helpers
 	/// @{
-	/////
 
 	//////
 	/// @brief Retrieves the code point type for the given type.

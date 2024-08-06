@@ -208,7 +208,7 @@ namespace ztd { namespace text {
 	/// @brief The reconstruct extension point for rebuilding an encoding view from its iterator and sentinel
 	/// type.
 	template <typename _Encoding, typename _Range, typename _ErrorHandler, typename _State>
-	constexpr encode_view<_Encoding, _Range, _ErrorHandler, _State> tag_invoke(ztd::tag_t<ranges::reconstruct>,
+	constexpr encode_view<_Encoding, _Range, _ErrorHandler, _State> reconstruct(
 		::std::in_place_type_t<encode_view<_Encoding, _Range, _ErrorHandler, _State>>,
 		typename encode_view<_Encoding, _Range, _ErrorHandler, _State>::iterator __it,
 		typename encode_view<_Encoding, _Range, _ErrorHandler, _State>::sentinel) noexcept(::std::

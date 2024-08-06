@@ -28,8 +28,7 @@
 #
 # ============================================================================>
 
-cmake_minimum_required(VERSION 3.21.0)
-cmake_policy(VERSION 3.21)
+cmake_minimum_required(VERSION 3.28.0)
 
 # # Project kickstart
 # Includes a bunch of basic flags and utilities shared across projects
@@ -223,9 +222,9 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 			simdutf
 			GIT_REPOSITORY https://github.com/simdutf/simdutf
 			GIT_SHALLOW    ON
-			GIT_TAG        master)
+			GIT_TAG        master
+			EXCLUDE_FROM_ALL)
 		FetchContent_MakeAvailable(simdutf)
-		set_property(DIRECTORY "${simdutf_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 	endfunction()
 	simdutf_dependency_jail()
 
@@ -240,12 +239,25 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 			boost.text
 			GIT_REPOSITORY https://github.com/ThePhD/text
 			GIT_SHALLOW    ON
-			GIT_TAG        master)
+			GIT_TAG        master
+			EXCLUDE_FROM_ALL)
 		FetchContent_MakeAvailable(boost.text)
-		set_property(DIRECTORY "${boost.text_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 	endfunction()
 	if (ZTD_TEXT_BOOST.TEXT)
 		boost_text_dependency_jail()
+	endif()
+	if (ZTD_TEXT_BENCHMARKS)
+		function(unicode_lipsum_dependency_jail)
+			# unicode_lipsum check
+			FetchContent_Declare(
+				unicode_lipsum
+				GIT_REPOSITORY https://github.com/lemire/unicode_lipsum
+				GIT_SHALLOW    ON
+				GIT_TAG        main
+				EXCLUDE_FROM_ALL)
+			FetchContent_MakeAvailable(unicode_lipsum)
+		endfunction()
+		unicode_lipsum_dependency_jail()
 	endif()
 endif()
 

@@ -41,6 +41,7 @@
 #include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/detail/unicode.hpp>
 #include <ztd/idk/endian.hpp>
+#include <ztd/idk/mbstate_t.hpp>
 
 #include <barrier/barrier.h>
 
@@ -65,7 +66,7 @@ static void utf16_to_utf32_init_well_formed_standard_cpp(benchmark::State& state
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf16<char32_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::mbstate_t state {};
+		std::ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;
@@ -108,7 +109,7 @@ static void utf32_to_utf16_init_well_formed_standard_cpp(benchmark::State& state
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf16<char32_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		char* char_output      = reinterpret_cast<char*>(output);
 		char* char_output_last = reinterpret_cast<char*>(output_last);
 		const from_char_t* input_next;
@@ -153,7 +154,7 @@ static void utf32_to_utf8_init_well_formed_standard_cpp(benchmark::State& state)
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf8<char32_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		char* char_output      = reinterpret_cast<char*>(output);
 		char* char_output_last = reinterpret_cast<char*>(output_last);
 		const from_char_t* input_next;
@@ -199,7 +200,7 @@ static void utf8_to_utf32_init_well_formed_standard_cpp(benchmark::State& state)
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf8<char32_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;
@@ -244,7 +245,7 @@ static void utf16_to_utf8_init_well_formed_standard_cpp(benchmark::State& state)
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf8_utf16<char16_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		char* char_output      = reinterpret_cast<char*>(output);
 		char* char_output_last = reinterpret_cast<char*>(output_last);
 		const from_char_t* input_next;
@@ -290,7 +291,7 @@ static void utf8_to_utf16_init_well_formed_standard_cpp(benchmark::State& state)
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf8_utf16<char16_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;

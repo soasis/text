@@ -36,6 +36,7 @@ function (google_benchmark_dependency_jail)
 		google_benchmark
 		GIT_REPOSITORY https://github.com/google/benchmark.git
 		GIT_TAG main
+		EXCLUDE_FROM_ALL
 	)
 	# Benchmark variables, internal setup
 	set(BENCHMARK_ENABLE_EXCEPTIONS ON)
@@ -55,7 +56,6 @@ function (google_benchmark_dependency_jail)
 		set(HAVE_STD_REGEX ON)
 	endif()
 	FetchContent_MakeAvailable(google_benchmark)
-	set_property(DIRECTORY "${google_benchmark_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
 endfunction()
 google_benchmark_dependency_jail()
 

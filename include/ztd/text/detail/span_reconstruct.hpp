@@ -93,7 +93,7 @@ namespace ztd { namespace text {
 				}
 				else {
 					return ::ztd::ranges::reconstruct(
-						::std::in_place_type<_UInput>, ::std::forward<_Input>(__input));
+						::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
 				}
 			}
 		}

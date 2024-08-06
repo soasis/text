@@ -41,6 +41,7 @@
 #include <ztd/idk/charN_t.hpp>
 #include <ztd/idk/detail/unicode.hpp>
 #include <ztd/idk/endian.hpp>
+#include <ztd/idk/mbstate_t.hpp>
 
 #include <barrier/barrier.h>
 
@@ -66,7 +67,7 @@ static void utf16_to_utf32_well_formed_standard_cpp(benchmark::State& state) {
 	to_char_t* output                   = output_data.data();
 	to_char_t* const output_last        = output_data.data() + output_data.size();
 	for (auto _ : state) {
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;
@@ -110,7 +111,7 @@ static void utf32_to_utf16_well_formed_standard_cpp(benchmark::State& state) {
 	to_char_t* output                   = output_data.data();
 	to_char_t* const output_last        = output_data.data() + output_data.size();
 	for (auto _ : state) {
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		char* char_output      = reinterpret_cast<char*>(output);
 		char* char_output_last = reinterpret_cast<char*>(output_last);
 		const from_char_t* input_next;
@@ -155,7 +156,7 @@ static void utf32_to_utf8_well_formed_standard_cpp(benchmark::State& state) {
 	to_char_t* output                   = output_data.data();
 	to_char_t* const output_last        = output_data.data() + output_data.size();
 	for (auto _ : state) {
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		char* char_output      = reinterpret_cast<char*>(output);
 		char* char_output_last = reinterpret_cast<char*>(output_last);
 		const from_char_t* input_next;
@@ -201,7 +202,7 @@ static void utf8_to_utf32_well_formed_standard_cpp(benchmark::State& state) {
 	to_char_t* output                   = output_data.data();
 	to_char_t* const output_last        = output_data.data() + output_data.size();
 	for (auto _ : state) {
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;
@@ -246,7 +247,7 @@ static void utf16_to_utf8_well_formed_standard_cpp(benchmark::State& state) {
 	to_char_t* output                   = output_data.data();
 	to_char_t* const output_last        = output_data.data() + output_data.size();
 	for (auto _ : state) {
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		char* char_output      = reinterpret_cast<char*>(output);
 		char* char_output_last = reinterpret_cast<char*>(output_last);
 		const from_char_t* input_next;
@@ -292,7 +293,7 @@ static void utf8_to_utf16_well_formed_standard_cpp(benchmark::State& state) {
 	to_char_t* output                   = output_data.data();
 	to_char_t* const output_last        = output_data.data() + output_data.size();
 	for (auto _ : state) {
-		std::mbstate_t state {};
+		ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;

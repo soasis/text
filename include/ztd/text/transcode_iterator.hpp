@@ -101,11 +101,10 @@ namespace ztd { namespace text {
 		       unwrap_remove_cvref_t<_FromErrorHandler>> // cf
 		  && encode_error_handler_always_returns_ok_v<unwrap_remove_cvref_t<_ToEncoding>,
 		       unwrap_remove_cvref_t<_ToErrorHandler>>>,
-	  private ebco<__txt_detail::__span_reconstruct_t<unwrap_remove_cvref_t<_Range>, unwrap_remove_cvref_t<_Range>>,
-		  5> {
+	  private ebco<__txt_detail::__span_reconstruct_t<unwrap_remove_cvref_t<_Range>, _Range>, 5> {
 	private:
 		using _UNonRRange                                = unwrap_remove_cvref_t<_Range>;
-		using _URange                                    = ranges::range_reconstruct_t<_UNonRRange>;
+		using _URange                                    = __txt_detail::__span_reconstruct_t<_UNonRRange, _Range>;
 		using _UFromEncoding                             = unwrap_remove_cvref_t<_FromEncoding>;
 		using _UToEncoding                               = unwrap_remove_cvref_t<_ToEncoding>;
 		using _UFromErrorHandler                         = unwrap_remove_cvref_t<_FromErrorHandler>;
@@ -132,7 +131,7 @@ namespace ztd { namespace text {
 			= __txt_detail::__state_storage<remove_cvref_t<_FromEncoding>, remove_cvref_t<_FromState>, 0>;
 		using __base_to_state_t
 			= __txt_detail::__state_storage<remove_cvref_t<_ToEncoding>, remove_cvref_t<_ToState>, 1>;
-		using __base_range_t = ebco<__txt_detail::__span_reconstruct_t<_URange, _URange>, 5>;
+		using __base_range_t = ebco<_URange, 5>;
 
 		inline static constexpr bool _IsBackwards = is_detected_v<__txt_detail::__detect_object_encode_one_backwards,
 			_UFromEncoding, _URange, _UFromErrorHandler, _UFromState>;
@@ -249,7 +248,7 @@ namespace ztd { namespace text {
 		constexpr transcode_iterator(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding)
 		: transcode_iterator(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			from_error_handler_type {}, to_error_handler_type {}) {
+			  from_error_handler_type {}, to_error_handler_type {}) {
 		}
 
 		//////
@@ -264,8 +263,8 @@ namespace ztd { namespace text {
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler)
 		: transcode_iterator(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			::std::move(__from_error_handler), ::std::move(__to_error_handler), from_state_type {},
-			to_state_type {}) {
+			  ::std::move(__from_error_handler), ::std::move(__to_error_handler), from_state_type {},
+			  to_state_type {}) {
 		}
 
 		//////

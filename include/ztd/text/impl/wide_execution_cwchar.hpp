@@ -41,6 +41,7 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/unicode_code_point.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
+#include <ztd/text/state.hpp>
 #include <ztd/text/detail/empty_state.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
 
@@ -63,9 +64,15 @@ namespace ztd { namespace text {
 
 		class __wide_execution_decode_state {
 		public:
+			//////
+			/// @brief The narrow mbstate_t from the standard library for multibyte conversion sequences.
 			ztd_mbstate_t __wide_state;
+			//////
+			/// @brief The narrow state from the relied-upon standard execution multibyte encoding.
 			decode_state_t<execution_t> __narrow_state;
 
+			//////
+			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {
 				char __ghost_space[MB_LEN_MAX];
 #if ZTD_IS_ON(ZTD_LIBVCXX)
@@ -79,19 +86,46 @@ namespace ztd { namespace text {
 				ZTD_TEXT_ASSERT(__init_result == 1 && __ghost_space[0] == '\0');
 				ZTD_TEXT_ASSERT(::std::mbsinit(&__wide_state) != 0);
 			}
+
+			//////
+			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
+			/// indivisible unit of work.
+			///
+			/// @returns Whether or not there are additional information stored in any part of the standard-based
+			/// streams have accumulated information for a continual decode operation.
+			bool is_complete() const noexcept {
+				return ::std::mbsinit(&this->__wide_state) && ::ztd::text::is_state_complete(this->__narrow_state);
+			}
 		};
 
 		class __wide_execution_encode_state {
 		public:
-			::std::mbstate_t __wide_state;
+			//////
+			/// @brief The wide mbstate_t from the standard library for multibyte conversion sequences.
+			ztd_mbstate_t __wide_state;
+			//////
+			/// @brief The narrow state from the relied-upon standard execution multibyte encoding.
 			encode_state_t<execution_t> __narrow_state;
 
+			//////
+			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__wide_execution_encode_state() noexcept : __wide_state(), __narrow_state() {
 				wchar_t __ghost_space[2];
 				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
 				// make sure it is initialized
 				ZTD_TEXT_ASSERT(__init_result == 0 && __ghost_space[0] == L'\0');
 				ZTD_TEXT_ASSERT(::std::mbsinit(&__wide_state) != 0);
+			}
+
+
+			//////
+			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
+			/// indivisible unit of work.
+			///
+			/// @returns Whether or not there are additional information stored in any part of the standard-based
+			/// streams have accumulated information for a continual encode operation.
+			bool is_complete() const noexcept {
+				return ::std::mbsinit(&this->__wide_state) && ::ztd::text::is_state_complete(this->__narrow_state);
 			}
 		};
 	} // namespace __txt_detail

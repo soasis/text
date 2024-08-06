@@ -41,6 +41,7 @@
 #include <ztd/text/error_handler.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/unicode_code_point.hpp>
+#include <ztd/text/state.hpp>
 #include <ztd/text/utf8.hpp>
 #include <ztd/text/utf16.hpp>
 #include <ztd/text/assert.hpp>
@@ -76,9 +77,15 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		class __execution_decode_state {
 		public:
+			//////
+			/// @brief The narrow mbstate_t from the standard library for multibyte conversion sequences.
 			ztd_mbstate_t __narrow_state;
+			//////
+			/// @brief Whether or not there might be some accumulated data in the state.
 			bool __output_pending;
 
+			//////
+			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__execution_decode_state() noexcept : __narrow_state(), __output_pending(false) {
 				ztd_char32_t __ghost_space[2];
 				::std::size_t __init_result = ZTD_UCHAR_SCOPE_I_ mbrtoc32(__ghost_space, "\0", 1, &__narrow_state);
@@ -90,9 +97,15 @@ namespace ztd { namespace text {
 
 		class __execution_encode_state {
 		public:
+			//////
+			/// @brief The narrow mbstate_t from the standard library for multibyte conversion sequences.
 			ztd_mbstate_t __narrow_state;
+			//////
+			/// @brief Whether or not there might be some accumulated data in the state.
 			bool __output_pending;
 
+			//////
+			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__execution_encode_state() noexcept : __narrow_state(), __output_pending(false) {
 				char __ghost_space[MB_LEN_MAX];
 				::std::size_t __init_result = ZTD_UCHAR_SCOPE_I_ c32rtomb(__ghost_space, U'\0', &__narrow_state);
@@ -208,7 +221,7 @@ namespace ztd { namespace text {
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
-			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
+			/// of information (alongside mbstate_t usage). Whether or not the state is used is based on the
 			/// implementation and what it chooses.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
@@ -386,7 +399,7 @@ namespace ztd { namespace text {
 			/// reconstructed output range, error handler, and a reference to the passed-in state.
 			///
 			/// @remarks Platform APIs and/or the C Standard Library may be used to properly decode one complete unit
-			/// of information (alongside std::mbstate_t usage). Whether or not the state is used is based on the
+			/// of information (alongside mbstate_t usage). Whether or not the state is used is based on the
 			/// implementation and what it chooses.
 			///
 			/// @remarks To the best ability of the implementation, the iterators will be
@@ -524,7 +537,7 @@ namespace ztd { namespace text {
 				::std::size_t __state_offset = 0;
 				::std::size_t __state_count  = 1;
 				for (; __state_offset < max_code_units; (void)++__state_offset, (void)++__state_count) {
-					::std::mbstate_t __preserved_state   = __s.__narrow_state;
+					ztd_mbstate_t __preserved_state      = __s.__narrow_state;
 					__intermediary_input[__state_offset] = *__in_it;
 					::ztd::ranges::iter_advance(__in_it);
 					ztd_char32_t __intermediary_output[1] {};
@@ -605,6 +618,33 @@ namespace ztd { namespace text {
 					_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 				}
+			}
+
+			//////
+			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
+			/// indivisible unit of work.
+			///
+			/// @param[in] __state The decode state for the standard-API based wide execution encoding.
+			///
+			/// @returns Whether or not there are additional information stored in any part of the standard-based
+			/// streams have accumulated information for a continual decode operation.
+			bool state_is_complete(const __txt_detail::__execution_decode_state& __state) const noexcept {
+				return ::std::mbsinit(&__state.__wide_state)
+					&& ::ztd::text::is_state_complete(__state.__narrow_state);
+			}
+
+
+			//////
+			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
+			/// indivisible unit of work.
+			///
+			/// @param[in] __state The encode state for the standard-API based wide execution encoding.
+			///
+			/// @returns Whether or not there are additional information stored in any part of the standard-based
+			/// streams have accumulated information for a continual encode operation.
+			bool state_is_complete(const __txt_detail::__execution_encode_state& __state) const noexcept {
+				return ::std::mbsinit(&__state.__wide_state)
+					&& ::ztd::text::is_state_complete(__state.__narrow_state);
 			}
 		};
 	} // namespace __txt_impl

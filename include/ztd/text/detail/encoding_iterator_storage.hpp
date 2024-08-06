@@ -106,16 +106,16 @@ namespace ztd { namespace text {
 		: private ebco<remove_cvref_t<_Encoding>, 0>,
 		  private ebco<remove_cvref_t<_ErrorHandler>, 1>,
 		  private __state_storage<unwrap_remove_cvref_t<_Encoding>, remove_cvref_t<_State>, 2>,
-		  private ebco<__txt_detail::__span_reconstruct_t<_Range, _Range>, 3> {
+		  private ebco<__txt_detail::__span_reconstruct_t<unwrap_remove_cvref_t<_Range>, _Range>, 3> {
 		private:
+			using _URange                = unwrap_remove_cvref_t<_Range>;
+			using _UEncoding             = unwrap_remove_cvref_t<_Encoding>;
+			using _UErrorHandler         = unwrap_remove_cvref_t<_ErrorHandler>;
+			using _UState                = unwrap_remove_cvref_t<_State>;
 			using __base_encoding_t      = ebco<remove_cvref_t<_Encoding>, 0>;
 			using __base_error_handler_t = ebco<remove_cvref_t<_ErrorHandler>, 1>;
 			using __base_state_t = __state_storage<unwrap_remove_cvref_t<_Encoding>, remove_cvref_t<_State>, 2>;
-			using __base_range_t = ebco<__txt_detail::__span_reconstruct_t<_Range, _Range>, 3>;
-			using _URange        = unwrap_remove_cvref_t<_Range>;
-			using _UEncoding     = unwrap_remove_cvref_t<_Encoding>;
-			using _UErrorHandler = unwrap_remove_cvref_t<_ErrorHandler>;
-			using _UState        = unwrap_remove_cvref_t<_State>;
+			using __base_range_t = ebco<__txt_detail::__span_reconstruct_t<_URange, _Range>, 3>;
 
 		public:
 			using range_type         = _Range;
@@ -154,7 +154,7 @@ namespace ztd { namespace text {
 				noexcept(::std::is_nothrow_move_constructible_v<encoding_type>     // cf
 				     && ::std::is_nothrow_move_constructible_v<error_handler_type> // cf
 				     && ::std::is_nothrow_move_constructible_v<range_type>         // cf
-				          && noexcept(__base_state_t(::std::declval<encoding_type&>())))
+				     && noexcept(__base_state_t(::std::declval<encoding_type&>())))
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->_M_get_encoding())
@@ -166,7 +166,7 @@ namespace ztd { namespace text {
 				::std::is_nothrow_move_constructible_v<encoding_type>             // cf
 				&& ::std::is_nothrow_move_constructible_v<error_handler_type>     // cf
 				&& ::std::is_nothrow_move_constructible_v<range_type>             // cf
-				     && noexcept(__base_state_t(::std::declval<encoding_type&>(), ::std::declval<state_type>())))
+				&& noexcept(__base_state_t(::std::declval<encoding_type&>(), ::std::declval<state_type>())))
 			: __base_encoding_t(::std::move(__encoding))
 			, __base_error_handler_t(::std::move(__error_handler))
 			, __base_state_t(this->_M_get_encoding(), ::std::move(__state))
