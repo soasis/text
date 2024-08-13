@@ -51,12 +51,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_result Result Types
-	///
-	/// @{
-	/////
-
-	//////
 	/// @brief The result of valdation operations (such as ztd_text_validate_decodable_as and
 	/// ztd_text_validate_encodable_as) that specifically do not include a reference to the state.
 	template <typename _Input>
@@ -173,13 +167,11 @@ namespace ztd { namespace text {
 		constexpr validate_transcode_result(_ArgInput&& __input, bool __is_valid, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, _ArgPivot&& __pivot)
 		: __base_t(::std::forward<_ArgInput>(__input), __is_valid, ::std::forward<_ArgFromState>(__from_state),
-			::std::forward<_ArgToState>(__to_state))
+			  ::std::forward<_ArgToState>(__to_state))
 		, pivot(::std::forward<_Pivot>(__pivot)) {
 		}
 	};
 
-	//////
-	/// @}
 	/////
 
 	namespace __txt_detail {

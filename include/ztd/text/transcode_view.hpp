@@ -52,11 +52,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @brief A transcoding iterator that takes an input of code units and provides an output over the code units of
 	/// the desired `_ToEncoding` after converting from the `_FromEncoding` in a fashion that will never produce a
 	/// ztd::text::encoding_error::insufficient_output error.
@@ -139,7 +134,7 @@ namespace ztd { namespace text {
 		constexpr transcode_view(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding) noexcept
 		: transcode_view(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			from_error_handler_type {}, to_error_handler_type {}) {
+			  from_error_handler_type {}, to_error_handler_type {}) {
 		}
 
 		//////
@@ -154,7 +149,7 @@ namespace ztd { namespace text {
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler) noexcept
 		: _M_it(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			::std::move(__from_error_handler), ::std::move(__to_error_handler)) {
+			  ::std::move(__from_error_handler), ::std::move(__to_error_handler)) {
 		}
 
 		//////
@@ -172,8 +167,8 @@ namespace ztd { namespace text {
 			to_error_handler_type __to_error_handler, from_state_type __from_state,
 			to_state_type __to_state) noexcept
 		: _M_it(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			::std::move(__from_error_handler), ::std::move(__to_error_handler), ::std::move(__from_state),
-			::std::move(__to_state)) {
+			  ::std::move(__from_error_handler), ::std::move(__to_error_handler), ::std::move(__from_state),
+			  ::std::move(__to_state)) {
 		}
 
 		//////
@@ -209,8 +204,6 @@ namespace ztd { namespace text {
 		iterator _M_it;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

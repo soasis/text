@@ -47,11 +47,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief The Encoding that represents the "Execution" (narrow locale-based) encoding. The encoding is
 	/// typically associated with the locale, which is tied to the C standard library's setlocale function.
 	///
@@ -79,8 +74,6 @@ namespace ztd { namespace text {
 	/// @brief An instance of the execution_t type for ease of use.
 	inline constexpr execution_t execution = {};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

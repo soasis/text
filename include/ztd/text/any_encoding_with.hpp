@@ -67,11 +67,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief An encoding class which has the given encode output and input, as well as the decode input and output
 	/// ranges, provided as fixed types alongside the maximum number of code units put in and pushed out.
 	///
@@ -193,7 +188,7 @@ namespace ztd { namespace text {
 			     !is_specialization_of_v<remove_cvref_t<_Encoding>, ::std::in_place_type_t>>* = nullptr>
 		any_encoding_with(_Encoding&& __encoding, _Args&&... __args)
 		: any_encoding_with(::std::in_place_type<remove_cvref_t<_Encoding>>, ::std::forward<_Encoding>(__encoding),
-			::std::forward<_Args>(__args)...) {
+			  ::std::forward<_Args>(__args)...) {
 		}
 
 		//////
@@ -1031,8 +1026,6 @@ namespace ztd { namespace text {
 		::std::unique_ptr<__erased> _M_storage;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

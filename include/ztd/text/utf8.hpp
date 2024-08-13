@@ -181,9 +181,9 @@ namespace ztd { namespace text {
 						const bool __found_good_utf8_stop = (__use_overlong_null_only
 							     ? __ztd_idk_detail_is_lead_mutf8(static_cast<ztd_char8_t>(*__it))
 							     : (__overlong_allowed
-							               ? __ztd_idk_detail_is_lead_overlong_utf8(
-							                    static_cast<ztd_char8_t>(*__it))
-							               : __ztd_idk_detail_is_lead_utf8(static_cast<ztd_char8_t>(*__it))));
+							                 ? __ztd_idk_detail_is_lead_overlong_utf8(
+							                        static_cast<ztd_char8_t>(*__it))
+							                 : __ztd_idk_detail_is_lead_utf8(static_cast<ztd_char8_t>(*__it))));
 						if (__found_good_utf8_stop) {
 							break;
 						}
@@ -607,14 +607,6 @@ namespace ztd { namespace text {
 		};
 	} // namespace __txt_impl
 
-
-	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @brief These classes are implementations of the Encoding concept. They serve as the backbone of the library,
-	/// and the point of extension for users.
-	/// @{
-
 	//////
 	/// @brief A UTF-8 Encoding that traffics in, specifically, the desired code unit type provided as a template
 	/// argument.
@@ -726,8 +718,6 @@ namespace ztd { namespace text {
 
 	} // namespace __txt_detail
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

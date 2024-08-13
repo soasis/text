@@ -51,8 +51,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
+	/// @addtogroup ztd_text_encoding_scheme ztd::text::encoding_scheme
 	/// @{
 
 	//////

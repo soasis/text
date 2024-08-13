@@ -67,5 +67,5 @@ Aliases
 Base Template
 -------------
 
-.. doxygenclass:: ztd::text::encoding_scheme
-	:members:
+.. doxygengroup:: ztd_text_encoding_scheme
+	:content-only:

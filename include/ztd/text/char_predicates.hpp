@@ -44,6 +44,8 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
+	//////
+	/// @brief Internal comparison structure.
 	struct __equal_to_char_fn {
 		//////
 		/// @brief Compares two objects using the `==` operator.
@@ -84,6 +86,8 @@ namespace ztd { namespace text {
 	/// ruin the comparison. This object can be passed as a parameter, even to templated functions.
 	inline constexpr const __equal_to_char_fn equal_to_char = {};
 
+	//////
+	/// @brief Internal comparison structure.
 	struct __not_equal_to_char_fn {
 		//////
 		/// @brief Compares two objects using the `!=` operator.

@@ -138,10 +138,6 @@ namespace ztd { namespace text {
 		};
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 	/////
 
 	//////
@@ -206,8 +202,6 @@ namespace ztd { namespace text {
 	template <typename _Type>
 	using default_consteval_code_point_encoding_t = typename default_consteval_code_point_encoding<_Type>::type;
 
-	//////
-	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

@@ -78,10 +78,6 @@ namespace ztd { namespace text {
 		: ::std::integral_constant<bool, _Type::is_decode_injective::value> { };
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 	/////
 
 	//////
@@ -144,8 +140,6 @@ namespace ztd { namespace text {
 	template <typename _Type>
 	inline constexpr bool is_full_range_representable_v = is_full_range_representable<_Type>::value;
 
-	//////
-	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

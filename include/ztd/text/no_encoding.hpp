@@ -52,11 +52,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief A UTF-32 Encoding that traffics in, specifically, the desired code unit type provided as a template
 	/// argument.
 	///
@@ -236,8 +231,6 @@ namespace ztd { namespace text {
 	/// @brief An object for the ztd::text::no_codepoint_encoding_t type.
 	inline constexpr no_codepoint_encoding_t no_codepoint_encoding = {};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -121,10 +121,6 @@ namespace ztd { namespace text {
 
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 	/////
 
 	//////
@@ -163,8 +159,6 @@ namespace ztd { namespace text {
 	inline constexpr bool encode_error_handler_always_returns_ok_v
 		= encode_error_handler_always_returns_ok<_Encoding, _ErrorHandler>::value;
 
-	//////
-	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

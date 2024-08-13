@@ -80,6 +80,21 @@ function (ctre_dependency_jail)
 endfunction()
 ctre_dependency_jail()
 
+if (ZTD_TEXT_BENCHMARKS_ICU)
+	function(icu_cmake_dependency_jail)
+		FetchContent_Declare(
+			icu_cmake
+			GIT_REPOSITORY https://github.com/viaduck/icu-cmake
+			GIT_SHALLOW    ON
+			GIT_TAG        master
+		)
+		set(BUILD_ICU ON)
+		set(ICU_BUILD_VERSION 74.2)
+		FetchContent_MakeAvailable(icu_cmake)
+	endfunction()
+	icu_cmake_dependency_jail()
+endif()
+
 function(ztd_platform_dependency_jail)
 	# ztd.platform
 	FetchContent_Declare(

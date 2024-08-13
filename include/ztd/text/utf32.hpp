@@ -292,11 +292,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_impl
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief A UTF-32 Encoding that traffics in, specifically, the desired code unit type provided as a template
 	/// argument.
 	///
@@ -323,8 +318,6 @@ namespace ztd { namespace text {
 	/// @brief An instance of the UTF-32 that traffics in wchar_t for ease of use.
 	inline constexpr wide_utf32_t wide_utf32 = {};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

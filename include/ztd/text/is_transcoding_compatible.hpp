@@ -73,10 +73,6 @@ namespace ztd { namespace text {
 
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 	/////
 
 	//////
@@ -130,8 +126,6 @@ namespace ztd { namespace text {
 	template <typename _From, typename _To>
 	constexpr bool is_transcoding_compatible_v = is_transcoding_compatible<_To, _From>::value;
 
-	//////
-	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

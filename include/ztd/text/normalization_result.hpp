@@ -46,11 +46,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_normalization Normalization
-	///
-	/// @{
-
-	//////
 	/// @brief The result of an normalization operation.
 	enum class normalization_error {
 		//////
@@ -94,9 +89,6 @@ namespace ztd { namespace text {
 		, error_code(__error_code) {
 		}
 	};
-
-	//////
-	/// @}
 
 
 

@@ -68,12 +68,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
-	/////
-
-	//////
 	/// @brief Checks whether or not the encoding has declared it can handle all of Unicode.
 	///
 	/// @tparam _Type The encoding type to check.
@@ -169,10 +163,6 @@ namespace ztd { namespace text {
 	/// @brief An alias of the inner `value` for ztd::text::is_unicode_encoding.
 	template <typename _Type>
 	inline constexpr text_encoding_id encoded_id_v = encoded_id<::ztd::remove_cvref_t<_Type>>::value;
-
-	//////
-	/// @}
-	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

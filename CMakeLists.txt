@@ -121,11 +121,17 @@ option(ZTD_TEXT_READTHEDOCS "Whether or not we are building inside of ReadTheDoc
 option(ZTD_TEXT_TESTS "Enable build of tests" OFF)
 option(ZTD_TEXT_DOCUMENTATION "Enable build of documentation" OFF)
 option(ZTD_TEXT_DOCUMENTATION_NO_SPHINX "Turn off Sphinx usage (useful for ReadTheDocs builds)" OFF)
-option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
-option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
-option(ZTD_TEXT_BENCHMARKS_INTERNALS "Enable benchmarking for basic and internal-specific functionality" OFF)
 option(ZTD_TEXT_GENERATE_SINGLE "Enable generation of a single header and its target" OFF)
-option(ZTD_TEXT_BOOST.TEXT "Enable usage of Boost.Text benchmarks and examples" OFF)
+option(ZTD_TEXT_BOOST.TEXT "Enable Boost.Text-dependent benchmarking, examples, and similar if benchmarking and/or examples are turned on." OFF)
+option(ZTD_TEXT_ICU "Enable ICU-dependent benchmarking, examples, and similar if benchmarking and/or examples are turned on." OFF)
+option(ZTD_TEXT_LIBICONV "Enable libiconv-dependent benchmarking, examples, and similar if benchmarking and/or examples are turned on." OFF)
+option(ZTD_TEXT_EXAMPLES "Enable build of examples" OFF)
+cmake_dependent_option(ZTD_TEXT_EXAMPLES_BOOST.TEXT "Enable usage of Boost.Text in examples" ON "ZTD_TEXT_EXAMPLES;ZTD_TEXT_BOOST.TEXT" OFF)
+option(ZTD_TEXT_BENCHMARKS "Enable build of benchmarks" OFF)
+cmake_dependent_option(ZTD_TEXT_BENCHMARKS_INTERNALS "Enable benchmarking for basic and internal-specific functionality" ON "ZTD_TEXT_BENCHMARKS" OFF)
+cmake_dependent_option(ZTD_TEXT_BENCHMARKS_BOOST.TEXT "Enable benchmarking for Boost.Text" ON "ZTD_TEXT_BENCHMARKS;ZTD_TEXT_BOOST.TEXT" OFF)
+cmake_dependent_option(ZTD_TEXT_BENCHMARKS_ICU "Enable benchmarking for ICU" ON "ZTD_TEXT_BENCHMARKS;ZTD_TEXT_ICU" OFF)
+cmake_dependent_option(ZTD_TEXT_BENCHMARKS_LIBICONV "Enable benchmarking for libiconv" ON "ZTD_TEXT_BENCHMARKS;ZTD_TEXT_LIBICONV" OFF)
 
 # # Dependencies
 # ztd.idk
@@ -245,19 +251,6 @@ if (ZTD_TEXT_EXAMPLES OR ZTD_TEXT_BENCHMARKS)
 	endfunction()
 	if (ZTD_TEXT_BOOST.TEXT)
 		boost_text_dependency_jail()
-	endif()
-	if (ZTD_TEXT_BENCHMARKS)
-		function(unicode_lipsum_dependency_jail)
-			# unicode_lipsum check
-			FetchContent_Declare(
-				unicode_lipsum
-				GIT_REPOSITORY https://github.com/lemire/unicode_lipsum
-				GIT_SHALLOW    ON
-				GIT_TAG        main
-				EXCLUDE_FROM_ALL)
-			FetchContent_MakeAvailable(unicode_lipsum)
-		endfunction()
-		unicode_lipsum_dependency_jail()
 	endif()
 endif()
 

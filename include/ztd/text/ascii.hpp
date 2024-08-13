@@ -43,11 +43,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief The American Standard Code for Information Exchange (ASCII) Encoding.
 	///
 	/// @tparam _CodeUnit The code unit type to work over.
@@ -250,7 +245,6 @@ namespace ztd { namespace text {
 		}
 	};
 
-
 	//////
 	/// @brief The American Standard Code for Information Exchange (ASCII) Encoding.
 	///
@@ -259,13 +253,9 @@ namespace ztd { namespace text {
 	/// reason!
 	using ascii_t = basic_ascii<char>;
 
-
 	//////
 	/// @brief An instance of the ascii_t type for ease of use.
 	inline constexpr ascii_t ascii = {};
-
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

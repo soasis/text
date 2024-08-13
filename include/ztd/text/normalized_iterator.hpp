@@ -69,11 +69,6 @@ namespace ztd { namespace text {
 		using __default_normal_storage_t = typename __default_normal_storage<_Range, _NormalizationForm>::type;
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
 	using normalized_sentinel_t = ranges::default_sentinel_t;
 
 	//////
@@ -245,8 +240,6 @@ namespace ztd { namespace text {
 		unsigned char _M_cursor = 0;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

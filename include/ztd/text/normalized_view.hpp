@@ -46,11 +46,6 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
 	template <typename _NormalizationForm, typename _Range,
 		typename _Storage = ::std::vector<ranges::range_value_type_t<unwrap_remove_cvref_t<_Range>>>>
 	class normalized_view {
@@ -151,8 +146,6 @@ namespace ztd { namespace text {
 		iterator _M_it;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

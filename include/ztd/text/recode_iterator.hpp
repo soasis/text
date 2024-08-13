@@ -53,11 +53,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @brief A sentinel type that can be used to compare with a ztd::text::recode_iterator.
 	using recode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
@@ -246,7 +241,7 @@ namespace ztd { namespace text {
 		constexpr recode_iterator(
 			range_type __range, from_encoding_type __from_encoding, to_encoding_type __to_encoding)
 		: recode_iterator(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			from_error_handler_type {}, to_error_handler_type {}) {
+			  from_error_handler_type {}, to_error_handler_type {}) {
 		}
 
 		//////
@@ -261,8 +256,8 @@ namespace ztd { namespace text {
 			to_encoding_type __to_encoding, from_error_handler_type __from_error_handler,
 			to_error_handler_type __to_error_handler)
 		: recode_iterator(::std::move(__range), ::std::move(__from_encoding), ::std::move(__to_encoding),
-			::std::move(__from_error_handler), ::std::move(__to_error_handler), from_state_type {},
-			to_state_type {}) {
+			  ::std::move(__from_error_handler), ::std::move(__to_error_handler), from_state_type {},
+			  to_state_type {}) {
 		}
 
 		//////
@@ -607,8 +602,6 @@ namespace ztd { namespace text {
 		::std::array<value_type, _MaxValues> _M_cache;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

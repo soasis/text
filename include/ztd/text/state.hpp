@@ -73,16 +73,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @addtogroup ztd_text_state Encoding State Management
-	///
-	/// @brief These allow a person to inspect the state of an encoding type, and create them when necessary. It is
-	/// important to use these properties and functions in generic code, lest you make assumptions that will break down
-	/// in the future or in the face of more advanced encoding objects.
-	///
-	/// @{
-	/////
-
-	//////
 	/// @brief Retrieves the `decode_state` of the encoding type if it has one, or the `state` type of the
 	/// encoding.
 	template <typename _Type>
@@ -328,6 +318,9 @@ namespace ztd { namespace text {
 	}
 
 	//////
+	/// @addtogroup ztd_text_is_state_complete ztd::text::is_state_complete
+
+	//////
 	/// @brief Returns whether or not a state has completed any associated operations and has no more manipulations on
 	/// the output to perform, even if the input source is empty.
 	///
@@ -365,9 +358,8 @@ namespace ztd { namespace text {
 		}
 	}
 
-	//////
-	/// @}
 	/////
+	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

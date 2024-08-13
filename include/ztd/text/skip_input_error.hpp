@@ -61,11 +61,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
-
-	//////
 	/// @brief Checks whether calling ztd::text::skip_input_error is an exceptionless operation.
 	///
 	/// @tparam _Encoding The encoding type.
@@ -101,8 +96,8 @@ namespace ztd { namespace text {
 		using _State  = ::std::remove_reference_t<::ztd::unwrap_t<::ztd::remove_cvref_t<decltype(__result.state)>>>;
 		using _ReconstructedInput = ::ztd::ranges::reconstruct_t<_UInput, decltype(__it)&&, decltype(__last)&&>;
 		using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
-               decode_result<_ReconstructedInput, _Output, _State>,
-               encode_result<_ReconstructedInput, _Output, _State>>;
+			        decode_result<_ReconstructedInput, _Output, _State>,
+			        encode_result<_ReconstructedInput, _Output, _State>>;
 		if (__it != __last) {
 			// if there is already some items in the input progress (things irreversibly read), then
 			// we are not obligated to do "at least" one skip; barrier it behind an empty check for
@@ -145,8 +140,8 @@ namespace ztd { namespace text {
 		using _State  = ::std::remove_reference_t<::ztd::unwrap_t<::ztd::remove_cvref_t<decltype(__result.state)>>>;
 		using _ReconstructedInput = ::ztd::ranges::reconstruct_t<_UInput, decltype(__it)&&, decltype(__last)&&>;
 		using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
-               decode_result<_ReconstructedInput, _Output, _State>,
-               encode_result<_ReconstructedInput, _Output, _State>>;
+			        decode_result<_ReconstructedInput, _Output, _State>,
+			        encode_result<_ReconstructedInput, _Output, _State>>;
 		if (__it != __last) {
 			// if there is already some items in the input progress (things irreversibly read), then
 			// we are not obligated to do "at least" one skip; barrier it behind an empty check for
@@ -210,8 +205,8 @@ namespace ztd { namespace text {
 				= ::std::remove_reference_t<::ztd::unwrap_t<::ztd::remove_cvref_t<decltype(__result.state)>>>;
 			using _ReconstructedInput = ::ztd::ranges::reconstruct_t<_UInput, decltype(__it)&&, decltype(__last)&&>;
 			using _ResultType         = ::std::conditional_t<::ztd::is_specialization_of_v<_Result, decode_result>,
-                    decode_result<_ReconstructedInput, _Output, _State>,
-                    encode_result<_ReconstructedInput, _Output, _State>>;
+				        decode_result<_ReconstructedInput, _Output, _State>,
+				        encode_result<_ReconstructedInput, _Output, _State>>;
 			if (__it != __last) {
 				// if there is already some items in the input progress (things irreversibly read), then
 				// we are not obligated to do "at least" one skip; barrier it behind an empty check before making
@@ -224,6 +219,10 @@ namespace ztd { namespace text {
 				::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
 		}
 	}
+
+	//////
+	/// @addtogroup ztd_text_skip_input_error ztd::text::skip_input_error
+	/// @{
 
 	//////
 	/// @}

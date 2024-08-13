@@ -45,10 +45,6 @@
 namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 	/////
 
 	//////
@@ -77,8 +73,6 @@ namespace ztd { namespace text {
 	inline static constexpr ::std::size_t max_transcode_code_units_v
 		= max_code_points_v<_From> * max_code_units_v<_To> * 2;
 
-	//////
-	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

@@ -41,11 +41,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief The ISO/IEC 8859-1 encoding, occasionally referred to as Latin-1 (erroneously). Matches Unicode's
 	/// encoding of the first 256 bytes one-to-one.
 	///
@@ -253,8 +248,6 @@ namespace ztd { namespace text {
 	/// @brief An instance of the basic_iso_8859_1 type for ease of use.
 	inline constexpr basic_iso_8859_1<char> iso_8859_1 = {};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

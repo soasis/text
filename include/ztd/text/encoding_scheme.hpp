@@ -45,11 +45,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief A UTF-16 encoding, in Little Endian format, with inputs as a sequence of bytes.
 	///
 	/// @tparam _Byte The byte type to use. Typically, this is `std::byte` or `uchar.`
@@ -138,9 +133,6 @@ namespace ztd { namespace text {
 	//////
 	/// @brief An instance of the utf32_ne_t type for ease of use.
 	inline constexpr utf32_ne_t utf32_ne = {};
-
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

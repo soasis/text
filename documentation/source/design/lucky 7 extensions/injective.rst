@@ -49,6 +49,7 @@ These two properties appear on the type itself, and is a way to opt-in to saying
 	:emphasize-lines: 2-3
 
 	struct any_unicode_byte_encoding {
+		// …
 		using is_decode_injective = std::true_type;
 		using is_encode_injective = std::true_type;
 		using code_unit = std::byte;
@@ -61,7 +62,7 @@ This signals that the ``encode_one`` and ``decode_one`` functions — if they ar
 .. literalinclude:: /../../include/ztd/text/ascii.hpp
 	:language: cpp
 	:linenos:
-	:lines: 74-76,95-107,273
-	:emphasize-lines: 4-16
+	:lines: 53-54,71-81,246,248-255
+	:emphasize-lines: 3-13
 
 If the type definition is not present and is not ``std::true_type``, then the implementation assumes that this is false for a given encoding. See :doc:`ztd::text::is_decode_injective </api/is_decode_injective>` and :doc:`ztd::text::is_encode_injective </api/is_encode_injective>` for more information.

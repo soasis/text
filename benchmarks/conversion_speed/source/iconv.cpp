@@ -29,11 +29,9 @@
 
 #include <ztd/text/benchmarks/version.hpp>
 
-#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_ICONV_BENCHMARKS)
+#if ZTD_IS_ON(ZTD_TEXT_BENCHMARKS_CONVERSION_SPEED_LIBICONV_BENCHMARKS)
 
 #include <ztd/platform.hpp>
-
-#if ZTD_IS_ON(ZTD_PLATFORM_LIBICONV)
 
 #include <benchmark/benchmark.h>
 
@@ -165,7 +163,5 @@ BENCHMARK(utf16_to_utf32_well_formed_iconv);
 
 BENCHMARK(utf32_to_utf8_well_formed_iconv);
 BENCHMARK(utf32_to_utf16_well_formed_iconv);
-
-#endif
 
 #endif

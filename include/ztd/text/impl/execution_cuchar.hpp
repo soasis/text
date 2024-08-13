@@ -87,11 +87,17 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__execution_decode_state() noexcept : __narrow_state(), __output_pending(false) {
-				ztd_char32_t __ghost_space[2];
-				::std::size_t __init_result = ZTD_UCHAR_SCOPE_I_ mbrtoc32(__ghost_space, "\0", 1, &__narrow_state);
-				// make sure it is initialized
-				ZTD_TEXT_ASSERT_I_(__init_result == 0 && __ghost_space[0] == U'\0');
 				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
+			}
+
+			//////
+			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
+			/// indivisible unit of work.
+			///
+			/// @returns Whether or not there are additional information stored in any part of the standard-based
+			/// streams have accumulated information for a continual decode operation.
+			bool is_complete() const noexcept {
+				return !this->__output_pending && (::std::mbsinit(&__narrow_state) != 0);
 			}
 		};
 
@@ -107,19 +113,21 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__execution_encode_state() noexcept : __narrow_state(), __output_pending(false) {
-				char __ghost_space[MB_LEN_MAX];
-				::std::size_t __init_result = ZTD_UCHAR_SCOPE_I_ c32rtomb(__ghost_space, U'\0', &__narrow_state);
-				// make sure it is initialized
-				ZTD_TEXT_ASSERT_I_(__init_result == 1 && __ghost_space[0] == '\0');
-				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&__narrow_state) != 0);
+				ZTD_TEXT_ASSERT_I_(::std::mbsinit(&this->__narrow_state) != 0);
+			}
+
+
+			//////
+			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
+			/// indivisible unit of work.
+			///
+			/// @returns Whether or not there are additional information stored in any part of the standard-based
+			/// streams have accumulated information for a continual encode operation.
+			bool is_complete() const noexcept {
+				return !this->__output_pending && (::std::mbsinit(&__narrow_state) != 0);
 			}
 		};
 	} // namespace __txt_detail
-
-	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
 
 	namespace __txt_impl {
 
@@ -619,36 +627,9 @@ namespace ztd { namespace text {
 						_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 				}
 			}
-
-			//////
-			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
-			/// indivisible unit of work.
-			///
-			/// @param[in] __state The decode state for the standard-API based wide execution encoding.
-			///
-			/// @returns Whether or not there are additional information stored in any part of the standard-based
-			/// streams have accumulated information for a continual decode operation.
-			bool state_is_complete(const __txt_detail::__execution_decode_state& __state) const noexcept {
-				return !__state.__output_pending && ::ztd::text::is_state_complete(__state.__narrow_state);
-			}
-
-
-			//////
-			/// @brief Finds out whether or not the state contains any unused data that needs to complete an
-			/// indivisible unit of work.
-			///
-			/// @param[in] __state The encode state for the standard-API based wide execution encoding.
-			///
-			/// @returns Whether or not there are additional information stored in any part of the standard-based
-			/// streams have accumulated information for a continual encode operation.
-			bool state_is_complete(const __txt_detail::__execution_encode_state& __state) const noexcept {
-				return !__state.__output_pending && ::ztd::text::is_state_complete(__state.__narrow_state);
-			}
 		};
 	} // namespace __txt_impl
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

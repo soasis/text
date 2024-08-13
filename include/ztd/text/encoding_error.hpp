@@ -56,12 +56,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encoding_error ztd::text::encoding_error
-	/// @brief This enumeration describes the kind of failures that can happen in ztd_text_transcode,
-	/// ztd_text_decode, ztd_text_encode, and lower-level operations.
-	/// @{
-
-	//////
 	/// @brief Describes a failure to encode, decode, transcode, or count, for four core various reasons.
 	///
 	/// @remarks This does not cover specific failures, like if a sequence was overlong (e.g., UTF-8) or if an encode
@@ -160,8 +154,6 @@ namespace ztd { namespace text {
 		return __category;
 	}
 
-	//////
-	/// @}
 
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

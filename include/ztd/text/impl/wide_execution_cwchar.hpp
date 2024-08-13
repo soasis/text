@@ -74,17 +74,8 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__wide_execution_decode_state() noexcept : __wide_state(), __narrow_state() {
-				char __ghost_space[MB_LEN_MAX];
-#if ZTD_IS_ON(ZTD_LIBVCXX)
-				::std::size_t __init_result {};
-				errno_t err = wcrtomb_s(&__init_result, __ghost_space, MB_LEN_MAX, L'\0', &__wide_state);
-				ZTD_TEXT_ASSERT_I_(err == 0);
-#else
-				::std::size_t __init_result = ::std::wcrtomb(__ghost_space, L'\0', &__wide_state);
-#endif
 				// make sure it is initialized
-				ZTD_TEXT_ASSERT(__init_result == 1 && __ghost_space[0] == '\0');
-				ZTD_TEXT_ASSERT(::std::mbsinit(&__wide_state) != 0);
+				ZTD_TEXT_ASSERT(::std::mbsinit(&this->__wide_state) != 0);
 			}
 
 			//////
@@ -94,7 +85,8 @@ namespace ztd { namespace text {
 			/// @returns Whether or not there are additional information stored in any part of the standard-based
 			/// streams have accumulated information for a continual decode operation.
 			bool is_complete() const noexcept {
-				return ::std::mbsinit(&this->__wide_state) && ::ztd::text::is_state_complete(this->__narrow_state);
+				return (::std::mbsinit(&this->__wide_state) != 0)
+					&& ::ztd::text::is_state_complete(this->__narrow_state);
 			}
 		};
 
@@ -110,11 +102,7 @@ namespace ztd { namespace text {
 			//////
 			/// @brief Zero-initializes to its initial state, which includes the initial conversion sequence.
 			__wide_execution_encode_state() noexcept : __wide_state(), __narrow_state() {
-				wchar_t __ghost_space[2];
-				::std::size_t __init_result = ::std::mbrtowc(__ghost_space, "", 1, &__wide_state);
-				// make sure it is initialized
-				ZTD_TEXT_ASSERT(__init_result == 0 && __ghost_space[0] == L'\0');
-				ZTD_TEXT_ASSERT(::std::mbsinit(&__wide_state) != 0);
+				ZTD_TEXT_ASSERT(::std::mbsinit(&this->__wide_state) != 0);
 			}
 
 
@@ -125,15 +113,11 @@ namespace ztd { namespace text {
 			/// @returns Whether or not there are additional information stored in any part of the standard-based
 			/// streams have accumulated information for a continual encode operation.
 			bool is_complete() const noexcept {
-				return ::std::mbsinit(&this->__wide_state) && ::ztd::text::is_state_complete(this->__narrow_state);
+				return (::std::mbsinit(&this->__wide_state) != 0)
+					&& ::ztd::text::is_state_complete(this->__narrow_state);
 			}
 		};
 	} // namespace __txt_detail
-
-	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
 
 	namespace __txt_impl {
 
@@ -477,8 +461,6 @@ namespace ztd { namespace text {
 		};
 	} // namespace __txt_impl
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

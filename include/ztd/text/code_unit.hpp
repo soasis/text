@@ -43,18 +43,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @brief Type-trait like properties and helpers, with `_t` ( @c the inner `type` type definition ) and `_v` ( the
-	/// inner `value` variable, typically an `inline constexpr bool` ).
-	///
-	/// @remarks These should be the go-to way to reference necessary type and constant static data out of encoding
-	/// objects when not interfacing with the well-defined, guaranteed members. For example, directly accessing the @c
-	/// obj::code_unit type is not viable for many encoding types and it is best to go through here.
-	/// @{
-	/////
-
-	//////
 	/// @brief Retrieves the code unit type for the given type.
 	template <typename _Type>
 	class code_unit {
@@ -74,10 +62,6 @@ namespace ztd { namespace text {
 	/// suitable for initializing a automatic storage duration ("stack-allocated") buffer.
 	template <typename _Type>
 	inline static constexpr ::std::size_t max_code_units_v = remove_cvref_t<_Type>::max_code_units;
-
-	//////
-	/// @}
-	/////
 
 	namespace __txt_detail {
 		template <typename _Type>

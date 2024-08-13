@@ -57,10 +57,6 @@ namespace ztd { namespace text {
 		: public ::std::integral_constant<bool, _Type::assume_valid::value> { };
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 
 	//////
 	/// @brief Whether or not the given `_Type` is an error handler that can be ignored.
@@ -84,8 +80,6 @@ namespace ztd { namespace text {
 	inline constexpr bool is_ignorable_error_handler_v
 		= is_ignorable_error_handler<::ztd::remove_cvref_t<_Type>>::value;
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

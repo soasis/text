@@ -56,14 +56,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_result Result Types
-	///
-	/// @brief The result types are used in the transcoding, validation and counting functions. Their sole goal is to
-	/// make sure.
-	///
-	/// @{
-
-	//////
 	/// @brief The result of transcoding operations (such as ztd::text::transcode) that specifically do not include
 	/// a reference to the state.
 	template <typename _Input, typename _Output>
@@ -134,7 +126,7 @@ namespace ztd { namespace text {
 			= encoding_error::ok) noexcept(noexcept(stateless_transcode_result(::std::forward<_ArgInput>(__input),
 			::std::forward<_ArgOutput>(__output), __error_code, __error_code != encoding_error::ok)))
 		: stateless_transcode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
-			__error_code, __error_code != encoding_error::ok) {
+			  __error_code, __error_code != encoding_error::ok) {
 		}
 
 		//////
@@ -234,8 +226,8 @@ namespace ztd { namespace text {
 		constexpr pivotless_transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
 		: pivotless_transcode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
-			::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code,
-			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
+			  ::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code,
+			  __error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
 		//////
@@ -257,7 +249,7 @@ namespace ztd { namespace text {
 		constexpr pivotless_transcode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __error_count)
 		: __base_t(
-			::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
+			  ::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
 		, from_state(::std::forward<_ArgFromState>(__from_state))
 		, to_state(::std::forward<_ArgToState>(__to_state)) {
 		}
@@ -297,7 +289,7 @@ namespace ztd { namespace text {
 			     __other) noexcept(__txt_detail::__result_type_copy_noexcept<::ztd::text::transcode_result, _Input,
 			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState, _Pivot, _ArgPivot>())
 		: __base_t(__other.input, __other.output, __other.error_code, __other.error_count, __other.from_state,
-			__other.to_state)
+			  __other.to_state)
 		, pivot(__other.pivot)
 		, pivot_error_code(__other.pivot_error_code)
 		, pivot_error_count(__other.pivot_error_count) {
@@ -316,7 +308,7 @@ namespace ztd { namespace text {
 			     __other) noexcept(__txt_detail::__result_type_move_noexcept<::ztd::text::transcode_result, _Input,
 			_ArgInput, _Output, _ArgOutput, _FromState, _ArgFromState, _ToState, _ArgToState, _Pivot, _ArgPivot>())
 		: __base_t(::std::move(__other.input), ::std::move(__other.output), __other.error_code, __other.error_count,
-			__other.from_state, __other.to_state)
+			  __other.from_state, __other.to_state)
 		, pivot(::std::move(__other.pivot))
 		, pivot_error_code(::std::move(__other.pivot_error_code))
 		, pivot_error_count(::std::move(__other.pivot_error_count)) {
@@ -349,15 +341,13 @@ namespace ztd { namespace text {
 			_ArgToState&& __to_state, encoding_error __error_code, ::std::size_t __error_count, _ArgPivot&& __pivot,
 			encoding_error __pivot_error_code, ::std::size_t __pivot_error_count)
 		: __base_t(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __from_state, __to_state,
-			__error_code, __error_count)
+			  __error_code, __error_count)
 		, pivot(::std::forward<_ArgPivot>(__pivot))
 		, pivot_error_code(::std::move(__pivot_error_code))
 		, pivot_error_count(::std::move(__pivot_error_count)) {
 		}
 	};
 
-	//////
-	/// @}
 	/////
 
 	namespace __txt_detail {

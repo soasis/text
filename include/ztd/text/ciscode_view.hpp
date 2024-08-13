@@ -45,11 +45,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @copydoc ztd::text::transcode_view
 	template <typename _FromEncoding, typename _ToEncoding = utf8_t,
 		typename _Range            = __txt_detail::__default_char_view_t<code_unit_t<_FromEncoding>>,
@@ -58,8 +53,6 @@ namespace ztd { namespace text {
 	using ciscode_view
 		= recode_view<_FromEncoding, _ToEncoding, _Range, _FromErrorHandler, _ToErrorHandler, _FromState, _ToState>;
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

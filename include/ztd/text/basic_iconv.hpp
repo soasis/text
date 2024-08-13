@@ -54,11 +54,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief An encoding which is templated on code unit and code point and provides access to the `iconv` library.
 	///
 	/// @tparam _CodeUnit The code unit type.
@@ -566,8 +561,6 @@ namespace ztd { namespace text {
 		std::string _M_to_name;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

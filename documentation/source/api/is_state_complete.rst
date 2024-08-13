@@ -31,4 +31,5 @@
 is_state_complete
 =================
 
-.. doxygenfunction:: ztd::text::is_state_complete
+.. doxygengroup:: ztd_text_is_state_complete
+    :content-only:

@@ -58,12 +58,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_result Result Types
-	///
-	/// @{
-	/////
-
-	//////
 	/// @brief The result of all decode operations from encoding objects and higher-level calls (such as
 	/// ztd_text_decode).
 	template <typename _Input, typename _Output>
@@ -131,8 +125,8 @@ namespace ztd { namespace text {
 			= encoding_error::ok) noexcept(noexcept(stateless_decode_result(::std::forward<_ArgInput>(__input),
 			::std::forward<_ArgOutput>(__output), __error_code, __error_code != encoding_error::ok)))
 		: stateless_decode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
-			__error_code,
-			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
+			  __error_code,
+			  __error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
 		//////
@@ -215,8 +209,8 @@ namespace ztd { namespace text {
 		constexpr decode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok)
 		: decode_result(::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output),
-			::std::forward<_ArgState>(__state), __error_code,
-			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
+			  ::std::forward<_ArgState>(__state), __error_code,
+			  __error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
 		//////
@@ -235,7 +229,7 @@ namespace ztd { namespace text {
 		constexpr decode_result(_ArgInput&& __input, _ArgOutput&& __output, _ArgState&& __state,
 			encoding_error __error_code, ::std::size_t __error_count)
 		: __base_t(
-			::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
+			  ::std::forward<_ArgInput>(__input), ::std::forward<_ArgOutput>(__output), __error_code, __error_count)
 		, state(::std::forward<_ArgState>(__state)) {
 		}
 	};
@@ -258,8 +252,6 @@ namespace ztd { namespace text {
 	using basic_decode_error_handler_for = _Function<span_decode_result_for<_Encoding>(
 		const _Encoding&, span_decode_result_for<_Encoding>, ::ztd::span<const code_unit_t<_Encoding>>)>;
 
-	//////
-	/// @}
 	/////
 
 	namespace __txt_detail {

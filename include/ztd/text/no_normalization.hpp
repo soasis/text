@@ -48,11 +48,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_normalization Normalization
-	///
-	/// @{
-
-	//////
 	/// @brief A normalization form that does nothing.
 	class no_normalization {
 	public:
@@ -96,8 +91,6 @@ namespace ztd { namespace text {
 		}
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -55,11 +55,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @brief A sentinel type that can be used to compare with a ztd::text::transcode_iterator.
 	using transcode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
@@ -610,8 +605,6 @@ namespace ztd { namespace text {
 		::std::array<value_type, _MaxValues> _M_cache;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

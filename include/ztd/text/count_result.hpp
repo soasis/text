@@ -53,11 +53,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_result Result Types
-	///
-	/// @{
-
-	//////
 	/// @brief The result of counting operations (such as ztd_text_count_as_encoded and
 	/// ztd_text_count_as_encoded) that specifically do not include a reference to the state.
 	template <typename _Input>
@@ -93,7 +88,7 @@ namespace ztd { namespace text {
 		constexpr stateless_count_result(
 			_ArgInput&& __input, ::std::size_t __count, encoding_error __error_code = encoding_error::ok)
 		: stateless_count_result(
-			::std::forward<_ArgInput>(__input), __count, __error_code, __error_code != encoding_error::ok) {
+			  ::std::forward<_ArgInput>(__input), __count, __error_code, __error_code != encoding_error::ok) {
 		}
 
 		//////
@@ -151,7 +146,7 @@ namespace ztd { namespace text {
 		constexpr count_result(_ArgInput&& __input, ::std::size_t __count, _ArgState&& __state,
 			encoding_error __error_code = encoding_error::ok)
 		: count_result(::std::forward<_ArgInput>(__input), __count, ::std::forward<_ArgState>(__state), __error_code,
-			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
+			  __error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
 		//////
@@ -209,8 +204,8 @@ namespace ztd { namespace text {
 		constexpr count_transcode_result(_ArgInput&& __input, ::std::size_t __count, _ArgFromState&& __from_state,
 			_ArgToState&& __to_state, encoding_error __error_code = encoding_error::ok)
 		: count_transcode_result(::std::forward<_ArgInput>(__input), __count,
-			::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code,
-			__error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
+			  ::std::forward<_ArgFromState>(__from_state), ::std::forward<_ArgToState>(__to_state), __error_code,
+			  __error_code != encoding_error::ok ? static_cast<::std::size_t>(1) : static_cast<::std::size_t>(0)) {
 		}
 
 		//////
@@ -237,8 +232,6 @@ namespace ztd { namespace text {
 		}
 	};
 
-	//////
-	/// @}
 
 	namespace __txt_detail {
 		template <typename _Input, typename _State>

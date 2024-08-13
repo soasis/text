@@ -88,7 +88,7 @@ cpp_index_common_prefix = [
 # Breathe Configuration
 #
 breathe_projects = {}
-breathe_default_project = "ztd.text"
+breathe_default_project = "ztd_text"
 
 # autosectionlabel Configuration
 #
@@ -106,8 +106,8 @@ def run_cmake_doxygen():
 	xml_dir = os.path.join(cmake_dir, 'documentation/doxygen/xml')
 	os.makedirs(cmake_dir, exist_ok=True)
 	os.makedirs(xml_dir, exist_ok=True)
-	print("[ztd.text/documentation/conf.py] CMake Directory: %s" % cmake_dir)
-	print("[ztd.text/documentation/conf.py] XML Directory: %s" % xml_dir)
+	print("[ztd_text/documentation/conf.py] CMake Directory: %s" % cmake_dir)
+	print("[ztd_text/documentation/conf.py] XML Directory: %s" % xml_dir)
 
 	try:
 		retcode = subprocess.call(
@@ -120,14 +120,14 @@ def run_cmake_doxygen():
 
 	try:
 		retcode = subprocess.call(
-		    "cmake --build . --target \"ztd.text.documentation.doxygen\"",
+		    "cmake --build . --target \"ztd_text.documentation.doxygen\"",
 		    shell=True,
 		    cwd=cmake_dir)
 	except OSError as e:
 		sys.stderr.write("cmake generation execution failed: %s\n" % e)
 		return
 
-	breathe_projects["ztd.text"] = xml_dir
+	breathe_projects["ztd_text"] = xml_dir
 
 
 def generate_doxygen_xml(app):

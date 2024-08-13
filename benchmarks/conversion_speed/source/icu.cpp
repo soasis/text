@@ -33,8 +33,6 @@
 
 #include <ztd/platform.hpp>
 
-#if ZTD_IS_ON(ZTD_PLATFORM_ICU)
-
 #include <benchmark/benchmark.h>
 
 #include <barrier/barrier.h>
@@ -397,7 +395,5 @@ BENCHMARK(utf32_to_utf8_well_formed_icu_ucnv_convertEx);
 BENCHMARK(utf32_to_utf16_well_formed_icu_ucnv_convertEx);
 BENCHMARK(utf32_to_utf16_well_formed_icu_u_strFromUTF32);
 BENCHMARK(utf32_to_utf16_well_formed_icu_ucnv_toUChars);
-
-#endif
 
 #endif

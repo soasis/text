@@ -252,7 +252,7 @@ namespace ztd { namespace text {
 	/// @param[in] __output The output view to be writing into.
 	/// @param[in] __from_encoding The desired encoding that performs the decode portion of the transcoding step.
 	/// @param[in] __to_encoding The desired encoding that performs the decode portion of the transcoding step.
-	/// @param[in] __result The result value that has an error in it.
+	/// @param[in] __encode_result The result value that has an error in it.
 	/// @param[in] __encode_error_handler The error handler to mill the `__result` and
 	/// other relevant information through.
 	/// @param[in] __decode_error_handler The error handler to mill the `__encode_error_handler`'s  invoked result and
@@ -314,7 +314,7 @@ namespace ztd { namespace text {
 	/// @param[in] __output The output view to be writing into.
 	/// @param[in] __from_encoding The desired encoding that performs the decode portion of the transcoding step.
 	/// @param[in] __to_encoding The desired encoding that performs the decode portion of the transcoding step.
-	/// @param[in] __result The result value that has an error in it.
+	/// @param[in] __encode_result The result value that has an error in it.
 	/// @param[in] __encode_error_handler The error handler to mill the `__result` and
 	/// other relevant information through.
 	/// @param[in] __decode_error_handler The error handler to mill the `__encode_error_handler`'s  invoked result and
@@ -370,7 +370,6 @@ namespace ztd { namespace text {
 	/// @param[in] __decode_result The result value that has an error on it.
 	/// @param[in] __decode_error_handler The error handler to mill the `__result` and other relevant information
 	/// through.
-	/// @param[in] __to_state The current state of the encoding step of the recode operation.
 	/// @param[in] __to_input_progress Any unread output characters in any intermediate between the (failed) encode and
 	/// decode operations.
 	/// @param[in] __to_output_progress Any unread output characters in any intermediates between the (failed) encode
@@ -410,7 +409,6 @@ namespace ztd { namespace text {
 	/// @param[in] __decode_result The result value that has an error on it.
 	/// @param[in] __decode_error_handler The error handler to mill the `__result` and other relevant information
 	/// through.
-	/// @param[in] __to_state The current state of the encoding step of the recode operation.
 	/// @param[in] __to_input_progress Any unread output characters in any intermediate between the (failed) encode and
 	/// decode operations.
 	/// @param[in] __to_output_progress Any unread output characters in any intermediates between the (failed) encode
@@ -439,7 +437,6 @@ namespace ztd { namespace text {
 	}
 
 	//////
-	///
 	/// @}
 
 

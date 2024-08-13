@@ -43,11 +43,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_result Result Types
-	///
-	/// @{
-
-	//////
 	/// @copydoc ztd::text::stateless_recode_result
 	template <typename _Input, typename _Output>
 	using stateless_ciscode_result = stateless_recode_result<_Input, _Output>;
@@ -62,8 +57,6 @@ namespace ztd { namespace text {
 	template <typename _Input, typename _Output, typename _FromState, typename _ToState, typename _Pivot>
 	using ciscode_result = recode_result<_Input, _Output, _FromState, _ToState, _Pivot>;
 
-	//////
-	/// @}
 	/////
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_

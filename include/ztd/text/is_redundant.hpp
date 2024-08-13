@@ -70,10 +70,6 @@ namespace ztd { namespace text {
 			&& decoded_id_v<_ToEncoding> != ::ztd::text_encoding_id::unknown;
 	} // namespace __txt_detail
 
-	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
 
 	//////
 	/// @brief Whether or not the decode encoding is
@@ -96,8 +92,6 @@ namespace ztd { namespace text {
 	inline constexpr bool is_encode_redundant_v
 		= is_encode_redundant<::ztd::remove_cvref_t<_From>, ::ztd::remove_cvref_t<_To>>::value;
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

@@ -60,10 +60,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	/// @{
-
-	//////
 	/// @brief Retrieves the code point type for the given type.
 	template <typename _Type>
 	class code_point {
@@ -85,9 +81,6 @@ namespace ztd { namespace text {
 	/// suitable for initializing a automatic storage duration ("stack-allocated") buffer.
 	template <typename _Type>
 	inline static constexpr ::std::size_t max_code_points_v = _Type::max_code_points;
-
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

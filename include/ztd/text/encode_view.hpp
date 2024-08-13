@@ -52,11 +52,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @brief A view over a range of code points, presenting the code points as code units. Uses the `_Encoding`
 	/// specified to do so.
 	///
@@ -217,8 +212,6 @@ namespace ztd { namespace text {
 		return encode_view<_Encoding, _Range, _ErrorHandler, _State>(::std::move(__it));
 	}
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

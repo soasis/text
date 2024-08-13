@@ -46,11 +46,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief The Encoding that represents the "Wide Execution" (wide locale-based) encoding. The wide execution
 	/// encoding is typically associated with the locale, which is tied to the C standard library's setlocale function.
 	///
@@ -77,8 +72,6 @@ namespace ztd { namespace text {
 	/// @brief An instance of the wide_execution_t type for ease of use.
 	inline constexpr wide_execution_t wide_execution = {};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

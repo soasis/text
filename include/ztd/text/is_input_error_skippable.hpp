@@ -51,11 +51,6 @@ namespace ztd { namespace text {
 	} // namespace __txt_detail
 
 	//////
-	/// @addtogroup ztd_text_properties Property and Trait Helpers
-	///
-	/// @{
-
-	//////
 	/// @brief Whether or not the given `_Encoding` has a function called `skip_input_error` that takes the given
 	/// `_Result` type with the given `_InputProgress` and `_OutputProgress` types.
 	///
@@ -78,9 +73,6 @@ namespace ztd { namespace text {
 	template <typename _Encoding, typename _Result, typename _InputProgress, typename _OutputProgress>
 	inline constexpr bool is_input_error_skippable_v
 		= is_input_error_skippable<_Encoding, _Result, _InputProgress, _OutputProgress>::value;
-
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

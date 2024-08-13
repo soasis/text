@@ -46,11 +46,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @brief The encode sentinel to use as the `end` value for a ztd::text::encode_iterator.
 	using encode_sentinel_t = __txt_detail::__encoding_sentinel_t;
 
@@ -196,7 +191,7 @@ namespace ztd { namespace text {
 			state_type __state) noexcept(::std::is_nothrow_constructible_v<__iterator_base_it, range_type,
 			encoding_type, error_handler_type, state_type>)
 		: __iterator_base_it(
-			::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state)) {
+			  ::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state)) {
 		}
 
 		//////
@@ -207,8 +202,6 @@ namespace ztd { namespace text {
 		constexpr encode_iterator& operator=(encode_iterator&&) = default;
 	};
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

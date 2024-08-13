@@ -41,11 +41,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_ranges Ranges, Views, and Iterators
-	///
-	/// @{
-
-	//////
 	/// @copydoc ztd::text::recode_sentinel_t
 	using ciscode_sentinel_t = recode_sentinel_t;
 
@@ -56,8 +51,6 @@ namespace ztd { namespace text {
 	using ciscode_iterator = recode_iterator<_FromEncoding, _ToEncoding, _Range, _FromErrorHandler, _ToErrorHandler,
 		_FromState, _ToState>;
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

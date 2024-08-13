@@ -44,11 +44,6 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	//////
-	/// @addtogroup ztd_text_encodings Encodings
-	///
-	/// @{
-
-	//////
 	/// @brief A type-erased encoding that uses the specified code unit, code point, and input/output ranges for the
 	/// various operations.
 	template <typename _EncodeCodeUnit, typename _EncodeCodePoint = const unicode_code_point,
@@ -98,7 +93,7 @@ namespace ztd { namespace text {
 			     && !is_specialization_of_v<remove_cvref_t<_EncodingArg>, ::std::in_place_type_t>>* = nullptr>
 		any_byte_encoding(_EncodingArg&& __encoding, _Args&&... __args)
 		: any_byte_encoding(::std::in_place_type<remove_cvref_t<_EncodingArg>>,
-			::std::forward<_EncodingArg>(__encoding), ::std::forward<_Args>(__args)...) {
+			  ::std::forward<_EncodingArg>(__encoding), ::std::forward<_Args>(__args)...) {
 		}
 
 		//////
@@ -114,7 +109,7 @@ namespace ztd { namespace text {
 			::std::enable_if_t<!::std::is_same_v<_Byte, code_unit_t<remove_cvref_t<_EncodingArg>>>>* = nullptr>
 		any_byte_encoding(::std::in_place_type_t<_EncodingArg>, _Args&&... __args)
 		: __base_t(::std::in_place_type_t<encoding_scheme<remove_cvref_t<_EncodingArg>, endian::native, _Byte>> {},
-			::std::forward<_Args>(__args)...) {
+			  ::std::forward<_Args>(__args)...) {
 		}
 
 		//////
@@ -166,8 +161,6 @@ namespace ztd { namespace text {
 	/// ztd::text::encoding_scheme first.
 	using any_encoding = any_byte_encoding<::std::byte>;
 
-	//////
-	/// @}
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

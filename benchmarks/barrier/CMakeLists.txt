@@ -27,6 +27,19 @@
 #
 # =========================================================================== #
 
+# # Benchmark dependecy data
+function(unicode_lipsum_dependency_jail)
+	# unicode_lipsum check
+	FetchContent_Declare(
+		unicode_lipsum
+		GIT_REPOSITORY https://github.com/lemire/unicode_lipsum
+		GIT_SHALLOW    ON
+		GIT_TAG        main
+		EXCLUDE_FROM_ALL)
+	FetchContent_MakeAvailable(unicode_lipsum)
+endfunction()
+unicode_lipsum_dependency_jail()
+
 # # Benchmarks data, compiled behind a shared data barrier
 file(GLOB_RECURSE ztd.text.benchmarks.barrier.sources
 	LIST_DIRECTORIES FALSE
@@ -44,6 +57,10 @@ add_library(ztd::text::benchmarks::barrier
 target_compile_definitions(ztd.text.benchmarks.barrier
 	PRIVATE
 		ZTD_TEXT_BENCHMARKS_BARRIER_BUILD=1
+		ZTD_TEXT_BENCHMARKS_BARRIER_WIKIPEDIA_SOURCE_DIR="${UNICODE_LIPSUM_SOURCE_DIR}/wikipedia_mars/"
+		ZTD_TEXT_BENCHMARKS_BARRIER_WIKIPEDIA_SOURCE_LIST="${UNICODE_LIPSUM_SOURCE_DIR}/wikipedia_mars/"
+		ZTD_TEXT_BENCHMARKS_BARRIER_LIPSUM_SOURCE_DIR="${UNICODE_LIPSUM_SOURCE_DIR}/lipsum/"
+		ZTD_TEXT_BENCHMARKS_BARRIER_LIPSUM_SOURCE_DIR="${UNICODE_LIPSUM_SOURCE_DIR}/lipsum/"
 	PUBLIC
 		ZTD_TEXT_BENCHMARKS_BARRIER_DLL=1
 )
