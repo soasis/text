@@ -91,13 +91,14 @@ namespace ztd { namespace text {
 		_ToState& __to_state, _FromInputProgress&& __from_input_progress,
 		_FromOutputProgress&& __from_output_progress, _ToInputProgress&& __to_input_progress,
 		_ToOutputProgress&& __to_output_progress) noexcept {
+		using _EncodeOutput = ::ztd::remove_cvref_t<decltype(::std::declval<_Result>().output)>;
 		// first, run the decode error handler
 		auto __decode_error_result = ::std::forward<_DecodeErrorHandler>(__decode_error_handler)(
 			::std::forward<_FromEncoding>(__from_encoding), ::std::move(__decode_result),
 			::std::forward<_FromInputProgress>(__from_input_progress),
 			::std::forward<_FromOutputProgress>(__from_output_progress));
 		// then, run the encode error handler
-		encode_result<_Intermediate, ::ztd::remove_cvref_t<_Output>, _ToState> __encode_result(
+		encode_result<_Intermediate, _EncodeOutput, _ToState> __encode_result(
 			::std::move(__decode_error_result.output), ::std::forward<_Output>(__output), __to_state,
 			__decode_error_result.error_code, __decode_error_result.error_count);
 		auto __encode_error_result

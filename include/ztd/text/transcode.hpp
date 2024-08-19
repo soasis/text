@@ -121,7 +121,7 @@ namespace ztd { namespace text {
 		using _UToErrorHandler   = remove_cvref_t<_ToErrorHandler>;
 		using _Result            = decltype(transcode_one_into_raw(::std::declval<_InitialInput>(), __from_encoding,
 			           ::std::declval<_WorkingOutput>(), __to_encoding, __from_error_handler, __to_error_handler, __from_state,
-			           __to_state, ::std::forward<_Pivot>(__pivot)));
+			           __to_state, __pivot));
 		using _WorkingInput      = decltype(::std::declval<_Result>().input);
 
 		static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_UFromEncoding, _UFromErrorHandler>,
@@ -470,10 +470,11 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _Input, typename _FromEncoding, typename _OutputContainer, typename _ToEncoding,
 			typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
-			typename _Pivot>
+			typename _InitialPivot>
 		constexpr auto __intermediate_transcode_to_storage(_Input&& __input, _FromEncoding&& __from_encoding,
 			_OutputContainer& __output, _ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
-			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state, _Pivot&& __pivot) {
+			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state,
+			_InitialPivot&& __initial_pivot) {
 			// … Weeeellll. Here we go …
 			using _UFromEncoding     = remove_cvref_t<_FromEncoding>;
 			using _UToEncoding       = remove_cvref_t<_ToEncoding>;
@@ -494,10 +495,11 @@ namespace ztd { namespace text {
 				: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(_IntermediateOutputValueType);
 			using _InitialInput              = __span_reconstruct_t<_Input, _Input>;
 			using _IntermediateOutputInitial = ::ztd::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
-			using _IntermediateOutput        = ::ztd::span<_IntermediateOutputValueType>;
+			using _IntermediateOutput        = ::ztd::ranges::subrange_for_t<_IntermediateOutputInitial>;
+			using _Pivot                     = ::ztd::ranges::subrange_for_t<_InitialPivot>;
 			using _TranscodeResult = decltype(::ztd::text::transcode_into_raw(::std::declval<_InitialInput>(),
-				__from_encoding, ::std::declval<_IntermediateOutput&>(), __to_encoding, __from_error_handler,
-				__to_error_handler, __from_state, __to_state, __pivot));
+				__from_encoding, ::std::declval<_IntermediateOutput>(), __to_encoding, __from_error_handler,
+				__to_error_handler, __from_state, __to_state, ::std::declval<_Pivot>()));
 			using _WorkingInput    = decltype(::std::declval<_TranscodeResult>().input);
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
@@ -513,6 +515,7 @@ namespace ztd { namespace text {
 			_ToProgressHandler __to_progress_handler {};
 			::std::size_t __error_count       = 0;
 			::std::size_t __pivot_error_count = 0;
+			_Pivot __pivot(::std::forward<_InitialPivot>(__initial_pivot));
 			for (;;) {
 				__from_progress_handler.clear();
 				__to_progress_handler.clear();
@@ -520,8 +523,10 @@ namespace ztd { namespace text {
 				auto __result = ::ztd::text::transcode_into_raw(::std::move(__working_input), __from_encoding,
 					__intermediate_output_initial, __to_encoding, __from_progress_handler, __to_progress_handler,
 					__from_state, __to_state, __pivot);
-				_IntermediateOutput __intermediate_output(__intermediate_output_initial.data(),
-					__result.output.data() - __intermediate_output_initial.data());
+				::std::size_t __intermediate_written_count
+					= static_cast<std::size_t>(__result.output.data() - __intermediate_output_initial.data());
+				_IntermediateOutput __intermediate_output(__intermediate_output_initial.begin(),
+					__intermediate_output_initial.begin() + __intermediate_written_count);
 				ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
 				if (__result.error_code == encoding_error::insufficient_output_space) {
 					if (__to_progress_handler._M_code_units_progress_size() != 0) {
@@ -536,13 +541,13 @@ namespace ztd { namespace text {
 					else if (__result.pivot_error_code == encoding_error::ok) {
 						// If this occured, we need to record the original pivot position, and then try to
 						// re-serialize with enough space all over again to avoid issues.
-						using _UPivot       = ::ztd::remove_cvref_t<_Pivot>;
-						auto __pivot_input  = ::ztd::ranges::reconstruct(::std::in_place_type<_UPivot>,
-							 ::ztd::ranges::begin(__pivot), ::ztd::ranges::begin(__result.pivot));
-						auto __pivot_result = ::ztd::text::encode_into_raw(__pivot_input, __to_encoding,
+						_Pivot __pivot_remnant(ztd::ranges::begin(__pivot), ztd::ranges::begin(__result.pivot));
+						auto __pivot_result = ::ztd::text::encode_into_raw(__pivot_remnant, __to_encoding,
 							__intermediate_output_initial, __to_error_handler, __to_state);
-						_IntermediateOutput __pivot_intermediate_output(__intermediate_output_initial.data(),
+						::std::size_t __intermediate_written_count = static_cast<std::size_t>(
 							__pivot_result.output.data() - __intermediate_output_initial.data());
+						_IntermediateOutput __pivot_intermediate_output(__intermediate_output_initial.begin(),
+							__intermediate_output_initial.begin() + __intermediate_written_count);
 						ranges::__rng_detail::__container_insert_bulk(__output, __pivot_intermediate_output);
 						__error_count += __pivot_result.error_count;
 						__pivot_error_count += __result.pivot_error_count;
@@ -575,8 +580,10 @@ namespace ztd { namespace text {
 							__from_progress_handler._M_code_points_progress(),
 							__to_progress_handler._M_code_points_progress(),
 							__to_progress_handler._M_code_units_progress());
-						_IntermediateOutput __error_intermediate_output(__intermediate_output_initial.data(),
+						::std::size_t __error_written_count = static_cast<std::size_t>(
 							__error_result.output.data() - __intermediate_output_initial.data());
+						_IntermediateOutput __error_intermediate_output(__intermediate_output_initial.begin(),
+							__intermediate_output_initial.begin() + __error_written_count);
 						ranges::__rng_detail::__container_insert_bulk(__output, __error_intermediate_output);
 						__error_count += __error_result.error_count;
 						__pivot_error_count += __error_result.pivot_error_count;
@@ -600,8 +607,10 @@ namespace ztd { namespace text {
 							          __to_state, __result.error_code, __result.error_count),
 							     __to_error_handler, __to_progress_handler._M_code_points_progress(),
 							     __to_progress_handler._M_code_units_progress());
-						_IntermediateOutput __error_intermediate_output(__intermediate_output_initial.data(),
-							__error_result.output.data() - __intermediate_output_initial.data());
+						::std::size_t __error_written_count
+							= __error_result.output.data() - __intermediate_output_initial.data();
+						_IntermediateOutput __error_intermediate_output(__intermediate_output_initial.begin(),
+							__intermediate_output_initial.begin() + __error_written_count);
 						ranges::__rng_detail::__container_insert_bulk(__output, __error_intermediate_output);
 						__error_count += __error_result.error_count;
 						__pivot_error_count += __error_result.pivot_error_count;

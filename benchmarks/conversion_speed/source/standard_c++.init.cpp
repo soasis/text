@@ -66,7 +66,7 @@ static void utf16_to_utf32_init_well_formed_standard_cpp(benchmark::State& state
 		std::locale current_loc = {};
 		auto codecvt_ptr        = new std::codecvt_utf16<char32_t, codecvt_max_code_utfs, codecvt_target_mode>();
 		current_loc             = std::locale(current_loc, codecvt_ptr);
-		std::ztd_mbstate_t state {};
+		ztd_mbstate_t state {};
 		const char* char_input      = reinterpret_cast<const char*>(input);
 		const char* char_input_last = reinterpret_cast<const char*>(input_last);
 		const char* char_input_next;

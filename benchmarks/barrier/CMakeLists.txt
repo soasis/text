@@ -37,6 +37,7 @@ function(unicode_lipsum_dependency_jail)
 		GIT_TAG        main
 		EXCLUDE_FROM_ALL)
 	FetchContent_MakeAvailable(unicode_lipsum)
+	set(unicode_lipsum_SOURCE_DIR ${unicode_lipsum_SOURCE_DIR} PARENT_SCOPE)
 endfunction()
 unicode_lipsum_dependency_jail()
 
@@ -57,10 +58,6 @@ add_library(ztd::text::benchmarks::barrier
 target_compile_definitions(ztd.text.benchmarks.barrier
 	PRIVATE
 		ZTD_TEXT_BENCHMARKS_BARRIER_BUILD=1
-		ZTD_TEXT_BENCHMARKS_BARRIER_WIKIPEDIA_SOURCE_DIR="${UNICODE_LIPSUM_SOURCE_DIR}/wikipedia_mars/"
-		ZTD_TEXT_BENCHMARKS_BARRIER_WIKIPEDIA_SOURCE_LIST="${UNICODE_LIPSUM_SOURCE_DIR}/wikipedia_mars/"
-		ZTD_TEXT_BENCHMARKS_BARRIER_LIPSUM_SOURCE_DIR="${UNICODE_LIPSUM_SOURCE_DIR}/lipsum/"
-		ZTD_TEXT_BENCHMARKS_BARRIER_LIPSUM_SOURCE_DIR="${UNICODE_LIPSUM_SOURCE_DIR}/lipsum/"
 	PUBLIC
 		ZTD_TEXT_BENCHMARKS_BARRIER_DLL=1
 )
@@ -86,4 +83,9 @@ target_link_libraries(ztd.text.benchmarks.barrier
 target_include_directories(ztd.text.benchmarks.barrier
 	PUBLIC
 	include
+)
+target_include_directories(ztd.text.benchmarks.barrier
+	BEFORE
+	PUBLIC
+	${CMAKE_CURRENT_BINARY_DIR}/include
 )
