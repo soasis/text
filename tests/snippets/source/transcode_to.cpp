@@ -33,9 +33,31 @@
 #include <catch2/catch_all.hpp>
 
 TEST_CASE("snippets/transcode_to/basic",
-     "transcode_to with a pass handler doing UTF-8 text does not run afoul with pivot values") {
-	std::string as_str = "test";
-	auto result        = ztd::text::transcode_to<std::string>(
-          as_str, ztd::text::execution, ztd::text::utf8, ztd::text::pass_handler);
-	REQUIRE(as_str == result.output);
+     "transcode_to with a pass handler doing UTF-8 through an any_encoding does not run afoul with pivot values") {
+	SECTION("using span changes") {
+		std::string input = "test";
+		ztd::text::any_encoding input_encoding(ztd::text::utf8);
+		auto result = ztd::text::transcode_to<std::string>(
+		     std::as_bytes(std::span<char>(input)), input_encoding, ztd::text::utf8, ztd::text::pass_handler);
+		REQUIRE(result.output == input);
+		REQUIRE(result.error_code == ztd::text::encoding_error::ok);
+		REQUIRE(!result.errors_were_handled());
+		REQUIRE(result.error_count == 0);
+		REQUIRE(ztd::ranges::empty(result.input));
+		REQUIRE(ztd::text::is_state_complete(result.from_state.get()));
+		REQUIRE(ztd::text::is_state_complete(result.to_state.get()));
+	}
+	SECTION("using any_byte_encoding") {
+		std::string input = "test";
+		ztd::text::any_byte_encoding<char> input_encoding(ztd::text::compat_utf8);
+		auto result
+		     = ztd::text::transcode_to<std::string>(input, input_encoding, ztd::text::utf8, ztd::text::pass_handler);
+		REQUIRE(input == result.output);
+		REQUIRE(result.error_code == ztd::text::encoding_error::ok);
+		REQUIRE(!result.errors_were_handled());
+		REQUIRE(result.error_count == 0);
+		REQUIRE(ztd::ranges::empty(result.input));
+		REQUIRE(ztd::text::is_state_complete(result.from_state.get()));
+		REQUIRE(ztd::text::is_state_complete(result.to_state.get()));
+	}
 }

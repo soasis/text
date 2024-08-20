@@ -161,6 +161,24 @@ namespace ztd { namespace text {
 	/// ztd::text::encoding_scheme first.
 	using any_encoding = any_byte_encoding<::std::byte>;
 
+	//////
+	/// @brief The canonical erased encoding type which uses a `char` as its code unit type and an @c
+	/// unicode_code_point as its code point type, with spans for input and output operations.
+	///
+	/// @remarks If the input encoding does not match `char`, it will be first wrapped in a
+	/// ztd::text::encoding_scheme first. Use this type when dealing with what are effectively byte stream inputs but
+	/// oriented in a legacy manner, such as old `std::string` or `<iostream>`-based work.
+	using compat_any_encoding = any_byte_encoding<char>;
+
+	//////
+	/// @brief The canonical erased encoding type which uses a `unsigned char` as its code unit type and an @c
+	/// unicode_code_point as its code point type, with spans for input and output operations.
+	///
+	/// @remarks If the input encoding does not match `unsigned char`, it will be first wrapped in a
+	/// ztd::text::encoding_scheme first. Use this type when dealing with what are effectively byte stream inputs but
+	/// oriented around a slightly more modern approach to proper unsigned data handling with `unsigned char`.
+	using ucompat_any_encoding = any_byte_encoding<unsigned char>;
+
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

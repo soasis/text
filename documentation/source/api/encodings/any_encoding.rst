@@ -40,6 +40,10 @@ Aliases
 
 .. doxygentypedef:: ztd::text::any_encoding
 
+.. doxygentypedef:: ztd::text::compat_any_encoding
+
+.. doxygentypedef:: ztd::text::ucompat_any_encoding
+
 
 
 Base Template
