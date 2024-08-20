@@ -64,6 +64,12 @@ namespace ztd { namespace text {
 			using __state_base_t  = ebco<unwrap_remove_cvref_t<_EncodingState>, _Id>;
 
 		public:
+			constexpr __state_storage()                                  = default;
+			constexpr __state_storage(const __state_storage&)            = default;
+			constexpr __state_storage(__state_storage&&)                 = default;
+			constexpr __state_storage& operator=(const __state_storage&) = default;
+			constexpr __state_storage& operator=(__state_storage&&)      = default;
+
 			template <typename _ArgEncoding                                                 = _UEncoding,
 				::std::enable_if_t<!is_state_independent_v<remove_cvref_t<_ArgEncoding>, _UEncodingState>
 				     && !::std::is_same_v<remove_cvref_t<_ArgEncoding>, __state_storage>>* = nullptr>
@@ -86,10 +92,6 @@ namespace ztd { namespace text {
 				::std::is_nothrow_constructible_v<__state_base_t, _UEncodingState&&>)
 			: __state_base_t(::std::move(__state)) {
 			}
-			constexpr __state_storage(const __state_storage&)            = default;
-			constexpr __state_storage(__state_storage&&)                 = default;
-			constexpr __state_storage& operator=(const __state_storage&) = default;
-			constexpr __state_storage& operator=(__state_storage&&)      = default;
 
 			constexpr ::std::add_lvalue_reference_t<_UEncodingState> _M_get_state() noexcept {
 				return this->__state_base_t::get_value();

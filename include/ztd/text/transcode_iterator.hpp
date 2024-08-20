@@ -220,9 +220,11 @@ namespace ztd { namespace text {
 		/// @brief Constructs a transcode_iterator from the underlying range.
 		///
 		/// @param[in] __range The input range to wrap and iterate over.
-		constexpr transcode_iterator(range_type __range) noexcept(
-			noexcept(transcode_iterator(::std::move(__range), to_encoding_type {})))
-		: transcode_iterator(::std::move(__range), to_encoding_type {}) {
+		template <typename _ArgRange,
+			::std::enable_if_t<!::std::is_same_v<remove_cvref_t<_ArgRange>, transcode_iterator>>* = nullptr>
+		constexpr transcode_iterator(_ArgRange&& __range) noexcept(
+			noexcept(transcode_iterator(::std::forward<_ArgRange>(__range), to_encoding_type {})))
+		: transcode_iterator(::std::forward<_ArgRange>(__range), to_encoding_type {}) {
 		}
 
 		//////

@@ -79,11 +79,11 @@ namespace ztd { namespace text {
 			       remove_cvref_t<unwrap_t<typename _Storage::range_type>>>>,
 		  private __error_cache<(_EncodeOrDecode == __transaction::__decode
 			       ? decode_error_handler_always_returns_ok_v<
-			            remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>,
-			            remove_cvref_t<unwrap_t<typename _Storage::error_handler_type>>>
+			              remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>,
+			              remove_cvref_t<unwrap_t<typename _Storage::error_handler_type>>>
 			       : encode_error_handler_always_returns_ok_v<
-			            remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>,
-			            remove_cvref_t<unwrap_t<typename _Storage::error_handler_type>>>)> {
+			              remove_cvref_t<unwrap_t<typename _Storage::encoding_type>>,
+			              remove_cvref_t<unwrap_t<typename _Storage::error_handler_type>>>)> {
 		private:
 			using _Range         = typename _Storage::range_type;
 			using _Encoding      = typename _Storage::encoding_type;
@@ -209,7 +209,7 @@ namespace ztd { namespace text {
 				::std::is_nothrow_constructible_v<__base_storage_t, range_type, encoding_type, error_handler_type,
 				     state_type>)
 			: __base_storage_t(
-				::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state))
+				  ::std::move(__range), ::std::move(__encoding), ::std::move(__error_handler), ::std::move(__state))
 			, __base_cursor_cache_t()
 			, __base_error_cache_t()
 			, _M_cache() {
@@ -364,14 +364,29 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
-
 			friend constexpr bool operator==(const __encoding_sentinel_t& __sen, const _Derived& __it) {
 				return __it == __sen;
 			}
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
+			template <typename _Concept = iterator_concept,
+				::std::enable_if_t<
+				     ::ztd::ranges::is_concept_or_better_v<::std::forward_iterator_tag, _Concept>>* = nullptr>
+			friend constexpr bool operator==(const _Derived& __it, const _Derived& __sen) {
+				if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
+					return ::ztd::ranges::begin(__it.__base_storage_t::_M_get_range())
+						== ::ztd::ranges::begin(__sen.__base_storage_t::_M_get_range());
+				}
+				else {
+					return ::ztd::ranges::begin(__it.__base_storage_t::_M_get_range())
+						== ::ztd::ranges::begin(__sen.__base_storage_t::_M_get_range())
+						&& __it.__base_cursor_cache_t::_M_position == __sen.__base_cursor_cache_t::_M_position;
+				}
+			}
 
+			//////
+			/// @brief Compares whether or not this iterator has truly reached the end.
 			friend constexpr bool operator!=(const _Derived& __it, const __encoding_sentinel_t&) {
 				if constexpr (_IsCursorless || (_IsInputOrOutput && _IsSingleValueType)) {
 					return !__it._M_base_is_empty()
@@ -386,9 +401,17 @@ namespace ztd { namespace text {
 
 			//////
 			/// @brief Compares whether or not this iterator has truly reached the end.
-
 			friend constexpr bool operator!=(const __encoding_sentinel_t& __sen, const _Derived& __it) noexcept {
 				return __it != __sen;
+			}
+
+			//////
+			/// @brief Compares whether or not this iterator has truly reached the end.
+			template <typename _Concept = iterator_concept,
+				::std::enable_if_t<
+				     ::ztd::ranges::is_concept_or_better_v<::std::forward_iterator_tag, _Concept>>* = nullptr>
+			friend constexpr bool operator!=(const _Derived& __it, const _Derived& __sen) {
+				return !(__it == __sen);
 			}
 
 		private:
