@@ -55,10 +55,10 @@
 #include <ztd/idk/mbstate_t.hpp>
 #include <ztd/idk/detail/windows.hpp>
 
-#if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR_H)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
+#if (ZTD_IS_ON(ZTD_HEADER_CUCHAR) || ZTD_IS_ON(ZTD_HEADER_UCHAR_H)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 
 // clang-format off
-#if ZTD_IS_ON(ZTD_CUCHAR)
+#if ZTD_IS_ON(ZTD_HEADER_CUCHAR)
 	#include <cuchar>
 #else
 extern "C" {

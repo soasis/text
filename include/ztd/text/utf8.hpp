@@ -522,7 +522,7 @@ namespace ztd { namespace text {
 						break;
 					}
 					else {
-						ZTD_FALLTHROUGH_I_;
+						ZTD_ATTR_FALLTHROUGH_I_;
 					}
 				case 6:
 					if constexpr (__overlong_allowed) {
@@ -533,7 +533,7 @@ namespace ztd { namespace text {
 						break;
 					}
 					else {
-						ZTD_FALLTHROUGH_I_;
+						ZTD_ATTR_FALLTHROUGH_I_;
 					}
 				default:
 					if constexpr (__call_error_handler) {

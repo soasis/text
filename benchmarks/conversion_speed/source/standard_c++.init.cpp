@@ -33,7 +33,7 @@
 
 #include <ztd/text/version.hpp>
 
-#if (ZTD_IS_ON(ZTD_UCHAR_H) || ZTD_IS_ON(ZTD_CUCHAR)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
+#if (ZTD_IS_ON(ZTD_HEADER_CUCHAR) || ZTD_IS_ON(ZTD_HEADER_UCHAR_H)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 
 #include <benchmark/benchmark.h>
 

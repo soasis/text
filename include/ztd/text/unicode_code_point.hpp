@@ -166,7 +166,7 @@ namespace std {
 			return __destination;
 		}
 
-		ZTD_NODISCARD_I_ static constexpr int compare(
+		ZTD_ATTR_NODISCARD_I_ static constexpr int compare(
 		     const char_type* __left, const char_type* __right, ::std::size_t __count) noexcept {
 			if (__count == 0) {
 				return 0;
@@ -175,7 +175,7 @@ namespace std {
 			     __left, __left + __count, __right, __right + __count);
 		}
 
-		ZTD_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr size_t length(const char_type* __it) noexcept {
 			size_t __count = 0;
 			const char_type __null_value {};
 			while (*__it != __null_value) {
@@ -185,7 +185,7 @@ namespace std {
 			return __count;
 		}
 
-		ZTD_NODISCARD_I_ static constexpr const char_type* find(
+		ZTD_ATTR_NODISCARD_I_ static constexpr const char_type* find(
 		     const char_type* __it, size_t __count, const char_type& __c) noexcept {
 			for (; 0 < __count; --__count, (void)++__it) {
 				if (*__it == __c) {
@@ -206,31 +206,32 @@ namespace std {
 			__left = __right;
 		}
 
-		ZTD_NODISCARD_I_ static constexpr bool eq(const char_type& __left, const char_type& __right) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr bool eq(const char_type& __left, const char_type& __right) noexcept {
 			return __left == __right;
 		}
 
-		ZTD_NODISCARD_I_ static constexpr bool lt(const char_type& __left, const char_type& __right) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr bool lt(const char_type& __left, const char_type& __right) noexcept {
 			return __left < __right;
 		}
 
-		ZTD_NODISCARD_I_ static constexpr char_type to_char_type(const int_type& __c_as_int) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr char_type to_char_type(const int_type& __c_as_int) noexcept {
 			return char_type(static_cast<char32_t>(__c_as_int));
 		}
 
-		ZTD_NODISCARD_I_ static constexpr int_type to_int_type(const char_type& __c) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr int_type to_int_type(const char_type& __c) noexcept {
 			return static_cast<int_type>(__c.value());
 		}
 
-		ZTD_NODISCARD_I_ static constexpr bool eq_int_type(const int_type& __left, const int_type& __right) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr bool eq_int_type(
+		     const int_type& __left, const int_type& __right) noexcept {
 			return __left == __right;
 		}
 
-		ZTD_NODISCARD_I_ static constexpr int_type not_eof(const int_type& __c_as_int) noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr int_type not_eof(const int_type& __c_as_int) noexcept {
 			return __c_as_int != eof() ? __c_as_int : !eof();
 		}
 
-		ZTD_NODISCARD_I_ static constexpr int_type eof() noexcept {
+		ZTD_ATTR_NODISCARD_I_ static constexpr int_type eof() noexcept {
 			return static_cast<int_type>(EOF);
 		}
 	};

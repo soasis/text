@@ -55,7 +55,7 @@ namespace ztd { namespace text {
 	/// Standard Library and bugs in glibc/musl libc's current locale encoding support. On Apple, this is cuurrently
 	/// assumed to be UTF-8 since they do not support the @c \<cuchar\> or @c \<uchar.h\> headers.
 	class execution_t : public
-#if (ZTD_IS_ON(ZTD_CUCHAR) || ZTD_IS_ON(ZTD_UCHAR_H)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
+#if (ZTD_IS_ON(ZTD_HEADER_CUCHAR) || ZTD_IS_ON(ZTD_HEADER_UCHAR_H)) && ZTD_IS_OFF(ZTD_PLATFORM_MAC_OS)
 		               __txt_impl::__execution_cuchar
 #elif ZTD_IS_ON(ZTD_PLATFORM_MAC_OS)
 		               __txt_impl::__execution_mac_os
