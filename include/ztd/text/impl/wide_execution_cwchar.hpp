@@ -373,7 +373,7 @@ namespace ztd { namespace text {
 					const code_unit& __unit = __units[__units_count];
 					++__units_count;
 					::ztd::ranges::iter_advance(__in_it);
-#if ZTD_IS_ON(ZTD_LIBVCXX)
+#if ZTD_IS_ON(ZTD_CXX_STDLIB_VCXX)
 					::std::size_t __res;
 					errno_t __err = wcrtomb_s(::std::addressof(__res), __intermediate_buffer, __state_max, __unit,
 						::std::addressof(__s.__wide_state));

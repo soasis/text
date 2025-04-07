@@ -11,25 +11,23 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@main
       with:
         submodules: recursive
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - uses: humbletim/vsdevenv-shell@main
     
     - name: configure
       run: |
-        cmake -B build/debug   "-DCMAKE_CXX_FLAGS_INIT=/Wv:18" "-DCMAKE_C_FLAGS_INIT=/Wv:18" -D ZTD_TEXT_TESTS=ON -D ZTD_TEXT_EXAMPLES=ON -D ZTD_TEXT_GENERATE_SINGLE=ON -D ZTD_TEXT_BOOST.TEXT=OFF
-        cmake -B build/release "-DCMAKE_CXX_FLAGS_INIT=/Wv:18" "-DCMAKE_C_FLAGS_INIT=/Wv:18" -D ZTD_TEXT_TESTS=ON -D ZTD_TEXT_EXAMPLES=ON -D ZTD_TEXT_GENERATE_SINGLE=ON -D ZTD_TEXT_BOOST.TEXT=OFF
+        cmake -B build "-DCMAKE_CXX_FLAGS_INIT=/Wv:18" "-DCMAKE_C_FLAGS_INIT=/Wv:18" -D ZTD_TEXT_TESTS=ON -D ZTD_TEXT_EXAMPLES=ON -D ZTD_TEXT_GENERATE_SINGLE=ON -D ZTD_TEXT_BOOST.TEXT=OFF
 
     - name: build
       run: |
-        cmake --build build/debug   --config Debug
-        cmake --build build/release --config Release
+        cmake --build build --config Debug
+        cmake --build build --config Release
 
     - name: test
       run: |
-        cd build/debug
+        cd build
         ctest --build-config Debug
-        cd ../..
-        cd build/release
         ctest --build-config Release
-        cd ../..

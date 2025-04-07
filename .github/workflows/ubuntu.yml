@@ -17,19 +17,15 @@ jobs:
     
     - name: configure
       run: |
-        cmake -B build/debug   -D ZTD_TEXT_TESTS=ON -D ZTD_TEXT_EXAMPLES=ON -D ZTD_TEXT_GENERATE_SINGLE=ON
-        cmake -B build/release -D ZTD_TEXT_TESTS=ON -D ZTD_TEXT_EXAMPLES=ON -D ZTD_TEXT_GENERATE_SINGLE=ON
+        cmake -B build -G Ninja -D ZTD_TEXT_TESTS=ON -D ZTD_TEXT_EXAMPLES=ON -D ZTD_TEXT_GENERATE_SINGLE=ON
 
     - name: build
       run: |
-        cmake --build build/debug   --config Debug
-        cmake --build build/release --config Release
+        cmake --build build --config Debug
+        cmake --build build --config Release
 
     - name: test
       run: |
-        cd build/debug
+        cd build
         ctest --build-config Debug
-        cd ../..
-        cd build/release
         ctest --build-config Release
-        cd ../..
