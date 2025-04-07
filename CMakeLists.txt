@@ -190,6 +190,14 @@ target_link_libraries(ztd.text
 	ztd::static_containers
 	ztd::platform
 	ztd::cuneicode)
+target_compile_definitions(ztd.idk
+PRIVATE
+	ZTD_TEXT_BUILD=1
+	_GNU_SOURCE=1
+PUBLIC
+	$<$<STREQUAL:$<TARGET_PROPERTY:ztd.text,TYPE>,SHARED_LIBRARY>:ZTD_TEXT_DLL=1>
+	${CMAKE_DL_LIBS}
+)
 install(DIRECTORY include/
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 

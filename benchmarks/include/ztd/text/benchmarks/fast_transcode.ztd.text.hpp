@@ -55,19 +55,21 @@
 		     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;           \
 		if constexpr (ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> /* cf */                            \
 		     && ztd::text::is_ignorable_error_handler_v<UToErrorHandler>) {                                          \
-			const std::size_t written_chars = (ztd::endian::native == ztd::endian::big                              \
-			          ? simdutf::convert_valid_utf##FROM_N##FROM_BIG_SUFFIX##_to_utf##TO_N##TO_BIG_SUFFIX           \
-			          : simdutf::convert_valid_utf##FROM_N##FROM_LIL_SUFFIX##_to_utf##TO_N##TO_LIL_SUFFIX)(         \
-			     (const from_char_t*)input.data(), input.size(), (to_char_t*)output.begin());                       \
+			const std::size_t written_chars = ztd::endian::native == ztd::endian::big                               \
+			     ? simdutf::convert_valid_utf##FROM_N##FROM_BIG_SUFFIX##_to_utf##TO_N##TO_BIG_SUFFIX(               \
+			            (const from_char_t*)input.data(), input.size(), (to_char_t*)output.begin())                 \
+			     : simdutf::convert_valid_utf##FROM_N##FROM_LIL_SUFFIX##_to_utf##TO_N##TO_LIL_SUFFIX(               \
+			            (const from_char_t*)input.data(), input.size(), (to_char_t*)output.begin());                \
 			return TranscodeResult(input.subspan(input.size()),                                                     \
 			     ztd::ranges::unbounded_view(output.begin() + written_chars), from_state, to_state,                 \
 			     ztd::text::encoding_error::ok, 0, std::forward<Pivot>(pivot), ztd::text::encoding_error::ok, 0);   \
 		}                                                                                                            \
 		else {                                                                                                       \
-			const simdutf::result res = (ztd::endian::native == ztd::endian::big                                    \
-			          ? simdutf::convert_utf##FROM_N##FROM_BIG_SUFFIX##_to_utf##TO_N##TO_BIG_SUFFIX##_with_errors   \
-			          : simdutf::convert_utf##FROM_N##FROM_LIL_SUFFIX##_to_utf##TO_N##TO_LIL_SUFFIX##_with_errors)( \
-			     (const from_char_t*)input.data(), input.size(), (to_char_t*)output.begin());                       \
+			const simdutf::result res = ztd::endian::native == ztd::endian::big                                     \
+			     ? simdutf::convert_utf##FROM_N##FROM_BIG_SUFFIX##_to_utf##TO_N##TO_BIG_SUFFIX##_with_errors(       \
+			            (const from_char_t*)input.data(), input.size(), (to_char_t*)output.begin())                 \
+			     : simdutf::convert_utf##FROM_N##FROM_LIL_SUFFIX##_to_utf##TO_N##TO_LIL_SUFFIX##_with_errors(       \
+			            (const from_char_t*)input.data(), input.size(), (to_char_t*)output.begin());                \
 			if (res.error == simdutf::error_code::SUCCESS) {                                                        \
 				return TranscodeResult(input.subspan(input.size()),                                                \
 				     ztd::ranges::unbounded_view(output.begin() + res.count), from_state, to_state,                \
@@ -99,10 +101,11 @@
 		     = ztd::text::transcode_result<decltype(input), decltype(output), FromState, ToState, UPivot>;           \
 		if constexpr (!ztd::text::is_ignorable_error_handler_v<UFromErrorHandler> /* cf */                           \
 		     || !ztd::text::is_ignorable_error_handler_v<UToErrorHandler>) {                                         \
-			const simdutf::result validate_res = (ztd::endian::native == ztd::endian::big                           \
-			          ? simdutf::validate_utf##FROM_N##FROM_BIG_SUFFIX##_with_errors                                \
-			          : simdutf::validate_utf##FROM_N##FROM_LIL_SUFFIX##_with_errors)(                              \
-			     reinterpret_cast<const from_char_t*>(input.data()), input.size());                                 \
+			const simdutf::result validate_res = ztd::endian::native == ztd::endian::big                            \
+			     ? simdutf::validate_utf##FROM_N##FROM_BIG_SUFFIX##_with_errors(                                    \
+			            reinterpret_cast<const from_char_t*>(input.data()), input.size())                           \
+			     : simdutf::validate_utf##FROM_N##FROM_LIL_SUFFIX##_with_errors(                                    \
+			            reinterpret_cast<const from_char_t*>(input.data()), input.size());                          \
 			if (validate_res.error != simdutf::error_code::SUCCESS) {                                               \
 				auto basic_result = ztd::text::basic_transcode_into_raw(input, from, output, to,                   \
 				     ::std::forward<FromErrorHandler>(from_error_handler),                                         \
@@ -112,16 +115,19 @@
 				     ztd::text::encoding_error::ok, 0);                                                            \
 			}                                                                                                       \
 		}                                                                                                            \
-		const size_t output_count = (ztd::endian::native == ztd::endian::big                                         \
-		          ? simdutf::utf##TO_N##_length_from_utf##FROM_N##FROM_BIG_SUFFIX                                    \
-		          : simdutf::utf##TO_N##_length_from_utf##FROM_N##FROM_LIL_SUFFIX)(                                  \
-		     reinterpret_cast<const from_char_t*>(input.data()), input.size());                                      \
+		const size_t output_count = ztd::endian::native == ztd::endian::big                                          \
+		     ? simdutf::utf##TO_N##_length_from_utf##FROM_N##FROM_BIG_SUFFIX(                                        \
+		            reinterpret_cast<const from_char_t*>(input.data()), input.size())                                \
+		     : simdutf::utf##TO_N##_length_from_utf##FROM_N##FROM_LIL_SUFFIX(                                        \
+		            reinterpret_cast<const from_char_t*>(input.data()), input.size());                               \
 		if (output_count <= output.size()) {                                                                         \
-			std::size_t written_count = (ztd::endian::native == ztd::endian::big                                    \
-			          ? simdutf::convert_valid_utf##FROM_N##FROM_BIG_SUFFIX##_to_utf##TO_N##TO_BIG_SUFFIX           \
-			          : simdutf::convert_valid_utf##FROM_N##FROM_LIL_SUFFIX##_to_utf##TO_N##TO_LIL_SUFFIX)(         \
-			     reinterpret_cast<const from_char_t*>(input.data()), input.size(),                                  \
-			     reinterpret_cast<to_char_t*>(output.data()));                                                      \
+			std::size_t written_count = ztd::endian::native == ztd::endian::big                                     \
+			     ? simdutf::convert_valid_utf##FROM_N##FROM_BIG_SUFFIX##_to_utf##TO_N##TO_BIG_SUFFIX(               \
+			            reinterpret_cast<const from_char_t*>(input.data()), input.size(),                           \
+			            reinterpret_cast<to_char_t*>(output.data()))                                                \
+			     : simdutf::convert_valid_utf##FROM_N##FROM_LIL_SUFFIX##_to_utf##TO_N##TO_LIL_SUFFIX(               \
+			            reinterpret_cast<const from_char_t*>(input.data()), input.size(),                           \
+			            reinterpret_cast<to_char_t*>(output.data()));                                               \
 			return TranscodeResult(input.subspan(input.size()), output.subspan(written_count), from_state,          \
 			     to_state, ztd::text::encoding_error::ok, 0, std::forward<Pivot>(pivot),                            \
 			     ztd::text::encoding_error::ok, 0);                                                                 \
