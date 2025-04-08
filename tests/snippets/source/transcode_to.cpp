@@ -38,7 +38,7 @@ TEST_CASE("snippets/transcode_to/basic",
 		std::string input = "test";
 		ztd::text::any_encoding input_encoding(ztd::text::utf8);
 		auto result = ztd::text::transcode_to<std::string>(
-		     std::as_bytes(std::span<char>(input)), input_encoding, ztd::text::utf8, ztd::text::pass_handler);
+		     ztd::as_bytes(ztd::span<char>(input)), input_encoding, ztd::text::utf8, ztd::text::pass_handler);
 		REQUIRE(result.output == input);
 		REQUIRE(result.error_code == ztd::text::encoding_error::ok);
 		REQUIRE(!result.errors_were_handled());
