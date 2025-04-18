@@ -30,7 +30,7 @@
 
 # # # # ztd.text, single
 # # # Required minimum version statement
-cmake_minimum_required(VERSION 3.28.0)
+cmake_minimum_required(VERSION 3.31.0)
 
 # # # ztd.text single generation header
 # generate the single header if we can find the python3 interpreter

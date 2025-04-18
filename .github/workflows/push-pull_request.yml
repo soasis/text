@@ -1,0 +1,55 @@
+name: Push & Pull Request Continuous Integration
+on:
+  pull_request:
+    types: [synchronize, opened, edited]
+  push:
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+
+jobs:
+  ci:
+    name: "${{matrix.os}} ${{matrix.compiler}} c${{matrix.c_standard}} c++${{matrix.cxx_standard}}"
+    strategy:
+      matrix:
+        os:
+          - ubuntu
+          - windows
+          - macos
+        compiler:
+          - msvc
+          - gcc
+          - clang
+        c_standard:
+          - 17
+          - 23
+        cxx_standard:
+          - 20
+          - 23
+          - 26
+        exclude:
+          - compiler: msvc
+            os: ubuntu
+          - compiler: msvc
+            os: macos
+    runs-on: ${{matrix.os}}-latest
+    env:
+      CMAKE_CXX_STANDARD: ${{matrix.cxx_standard}}
+      CMAKE_C_STANDARD: ${{matrix.c_standard}}
+    steps:
+      # important setup
+      - uses: actions/checkout@main
+        with:
+          submodules: recursive
+      - uses: humbletim/vsdevenv-shell@main
+        if: ${{matrix.os == 'windows'}}
+      - uses: seanmiddleditch/gha-setup-ninja@master
+        if: ${{matrix.os == 'windows'}}
+        # actual runs
+      - name: Execute CMake Workflow (Windows)
+        if: ${{(matrix.os == 'windows' && matrix.compiler == 'msvc')}}
+        shell: vsdevenv x64 powershell {0}
+        run: cmake --workflow --preset ${{matrix.compiler}}
+      - name: Execute CMake Workflow (Non-Windows)
+        if: ${{(matrix.os != 'windows' || matrix.compiler != 'msvc')}}
+        run: cmake --workflow --preset ${{matrix.compiler}}

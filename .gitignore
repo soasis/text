@@ -2,6 +2,7 @@
 /build/
 /install/
 .mypy_cache/
+/CMakeUserPresets.json
 
 .vscode/
 

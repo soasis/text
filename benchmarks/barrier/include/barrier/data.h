@@ -43,49 +43,49 @@
 #include <cstddef>
 #endif
 
-ZTD_C_LANGUAGE_LINKAGE_I_ typedef struct error_size_size {
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE) typedef struct error_size_size {
 	cnc_mcerr error;
 	size_t input_read;
 	size_t output_written;
 } error_size_size;
 
-ZTD_C_LANGUAGE_LINKAGE_I_ typedef struct error_ptr_ptr {
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE) typedef struct error_ptr_ptr {
 	cnc_mcerr error;
 	const ztd_char32_t* input;
 	ztd_char8_t* output;
 } error_ptr_ptr;
 
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_unicode_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_unicode_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char32_t u32_unicode_data;
 
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_basic_source_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_basic_source_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char32_t u32_basic_source_data;
 
 
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_unicode_error_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char8_t u8_basic_source_error_data;
 
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_unicode_error_ascii_replacement_expected_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_unicode_error_unicode_replacement_expected_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_unicode_error_no_replacement_expected_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_basic_source_error_ascii_replacement_expected_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_basic_source_error_unicode_replacement_expected_data;
-ZTD_C_LANGUAGE_LINKAGE_I_
+ZTD_USE(ZTD_C_LANGUAGE_LINKAGE)
 ZTD_TEXT_BENCHMARKS_BARRIER_API_LINKAGE_I_ c_span_char16_t u16_basic_source_error_no_replacement_expected_data;
 
 #endif
