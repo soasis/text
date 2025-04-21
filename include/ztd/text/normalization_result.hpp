@@ -35,8 +35,6 @@
 
 #include <ztd/text/version.hpp>
 
-#include <ztd/text/no_normalization.hpp>
-
 #include <type_traits>
 #include <utility>
 

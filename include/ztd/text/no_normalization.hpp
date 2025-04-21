@@ -37,7 +37,7 @@
 
 #include <ztd/text/normalization_result.hpp>
 
-#include <ztd/ranges/adl.hpp>
+#include <ztd/ranges/subrange.hpp>
 #include <ztd/ranges/reconstruct.hpp>
 
 #include <cstddef>
@@ -65,12 +65,12 @@ namespace ztd { namespace text {
 		/// @returns A ztd::text::normalization_result representing the normalized output.
 		template <typename _Input, typename _Output>
 		constexpr auto operator()(_Input&& __input, _Output&& __output) noexcept {
-			using _SubInput  = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput  = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result    = normalization_result<_SubInput, _SubOutput>;
 
-			auto __in_it    = ::ztd::ranges::begin(__input);
-			auto __in_last  = ::ztd::ranges::end(__input);
+			auto __in_it    = ::ztd::ranges::cbegin(__input);
+			auto __in_last  = ::ztd::ranges::cend(__input);
 			auto __out_it   = ::ztd::ranges::begin(__output);
 			auto __out_last = ::ztd::ranges::end(__output);
 			if (__in_it == __in_last) {

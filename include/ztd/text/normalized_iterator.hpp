@@ -43,6 +43,7 @@
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/ranges/default_sentinel.hpp>
 #include <ztd/ranges/range.hpp>
+#include <ztd/ranges/unbounded.hpp>
 #include <ztd/static_containers.hpp>
 
 #include <vector>

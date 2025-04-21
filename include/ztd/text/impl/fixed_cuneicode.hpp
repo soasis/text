@@ -141,7 +141,7 @@ namespace ztd { namespace text {
 			static auto decode_one(_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler,
 				decode_state& __state) noexcept {
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _SubInput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+				using _SubInput      = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 				using _SubOutput     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 				using _Result        = decode_result<_SubInput, _SubOutput, decode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
@@ -248,7 +248,7 @@ namespace ztd { namespace text {
 			static auto encode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __state) {
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _SubInput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+				using _SubInput      = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 				using _SubOutput     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 				using _Result        = encode_result<_SubInput, _SubOutput, encode_state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;

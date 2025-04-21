@@ -707,13 +707,14 @@ namespace ztd { namespace text {
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, _Pivot&& __pivot) {
-		auto __reconstructed_input       = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
-		auto __result                    = ::ztd::text::transcode_into_raw(::std::move(__reconstructed_input),
-			                   ::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
-			                   ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
-			                   ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
-		using _ReconstructedResultInput  = __txt_detail::__span_reconstruct_t<_Input, _Input>;
-		using _ReconstructedResultOutput = __txt_detail::__span_reconstruct_mutable_t<_Output, _Output>;
+		auto __reconstructed_input      = __txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input));
+		auto __result                   = ::ztd::text::transcode_into_raw(::std::move(__reconstructed_input),
+			                  ::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
+			                  ::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
+			                  ::std::forward<_ToErrorHandler>(__to_error_handler), __from_state, __to_state, __pivot);
+		using _ReconstructedResultInput = __txt_detail::__span_reconstruct_t<_Input, decltype(__result.input)&&>;
+		using _ReconstructedResultOutput
+			= __txt_detail::__span_reconstruct_mutable_t<_Output, decltype(__result.output)&&>;
 		using _Result = transcode_result<_ReconstructedResultInput, _ReconstructedResultOutput, _FromState, _ToState,
 			decltype(__result.pivot)>;
 		return _Result(__txt_detail::__span_reconstruct<_Input>(::std::move(__result.input)),

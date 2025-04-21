@@ -35,6 +35,10 @@
 
 #include <ztd/text/version.hpp>
 
+#include <ztd/text/state.hpp>
+#include <ztd/text/code_unit.hpp>
+#include <ztd/text/code_point.hpp>
+
 #include <ztd/idk/type_traits.hpp>
 
 #include <ztd/prologue.hpp>

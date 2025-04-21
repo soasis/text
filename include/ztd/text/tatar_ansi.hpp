@@ -36,7 +36,7 @@
 #include <ztd/text/version.hpp>
 
 #include <ztd/text/unicode_code_point.hpp>
-#include <ztd/text/impl/single_ansi_byte_high_bit_lookup_encoding.hpp>
+#include <ztd/text/impl/single_ascii_byte_high_bit_lookup_encoding.hpp>
 
 #include <ztd/encoding_tables/tatar_ansi.tables.hpp>
 
@@ -52,7 +52,7 @@ namespace ztd { namespace text {
 	/// @tparam _CodePoint The code point type to use when outputting decoded units.
 	template <typename _CodeUnit = char, typename _CodePoint = unicode_code_point>
 	class basic_tatar_ansi
-	: public __txt_impl::__single_ansi_byte_high_bit_lookup_encoding<basic_tatar_ansi<_CodeUnit, _CodePoint>,
+	: public __txt_impl::__single_ascii_byte_high_bit_lookup_encoding<basic_tatar_ansi<_CodeUnit, _CodePoint>,
 		  &::ztd::et::tatar_ansi_index_to_code_point, &::ztd::et::tatar_ansi_code_point_to_index, _CodeUnit,
 		  _CodePoint> { };
 

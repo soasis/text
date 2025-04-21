@@ -189,7 +189,7 @@ namespace ztd { namespace text {
 						}
 					}
 				}
-				using _SubInput = ztd::ranges::subrange_for_t<_Input>;
+				using _SubInput = ztd::ranges::csubrange_for_t<_Input>;
 				return decode_result<_SubInput, _Output, _State>(_SubInput(::std::move(__it), ::std::move(__last)),
 					::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
 			}

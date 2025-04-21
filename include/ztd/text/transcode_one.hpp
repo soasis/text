@@ -127,22 +127,21 @@ namespace ztd { namespace text {
 		constexpr bool _FromAssumeValid        = is_ignorable_error_handler_v<_UFromErrorHandler>;
 		constexpr bool _ToAssumeValid          = is_ignorable_error_handler_v<_UToErrorHandler>;
 		using _FromProgressHandler             = ::std::conditional_t<_IsFromProgressHandler, _CVFromErrorHandler&,
-               __txt_detail::__progress_handler<_FromAssumeValid, _CVFromEncoding>>;
+			            __txt_detail::__progress_handler<_FromAssumeValid, _CVFromEncoding>>;
 		using _ToProgressHandler               = ::std::conditional_t<_IsToProgressHandler, _CVToErrorHandler&,
-               __txt_detail::__progress_handler<_ToAssumeValid, _CVToEncoding>>;
+			              __txt_detail::__progress_handler<_ToAssumeValid, _CVToEncoding>>;
 		using _FromProgressHandlerRef
 			= ::std::conditional_t<_IsFromProgressHandler, _CVFromErrorHandler&, _FromProgressHandler&>;
 		using _ToProgressHandlerRef
 			= ::std::conditional_t<_IsToProgressHandler, _CVToErrorHandler&, _ToProgressHandler&>;
-		using _WorkingOutput = ::ztd::ranges::subrange_for_t<_Output>;
-		using _IntermediateResult
-			= decltype(::std::forward<_FromEncoding>(__from_encoding)
-			                .decode_one(::std::forward<_Input>(__input), ::std::forward<_Pivot>(__pivot),
-			                     ::std::declval<_FromProgressHandlerRef>(), __from_state));
+		using _WorkingOutput       = ::ztd::ranges::subrange_for_t<_Output>;
+		using _IntermediateResult  = decltype(::std::forward<_FromEncoding>(__from_encoding)
+                    .decode_one(::std::forward<_Input>(__input), ::std::forward<_Pivot>(__pivot),
+			           ::std::declval<_FromProgressHandlerRef>(), __from_state));
 		using _ResultPivot         = decltype(::std::declval<_IntermediateResult>().output);
 		using _EndResult           = decltype(::std::forward<_ToEncoding>(__to_encoding)
-                                           .encode_one(::std::declval<_ResultPivot>(), ::std::declval<_WorkingOutput>(),
-			                                           ::std::declval<_ToProgressHandlerRef>(), __to_state));
+                    .encode_one(::std::declval<_ResultPivot>(), ::std::declval<_WorkingOutput>(),
+			                    ::std::declval<_ToProgressHandlerRef>(), __to_state));
 		using _WorkingIntermediate = decltype(::std::declval<_EndResult>().input);
 		using _ResultInput         = decltype(::std::declval<_IntermediateResult>().input);
 		using _ResultOutput        = decltype(::std::declval<_EndResult>().output);
@@ -185,7 +184,7 @@ namespace ztd { namespace text {
 		}
 		using _SpanTy               = ::ztd::span<const ::ztd::ranges::range_value_type_t<_WorkingIntermediate>>;
 		auto __working_intermediate = ::ztd::ranges::cascading_reconstruct<_SpanTy, _WorkingIntermediate>(
-			::ztd::ranges::begin(__pivot), ::ztd::ranges::begin(__intermediate_result.output));
+			::ztd::ranges::cbegin(__pivot), ::ztd::ranges::cbegin(__intermediate_result.output));
 		::std::size_t __error_count = __intermediate_result.error_count;
 		for (;;) {
 			auto __end_result = ::std::forward<_ToEncoding>(__to_encoding)
