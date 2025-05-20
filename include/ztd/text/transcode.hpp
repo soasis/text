@@ -113,16 +113,17 @@ namespace ztd { namespace text {
 	constexpr auto basic_transcode_into_raw(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, _Pivot&& __pivot) {
-		using _InitialInput      = ::ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
-		using _WorkingOutput     = ::ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
+		using _InitialInput      = ::ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
+		using _InitialOutput     = ::ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 		using _UFromEncoding     = remove_cvref_t<_FromEncoding>;
 		using _UToEncoding       = remove_cvref_t<_ToEncoding>;
 		using _UFromErrorHandler = remove_cvref_t<_FromErrorHandler>;
 		using _UToErrorHandler   = remove_cvref_t<_ToErrorHandler>;
 		using _Result            = decltype(transcode_one_into_raw(::std::declval<_InitialInput>(), __from_encoding,
-			           ::std::declval<_WorkingOutput>(), __to_encoding, __from_error_handler, __to_error_handler, __from_state,
+			           ::std::declval<_InitialOutput>(), __to_encoding, __from_error_handler, __to_error_handler, __from_state,
 			           __to_state, __pivot));
 		using _WorkingInput      = decltype(::std::declval<_Result>().input);
+		using _WorkingOutput     = decltype(::std::declval<_Result>().output);
 
 		static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<_UFromEncoding, _UFromErrorHandler>,
 			ZTD_TEXT_LOSSY_TRANSCODE_DECODE_MESSAGE_I_);
@@ -281,18 +282,18 @@ namespace ztd { namespace text {
 	constexpr auto transcode_into_raw(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state) {
-		using _UFromEncoding    = ::ztd::remove_cvref_t<_FromEncoding>;
-		using _CodePoint        = code_point_t<_UFromEncoding>;
-		using _IntermediateSpan = ::ztd::span<_CodePoint>;
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotRange    = ::ztd::ranges::subrange<_CodePoint*>;
 
-		constexpr ::std::size_t __intermediate_buffer_max
+		constexpr ::std::size_t __pivot_buffer_buffer_max
 			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
 			     < max_code_points_v<_UFromEncoding>
 			? max_code_points_v<_UFromEncoding>
 			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
 
-		_CodePoint __intermediate[__intermediate_buffer_max] {};
-		_IntermediateSpan __pivot(__intermediate);
+		_CodePoint __pivot_buffer[__pivot_buffer_buffer_max] {};
+		_PivotRange __pivot(__pivot_buffer);
 		return ::ztd::text::transcode_into_raw(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
 			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -470,11 +471,10 @@ namespace ztd { namespace text {
 	namespace __txt_detail {
 		template <typename _Input, typename _FromEncoding, typename _OutputContainer, typename _ToEncoding,
 			typename _FromErrorHandler, typename _ToErrorHandler, typename _FromState, typename _ToState,
-			typename _InitialPivot>
+			typename _Pivot>
 		constexpr auto __intermediate_transcode_to_storage(_Input&& __input, _FromEncoding&& __from_encoding,
 			_OutputContainer& __output, _ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler,
-			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state,
-			_InitialPivot&& __initial_pivot) {
+			_ToErrorHandler&& __to_error_handler, _FromState& __from_state, _ToState& __to_state, _Pivot&& __pivot) {
 			// … Weeeellll. Here we go …
 			using _UFromEncoding     = remove_cvref_t<_FromEncoding>;
 			using _UToEncoding       = remove_cvref_t<_ToEncoding>;
@@ -493,14 +493,12 @@ namespace ztd { namespace text {
 				     < _MinimumIntermediateOutputMax
 				? _MinimumIntermediateOutputMax
 				: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(_IntermediateOutputValueType);
-			using _InitialInput              = __span_reconstruct_t<_Input, _Input>;
-			using _IntermediateOutputInitial = ::ztd::span<_IntermediateOutputValueType, _IntermediateOutputMax>;
-			using _IntermediateOutput        = ::ztd::ranges::subrange_for_t<_IntermediateOutputInitial>;
-			using _Pivot                     = ::ztd::ranges::subrange_for_t<_InitialPivot>;
-			using _TranscodeResult = decltype(::ztd::text::transcode_into_raw(::std::declval<_InitialInput>(),
-				__from_encoding, ::std::declval<_IntermediateOutput>(), __to_encoding, __from_error_handler,
-				__to_error_handler, __from_state, __to_state, ::std::declval<_Pivot>()));
-			using _WorkingInput    = decltype(::std::declval<_TranscodeResult>().input);
+			using _InitialInput       = ::ztd::ranges::csubrange_for_t<_Input>;
+			using _IntermediateOutput = ::ztd::ranges::subrange<_IntermediateOutputValueType*>;
+			using _TranscodeResult    = decltype(::ztd::text::transcode_into_raw(::std::declval<_InitialInput>(),
+				   __from_encoding, ::std::declval<_IntermediateOutput>(), __to_encoding, __from_error_handler,
+				   __to_error_handler, __from_state, __to_state, __pivot));
+			using _WorkingInput       = decltype(::std::declval<_TranscodeResult>().input);
 
 			static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
 				              remove_cvref_t<_FromErrorHandler>>,
@@ -509,25 +507,24 @@ namespace ztd { namespace text {
 				              remove_cvref_t<_ToErrorHandler>>,
 				ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
 
-			_WorkingInput __working_input(__txt_detail::__span_reconstruct<_Input>(::std::forward<_Input>(__input)));
+			_WorkingInput __working_input(::ztd::ranges::cbegin(__input), ::ztd::ranges::cend(__input));
 			_IntermediateOutputValueType __intermediate_output_storage[_IntermediateOutputMax] {};
 			_FromProgressHandler __from_progress_handler {};
 			_ToProgressHandler __to_progress_handler {};
 			::std::size_t __error_count       = 0;
 			::std::size_t __pivot_error_count = 0;
-			_Pivot __pivot(::std::forward<_InitialPivot>(__initial_pivot));
 			for (;;) {
 				__from_progress_handler.clear();
 				__to_progress_handler.clear();
-				_IntermediateOutputInitial __intermediate_output_initial(__intermediate_output_storage);
+				_IntermediateOutput __intermediate_output(__intermediate_output_storage, _IntermediateOutputMax);
 				auto __result = ::ztd::text::transcode_into_raw(::std::move(__working_input), __from_encoding,
-					__intermediate_output_initial, __to_encoding, __from_progress_handler, __to_progress_handler,
+					__intermediate_output, __to_encoding, __from_progress_handler, __to_progress_handler,
 					__from_state, __to_state, __pivot);
 				::std::size_t __intermediate_written_count
-					= static_cast<std::size_t>(__result.output.data() - __intermediate_output_initial.data());
-				_IntermediateOutput __intermediate_output(__intermediate_output_initial.begin(),
-					__intermediate_output_initial.begin() + __intermediate_written_count);
-				ranges::__rng_detail::__container_insert_bulk(__output, __intermediate_output);
+					= static_cast<std::size_t>(__result.output.data() - __intermediate_output.data());
+				_IntermediateOutput __written_intermediate(
+					__intermediate_output.begin(), __intermediate_output.begin() + __intermediate_written_count);
+				ranges::__rng_detail::__container_insert_bulk(__output, __written_intermediate);
 				if (__result.error_code == encoding_error::insufficient_output_space) {
 					if (__to_progress_handler._M_code_units_progress_size() != 0) {
 						ranges::__rng_detail::__container_insert_bulk(
@@ -535,32 +532,35 @@ namespace ztd { namespace text {
 						__error_count += __result.error_count;
 						__pivot_error_count += __result.pivot_error_count;
 						__working_input
-							= __txt_detail::__update_input<_WorkingInput>(::std::move(__result.input));
+							= __txt_detail::__update_const_input<_WorkingInput>(::std::move(__result.input));
 						continue;
 					}
 					else if (__result.pivot_error_code == encoding_error::ok) {
 						// If this occured, we need to record the original pivot position, and then try to
 						// re-serialize with enough space all over again to avoid issues.
-						_Pivot __pivot_remnant(ztd::ranges::begin(__pivot), ztd::ranges::begin(__result.pivot));
-						auto __pivot_result = ::ztd::text::encode_into_raw(__pivot_remnant, __to_encoding,
-							__intermediate_output_initial, __to_error_handler, __to_state);
+						::std::size_t __pivot_remnant_count = static_cast<std::size_t>(
+							::ztd::ranges::size(__pivot) - ::ztd::ranges::size(__result.pivot));
+						auto __pivot_remnant = ::ztd::ranges::reconstruct(::std::in_place_type<_Pivot>,
+							ztd::ranges::cbegin(__pivot), ztd::ranges::cbegin(__pivot) + __pivot_remnant_count);
+						auto __pivot_result  = ::ztd::text::encode_into_raw(__pivot_remnant, __to_encoding,
+							 __intermediate_output, __to_error_handler, __to_state);
 						::std::size_t __intermediate_written_count = static_cast<std::size_t>(
-							__pivot_result.output.data() - __intermediate_output_initial.data());
-						_IntermediateOutput __pivot_intermediate_output(__intermediate_output_initial.begin(),
-							__intermediate_output_initial.begin() + __intermediate_written_count);
+							__pivot_result.output.data() - __intermediate_output.data());
+						_IntermediateOutput __pivot_intermediate_output(__intermediate_output.begin(),
+							__intermediate_output.begin() + __intermediate_written_count);
 						ranges::__rng_detail::__container_insert_bulk(__output, __pivot_intermediate_output);
 						__error_count += __pivot_result.error_count;
 						__pivot_error_count += __result.pivot_error_count;
 						if (__pivot_result.error_code == encoding_error::ok) {
-							__working_input
-								= __txt_detail::__update_input<_WorkingInput>(::std::move(__result.input));
+							__working_input = __txt_detail::__update_const_input<_WorkingInput>(
+								::std::move(__result.input));
 							continue;
 						}
 					}
 					else {
 						// it's okay, just loop around, we've got S P A C E for more
 						__working_input
-							= __txt_detail::__update_input<_WorkingInput>(::std::move(__result.input));
+							= __txt_detail::__update_const_input<_WorkingInput>(::std::move(__result.input));
 						continue;
 					}
 				}
@@ -572,7 +572,7 @@ namespace ztd { namespace text {
 					if (__result.pivot_error_code != encoding_error::ok) {
 						// need to call the error handler and then propagate it.
 						auto __error_result = ::ztd::text::propagate_transcode_decode_error<_TranscodeResult>(
-							__intermediate_output_initial, __from_encoding, __to_encoding,
+							__intermediate_output, __from_encoding, __to_encoding,
 							_ErrorDecodeResult(::std::move(__result.input), ::std::move(__result.pivot),
 							     __from_state, __result.pivot_error_code, __result.pivot_error_count),
 							__from_error_handler, __to_error_handler, __to_state,
@@ -581,9 +581,9 @@ namespace ztd { namespace text {
 							__to_progress_handler._M_code_points_progress(),
 							__to_progress_handler._M_code_units_progress());
 						::std::size_t __error_written_count = static_cast<std::size_t>(
-							__error_result.output.data() - __intermediate_output_initial.data());
-						_IntermediateOutput __error_intermediate_output(__intermediate_output_initial.begin(),
-							__intermediate_output_initial.begin() + __error_written_count);
+							__error_result.output.data() - __intermediate_output.data());
+						_IntermediateOutput __error_intermediate_output(__intermediate_output.begin(),
+							__intermediate_output.begin() + __error_written_count);
 						ranges::__rng_detail::__container_insert_bulk(__output, __error_intermediate_output);
 						__error_count += __error_result.error_count;
 						__pivot_error_count += __error_result.pivot_error_count;
@@ -594,8 +594,8 @@ namespace ztd { namespace text {
 								::std::move(__error_result.pivot), __error_result.pivot_error_code,
 								__pivot_error_count);
 						}
-						__working_input
-							= __txt_detail::__update_input<_WorkingInput>(::std::move(__error_result.input));
+						__working_input = __txt_detail::__update_const_input<_WorkingInput>(
+							::std::move(__error_result.input));
 					}
 					else {
 						// just need to call the second edge of the failure
@@ -603,14 +603,14 @@ namespace ztd { namespace text {
 							= ::ztd::text::propagate_transcode_encode_error<_TranscodeResult>(__to_encoding,
 							     _ErrorDecodeResult(::std::move(__result.input), ::std::move(__result.pivot),
 							          __from_state, __result.pivot_error_code, __result.pivot_error_count),
-							     _ErrorEncodeResult(::std::move(__result.pivot), __intermediate_output_initial,
+							     _ErrorEncodeResult(::std::move(__result.pivot), __intermediate_output,
 							          __to_state, __result.error_code, __result.error_count),
 							     __to_error_handler, __to_progress_handler._M_code_points_progress(),
 							     __to_progress_handler._M_code_units_progress());
 						::std::size_t __error_written_count
-							= __error_result.output.data() - __intermediate_output_initial.data();
-						_IntermediateOutput __error_intermediate_output(__intermediate_output_initial.begin(),
-							__intermediate_output_initial.begin() + __error_written_count);
+							= __error_result.output.data() - __intermediate_output.data();
+						_IntermediateOutput __error_intermediate_output(__intermediate_output.begin(),
+							__intermediate_output.begin() + __error_written_count);
 						ranges::__rng_detail::__container_insert_bulk(__output, __error_intermediate_output);
 						__error_count += __error_result.error_count;
 						__pivot_error_count += __error_result.pivot_error_count;
@@ -621,8 +621,8 @@ namespace ztd { namespace text {
 								::std::move(__error_result.pivot), __error_result.pivot_error_code,
 								__pivot_error_count);
 						}
-						__working_input
-							= __txt_detail::__update_input<_WorkingInput>(::std::move(__error_result.input));
+						__working_input = __txt_detail::__update_const_input<_WorkingInput>(
+							::std::move(__error_result.input));
 					}
 					continue;
 				}
@@ -635,7 +635,7 @@ namespace ztd { namespace text {
 						__result.from_state, __result.to_state, __result.error_code, __error_count,
 						::std::move(__result.pivot), __result.pivot_error_code, __pivot_error_count);
 				}
-				__working_input = __txt_detail::__update_input<_WorkingInput>(::std::move(__result.input));
+				__working_input = __txt_detail::__update_const_input<_WorkingInput>(::std::move(__result.input));
 			}
 		}
 
@@ -754,18 +754,18 @@ namespace ztd { namespace text {
 	constexpr auto transcode_into(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state) {
-		using _UFromEncoding    = ::ztd::remove_cvref_t<_FromEncoding>;
-		using _CodePoint        = code_point_t<_UFromEncoding>;
-		using _IntermediateSpan = ::ztd::span<_CodePoint>;
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotRange    = ::ztd::ranges::subrange<_CodePoint*>;
 
-		constexpr ::std::size_t __intermediate_buffer_max
+		constexpr ::std::size_t __pivot_buffer_buffer_max
 			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
 			     < max_code_points_v<_UFromEncoding>
 			? max_code_points_v<_UFromEncoding>
 			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
 
-		_CodePoint __intermediate[__intermediate_buffer_max] {};
-		_IntermediateSpan __pivot(__intermediate);
+		_CodePoint __pivot_buffer[__pivot_buffer_buffer_max] {};
+		_PivotRange __pivot(__pivot_buffer);
 		return ::ztd::text::transcode_into(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_Output>(__output),
 			::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -1023,18 +1023,18 @@ namespace ztd { namespace text {
 	constexpr auto transcode_to(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
 		_ToState& __to_state) {
-		using _UFromEncoding    = ::ztd::remove_cvref_t<_FromEncoding>;
-		using _CodePoint        = code_point_t<_UFromEncoding>;
-		using _IntermediateSpan = ::ztd::span<_CodePoint>;
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotRange    = ::ztd::ranges::subrange<_CodePoint*>;
 
-		constexpr ::std::size_t __intermediate_buffer_max
+		constexpr ::std::size_t __pivot_buffer_buffer_max
 			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
 			     < max_code_points_v<_UFromEncoding>
 			? max_code_points_v<_UFromEncoding>
 			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
 
-		_CodePoint __intermediate[__intermediate_buffer_max] {};
-		_IntermediateSpan __pivot(__intermediate);
+		_CodePoint __pivot_buffer[__pivot_buffer_buffer_max] {};
+		_PivotRange __pivot(__pivot_buffer);
 		return ::ztd::text::transcode_to<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -1306,18 +1306,18 @@ namespace ztd { namespace text {
 	constexpr auto transcode(_Input&& __input, _FromEncoding&& __from_encoding, _ToEncoding&& __to_encoding,
 		_FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler, _FromState& __from_state,
 		_ToState& __to_state) {
-		using _UFromEncoding    = ::ztd::remove_cvref_t<_FromEncoding>;
-		using _CodePoint        = code_point_t<_UFromEncoding>;
-		using _IntermediateSpan = ::ztd::span<_CodePoint>;
+		using _UFromEncoding = ::ztd::remove_cvref_t<_FromEncoding>;
+		using _CodePoint     = code_point_t<_UFromEncoding>;
+		using _PivotRange    = ::ztd::ranges::subrange<_CodePoint*>;
 
-		constexpr ::std::size_t __intermediate_buffer_max
+		constexpr ::std::size_t __pivot_buffer_buffer_max
 			= ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>)
 			     < max_code_points_v<_UFromEncoding>
 			? max_code_points_v<_UFromEncoding>
 			: ZTD_TEXT_INTERMEDIATE_TRANSCODE_BUFFER_SIZE_I_(code_point_t<_UFromEncoding>);
 
-		_CodePoint __intermediate[__intermediate_buffer_max] {};
-		_IntermediateSpan __pivot(__intermediate);
+		_CodePoint __pivot_buffer[__pivot_buffer_buffer_max] {};
+		_PivotRange __pivot(__pivot_buffer);
 		return ::ztd::text::transcode<_OutputContainer>(::std::forward<_Input>(__input),
 			::std::forward<_FromEncoding>(__from_encoding), ::std::forward<_ToEncoding>(__to_encoding),
 			::std::forward<_FromErrorHandler>(__from_error_handler),

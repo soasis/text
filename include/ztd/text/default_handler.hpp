@@ -51,16 +51,9 @@ namespace ztd { namespace text {
 	//////
 	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
 	/// time. Without configuration, it defaults to the ztd::text::replacement_handler_t.
-	class default_handler_t
-#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
-	: private throw_handler_t {
+	class default_handler_t : private replacement_handler_t {
 	private:
-		using __error_handler_base_t = throw_handler_t;
-#else
-	: private replacement_handler_t {
-	private:
-		using __error_handler_base_t = replacement_handler_t;
-#endif
+		using __error_handler_base_t = __txt_detail::__default_handler_base_t;
 
 	public:
 		//////
@@ -75,6 +68,27 @@ namespace ztd { namespace text {
 	//////
 	/// @brief An instance of the default_handler_t type for ease of use.
 	inline constexpr default_handler_t default_handler = {};
+
+	//////
+	/// @brief The default error handler for the entire library. Can be configured to use different strategies at build
+	/// time. Without configuration, it defaults to the ztd::text::replacement_handler_t.
+	class unchecked_default_handler_t : private default_handler_t {
+	private:
+		using __error_handler_base_t = default_handler_t;
+
+	public:
+		//////
+		///@brief The underlying error handler type.
+		using error_handler = __error_handler_base_t;
+
+		using __error_handler_base_t::__error_handler_base_t;
+
+		using __error_handler_base_t::operator();
+	};
+
+	//////
+	/// @brief An instance of the default_handler_t type for ease of use.
+	inline constexpr unchecked_default_handler_t unchecked_default_handler = {};
 
 	namespace __txt_detail {
 		template <typename _ErrorHandler>

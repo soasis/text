@@ -337,8 +337,8 @@ namespace ztd { namespace text {
 					__encoding, __encoding.replacement_code_units(), ::std::move(__result));
 			}
 			else if constexpr (!(is_code_points_maybe_replaceable_v<_Encoding, _State&>
-				                   || is_code_points_maybe_replaceable_v<
-				                        _Encoding>)&&is_unicode_code_point_v<_CodeUnit>) {
+				                   || is_code_points_maybe_replaceable_v<_Encoding>)
+				&& is_unicode_code_point_v<_CodeUnit>) {
 				constexpr _CodeUnit __replacements[1] = { static_cast<_CodeUnit>(__ztd_idk_detail_replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::move(__result));
 			}
@@ -417,8 +417,8 @@ namespace ztd { namespace text {
 					__encoding, __encoding.replacement_code_points(), ::std::move(__result));
 			}
 			else if constexpr (!(is_code_points_maybe_replaceable_v<_Encoding, _State&>
-				                   || is_code_points_maybe_replaceable_v<
-				                        _Encoding>)&&is_unicode_code_point_v<_CodePoint>) {
+				                   || is_code_points_maybe_replaceable_v<_Encoding>)
+				&& is_unicode_code_point_v<_CodePoint>) {
 				constexpr _CodePoint __replacements[1] = { static_cast<_CodePoint>(__ztd_idk_detail_replacement) };
 				return __txt_detail::__write_direct(__encoding, __replacements, ::std::move(__result));
 			}

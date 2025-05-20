@@ -44,7 +44,7 @@
 #include <ztd/ranges/default_sentinel.hpp>
 #include <ztd/ranges/range.hpp>
 #include <ztd/ranges/unbounded.hpp>
-#include <ztd/static_containers.hpp>
+#include <ztd/inline_containers.hpp>
 
 #include <vector>
 
@@ -62,7 +62,7 @@ namespace ztd { namespace text {
 		template <typename _Range, typename _NormalizationForm>
 		struct __default_normal_storage<_Range, _NormalizationForm,
 			::std::void_t<decltype(_NormalizationForm::max_output)>> {
-			using type = ::ztd::static_vector<ranges::range_value_type_t<unwrap_remove_cvref_t<_Range>>, 1>;
+			using type = ::ztd::inline_vector<ranges::range_value_type_t<unwrap_remove_cvref_t<_Range>>, 1>;
 		};
 
 

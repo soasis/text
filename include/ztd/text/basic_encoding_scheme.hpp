@@ -326,19 +326,18 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto decode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) const {
-			using _UInputRange    = remove_cvref_t<_Input>;
 			using _UOutputRange   = remove_cvref_t<_Output>;
 			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
 			using _SubInput       = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result         = decode_result<_SubInput, _SubOutput, decode_state>;
 
-			using _InByteIt  = ranges::word_iterator<_BaseCodeUnit, _UInputRange, _Endian>;
+			using _InByteIt  = ranges::word_iterator<_BaseCodeUnit, _SubInput, _Endian>;
 			using _InByteSen = ranges::word_sentinel;
 			::ztd::ranges::subrange<_InByteIt, _InByteSen> __inbytes(
 				_InByteIt(::std::in_place, ::std::forward<_Input>(__input)), _InByteSen());
-			__txt_detail::__scheme_handler<_Byte, _UInputRange, _UOutputRange, _CVErrorHandler>
-				__intermediate_handler(__error_handler);
+			__txt_detail::__scheme_handler<_Byte, _SubInput, _UOutputRange, _CVErrorHandler> __intermediate_handler(
+				__error_handler);
 			auto __result = this->base().decode_one(
 				::std::move(__inbytes), ::std::forward<_Output>(__output), __intermediate_handler, __s);
 			return _Result(::std::move(__result.input).begin().range(), ::std::move(__result.output), __s,
@@ -365,23 +364,23 @@ namespace ztd { namespace text {
 		template <typename _Input, typename _Output, typename _ErrorHandler>
 		constexpr auto encode_one(
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) const {
-			using _UInputRange    = remove_cvref_t<_Input>;
-			using _UOutputRange   = remove_cvref_t<_Output>;
-			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
-			using _SubInput       = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput       = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
-			using _Result         = encode_result<_SubInput, _SubOutput, encode_state>;
-			using _OutByteIt      = ranges::word_iterator<_BaseCodeUnit, _UOutputRange, _Endian>;
+			using _OutByteIt      = ranges::word_iterator<_BaseCodeUnit, _SubOutput, _Endian>;
 			using _OutByteSen     = ranges::word_sentinel;
+			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
+			using _Result         = encode_result<_SubInput, _SubOutput, encode_state>;
 
+			_SubOutput __outwords_output(::std::forward<_Output>(__output));
 			ranges::subrange<_OutByteIt, _OutByteSen> __outwords(
-				_OutByteIt(::std::forward<_Output>(__output)), _OutByteSen());
-			__txt_detail::__scheme_handler<_Byte, _UInputRange, _UOutputRange, _CVErrorHandler>
-				__intermediate_handler(__error_handler);
+				_OutByteIt(::std::move(__outwords_output)), _OutByteSen());
+			__txt_detail::__scheme_handler<_Byte, _SubInput, _SubOutput, _CVErrorHandler> __intermediate_handler(
+				__error_handler);
 			auto __result
 				= this->base().encode_one(::std::forward<_Input>(__input), __outwords, __intermediate_handler, __s);
-			return _Result(::std::move(__result.input), ::std::move(__result.output).begin().range(), __s,
-				__result.error_code, __result.error_count);
+			_SubOutput __result_output(::std::move(__result.output).begin().range());
+			return _Result(::std::move(__result.input), ::std::move(__result_output), __s, __result.error_code,
+				__result.error_count);
 		}
 	};
 

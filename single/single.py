@@ -255,7 +255,7 @@ if not args.quiet:
 
 ss = StringIO()
 ss.write(
-    intro.format(time=dt.datetime.utcnow(),
+    intro.format(time=dt.datetime.now(dt.UTC),
                  revision=revision,
                  version=version,
                  guard=include_guard))
@@ -275,7 +275,7 @@ if not args.quiet:
 includes = set([])
 forward_ss = StringIO()
 forward_ss.write(
-    intro.format(time=dt.datetime.utcnow(),
+    intro.format(time=dt.datetime.now(dt.UTC),
                  revision=revision,
                  version=version,
                  guard=forward_include_guard))

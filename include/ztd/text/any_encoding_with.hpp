@@ -510,13 +510,13 @@ namespace ztd { namespace text {
 					constexpr ::std::size_t __code_point_max = max_code_points_v<_Encoding>;
 					using _CodeUnit                          = code_unit_t<_Encoding>;
 					using _CodePoint                         = code_point_t<_Encoding>;
-					using _Pivot                             = ::ztd::span<_CodePoint, __code_point_max>;
+					using _Pivot                             = ::ztd::span<_CodePoint>;
 					constexpr bool _AssumeValid              = false;
 
 					_CodePoint __code_point_buf[__code_point_max] {};
 					_CodeUnit __code_unit_buf[__code_unit_max] {};
-					::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
-					_Pivot __pivot(__code_point_buf);
+					::ztd::span<_CodeUnit> __code_unit_view(__code_unit_buf, __code_unit_max);
+					_Pivot __pivot(__code_point_buf, __code_point_max);
 					__txt_detail::__progress_handler<_AssumeValid, _Encoding> __pass_handler {};
 					__real_encode_state __encode_state = make_encode_state(__encoding);
 
@@ -558,13 +558,13 @@ namespace ztd { namespace text {
 					constexpr ::std::size_t __code_point_max = max_recode_code_points_v<_Encoding, _Encoding>;
 					using _CodeUnit                          = code_unit_t<_Encoding>;
 					using _CodePoint                         = code_point_t<_Encoding>;
-					using _Pivot                             = ::ztd::span<_CodeUnit, __code_unit_max>;
+					using _Pivot                             = ::ztd::span<_CodeUnit>;
 					constexpr bool _AssumeValid              = false;
 
 					_CodePoint __code_point_buf[__code_point_max] {};
 					_CodeUnit __code_unit_buf[__code_unit_max] {};
-					::ztd::span<_CodePoint, __code_point_max> __code_point_view(__code_point_buf);
-					_Pivot __pivot(__code_unit_buf);
+					::ztd::span<_CodePoint> __code_point_view(__code_point_buf, __code_point_max);
+					_Pivot __pivot(__code_unit_buf, __code_unit_max);
 
 					__txt_detail::__progress_handler<_AssumeValid, _Encoding> __pass_handler {};
 					__real_decode_state __decode_state = make_decode_state(__encoding);
@@ -619,12 +619,12 @@ namespace ztd { namespace text {
 							             __raw_result.error_code, __raw_result.error_count),
 							        __pass_handler._M_code_units_progress(), __pass_handler._M_code_points_progress());
 						::std::size_t __used_size = static_cast<::std::size_t>(
-							::ztd::ranges::distance(__code_point_view.begin(), __err_result.output.begin()));
+							::ztd::ranges::distance(__code_point_view.data(), __err_result.output.data()));
 						return __count_as_decoded_result(__err_result.input, __used_size, __state,
 							__err_result.error_code, __err_result.error_count);
 					}
 					::std::size_t __used_size = static_cast<::std::size_t>(
-						::ztd::ranges::distance(__code_point_view.begin(), __raw_result.output.begin()));
+						::ztd::ranges::distance(__code_point_view.data(), __raw_result.output.data()));
 					return __count_as_decoded_result(::std::move(__raw_result.input), __used_size, __state,
 						__raw_result.error_code, __raw_result.error_count);
 				}
@@ -656,7 +656,7 @@ namespace ztd { namespace text {
 					constexpr bool _AssumeValid             = is_ignorable_error_handler_v<__encode_error_handler>;
 
 					_CodeUnit __code_unit_buf[__code_unit_max] {};
-					::ztd::span<_CodeUnit, __code_unit_max> __code_unit_view(__code_unit_buf);
+					::ztd::span<_CodeUnit> __code_unit_view(__code_unit_buf, __code_unit_max);
 					__txt_detail::__progress_handler<_AssumeValid, _Encoding> __pass_handler {};
 
 					auto __raw_result = encode_one_into_raw(::std::move(__input), __encoding, __code_unit_view,

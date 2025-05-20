@@ -103,6 +103,10 @@ As a general point, we hope to support almost all of the encodings here in one f
 	  - Yes
 	  - Yes
 	  - :doc:`Yes ✅ </api/encodings/cuneicode_registry_encoding>`
+	* - Windows Code Page Encoding
+	  - Yes
+	  - Yes
+	  - :doc:`Yes ✅ </api/encodings/windows_code_page>`
 	* - ARMSCII-8
 	  - ❓ Unresearched
 	  - ❓ Unconfirmed

@@ -100,6 +100,7 @@ namespace ztd { namespace text {
 	class replacement_handler_t;
 	class skip_handler_t;
 	class default_handler_t;
+	class unchecked_default_handler_t;
 
 	template <typename, typename>
 	class basic_ascii;
@@ -185,6 +186,14 @@ namespace ztd { namespace text {
 	constexpr auto basic_recode_into_raw(_Input&& __input, _FromEncoding&& __from_encoding, _Output&& __output,
 		_ToEncoding&& __to_encoding, _FromErrorHandler&& __from_error_handler, _ToErrorHandler&& __to_error_handler,
 		_FromState& __from_state, _ToState& __to_state, _Pivot&& __pivot);
+
+	namespace __txt_detail {
+#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
+		using __default_handler_base_t = throw_handler_t;
+#else
+		using __default_handler_base_t = replacement_handler_t;
+#endif
+	} // namespace __txt_detail
 
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_CLOSE_I_
 }} // namespace ztd::text

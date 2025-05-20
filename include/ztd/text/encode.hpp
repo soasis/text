@@ -284,7 +284,7 @@ namespace ztd { namespace text {
 				: ZTD_TEXT_INTERMEDIATE_ENCODE_BUFFER_SIZE_I_(code_unit_t<_UEncoding>);
 			using _IntermediateValueType = code_unit_t<_UEncoding>;
 			using _IntermediateInput     = __txt_detail::__span_reconstruct_t<_Input, _Input>;
-			using _InitialOutput         = ::ztd::span<_IntermediateValueType, __intermediate_buffer_max>;
+			using _InitialOutput         = ::ztd::span<_IntermediateValueType>;
 			using _Output                = ::ztd::span<_IntermediateValueType>;
 			using _Result                = decltype(encode_into_raw(::std::declval<_IntermediateInput>(), __encoding,
 				               ::std::declval<_Output>(), __error_handler, __state));
@@ -304,7 +304,8 @@ namespace ztd { namespace text {
 
 			for (;;) {
 				// Ignore "out of output" errors and do our best to recover properly along the way...
-				_InitialOutput __intermediate_initial_output(__intermediate_translation_buffer);
+				_InitialOutput __intermediate_initial_output(
+					__intermediate_translation_buffer, __intermediate_buffer_max);
 				auto __result = ::ztd::text::encode_into_raw(::std::move(__working_input), __encoding,
 					__intermediate_initial_output, __intermediate_handler, __state);
 				_Output __intermediate_output(__intermediate_initial_output.data(), __result.output.data());

@@ -116,7 +116,7 @@
 				"ZTD_TEXT_BENCHMARKS_REPETITIONS": "2",
 				"FETCHCONTENT_SOURCE_DIR_ZTD.CMAKE": "${sourceDir}/../cmake",
 				"FETCHCONTENT_SOURCE_DIR_ZTD.IDK": "${sourceDir}/../idk",
-				"FETCHCONTENT_SOURCE_DIR_ZTD.STATIC_CONTAINERS": "${sourceDir}/../static_containers",
+				"FETCHCONTENT_SOURCE_DIR_ZTD.INLINE_CONTAINERS": "${sourceDir}/../inline_containers",
 				"FETCHCONTENT_SOURCE_DIR_ZTD.CUNEICODE": "${sourceDir}/../cuneicode",
 				"FETCHCONTENT_SOURCE_DIR_ZTD.ENCODING_TABLES": "${sourceDir}/../encoding_tables",
 				"FETCHCONTENT_SOURCE_DIR_ZTD.PLATFORM": "${sourceDir}/../platform",

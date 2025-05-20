@@ -28,13 +28,31 @@
 ..
 .. =============================================================================>
 
-``any_encoding_with`` omni-encoding base type
-=============================================
+Windows Code Page
+=================
 
-This is the lowest level base template, ``any_encoding_with``, that sits beneath :doc:`any_encoding and any_byte_encoding </api/encodings/any_encoding>`. It is recommended for power users with specific goals for the input and output types of the encode and decode operations, where normal buffer-based I/O is unsuitable. In general, you should be relying on :doc:`any_encoding and any_byte_encoding </api/encodings/any_encoding>`.
+``WideCharToMultiByte`` and ``MultiByteToWideChar`` on Windows platforms has a multitude of encodings with a particular set of quirks. Therefore, on Windows platforms, it may be advantageous to use this over the regular :cpp:class:`execution_encoding_t` type or :cpp:var:`execution_encoding` object. The constructor takes a raw ``int32_t`` whose sole purpose is to be one of the known `Code Page Identifiers`_ that Microsoft supplies on its platforms.
 
-Base Template
--------------
+.. warning::
 
-.. doxygenclass:: ztd::text::any_encoding_with
+	This type is inefficient due to the poor design of the ``WideCharToMultiByte``/``MultiByteToWideChar`` functions. While this will allow users to achieve parity, if the user knows their encoding ahead of time and can provide either their own encoding object or :doc:`/api//encodings <one of the encoding types provided by this library>`, it is highly preferred over this methodology.
+
+.. warning::
+
+	For certain distributions, specific language packs may need to be installed in order to use certain conversions tied to specific `Code Page Identifiers`_.
+
+Alias
+-----
+
+.. doxygentypedef:: ztd::text::windows_code_page
+
+
+
+Base Templates
+--------------
+
+.. doxygenclass:: ztd::text::basic_windows_code_page
 	:members:
+
+
+.. _Code Page Identifiers: https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers

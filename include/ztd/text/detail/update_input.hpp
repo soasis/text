@@ -43,7 +43,7 @@ namespace ztd { namespace text {
 	ZTD_TEXT_INLINE_ABI_NAMESPACE_OPEN_I_
 
 	namespace __txt_detail {
-		template <typename _Expected, typename _Input>
+		template <bool _Mutable, typename _Expected, typename _Input>
 		constexpr bool __update_input_noexcept() noexcept {
 			using _UInput    = remove_cvref_t<_Input>;
 			using _UExpected = remove_cvref_t<_Expected>;
@@ -51,13 +51,18 @@ namespace ztd { namespace text {
 				return true;
 			}
 			else {
-				return ::ztd::ranges::is_nothrow_range_reconstructible_v<_UExpected, _Input>;
+				if constexpr (_Mutable) {
+					return ::ztd::ranges::is_nothrow_range_reconstructible_v<_UExpected, _Input>;
+				}
+				else {
+					return ::ztd::ranges::is_nothrow_range_const_reconstructible_v<_UExpected, _Input>;
+				}
 			}
 		}
 
 		template <typename _Expected, typename _Input>
 		constexpr decltype(auto) __update_input(_Input&& __input) noexcept(
-			__update_input_noexcept<_Expected, _Input>()) {
+			__update_input_noexcept<false, _Expected, _Input>()) {
 			using _UInput    = remove_cvref_t<_Input>;
 			using _UExpected = remove_cvref_t<_Expected>;
 			if constexpr (::std::is_same_v<_UInput, _UExpected>) {
@@ -65,6 +70,20 @@ namespace ztd { namespace text {
 			}
 			else {
 				return ::ztd::ranges::reconstruct(
+					::std::in_place_type<_UExpected>, ::std::forward<_Input>(__input));
+			}
+		}
+
+		template <typename _Expected, typename _Input>
+		constexpr decltype(auto) __update_const_input(_Input&& __input) noexcept(
+			__update_input_noexcept<true, _Expected, _Input>()) {
+			using _UInput    = remove_cvref_t<_Input>;
+			using _UExpected = remove_cvref_t<_Expected>;
+			if constexpr (::std::is_same_v<_UInput, _UExpected>) {
+				return ::std::forward<_Input>(__input);
+			}
+			else {
+				return ::ztd::ranges::const_reconstruct(
 					::std::in_place_type<_UExpected>, ::std::forward<_Input>(__input));
 			}
 		}

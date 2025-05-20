@@ -44,6 +44,7 @@
 #include <ztd/text/any_encoding.hpp>
 #include <ztd/text/cuneicode_encoding.hpp>
 #include <ztd/text/cuneicode_registry_encoding.hpp>
+#include <ztd/text/windows_code_page.hpp>
 
 // specific, named encodings
 #include <ztd/text/ascii.hpp>

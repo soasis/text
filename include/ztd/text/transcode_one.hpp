@@ -48,12 +48,14 @@
 #include <ztd/text/is_redundant.hpp>
 #include <ztd/text/is_ignorable_error_handler.hpp>
 #include <ztd/text/propagate_error.hpp>
+
 #include <ztd/text/detail/forward_if_move_only.hpp>
 #include <ztd/text/detail/is_lossless.hpp>
 #include <ztd/text/detail/encoding_range.hpp>
 #include <ztd/text/detail/transcode_extension_points.hpp>
 #include <ztd/text/detail/span_reconstruct.hpp>
 #include <ztd/text/detail/progress_handler.hpp>
+#include <ztd/text/detail/update_input.hpp>
 
 #include <ztd/ranges/unbounded.hpp>
 #include <ztd/ranges/detail/insert_bulk.hpp>
@@ -63,7 +65,7 @@
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
 #include <ztd/idk/tag.hpp>
-#include <ztd/static_containers.hpp>
+#include <ztd/inline_containers.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -134,18 +136,17 @@ namespace ztd { namespace text {
 			= ::std::conditional_t<_IsFromProgressHandler, _CVFromErrorHandler&, _FromProgressHandler&>;
 		using _ToProgressHandlerRef
 			= ::std::conditional_t<_IsToProgressHandler, _CVToErrorHandler&, _ToProgressHandler&>;
-		using _WorkingOutput       = ::ztd::ranges::subrange_for_t<_Output>;
-		using _IntermediateResult  = decltype(::std::forward<_FromEncoding>(__from_encoding)
-                    .decode_one(::std::forward<_Input>(__input), ::std::forward<_Pivot>(__pivot),
-			           ::std::declval<_FromProgressHandlerRef>(), __from_state));
-		using _ResultPivot         = decltype(::std::declval<_IntermediateResult>().output);
-		using _EndResult           = decltype(::std::forward<_ToEncoding>(__to_encoding)
+		using _WorkingOutput      = ::ztd::ranges::subrange_for_t<_Output>;
+		using _IntermediateResult = decltype(::std::forward<_FromEncoding>(__from_encoding)
+			     .decode_one(::std::forward<_Input>(__input), ::std::forward<_Pivot>(__pivot),
+			          ::std::declval<_FromProgressHandlerRef>(), __from_state));
+		using _ResultPivot        = decltype(::std::declval<_IntermediateResult>().output);
+		using _EndResult          = decltype(::std::forward<_ToEncoding>(__to_encoding)
                     .encode_one(::std::declval<_ResultPivot>(), ::std::declval<_WorkingOutput>(),
-			                    ::std::declval<_ToProgressHandlerRef>(), __to_state));
-		using _WorkingIntermediate = decltype(::std::declval<_EndResult>().input);
-		using _ResultInput         = decltype(::std::declval<_IntermediateResult>().input);
-		using _ResultOutput        = decltype(::std::declval<_EndResult>().output);
-		using _Result = transcode_result<_ResultInput, _ResultOutput, _FromState, _ToState, _ResultPivot>;
+			                   ::std::declval<_ToProgressHandlerRef>(), __to_state));
+		using _ResultInput        = decltype(::std::declval<_IntermediateResult>().input);
+		using _ResultOutput       = decltype(::std::declval<_EndResult>().output);
+		using _Result             = transcode_result<_ResultInput, _ResultOutput, _FromState, _ToState, _ResultPivot>;
 
 		static_assert(__txt_detail::__is_decode_lossless_or_deliberate_v<remove_cvref_t<_FromEncoding>,
 			              remove_cvref_t<_FromErrorHandler>>,
@@ -154,9 +155,8 @@ namespace ztd { namespace text {
 			              remove_cvref_t<_ToErrorHandler>>,
 			ZTD_TEXT_LOSSY_TRANSCODE_ENCODE_MESSAGE_I_);
 
-
 		auto __saved_input = ::ztd::ranges::save_range(__input);
-		_WorkingOutput __working_output(::std::forward<_Output>(__output));
+		_ResultOutput __working_output(::std::forward<_Output>(__output));
 		_FromProgressHandler __from_intermediate_handler(__from_error_handler);
 		_ToProgressHandler __to_intermediate_handler(__to_error_handler);
 		auto __intermediate_result
@@ -182,12 +182,16 @@ namespace ztd { namespace text {
 					__to_intermediate_handler._M_code_units_progress());
 			}
 		}
-		using _SpanTy               = ::ztd::span<const ::ztd::ranges::range_value_type_t<_WorkingIntermediate>>;
-		auto __working_intermediate = ::ztd::ranges::cascading_reconstruct<_SpanTy, _WorkingIntermediate>(
-			::ztd::ranges::cbegin(__pivot), ::ztd::ranges::cbegin(__intermediate_result.output));
-		::std::size_t __error_count = __intermediate_result.error_count;
+		const ::std::size_t __pivot_size     = ::ztd::ranges::size(__pivot);
+		::std::size_t __intermediate_written = __pivot_size - ::ztd::ranges::size(__intermediate_result.output);
+		::std::size_t __intermediate_start   = 0;
+		::std::size_t __error_count          = __intermediate_result.error_count;
 		for (;;) {
-			auto __end_result = ::std::forward<_ToEncoding>(__to_encoding)
+			::ztd::ranges::subrange<decltype(::ztd::ranges::cbegin(__pivot))> __working_intermediate(
+				::ztd::ranges::cbegin(__pivot) + __intermediate_start,
+				::ztd::ranges::cbegin(__pivot) + __intermediate_written);
+			::std::size_t __intermediate_size = ::ztd::ranges::size(__working_intermediate);
+			auto __end_result                 = ::std::forward<_ToEncoding>(__to_encoding)
 				                    .encode_one(::std::move(__working_intermediate), ::std::move(__working_output),
 				                         __to_intermediate_handler, __to_state);
 			__error_count += __end_result.error_count;
@@ -221,8 +225,8 @@ namespace ztd { namespace text {
 						__intermediate_result.error_count);
 				}
 			}
-			__working_intermediate = ::std::move(__end_result.input);
-			__working_output       = ::std::move(__end_result.output);
+			__intermediate_start = __intermediate_size - ::ztd::ranges::size(__end_result.input);
+			__working_output     = ::std::move(__end_result.output);
 		}
 	}
 
@@ -939,7 +943,7 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodeUnit, _MinimumIntermediateOutputMax>;
+			using _RealOutputContainer = ::ztd::inline_basic_string<_OutputCodeUnit, _MinimumIntermediateOutputMax>;
 			return __txt_detail::__transcode_one_dispatch<false, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -947,7 +951,7 @@ namespace ztd { namespace text {
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::static_vector<_OutputCodeUnit, _MinimumIntermediateOutputMax>, _OutputContainer>;
+				::ztd::inline_vector<_OutputCodeUnit, _MinimumIntermediateOutputMax>, _OutputContainer>;
 			return __txt_detail::__transcode_one_dispatch<false, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -1220,7 +1224,7 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodeUnit> || is_unicode_code_point_v<_OutputCodeUnit>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodeUnit, _MinimumIntermediateOutputMax>;
+			using _RealOutputContainer = ::ztd::inline_basic_string<_OutputCodeUnit, _MinimumIntermediateOutputMax>;
 			return __txt_detail::__transcode_one_dispatch<true, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -1228,7 +1232,7 @@ namespace ztd { namespace text {
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::static_vector<_OutputCodeUnit, _MinimumIntermediateOutputMax>, _OutputContainer>;
+				::ztd::inline_vector<_OutputCodeUnit, _MinimumIntermediateOutputMax>, _OutputContainer>;
 			return __txt_detail::__transcode_one_dispatch<true, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),

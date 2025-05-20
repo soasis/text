@@ -76,17 +76,16 @@ namespace ztd { namespace text {
 			  typename basic_incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
 
 		template <typename _Encoding>
-		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler_t>
-#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
-		: public __decode_error_handler_always_returns_ok<_Encoding, throw_handler_t> {
-		};
-#else
-		: public __decode_error_handler_always_returns_ok<_Encoding, replacement_handler_t> {
-		};
-#endif
-		template <typename _Encoding>
 		struct __decode_error_handler_always_returns_ok<_Encoding, assume_valid_handler_t> : public ::std::true_type {
 		};
+
+		template <typename _Encoding>
+		struct __decode_error_handler_always_returns_ok<_Encoding, default_handler_t>
+		: public __decode_error_handler_always_returns_ok<_Encoding, __default_handler_base_t> { };
+
+		template <typename _Encoding>
+		struct __decode_error_handler_always_returns_ok<_Encoding, unchecked_default_handler_t>
+		: public __decode_error_handler_always_returns_ok<_Encoding, __default_handler_base_t> { };
 
 		template <typename _Encoding, typename _ErrorHandler>
 		struct __encode_error_handler_always_returns_ok
@@ -107,17 +106,15 @@ namespace ztd { namespace text {
 			  typename basic_incomplete_handler<_Encoding, _ErrorHandler>::error_handler> { };
 
 		template <typename _Encoding>
-		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler_t>
-#if ZTD_IS_ON(ZTD_TEXT_DEFAULT_HANDLER_THROWS)
-		: public __encode_error_handler_always_returns_ok<_Encoding, throw_handler_t> {
-		};
-#else
-		: public __encode_error_handler_always_returns_ok<_Encoding, replacement_handler_t> {
-		};
-
-#endif
-		template <typename _Encoding>
 		struct __encode_error_handler_always_returns_ok<_Encoding, assume_valid_handler_t> : ::std::true_type { };
+
+		template <typename _Encoding>
+		struct __encode_error_handler_always_returns_ok<_Encoding, default_handler_t>
+		: public __encode_error_handler_always_returns_ok<_Encoding, __default_handler_base_t> { };
+
+		template <typename _Encoding>
+		struct __encode_error_handler_always_returns_ok<_Encoding, unchecked_default_handler_t>
+		: public __encode_error_handler_always_returns_ok<_Encoding, __default_handler_base_t> { };
 
 	} // namespace __txt_detail
 

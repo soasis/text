@@ -141,12 +141,12 @@ FetchContent_Declare(ztd.idk
 	GIT_TAG        main)
 FetchContent_MakeAvailable(ztd.idk)
 
-# ztd.static_containers
-FetchContent_Declare(ztd.static_containers
-	GIT_REPOSITORY https://github.com/soasis/static_containers.git
+# ztd.inline_containers
+FetchContent_Declare(ztd.inline_containers
+	GIT_REPOSITORY https://github.com/soasis/inline_containers.git
 	GIT_SHALLOW    ON
 	GIT_TAG        main)
-FetchContent_MakeAvailable(ztd.static_containers)
+FetchContent_MakeAvailable(ztd.inline_containers)
 
 # ztd.encoding_tables
 FetchContent_Declare(ztd.encoding_tables
@@ -187,7 +187,7 @@ target_sources(ztd.text INTERFACE ${ztd.text.includes})
 target_link_libraries(ztd.text
 	INTERFACE
 	ztd::idk
-	ztd::static_containers
+	ztd::inline_containers
 	ztd::platform
 	ztd::cuneicode)
 target_compile_definitions(ztd.idk

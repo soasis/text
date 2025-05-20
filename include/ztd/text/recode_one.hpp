@@ -63,7 +63,7 @@
 #include <ztd/idk/type_traits.hpp>
 #include <ztd/idk/char_traits.hpp>
 #include <ztd/idk/tag.hpp>
-#include <ztd/static_containers.hpp>
+#include <ztd/inline_containers.hpp>
 
 #include <ztd/prologue.hpp>
 
@@ -127,22 +127,21 @@ namespace ztd { namespace text {
 		constexpr bool _FromAssumeValid        = is_ignorable_error_handler_v<_UFromErrorHandler>;
 		constexpr bool _ToAssumeValid          = is_ignorable_error_handler_v<_UToErrorHandler>;
 		using _FromProgressHandler             = ::std::conditional_t<_IsFromProgressHandler, _CVFromErrorHandler&,
-               __txt_detail::__progress_handler<_FromAssumeValid, _CVFromEncoding>>;
+			            __txt_detail::__progress_handler<_FromAssumeValid, _CVFromEncoding>>;
 		using _ToProgressHandler               = ::std::conditional_t<_IsToProgressHandler, _CVToErrorHandler&,
-               __txt_detail::__progress_handler<_ToAssumeValid, _CVToEncoding>>;
+			              __txt_detail::__progress_handler<_ToAssumeValid, _CVToEncoding>>;
 		using _FromProgressHandlerRef
 			= ::std::conditional_t<_IsFromProgressHandler, _CVFromErrorHandler&, _FromProgressHandler&>;
 		using _ToProgressHandlerRef
 			= ::std::conditional_t<_IsToProgressHandler, _CVToErrorHandler&, _ToProgressHandler&>;
-		using _WorkingOutput = ::ztd::ranges::subrange_for_t<_Output>;
-		using _IntermediateResult
-			= decltype(::std::forward<_FromEncoding>(__from_encoding)
-			                .encode_one(::std::forward<_Input>(__input), ::std::forward<_Pivot>(__pivot),
-			                     ::std::declval<_FromProgressHandlerRef>(), __from_state));
+		using _WorkingOutput       = ::ztd::ranges::subrange_for_t<_Output>;
+		using _IntermediateResult  = decltype(::std::forward<_FromEncoding>(__from_encoding)
+                    .encode_one(::std::forward<_Input>(__input), ::std::forward<_Pivot>(__pivot),
+			           ::std::declval<_FromProgressHandlerRef>(), __from_state));
 		using _ResultPivot         = decltype(::std::declval<_IntermediateResult>().output);
 		using _EndResult           = decltype(::std::forward<_ToEncoding>(__to_encoding)
-                                           .decode_one(::std::declval<_ResultPivot>(), ::std::declval<_WorkingOutput>(),
-			                                           ::std::declval<_ToProgressHandlerRef>(), __to_state));
+                    .decode_one(::std::declval<_ResultPivot>(), ::std::declval<_WorkingOutput>(),
+			                    ::std::declval<_ToProgressHandlerRef>(), __to_state));
 		using _WorkingIntermediate = decltype(::std::declval<_EndResult>().input);
 		using _ResultInput         = decltype(::std::declval<_IntermediateResult>().input);
 		using _ResultOutput        = decltype(::std::declval<_EndResult>().output);
@@ -940,7 +939,7 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, _MinimumIntermediateOutputMax>;
+			using _RealOutputContainer = ::ztd::inline_basic_string<_OutputCodePoint, _MinimumIntermediateOutputMax>;
 			return __txt_detail::__recode_one_dispatch<false, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -948,7 +947,7 @@ namespace ztd { namespace text {
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::static_vector<_OutputCodePoint, _MinimumIntermediateOutputMax>, _OutputContainer>;
+				::ztd::inline_vector<_OutputCodePoint, _MinimumIntermediateOutputMax>, _OutputContainer>;
 			return __txt_detail::__recode_one_dispatch<false, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -1221,7 +1220,7 @@ namespace ztd { namespace text {
 		constexpr bool _IsStringable
 			= (is_char_traitable_v<_OutputCodePoint> || is_unicode_code_point_v<_OutputCodePoint>);
 		if constexpr (_IsVoidContainer && _IsStringable) {
-			using _RealOutputContainer = ::ztd::static_basic_string<_OutputCodePoint, _MinimumIntermediateOutputMax>;
+			using _RealOutputContainer = ::ztd::inline_basic_string<_OutputCodePoint, _MinimumIntermediateOutputMax>;
 			return __txt_detail::__recode_one_dispatch<true, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),
@@ -1229,7 +1228,7 @@ namespace ztd { namespace text {
 		}
 		else {
 			using _RealOutputContainer = ::std::conditional_t<_IsVoidContainer,
-				::ztd::static_vector<_OutputCodePoint, _MinimumIntermediateOutputMax>, _OutputContainer>;
+				::ztd::inline_vector<_OutputCodePoint, _MinimumIntermediateOutputMax>, _OutputContainer>;
 			return __txt_detail::__recode_one_dispatch<true, false, _RealOutputContainer>(
 				::std::forward<_Input>(__input), ::std::forward<_FromEncoding>(__from_encoding),
 				::std::forward<_ToEncoding>(__to_encoding), ::std::forward<_FromErrorHandler>(__from_error_handler),

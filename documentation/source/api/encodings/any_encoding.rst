@@ -28,8 +28,8 @@
 ..
 .. =============================================================================>
 
-any_encoding
-============
+``any_encoding`` omni-encoding type
+===================================
 
 ``any_encoding`` is a class type whose sole purpose is to provide a type-generic, byte-based, runtime-deferred way of handling encodings.
 
@@ -40,14 +40,19 @@ Aliases
 
 .. doxygentypedef:: ztd::text::any_encoding
 
+.. doxygentypedef:: ztd::text::any_encoding_of
+
 .. doxygentypedef:: ztd::text::compat_any_encoding
 
 .. doxygentypedef:: ztd::text::ucompat_any_encoding
 
 
 
-Base Template
--------------
+Base
+----
+
+This is based off of :cpp:class:`ztd::text::any_encoding_with`; the only thing special about it is the constructor logic on top of :cpp:class:`ztd::text::any_encoding_with`.
 
 .. doxygenclass:: ztd::text::any_byte_encoding
-	:members:
+	:members: any_byte_encoding, operator=
+	
