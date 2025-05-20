@@ -35,7 +35,7 @@ Windows Code Page
 
 .. warning::
 
-	This type is inefficient due to the poor design of the ``WideCharToMultiByte``/``MultiByteToWideChar`` functions. While this will allow users to achieve parity, if the user knows their encoding ahead of time and can provide either their own encoding object or :doc:`/api//encodings <one of the encoding types provided by this library>`, it is highly preferred over this methodology.
+	This type is inefficient due to the poor design of the ``WideCharToMultiByte``/``MultiByteToWideChar`` functions. While this will allow users to achieve parity, if the user knows their encoding ahead of time and can provide either their own encoding object or :doc:`one of the encoding types provided by this library </api//encodings>`, it is highly preferred over this methodology.
 
 .. warning::
 
