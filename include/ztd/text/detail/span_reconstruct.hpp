@@ -61,39 +61,79 @@ namespace ztd { namespace text {
 			using _UInput    = ::ztd::remove_cvref_t<_Input>;
 			using _UInputTag = ::ztd::remove_cvref_t<_InputTag>;
 			// try to catch string literal_ts / arrays
-			if constexpr (::ztd::ranges::is_reconstructible_v<::std::in_place_type_t<_UInputTag>, _Input>) {
-				return ::ztd::ranges::reconstruct(
-					::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
-			}
-			else if constexpr (::ztd::is_span_v<_UInput>) {
-				using _Ty = ::std::conditional_t<_Mutable, typename _UInput::element_type,
-					const typename _UInput::value_type>;
-				return ::ztd::span<_Ty, _UInput::extent>(__input);
-			}
-			else if constexpr (::std::is_array_v<_UInput>               // cf
-				&& ::std::is_const_v<::std::remove_extent_t<_CVInput>> // cf
-				&& ::std::is_lvalue_reference_v<_Input>) {
-				using _CharTy = ::std::remove_extent_t<_UInput>;
-				if constexpr (is_char_traitable_v<_CharTy>) {
-					return ::ztd::ranges::reconstruct(::std::in_place_type<::ztd::span<const _CharTy>>,
-						::ztd::ranges::cbegin(__input),
-						::ztd::ranges::cbegin(__input) + ::ztd::c_string_ptr_size(__input));
+			if constexpr (_Mutable) {
+				if constexpr (::ztd::ranges::is_reconstructible_v<::std::in_place_type_t<_UInputTag>, _Input>) {
+					return ::ztd::ranges::const_reconstruct(
+						::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
+				}
+				else if constexpr (::ztd::is_span_v<_UInput>) {
+					using _Ty = typename _UInput::element_type;
+					return ::ztd::span<_Ty, _UInput::extent>(__input);
+				}
+				else if constexpr (::std::is_array_v<_UInput>               // cf
+					&& ::std::is_const_v<::std::remove_extent_t<_CVInput>> // cf
+					&& ::std::is_lvalue_reference_v<_Input>) {
+					using _CharTy = ::std::remove_extent_t<_UInput>;
+					if constexpr (is_char_traitable_v<_CharTy>) {
+						return ::ztd::ranges::reconstruct(::std::in_place_type<::ztd::span<const _CharTy>>,
+							::ztd::ranges::begin(__input),
+							::ztd::ranges::begin(__input) + ::ztd::c_string_ptr_size(__input));
+					}
+					else {
+						using _Ty = ::std::remove_extent_t<_CVInput>;
+						return ::ztd::ranges::reconstruct(
+							::std::in_place_type<::ztd::span<const _Ty>>, ::std::forward<_Input>(__input));
+					}
 				}
 				else {
-					using _Ty = ::std::remove_extent_t<_CVInput>;
-					return ::ztd::ranges::reconstruct(
-						::std::in_place_type<::ztd::span<const _Ty>>, ::std::forward<_Input>(__input));
+					if constexpr (ranges::is_range_contiguous_range_v<_CVInput>
+						&& ranges::is_sized_range_v<_CVInput>) {
+						using _Ty = ::ztd::ranges::range_element_type_t<_CVInput>;
+						return ::ztd::ranges::reconstruct(
+							::std::in_place_type<::ztd::span<_Ty>>, ::std::forward<_Input>(__input));
+					}
+					else {
+						return ::ztd::ranges::reconstruct(
+							::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
+					}
 				}
 			}
 			else {
-				if constexpr (ranges::is_range_contiguous_range_v<_CVInput> && ranges::is_sized_range_v<_CVInput>) {
-					using _Ty = ::ztd::ranges::range_element_type_t<_CVInput>;
-					return ::ztd::ranges::reconstruct(
-						::std::in_place_type<::ztd::span<_Ty>>, ::std::forward<_Input>(__input));
+				if constexpr (::ztd::ranges::is_const_reconstructible_v<::std::in_place_type_t<_UInputTag>,
+					              _Input>) {
+					return ::ztd::ranges::const_reconstruct(
+						::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
+				}
+				else if constexpr (::ztd::is_span_v<_UInput>) {
+					using _Ty = const typename _UInput::value_type;
+					return ::ztd::span<_Ty, _UInput::extent>(__input);
+				}
+				else if constexpr (::std::is_array_v<_UInput>               // cf
+					&& ::std::is_const_v<::std::remove_extent_t<_CVInput>> // cf
+					&& ::std::is_lvalue_reference_v<_Input>) {
+					using _CharTy = ::std::remove_extent_t<_UInput>;
+					if constexpr (is_char_traitable_v<_CharTy>) {
+						return ::ztd::ranges::const_reconstruct(::std::in_place_type<::ztd::span<const _CharTy>>,
+							::ztd::ranges::cbegin(__input),
+							::ztd::ranges::cbegin(__input) + ::ztd::c_string_ptr_size(__input));
+					}
+					else {
+						using _Ty = ::std::remove_extent_t<_CVInput>;
+						return ::ztd::ranges::const_reconstruct(
+							::std::in_place_type<::ztd::span<const _Ty>>, ::std::forward<_Input>(__input));
+					}
 				}
 				else {
-					return ::ztd::ranges::reconstruct(
-						::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
+					if constexpr (ranges::is_range_contiguous_range_v<_CVInput>
+						&& ranges::is_sized_range_v<_CVInput>) {
+						using _Ty = ::ztd::ranges::range_element_type_t<_CVInput>;
+						return ::ztd::ranges::const_reconstruct(
+							::std::in_place_type<::ztd::span<_Ty>>, ::std::forward<_Input>(__input));
+					}
+					else {
+						return ::ztd::ranges::const_reconstruct(
+							::std::in_place_type<_UInputTag>, ::std::forward<_Input>(__input));
+					}
 				}
 			}
 		}

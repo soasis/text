@@ -753,7 +753,7 @@ namespace ztd { namespace text {
                          ::std::move(__input), __encoding, __pass_handler, __actual_decode_state);
 				if (__raw_result.error_code != encoding_error::ok) {
 					code_point __err_buffer[max_code_points] {};
-					::ztd::span<code_point, max_code_points> __err_view(__err_buffer);
+					::ztd::span<code_point> __err_view(__err_buffer, max_code_points);
 					auto __err_result         = __error_handler(__self,
 						        __decode_result(::std::move(__raw_result.input), __err_view, __state,
 						             __raw_result.error_code, __raw_result.error_count),
@@ -780,7 +780,7 @@ namespace ztd { namespace text {
                          ::std::move(__input), __encoding, __pass_handler, __actual_encode_state);
 				if (__raw_result.error_code != encoding_error::ok) {
 					code_unit __err_buffer[max_code_units] {};
-					::ztd::span<code_unit, max_code_units> __err_view(__err_buffer);
+					::ztd::span<code_unit> __err_view(__err_buffer, max_code_units);
 					auto __err_result         = __error_handler(__self,
 						        __encode_result(::std::move(__raw_result.input), __err_view, __state,
 						             __raw_result.error_code, __raw_result.error_count),

@@ -288,7 +288,7 @@ namespace ztd { namespace text {
 		auto decode_one(_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler,
 			decode_state& __state) const noexcept {
 			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-			using _SubInput                     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput                     = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput                    = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result                       = decode_result<_SubInput, _SubOutput, decode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
@@ -303,8 +303,8 @@ namespace ztd { namespace text {
 				}
 			}
 
-			auto __in_it   = ::ztd::ranges::begin(__input);
-			auto __in_last = ::ztd::ranges::end(__input);
+			auto __in_it   = ::ztd::ranges::cbegin(__input);
+			auto __in_last = ::ztd::ranges::cend(__input);
 
 			if (__in_it == __in_last) {
 				// an exhausted sequence is fine
@@ -426,7 +426,7 @@ namespace ztd { namespace text {
 		auto encode_one(_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler,
 			encode_state& __state) const noexcept {
 			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-			using _SubInput                     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput                     = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput                    = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result                       = encode_result<_SubInput, _SubOutput, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
@@ -441,8 +441,8 @@ namespace ztd { namespace text {
 				}
 			}
 
-			auto __in_it   = ::ztd::ranges::begin(__input);
-			auto __in_last = ::ztd::ranges::end(__input);
+			auto __in_it   = ::ztd::ranges::cbegin(__input);
+			auto __in_last = ::ztd::ranges::cend(__input);
 
 			if (__in_it == __in_last) {
 				// an exhausted sequence is fine

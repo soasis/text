@@ -184,7 +184,7 @@ namespace ztd { namespace text {
 		}
 		using _SpanTy               = ::ztd::span<const ::ztd::ranges::range_value_type_t<_WorkingIntermediate>>;
 		auto __working_intermediate = ::ztd::ranges::cascading_reconstruct<_SpanTy, _WorkingIntermediate>(
-			::ztd::ranges::begin(__pivot), ::ztd::ranges::begin(__intermediate_result.output));
+			::ztd::ranges::cbegin(__pivot), ::ztd::ranges::cbegin(__intermediate_result.output));
 		::std::size_t __error_count = __intermediate_result.error_count;
 		for (;;) {
 			auto __end_result = ::std::forward<_ToEncoding>(__to_encoding)

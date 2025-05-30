@@ -46,10 +46,10 @@ jobs:
       - uses: seanmiddleditch/gha-setup-ninja@master
         if: ${{matrix.os == 'windows'}}
         # actual runs
-      - name: Execute CMake Workflow (Windows)
+      - name: Execute CMake Workflow (Windows and MSVC)
         if: ${{(matrix.os == 'windows' && matrix.compiler == 'msvc')}}
         shell: vsdevenv x64 powershell {0}
         run: cmake --workflow --preset ${{matrix.compiler}}
-      - name: Execute CMake Workflow (Non-Windows)
+      - name: Execute CMake Workflow (Non-Windows and Non-MSVC)
         if: ${{(matrix.os != 'windows' || matrix.compiler != 'msvc')}}
         run: cmake --workflow --preset ${{matrix.compiler}}

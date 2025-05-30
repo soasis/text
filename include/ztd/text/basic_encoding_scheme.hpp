@@ -42,6 +42,8 @@
 #include <ztd/text/detail/constant_encoding_traits.hpp>
 #include <ztd/text/detail/basic_encoding_scheme_includes.hpp>
 
+#include <ztd/idk/unwrap.hpp>
+
 #include <optional>
 #include <cstddef>
 
@@ -328,7 +330,7 @@ namespace ztd { namespace text {
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) const {
 			using _UOutputRange   = remove_cvref_t<_Output>;
 			using _CVErrorHandler = ::std::remove_reference_t<_ErrorHandler>;
-			using _SubInput       = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput       = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result         = decode_result<_SubInput, _SubOutput, decode_state>;
 
@@ -340,8 +342,8 @@ namespace ztd { namespace text {
 				__error_handler);
 			auto __result = this->base().decode_one(
 				::std::move(__inbytes), ::std::forward<_Output>(__output), __intermediate_handler, __s);
-			return _Result(::std::move(__result.input).begin().range(), ::std::move(__result.output), __s,
-				__result.error_code, __result.error_count);
+			return _Result(::ztd::unwrap_iterator(::std::move(__result.input).begin()).range(),
+				::std::move(__result.output), __s, __result.error_code, __result.error_count);
 		}
 
 		//////
@@ -378,7 +380,7 @@ namespace ztd { namespace text {
 				__error_handler);
 			auto __result
 				= this->base().encode_one(::std::forward<_Input>(__input), __outwords, __intermediate_handler, __s);
-			_SubOutput __result_output(::std::move(__result.output).begin().range());
+			_SubOutput __result_output(::ztd::unwrap_iterator(::std::move(__result.output).begin()).range());
 			return _Result(::std::move(__result.input), ::std::move(__result_output), __s, __result.error_code,
 				__result.error_count);
 		}

@@ -93,7 +93,7 @@ namespace ztd { namespace text {
 			using _UEncoding     = unwrap_remove_cvref_t<_Encoding>;
 			using _UErrorHandler = unwrap_remove_cvref_t<_ErrorHandler>;
 			using _UState        = unwrap_remove_cvref_t<_State>;
-			using _BaseIterator  = ranges::range_iterator_t<_URange>;
+			using _BaseIterator  = ranges::range_const_iterator_t<_URange>;
 			inline static constexpr ::std::size_t _MaxValues
 				= (_EncodeOrDecode == __transaction::__decode ? max_code_points_v<unwrap_remove_cvref_t<_Encoding>>
 				                                              : max_code_units_v<unwrap_remove_cvref_t<_Encoding>>);

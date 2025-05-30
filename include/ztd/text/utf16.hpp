@@ -194,7 +194,7 @@ namespace ztd { namespace text {
 						}
 					}
 				}
-				using _SubInput = ztd::ranges::subrange_for_t<_Input>;
+				using _SubInput = ztd::ranges::csubrange_for_t<_Input>;
 				return decode_result<_SubInput, _Output, _State>(_SubInput(::std::move(__it), ::std::move(__last)),
 					::std::move(__result.output), __result.state, __result.error_code, __result.error_count);
 			}
@@ -240,13 +240,13 @@ namespace ztd { namespace text {
 			static constexpr auto decode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, state& __s) {
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _SubInput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+				using _SubInput      = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 				using _SubOutput     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 				using _Result        = decode_result<_SubInput, _SubOutput, state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-				auto __in_it                    = ::ztd::ranges::begin(__input);
-				[[maybe_unused]] auto __in_last = ::ztd::ranges::end(__input);
+				auto __in_it                    = ::ztd::ranges::cbegin(__input);
+				[[maybe_unused]] auto __in_last = ::ztd::ranges::cend(__input);
 				if constexpr (__call_error_handler) {
 					if (__in_it == __in_last) {
 						// an exhausted sequence is fine
@@ -273,7 +273,7 @@ namespace ztd { namespace text {
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 									     encoding_error::insufficient_output_space),
-									::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
+									::ztd::span<code_unit>(), ::ztd::span<code_point>());
 							}
 						}
 						*__out_it = static_cast<code_point>(__lead16);
@@ -293,7 +293,7 @@ namespace ztd { namespace text {
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 									     encoding_error::insufficient_output_space),
-									::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
+									::ztd::span<code_unit>(), ::ztd::span<code_point>());
 							}
 						}
 						*__out_it = static_cast<code_point>(__lead16);
@@ -310,7 +310,7 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::invalid_sequence),
-								::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
+								::ztd::span<code_unit>(), ::ztd::span<code_point>());
 						}
 					}
 				}
@@ -322,7 +322,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::incomplete_sequence),
-							::ztd::span<code_unit, 0>(), ::ztd::span<code_point, 0>());
+							::ztd::span<code_unit>(), ::ztd::span<code_point>());
 					}
 				}
 
@@ -341,8 +341,7 @@ namespace ztd { namespace text {
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 									     encoding_error::insufficient_output_space),
-									::ztd::span<code_unit, 1>(__units.data(), 1),
-									::ztd::span<code_point, 0>());
+									::ztd::span<code_unit>(__units.data(), 1), ::ztd::span<code_point>());
 							}
 						}
 						*__out_it = static_cast<code_point>(__lead16);
@@ -359,7 +358,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
+							::ztd::span<code_unit>(__units.data(), 1), ::ztd::span<code_point>());
 					}
 				}
 
@@ -370,7 +369,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::insufficient_output_space),
-							::ztd::span<code_unit, 1>(__units.data(), 1), ::ztd::span<code_point, 0>());
+							::ztd::span<code_unit>(__units.data(), 1), ::ztd::span<code_point>());
 					}
 				}
 				ztd_char32_t __point32 = __ztd_idk_detail_utf16_combine_surrogates(__lead16, __trail16);
@@ -403,13 +402,13 @@ namespace ztd { namespace text {
 			static constexpr auto encode_one(
 				_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, state& __s) {
 				using _UErrorHandler = remove_cvref_t<_ErrorHandler>;
-				using _SubInput      = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+				using _SubInput      = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 				using _SubOutput     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 				using _Result        = encode_result<_SubInput, _SubOutput, state>;
 				constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-				auto __in_it   = ::ztd::ranges::begin(__input);
-				auto __in_last = ::ztd::ranges::end(__input);
+				auto __in_it   = ::ztd::ranges::cbegin(__input);
+				auto __in_last = ::ztd::ranges::cend(__input);
 				if (__in_it == __in_last) {
 					// an exhausted sequence is fine
 					return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
@@ -430,7 +429,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::invalid_sequence),
-							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
+							::ztd::span<code_point>(), ::ztd::span<code_unit>());
 					}
 				}
 
@@ -443,7 +442,7 @@ namespace ztd { namespace text {
 									_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 									     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 									     encoding_error::insufficient_output_space),
-									::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
+									::ztd::span<code_point>(), ::ztd::span<code_unit>());
 							}
 						}
 
@@ -463,7 +462,7 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::invalid_sequence),
-								::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
+								::ztd::span<code_point>(), ::ztd::span<code_unit>());
 						}
 					}
 				}
@@ -476,7 +475,7 @@ namespace ztd { namespace text {
 								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 								     encoding_error::insufficient_output_space),
-								::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
+								::ztd::span<code_point>(), ::ztd::span<code_unit>());
 						}
 					}
 
@@ -503,7 +502,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::insufficient_output_space),
-							::ztd::span<code_point, 0>(), ::ztd::span<code_unit, 0>());
+							::ztd::span<code_point>(), ::ztd::span<code_unit>());
 					}
 				}
 
@@ -518,8 +517,7 @@ namespace ztd { namespace text {
 							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
 							     encoding_error::insufficient_output_space),
-							::ztd::span<code_point, 0>(),
-							::ztd::span<code_unit, 1>(::std::addressof(__trail), 1));
+							::ztd::span<code_point>(), ::ztd::span<code_unit>(::std::addressof(__trail), 1));
 					}
 				}
 				*__out_it = __trail;

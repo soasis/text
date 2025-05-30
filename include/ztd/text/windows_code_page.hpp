@@ -169,8 +169,17 @@ namespace ztd { namespace text {
 		/// @param __win32_code_page The code page. It is one of the allowed code page values
 		/// (https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers) that are blessed by the
 		/// WideCharToMultiByte and MultiByteToWideChar.
-		constexpr basic_windows_code_page(int32_t __win32_code_page) noexcept
-		: _M_code_page(__win32_code_page), _M_replacement_code_point(), _M_replacement_code_unit() {
+		constexpr basic_windows_code_page(uint32_t __win32_code_page) noexcept
+		: _M_code_page(__win32_code_page)
+		, _M_replacement_code_point()
+		, _M_replacement_code_unit()
+		, _M_p_codepage_info() {
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
+			CPINFOEXW* __p_codepage_info = nullptr;
+			if (::ztd::__idk_detail::__windows::__get_codepage_descirptor(this->_M_code_page, &__p_codepage_info)) {
+				this->_M_p_codepage_info = static_cast<void*>(__p_codepage_info);
+			}
+#endif
 		}
 
 		//////
@@ -187,10 +196,17 @@ namespace ztd { namespace text {
 		/// @param[in] __replacement_code_unit The replacement code unit (a single 1-byte `__win32_code_page`-encoded
 		/// code unit) to be used with the underlying algorithm, where permissible.
 		constexpr basic_windows_code_page(
-			int32_t __win32_code_page, uint16_t __replacement_code_point, int8_t __replacement_code_unit) noexcept
+			uint32_t __win32_code_page, uint16_t __replacement_code_point, int8_t __replacement_code_unit) noexcept
 		: _M_code_page(__win32_code_page)
 		, _M_replacement_code_point(static_cast<code_point>(__replacement_code_point))
-		, _M_replacement_code_unit(static_cast<code_unit>(__replacement_code_unit)) {
+		, _M_replacement_code_unit(static_cast<code_unit>(__replacement_code_unit))
+		, _M_p_codepage_info() {
+#if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
+			CPINFOEXW* __p_codepage_info = nullptr;
+			if (::ztd::__idk_detail::__windows::__get_codepage_descirptor(this->_M_code_page, &__p_codepage_info)) {
+				this->_M_p_codepage_info = static_cast<void*>(__p_codepage_info);
+			}
+#endif
 		}
 
 		//////
@@ -211,75 +227,128 @@ namespace ztd { namespace text {
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, decode_state& __s) const {
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-			using _SubInput                     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput                     = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput                    = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
-			using _Result                       = decode_result<_SubInput, _SubOutput, decode_state>;
+			using _Result                       = encode_result<_SubInput, _SubOutput, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			auto __in_it   = ::ztd::ranges::begin(__input);
-			auto __in_last = ::ztd::ranges::end(__input);
+			auto __in_it   = ::ztd::ranges::cbegin(__input);
+			auto __in_last = ::ztd::ranges::cend(__input);
 			if (__in_it == __in_last) {
 				// an exhausted sequence is fine
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 					::std::forward<_Output>(__output), __s, encoding_error::ok);
 			}
 
-
 			auto __out_it   = ::ztd::ranges::begin(__output);
 			auto __out_last = ::ztd::ranges::end(__output);
 
-			using __wutf16             = __txt_impl::__utf16_with<void, wchar_t, code_point, false>;
-			using __intermediate_state = encode_state_t<__wutf16>;
+			WCHAR __intermediate_data[17]                 = {};
+			const size_t __initial_intermediate_data_size = ::ztd::ranges::size(__intermediate_data);
+			CHAR __input_read_data[17]                    = { *__in_it };
+			size_t __input_read_size                      = 1;
+			const size_t __initial_input_read_data_size   = ::ztd::ranges::size(__input_read_data);
+			::std::uint32_t __code_page_id                = this->code_page();
+			auto __flags = ::ztd::__idk_detail::__windows::__multibyte_to_widechar_flags(__code_page_id);
+			size_t __intermediate_input_size = 0;
+			for (; __in_it != __in_last; ++__input_read_size, ::ztd::ranges::iter_advance(__in_it)) {
+				if constexpr (__call_error_handler) {
+					if (__input_read_size > __initial_input_read_data_size) {
+						return ::std::forward<_ErrorHandler>(__error_handler)(*this,
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::invalid_sequence),
+							::ztd::span<code_unit>(__input_read_data, __input_read_size - 1),
+							::ztd::span<code_point>());
+					}
+				}
+				int __win32_err = ::MultiByteToWideChar(static_cast<UINT>(__code_page_id), __flags,
+					__input_read_data, static_cast<int>(__input_read_size), __intermediate_data,
+					static_cast<int>(__initial_intermediate_data_size));
+				if constexpr (__call_error_handler) {
+					if (__win32_err == 0) {
+						DWORD __last_win32_err = ::GetLastError();
+						if (__last_win32_err == ERROR_INSUFFICIENT_BUFFER) {
+							return ::std::forward<_ErrorHandler>(__error_handler)(*this,
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::invalid_sequence),
+								::ztd::span<code_unit>(__input_read_data, __input_read_size - 1),
+								::ztd::span<code_point>());
+						}
+					}
+					else {
+						CPINFOEXW* __p_info = static_cast<CPINFOEXW*>(this->_M_p_codepage_info);
+						if (::ztd::__idk_detail::__windows::__multibyte_to_widechar_conversion_failed(
+							    __input_read_size, __input_read_data, __intermediate_data, __p_info)) {
+							return ::std::forward<_ErrorHandler>(__error_handler)(*this,
+								_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+								     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+								     encoding_error::invalid_sequence),
+								::ztd::span<code_unit>(__input_read_data, __input_read_size - 1),
+								::ztd::span<code_point>());
+						}
+						// we've finally completed one indivisible unit of work! Move to the next part.
+						__intermediate_input_size += static_cast<size_t>(__win32_err);
+						break;
+					}
+				}
+				__input_read_data[__input_read_size] = static_cast<CHAR>(*__in_it);
+			}
+
+			using __wutf16             = __txt_impl::__utf16_with<void, WCHAR, code_point, false>;
+			using __intermediate_state = decode_state_t<__wutf16>;
 
 			__wutf16 __intermediate_encoding {};
 			__intermediate_state __intermediate_s {};
 			__txt_detail::__progress_handler<!__call_error_handler, __wutf16> __intermediate_handler {};
-			wchar_t __wide_intermediary[8] {};
-			::ztd::span<wchar_t> __wide_write_buffer(__wide_intermediary);
-			auto __intermediate_result = __intermediate_encoding.encode_one(
-				::std::forward<_Input>(__input), __wide_write_buffer, __intermediate_handler, __intermediate_s);
-			if constexpr (__call_error_handler) {
-				if (__intermediate_result.error_code != encoding_error::ok) {
-					return ::std::forward<_ErrorHandler>(__error_handler)(*this,
-						_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output), __s,
-						     __intermediate_result.error_code),
-						__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
-				}
-			}
-			constexpr const ::std::size_t __state_count_max = 12;
-			code_unit __intermediary_output[__state_count_max] {};
-			int __used_default_char = false;
-			::ztd::span<const wchar_t> __wide_read_buffer(__wide_intermediary, __intermediate_result.output.data());
-			int __res = ::WideCharToMultiByte(this->_M_code_page, WC_ERR_INVALID_CHARS, __wide_read_buffer.data(),
-				static_cast<int>(__wide_read_buffer.size()), __intermediary_output, __state_count_max, nullptr,
-				::std::addressof(__used_default_char));
-			if constexpr (__call_error_handler) {
-				if (__res == 0) {
-					return ::std::forward<_ErrorHandler>(__error_handler)(*this,
-						_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output), __s,
-						     ::GetLastError() == ERROR_INSUFFICIENT_BUFFER
-						          ? encoding_error::insufficient_output_space
-						          : encoding_error::invalid_sequence),
-						__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
-				}
-			}
-			for (auto __intermediary_it = __intermediary_output; __res-- > 0;) {
+			code_point __intermediate_output[17] {};
+			::ztd::span<code_point> __output_buffer(__intermediate_output);
+			::ztd::span<const WCHAR> __intermediate_input_buffer(__intermediate_data, __intermediate_input_size);
+			for (;;) {
+				auto __intermediate_result = __intermediate_encoding.decode_one(
+					__intermediate_input_buffer, __output_buffer, __intermediate_handler, __intermediate_s);
 				if constexpr (__call_error_handler) {
-					if (__out_it == __out_last) {
-						::ztd::span<code_unit> __code_unit_progress(
-							__intermediary_it, static_cast<::std::size_t>(__res + 1));
+					if (__intermediate_result.error_code != encoding_error::ok) {
 						return ::std::forward<_ErrorHandler>(__error_handler)(*this,
-							_Result(::std::move(__intermediate_result.input),
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
-							     encoding_error::insufficient_output_space),
-							__intermediate_handler._M_code_points_progress(), __code_unit_progress);
+							     __intermediate_result.error_code),
+							::ztd::span<code_unit>(), __intermediate_handler._M_code_points_progress());
 					}
 				}
-				*__out_it = *__intermediary_it;
+				if (!::ztd::ranges::empty(__intermediate_result.input)) {
+					__intermediate_input_buffer
+						= ::ztd::span<const WCHAR>(::ztd::to_address(__intermediate_result.input.cbegin()),
+						     ::ztd::to_address(__intermediate_result.input.cend()));
+					__output_buffer
+						= ::ztd::span<code_point>(::ztd::to_address(__intermediate_result.output.cbegin()),
+						     ::ztd::to_address(__intermediate_result.output.cend()));
+					continue;
+				}
+			}
+			auto __intermediate_output_begin = &__intermediate_output[0];
+			auto __intermediate_output_end   = __output_buffer.data();
+			for (auto __intermediate_output_it = __intermediate_output_begin;
+				__intermediate_output_it != __intermediate_output_end;) {
+				if constexpr (__call_error_handler) {
+					if (__out_it == __out_last) {
+						::ztd::span<code_unit> __code_point_leftover(
+							__intermediate_output_it, __intermediate_output_end);
+						return ::std::forward<_ErrorHandler>(__error_handler)(*this,
+							_Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
+							     encoding_error::insufficient_output_space),
+							::ztd::span<code_unit>(__input_read_data, __input_read_size - 1),
+							__code_point_leftover);
+					}
+				}
+				*__out_it = *__intermediate_output_it;
 				::ztd::ranges::iter_advance(__out_it);
 			}
-			return _Result(::std::move(__intermediate_result.input),
-				_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, __intermediate_result.error_code);
+
+			return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+				_SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s, encoding_error::ok);
 #else
 			(void)__input;
 			(void)__output;
@@ -309,13 +378,13 @@ namespace ztd { namespace text {
 			_Input&& __input, _Output&& __output, _ErrorHandler&& __error_handler, encode_state& __s) const {
 #if ZTD_IS_ON(ZTD_PLATFORM_WINDOWS)
 			using _UErrorHandler                = remove_cvref_t<_ErrorHandler>;
-			using _SubInput                     = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Input>>;
+			using _SubInput                     = ztd::ranges::csubrange_for_t<::std::remove_reference_t<_Input>>;
 			using _SubOutput                    = ztd::ranges::subrange_for_t<::std::remove_reference_t<_Output>>;
 			using _Result                       = encode_result<_SubInput, _SubOutput, encode_state>;
 			constexpr bool __call_error_handler = !is_ignorable_error_handler_v<_UErrorHandler>;
 
-			auto __in_it   = ::ztd::ranges::begin(__input);
-			auto __in_last = ::ztd::ranges::end(__input);
+			auto __in_it   = ::ztd::ranges::cbegin(__input);
+			auto __in_last = ::ztd::ranges::cend(__input);
 			if (__in_it == __in_last) {
 				// an exhausted sequence is fine
 				return _Result(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
@@ -331,40 +400,61 @@ namespace ztd { namespace text {
 			__wutf16 __intermediate_encoding {};
 			__intermediate_state __intermediate_s {};
 			__txt_detail::__progress_handler<!__call_error_handler, __wutf16> __intermediate_handler {};
-			wchar_t __wide_intermediary[8] {};
-			::ztd::span<wchar_t> __wide_write_buffer(__wide_intermediary);
-			auto __intermediate_result = __intermediate_encoding.encode_one(
-				::std::forward<_Input>(__input), __wide_write_buffer, __intermediate_handler, __intermediate_s);
+			wchar_t __wide_intermediate[8] {};
+			::ztd::span<wchar_t> __wide_write_buffer(__wide_intermediate);
+			auto __intermediate_result
+				= __intermediate_encoding.encode_one(_SubInput(::std::move(__in_it), ::std::move(__in_last)),
+				     __wide_write_buffer, __intermediate_handler, __intermediate_s);
 			if constexpr (__call_error_handler) {
 				if (__intermediate_result.error_code != encoding_error::ok) {
 					return ::std::forward<_ErrorHandler>(__error_handler)(*this,
 						_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output), __s,
 						     __intermediate_result.error_code),
-						__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
+						__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit>());
 				}
 			}
-			constexpr const ::std::size_t __state_count_max = 12;
-			code_unit __intermediary_output[__state_count_max] {};
-			BOOL __used_default_char = false;
-			::ztd::span<const wchar_t> __wide_read_buffer(__wide_intermediary, __intermediate_result.output.data());
-			int __res = ::WideCharToMultiByte(static_cast<UINT>(this->code_page()), WC_ERR_INVALID_CHARS,
-				__wide_read_buffer.data(), static_cast<int>(__wide_read_buffer.size()), __intermediary_output,
-				__state_count_max, nullptr, ::std::addressof(__used_default_char));
+			constexpr const ::std::size_t __state_count_max = 17;
+			CHAR __intermediate_output[__state_count_max] {};
+			BOOL __default_char_used = false;
+			CHAR __default_char      = '?';
+			::ztd::span<const wchar_t> __wide_read_buffer(__wide_intermediate, __intermediate_result.output.data());
+			::std::uint32_t __code_page_id = this->code_page();
+			auto __used_defaults           = ::ztd::__idk_detail::__windows::__widechar_to_multibyte_used_char(
+                    __code_page_id, &__default_char, &__default_char_used);
+			int __win32_err = ::WideCharToMultiByte(static_cast<UINT>(__code_page_id), __used_defaults.__flags,
+				__wide_read_buffer.data(), static_cast<int>(__wide_read_buffer.size()), __intermediate_output,
+				__state_count_max, __used_defaults.__p_default_char, __used_defaults.__p_default_char_used);
 			if constexpr (__call_error_handler) {
-				if (__res == 0) {
-					return ::std::forward<_ErrorHandler>(__error_handler)(*this,
-						_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output), __s,
-						     ::GetLastError() == ERROR_INSUFFICIENT_BUFFER
-						          ? encoding_error::insufficient_output_space
-						          : encoding_error::invalid_sequence),
-						__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit, 0>());
+				if (__win32_err == 0) {
+					DWORD __last_win32_err = ::GetLastError();
+					if (__last_win32_err == ERROR_INSUFFICIENT_BUFFER) {
+						// technically, this should never happen.
+						return ::std::forward<_ErrorHandler>(__error_handler)(*this,
+							_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output),
+							     __s, encoding_error::invalid_sequence),
+							__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit>());
+					}
+				}
+				else {
+					CPINFOEXW* __p_info = static_cast<CPINFOEXW*>(this->_M_p_codepage_info);
+					if (::ztd::__idk_detail::__windows::__widechar_to_multibyte_conversion_failed(
+						    __wide_intermediate, static_cast<size_t>(__win32_err), __intermediate_output,
+						    __p_info)) {
+						return ::std::forward<_ErrorHandler>(__error_handler)(*this,
+							_Result(::std::move(__intermediate_result.input), ::std::forward<_Output>(__output),
+							     __s, encoding_error::invalid_sequence),
+							__intermediate_handler._M_code_points_progress(), ::ztd::span<code_unit>());
+					}
 				}
 			}
-			for (auto __intermediary_it = __intermediary_output; __res-- > 0;) {
+			auto __intermediate_output_begin = __intermediate_output;
+			auto __intermediate_output_end   = __intermediate_output_begin + __win32_err;
+			for (auto __intermediate_output_it = __intermediate_output_begin;
+				__intermediate_output_it != __intermediate_output_end;) {
 				if constexpr (__call_error_handler) {
 					if (__out_it == __out_last) {
 						::ztd::span<code_unit> __code_unit_progress(
-							__intermediary_it, static_cast<::std::size_t>(__res + 1));
+							__intermediate_output_it, __intermediate_output_end);
 						return ::std::forward<_ErrorHandler>(__error_handler)(*this,
 							_Result(::std::move(__intermediate_result.input),
 							     _SubOutput(::std::move(__out_it), ::std::move(__out_last)), __s,
@@ -372,7 +462,7 @@ namespace ztd { namespace text {
 							__intermediate_handler._M_code_points_progress(), __code_unit_progress);
 					}
 				}
-				*__out_it = *__intermediary_it;
+				*__out_it = *__intermediate_output_it;
 				::ztd::ranges::iter_advance(__out_it);
 			}
 			return _Result(::std::move(__intermediate_result.input),
@@ -388,7 +478,7 @@ namespace ztd { namespace text {
 #endif
 		}
 
-		constexpr int32_t code_page() const noexcept {
+		constexpr uint32_t code_page() const noexcept {
 			return this->_M_code_page;
 		}
 
@@ -401,9 +491,10 @@ namespace ztd { namespace text {
 		}
 
 	private:
-		int32_t _M_code_page;
 		::std::optional<code_point> _M_replacement_code_point;
 		::std::optional<code_unit> _M_replacement_code_unit;
+		void* _M_p_codepage_info;
+		uint32_t _M_code_page;
 	};
 
 	using windows_code_page = basic_windows_code_page<char, unicode_code_point>;

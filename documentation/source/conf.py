@@ -25,7 +25,8 @@ author = "ThePhD & Shepherd's Oasis, LLC"
 # The full version, including alpha/beta/rc tags
 #
 # get it from git
-release_label = str(subprocess.check_output(["git", "describe", "--always"]).strip())
+release_label = str(
+    subprocess.check_output(["git", "describe", "--always"]).strip())
 release = release_label if release_label else '0.0.0'
 
 # -- General configuration ---------------------------------------------------
@@ -70,7 +71,7 @@ html_extra_path = []
 rst_prolog = """
 .. |ub| replace:: ☢️☢️Undefined Behavior☢️☢️
 
-.. |specializations_okay_different_types| replace:: User Specializations: ✔️ Okay! You can add other types to this classification by specializing the class template. Your specialization must have a type definition named ``type`` (as in, ``using type = ...;`` or `typedef ... type;``) inside of the class specialization that is ``public:``-ly accessible. Note that specializing any type not explicitly marked with this notice is |ub|.
+.. |specializations_okay_different_types| replace:: User Specializations: ✔️ Okay! You can add other types to this classification by specializing the class template. Your specialization must have a type definition named ``type`` (as in, ``using type = ...;`` or ``typedef ... type;``) inside of the class specialization that is ``public:``-ly accessible. Note that specializing any type not explicitly marked with this notice is |ub|.
 
 .. |specializations_okay_true_false_type| replace:: User Specializations: ✔️ Okay! You can add other types to this classification by specializing the class template to a definition that derives from ``std::true_type``, or turn it off explicitly by having a definition that derives from ``std::false_type``. Note that specializing any type not explicitly marked with this notice is |ub|.
 
@@ -126,7 +127,9 @@ def run_cmake_doxygen():
 		    shell=True,
 		    cwd=cmake_dir)
 		if retcode != 0:
-			sys.stderr.write("cmake generaction execution failed with error code: %d\n" % retcode)
+			sys.stderr.write(
+			    "cmake generaction execution failed with error code: %d\n" %
+			    retcode)
 		else:
 			sys.stdout.write("cmake generaction execution succeeded")
 	except OSError as e:
