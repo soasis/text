@@ -1,8 +1,8 @@
 Thank you for considering a contribution to this library!
 
-By contributing to this library, you agree that your contributions will be released to the copyright of JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
+By contributing to this library, you agree that your contributions will be released to the copyright of JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC under the Apache 2.0 License. See the [LICENSE](LICENSE.md) file for details.
 
-If you're okay with the License and such, you will be asked to sign a Contributor License Agreement to contribute to the core library if need be!
+If you're okay with the License and such, you will be asked to agree to this, and/or sign a Contributor License Agreement to contribute to the core library if need be!
 
 Code should be formatted using the provide [`.clang-format`](.clang-format). If it does a terrible job, then hand-format it with the proper indentation (using tabs) and alignment (using spaces) in-between `// clang-format off` and `// clang-format on` comment lines.
 

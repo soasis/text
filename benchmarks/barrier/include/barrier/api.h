@@ -1,11 +1,11 @@
 // =============================================================================
 //
-// ztd.idk
+// ztd.text
 // Copyright © JeanHeyd "ThePhD" Meneide and Shepherd's Oasis, LLC
 // Contact: opensource@soasis.org
 //
 // Commercial License Usage
-// Licensees holding valid commercial ztd.idk licenses may use this file in
+// Licensees holding valid commercial ztd.text licenses may use this file in
 // accordance with the commercial license agreement provided with the
 // Software or, alternatively, in accordance with the terms contained in
 // a written agreement between you and Shepherd's Oasis, LLC.
